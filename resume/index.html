@@ -1,129 +1,190 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume | Ethan Mayer</title>
     <link rel="stylesheet" href="../style.css">
-    <style>
-        .container {
-            max-width: 960px;
-            margin: 0 auto;
-            padding: 40px;
-        }
-
-        .project {
-            margin-bottom: 20px;
-            border: 1px solid #ccc;
-            padding: 20px;
-        }
-    </style>
-    <title>Resume</title>
+    <link rel="stylesheet" href="style.css">
 </head>
-
-<body>
-    <header>
+<body class="resume-body">
+    <header class="resume-header">
         <nav>
             <ul>
                 <li><a href="../index.html">Home</a></li>
-                <li><a href="#about">About Me</a></li>
-                <li><a href="#contact">Contact</a></li>
+                <li><a href="#experience">Experience</a></li>
                 <li><a href="#education">Education</a></li>
-                <li><a href="#jobs">Jobs</a></li>
                 <li><a href="#skills">Skills</a></li>
-                <li><a href="#languages">Languages</a></li>
+                <li><a href="#contact">Contact</a></li>
             </ul>
         </nav>
     </header>
 
-    <section id="about">
-        <div class="container">
-            <img src="../images/profile.jpg" alt="Profile Photo">
-            <h1>Ethan Mayer, B.S. Software Engineering</h1>
+    <main class="resume-shell">
+        <section class="resume-hero">
+            <div class="resume-hero-copy">
+                <p class="eyebrow">Software Engineering Resume</p>
+                <h1>Ethan Mayer</h1>
+                <p class="hero-role">Software Engineering Student and Co-op Engineer</p>
+                <p class="hero-summary">
+                    Undergraduate software engineer at Iowa State building practical software, test tooling, and automation.
+                    I care about clean systems, useful interfaces, and shipping work that actually gets used.
+                </p>
 
-            <p>I am an undergraduate student at Iowa State University studying software engineering.</p>
+                <div class="hero-actions">
+                    <a class="primary-action" href="#contact">Contact</a>
+                    <a class="secondary-action" href="#experience">View experience</a>
+                </div>
 
-            <p>I hope you enjoy my website, and it gives you a reason to hire me</p>
-        </div>
-    </section>
+                <div class="hero-stats">
+                    <div class="stat-card">
+                        <span class="stat-label">School</span>
+                        <strong>Iowa State</strong>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-label">GPA</span>
+                        <strong>3.70</strong>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-label">Current role</span>
+                        <strong>Collins Aerospace</strong>
+                    </div>
+                </div>
+            </div>
 
-    <section id="education">
-        <div class="container">
-            <h2>Education - Go Cyclones!!</h2>
-            <p><strong>Iowa State University, Ames IA</strong></p> <br>
-            <p>Bachelors of Science, Software Engineering,
-                anticipated graduation: May 2026<br>
-                GPA: 3.70 <br> Relevant Coursework: </p>
-            <p>
-            <ul>
-                <li>Introduction to Problem-Solving I</li>
-                <li>Introduction to Problem-Solving II</li>
-                <li>Object Oriented Programming</li>
-                <li>Data Structures and Algorithms</li>
-                <li>Advanced Programming Techniques</li>
-                <li>Software Development Practices</li>
-                <li>Database Management</li>
-                <li>Web Development</li>
-            </ul>
-            </p>
-        </div>
-    </section>
+            <aside class="profile-card">
+                <img src="../images/profile.jpg" alt="Portrait of Ethan Mayer">
+                <div class="profile-card-body">
+                    <p class="profile-title">Focus</p>
+                    <ul class="profile-list">
+                        <li>Software verification</li>
+                        <li>Automation tooling</li>
+                        <li>Scenario generation</li>
+                        <li>Web development</li>
+                    </ul>
+                </div>
+            </aside>
+        </section>
 
-    <section id="jobs">
-        <div class="container">
-            <p>I work at Collins Aerospace (my boss says I'm a rockstar)</p>
-            <h2>Job Experience</h2>
-            <p><strong>Collins Aerospace</strong></p>
-            <p>Cedar Rapids, IA - B&amp;RA Next Gen Software Engineering Co-op</p><br>
-            <p>Jan 2024 - Current</p>
-            <p>
-            <ul>
-                <li>Software verification for Flight Display System Application</li>
-                <li>Systems testing on flight simulation RIGs</li>
-                <li>Develop Systems Automated Testing tool</li>
-                <li>Develop flight scenario test generation software</li>
-                <li>Use AGILE practices</li>
-                <li>Problem solve and use resources to succeed on any project</li>
-            </ul>
-            </p>
-        </div>
-    </section>
+        <section class="resume-grid">
+            <div class="main-column">
+                <section id="experience" class="resume-panel">
+                    <div class="section-heading">
+                        <p class="eyebrow">Experience</p>
+                        <h2>Hands-on engineering work</h2>
+                    </div>
 
-    <section id="skills">
-        <div class="container">
-            <h2>Skills</h2>
-            <p>
-            <ul>
-                <li>Programming (C, JavaScript, Java, Python)</li>
-                <li>Punctuality</li>
-                <li>Problem-Solving</li>
-                <li>AGILE</li>
-                <li>Communication</li>
-                <li>Git/Tortoise SVN</li>
-                <li>Various Other Things</li>
-            </ul>
-            </p>
-        </div>
-    </section>
+                    <article class="timeline-card">
+                        <div class="timeline-meta">
+                            <span class="timeline-date">Jan 2024 - Present</span>
+                            <span class="timeline-location">Cedar Rapids, IA</span>
+                        </div>
+                        <h3>Software Engineering Co-op</h3>
+                        <p class="timeline-company">Collins Aerospace, B&amp;RA Next Gen Software Engineering</p>
+                        <p class="timeline-lead">
+                            Working on real aerospace software and test systems with an emphasis on verification,
+                            tooling, and reliable execution.
+                        </p>
+                        <ul class="detail-list">
+                            <li>Perform software verification for Flight Display System applications.</li>
+                            <li>Run systems testing on flight simulation rigs.</li>
+                            <li>Build automated testing tools to speed up repeatable engineering workflows.</li>
+                            <li>Develop flight scenario generation software for broader and faster validation.</li>
+                            <li>Work in an AGILE environment with production expectations and team coordination.</li>
+                            <li>Solve unfamiliar problems quickly by using available tools, teammates, and documentation.</li>
+                        </ul>
+                    </article>
+                </section>
 
-    <section id="languages">
-        <div class="container">
-            <h2>Languages</h2>
-            <p>Spanish - Conversational Proficiency</p>
-            <p>I'm actually good at speaking spanish</p>
-        </div>
-    </section>
+                <section id="education" class="resume-panel">
+                    <div class="section-heading">
+                        <p class="eyebrow">Education</p>
+                        <h2>Formal training</h2>
+                    </div>
 
-    <section id="contact">
-        <div class="container">
-            <h2>Contact Me</h2>
-            <p>You can reach me at: etmayer@iastate.edu</p>
-        </div>
-    </section>
+                    <article class="timeline-card">
+                        <div class="timeline-meta">
+                            <span class="timeline-date">Expected May 2026</span>
+                            <span class="timeline-location">Ames, IA</span>
+                        </div>
+                        <h3>Iowa State University</h3>
+                        <p class="timeline-company">Bachelor of Science in Software Engineering</p>
+                        <p class="timeline-lead">
+                            Strong academic base in programming, software development, databases, and web systems.
+                        </p>
+                        <div class="course-grid">
+                            <span>Problem-Solving I</span>
+                            <span>Problem-Solving II</span>
+                            <span>Object Oriented Programming</span>
+                            <span>Data Structures and Algorithms</span>
+                            <span>Advanced Programming Techniques</span>
+                            <span>Software Development Practices</span>
+                            <span>Database Management</span>
+                            <span>Web Development</span>
+                        </div>
+                    </article>
+                </section>
+            </div>
 
-    <footer>
-        <p>&copy; 2023 Ethan Mayer</p>
+            <aside class="side-column">
+                <section id="skills" class="resume-panel compact">
+                    <div class="section-heading">
+                        <p class="eyebrow">Skills</p>
+                        <h2>Core strengths</h2>
+                    </div>
+                    <div class="tag-cloud">
+                        <span>C</span>
+                        <span>JavaScript</span>
+                        <span>Java</span>
+                        <span>Python</span>
+                        <span>AGILE</span>
+                        <span>Git</span>
+                        <span>Tortoise SVN</span>
+                        <span>Problem-Solving</span>
+                        <span>Communication</span>
+                        <span>Punctuality</span>
+                    </div>
+                </section>
+
+                <section class="resume-panel compact">
+                    <div class="section-heading">
+                        <p class="eyebrow">Languages</p>
+                        <h2>Communication</h2>
+                    </div>
+                    <div class="mini-card">
+                        <strong>Spanish</strong>
+                        <p>Conversational proficiency.</p>
+                    </div>
+                </section>
+
+                <section class="resume-panel compact standout">
+                    <div class="section-heading">
+                        <p class="eyebrow">Quick Read</p>
+                        <h2>What I bring</h2>
+                    </div>
+                    <p>
+                        I learn quickly, communicate clearly, and like building tools that remove friction for the team
+                        using them.
+                    </p>
+                    <p class="quote-line">Current boss review: "rockstar"</p>
+                </section>
+
+                <section id="contact" class="resume-panel compact">
+                    <div class="section-heading">
+                        <p class="eyebrow">Contact</p>
+                        <h2>Reach out</h2>
+                    </div>
+                    <a class="contact-link" href="mailto:etmayer@iastate.edu">etmayer@iastate.edu</a>
+                    <p class="contact-note">
+                        Open to engineering conversations, internships, and full-time opportunities.
+                    </p>
+                </section>
+            </aside>
+        </section>
+    </main>
+
+    <footer class="resume-footer">
+        <p>&copy; 2026 Ethan Mayer</p>
     </footer>
 </body>
-
 </html>
