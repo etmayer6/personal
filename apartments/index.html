@@ -7,14 +7,14 @@
     <link rel="stylesheet" href="../style.css">
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
-    <header>
+<body class="apartment-body">
+    <header class="apartment-header">
         <nav>
             <ul>
                 <li><a href="../index.html">Home</a></li>
                 <li><a href="../resume/">Resume</a></li>
-                <li><a href="#filters">Filters</a></li>
-                <li><a href="#listings">Listings</a></li>
+                <li><a href="../apartments/">Apartments</a></li>
+                <li><a href="https://www.linkedin.com/in/ethan-mayer/" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
             </ul>
         </nav>
     </header>
@@ -22,10 +22,10 @@
     <main class="apartments-page">
         <section class="hero">
             <div class="container">
-                <p class="eyebrow">Public Apartment Board</p>
+                <p class="eyebrow">Apartment Board</p>
                 <h1>Apartment Hunt</h1>
                 <p class="hero-copy">
-                    A public, read-only view of share-safe apartment listings. No internal notes, no admin tools, no private contact data.
+                    A curated apartment board with simple filters, fit scoring, and quick access to listings worth reviewing.
                 </p>
                 <div class="hero-actions">
                     <a class="button-link" href="#listings">Browse listings</a>
@@ -60,6 +60,21 @@
             </div>
         </section>
 
+        <section class="container snapshot-strip">
+            <div class="snapshot-card">
+                <span class="snapshot-label">Last Updated</span>
+                <strong id="snapshot-updated">Waiting for data</strong>
+            </div>
+            <div class="snapshot-card">
+                <span class="snapshot-label">Listings Available</span>
+                <strong id="snapshot-count">0</strong>
+            </div>
+            <div class="snapshot-card">
+                <span class="snapshot-label">View</span>
+                <strong>Current Board</strong>
+            </div>
+        </section>
+
         <section class="container panel">
             <div class="panel-header">
                 <h2>Top Matches</h2>
@@ -77,6 +92,10 @@
             <div id="listings-grid" class="listing-grid"></div>
         </section>
     </main>
+
+    <footer class="apartment-footer">
+        <p>&copy; 2026 Ethan Mayer</p>
+    </footer>
 
     <script src="config.js"></script>
     <script src="app.js"></script>

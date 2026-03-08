@@ -11,6 +11,8 @@
     const topMatches = document.getElementById("top-matches");
     const listingsGrid = document.getElementById("listings-grid");
     const errorBox = document.getElementById("error-box");
+    const snapshotUpdated = document.getElementById("snapshot-updated");
+    const snapshotCount = document.getElementById("snapshot-count");
 
     const DAY = 24 * 60 * 60 * 1000;
     const prefs = {
@@ -41,6 +43,12 @@
         if (ts == null) return "-";
         const d = new Date(ts);
         return Number.isFinite(d.getTime()) ? d.toLocaleDateString() : "-";
+    }
+
+    function fmtDateTime(ts) {
+        if (ts == null) return "-";
+        const d = new Date(ts);
+        return Number.isFinite(d.getTime()) ? d.toLocaleString() : "-";
     }
 
     function triText(v) {
@@ -243,7 +251,7 @@
         attachEvents();
 
         if (!dataUrl) {
-            statusText.textContent = "Set apartments/config.js with your listings JSON path.";
+            statusText.textContent = "Listing data not configured";
             showError("This page is ready, but apartments/config.js still has a blank dataUrl.");
             return;
         }
@@ -258,10 +266,13 @@
             }
             const data = await response.json();
             rows = Array.isArray(data.listings) ? data.listings : [];
-            statusText.textContent = "Loaded static apartment snapshot";
+            if (snapshotUpdated) snapshotUpdated.textContent = fmtDateTime(data.exportedAt || null);
+            if (snapshotCount) snapshotCount.textContent = String(data.count || rows.length || 0);
+            statusText.textContent = "Listings loaded";
             render();
         } catch (error) {
-            statusText.textContent = "Listing data unavailable";
+            statusText.textContent = "Listings unavailable";
+            if (snapshotUpdated) snapshotUpdated.textContent = "Unavailable";
             showError(String(error && error.message ? error.message : error));
         }
     }
