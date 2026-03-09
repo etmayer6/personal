@@ -70,13 +70,6 @@
             color: #10263b;
         }
 
-        .hero-subtitle {
-            margin: 18px 0 0;
-            font-size: 22px;
-            font-weight: 700;
-            color: #25557e;
-        }
-
         .hero-summary {
             max-width: 700px;
             margin: 20px 0 0;
@@ -85,14 +78,6 @@
             color: #445f79;
         }
 
-        .hero-actions {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 14px;
-            margin-top: 30px;
-        }
-
-        .hero-actions a,
         .destination-link {
             display: inline-flex;
             align-items: center;
@@ -103,112 +88,21 @@
             font-weight: 700;
         }
 
-        .primary-action {
-            background: #143b63;
-            color: #fff;
-        }
-
-        .secondary-action {
-            background: #e9f1f8;
-            color: #17324d;
-        }
-
-        .signal-row {
-            display: grid;
-            grid-template-columns: repeat(3, minmax(0, 1fr));
-            gap: 14px;
-            margin-top: 30px;
-        }
-
-        .signal-card {
-            border-radius: 20px;
-            padding: 18px;
-            background: linear-gradient(180deg, #f8fbfe 0%, #edf4fb 100%);
-        }
-
-        .signal-card span {
-            display: block;
-            margin-bottom: 8px;
-            font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            color: #5b7a97;
-            font-weight: 700;
-        }
-
         .hero-side {
             border-radius: 30px;
             overflow: hidden;
-            display: grid;
-            grid-template-rows: 240px auto;
         }
 
         .hero-side-visual {
-            background:
-                radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.12), transparent 24%),
-                linear-gradient(140deg, #7c1528 0%, #b21e35 100%);
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
+            height: 100%;
         }
 
-        .isu-mark {
-            width: min(220px, 100%);
-            aspect-ratio: 1 / 1;
-            border-radius: 32px;
-            display: grid;
-            place-items: center;
-            background: rgba(255, 255, 255, 0.12);
-            border: 2px solid rgba(255, 255, 255, 0.28);
-            box-shadow: 0 18px 34px rgba(0, 0, 0, 0.22);
-            text-align: center;
-            color: #fff8ef;
-            padding: 18px;
-        }
-
-        .isu-mark-small {
+        .hero-side-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center center;
             display: block;
-            font-size: 16px;
-            letter-spacing: 0.18em;
-            text-transform: uppercase;
-            opacity: 0.9;
-            font-weight: 700;
-        }
-
-        .isu-mark-large {
-            display: block;
-            margin-top: 10px;
-            font-size: clamp(52px, 8vw, 86px);
-            line-height: 0.95;
-            font-weight: 800;
-            letter-spacing: -0.06em;
-        }
-
-        .hero-side-body {
-            padding: 24px;
-            display: grid;
-            gap: 14px;
-        }
-
-        .hero-side-title {
-            margin: 0;
-            font-size: 22px;
-            color: #16324f;
-        }
-
-        .hero-side-body p {
-            margin: 0;
-            line-height: 1.7;
-            color: #4b647d;
-        }
-
-        .hero-bullets {
-            margin: 0;
-            padding-left: 18px;
-            line-height: 1.9;
-            color: #35506b;
         }
 
         .destinations {
@@ -243,41 +137,62 @@
         }
 
         .destination-card {
-            border-radius: 26px;
-            padding: 26px;
-            display: grid;
-            gap: 14px;
+            position: relative;
+            min-height: 320px;
+            border-radius: 30px;
+            overflow: hidden;
+            text-decoration: none;
+            transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
         }
 
-        .destination-number {
-            width: 44px;
-            height: 44px;
-            border-radius: 14px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
+        .destination-card:hover,
+        .destination-card:focus-visible {
+            transform: translateY(-4px);
+            box-shadow: 0 26px 48px rgba(20, 50, 79, 0.14);
+            border-color: rgba(20, 59, 99, 0.18);
+        }
+
+        .destination-card:focus-visible {
+            outline: 3px solid rgba(17, 67, 116, 0.22);
+            outline-offset: 4px;
+        }
+
+        .destination-art {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        .destination-label {
+            fill: #ffffff;
+            font-size: 30px;
             font-weight: 800;
-            color: #143b63;
-            background: #e7f0f9;
+            letter-spacing: 0.04em;
         }
 
-        .destination-card h3 {
-            margin: 0;
-            font-size: 28px;
-            color: #16324f;
+        .destination-subtitle {
+            fill: rgba(255, 255, 255, 0.88);
+            font-size: 13px;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            font-weight: 700;
         }
 
-        .destination-card p {
-            margin: 0;
-            line-height: 1.8;
-            color: #48627c;
+        .destination-detail {
+            fill: rgba(255, 255, 255, 0.9);
+            font-size: 15px;
         }
 
-        .destination-link {
-            width: fit-content;
-            margin-top: 8px;
-            background: #143b63;
-            color: #fff;
+        .resume-accent {
+            fill: rgba(255, 255, 255, 0.14);
+            stroke: rgba(255, 255, 255, 0.28);
+            stroke-width: 2;
+        }
+
+        .apartment-accent {
+            fill: rgba(255, 255, 255, 0.14);
+            stroke: rgba(255, 255, 255, 0.28);
+            stroke-width: 2;
         }
 
         .home-footer {
@@ -302,10 +217,6 @@
                 padding: 22px;
             }
 
-            .signal-row {
-                grid-template-columns: 1fr;
-            }
-
             .section-heading h2 {
                 font-size: 26px;
             }
@@ -328,84 +239,67 @@
             <div class="hero-copy">
                 <p class="eyebrow">Personal Site</p>
                 <h1>Ethan Mayer</h1>
-                <p class="hero-subtitle">Software engineering, practical systems, and polished project pages.</p>
                 <p class="hero-summary">
-                    This site brings together my resume, selected projects, and pages that are useful to share.
-                    The goal is a cleaner presentation of my work, background, and current interests.
+                    This site is a sharper home for my resume and the project pages I want to keep improving over time.
+                    It brings together my background, a public apartment board, and room to add more polished project
+                    pages as the site grows.
                 </p>
 
-                <div class="hero-actions">
-                    <a class="primary-action" href="resume/">View Resume</a>
-                    <a class="secondary-action" href="apartments/">Explore Apartments</a>
-                    <a class="secondary-action" href="https://www.linkedin.com/in/ethan-mayer/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
-                </div>
-
-                <div class="signal-row">
-                    <div class="signal-card">
-                        <span>Current Focus</span>
-                        Building reliable tools and interfaces that are actually useful.
-                    </div>
-                    <div class="signal-card">
-                        <span>School</span>
-                        Iowa State University, Software Engineering.
-                    </div>
-                    <div class="signal-card">
-                        <span>Work</span>
-                        Co-op engineering experience at Collins Aerospace.
-                    </div>
-                </div>
             </div>
 
             <aside class="hero-side">
                 <div class="hero-side-visual">
-                    <div class="isu-mark" aria-label="Iowa State University themed mark">
-                        <span class="isu-mark-small">Iowa State</span>
-                        <span class="isu-mark-large">ISU</span>
-                    </div>
-                </div>
-                <div class="hero-side-body">
-                    <h2 class="hero-side-title">What this site is for</h2>
-                    <p>
-                        A sharper home for my resume and the project pages I want to keep improving over time.
-                    </p>
-                    <ul class="hero-bullets">
-                        <li>Resume and background</li>
-                        <li>Public apartment board</li>
-                        <li>Room to add more project pages later</li>
-                    </ul>
+                    <img class="hero-side-image" src="images/P1020473.JPG" alt="Portrait of Ethan Mayer">
                 </div>
             </aside>
         </section>
 
         <section class="destinations">
-            <div class="section-heading">
-                <div>
-                    <p class="eyebrow">Destinations</p>
-                    <h2>Start with the right page</h2>
-                </div>
-                <p>
-                    The homepage is now a proper front door instead of a placeholder. Each destination has a clear purpose.
-                </p>
-            </div>
-
             <div class="destination-grid">
-                <article class="destination-card">
-                    <span class="destination-number">01</span>
-                    <h3>Resume</h3>
-                    <p>
-                        The strongest overview of my background, current role, education, and engineering strengths.
-                    </p>
-                    <a class="destination-link" href="resume/">Open Resume</a>
-                </article>
+                <a class="destination-card" href="resume/" aria-label="Open Resume page">
+                    <svg class="destination-art" viewBox="0 0 520 320" role="img" aria-hidden="true">
+                        <defs>
+                            <linearGradient id="resumeGradient" x1="0%" x2="100%" y1="0%" y2="100%">
+                                <stop offset="0%" stop-color="#143b63" />
+                                <stop offset="100%" stop-color="#4e88b7" />
+                            </linearGradient>
+                        </defs>
+                        <rect width="520" height="320" rx="30" fill="url(#resumeGradient)" />
+                        <circle cx="430" cy="78" r="96" fill="rgba(255,255,255,0.08)" />
+                        <rect class="resume-accent" x="54" y="54" rx="20" ry="20" width="172" height="212" />
+                        <rect x="82" y="88" rx="10" ry="10" width="68" height="68" fill="rgba(255,255,255,0.92)" />
+                        <rect x="82" y="176" rx="6" ry="6" width="114" height="12" fill="rgba(255,255,255,0.88)" />
+                        <rect x="82" y="198" rx="6" ry="6" width="94" height="12" fill="rgba(255,255,255,0.72)" />
+                        <rect x="82" y="220" rx="6" ry="6" width="102" height="12" fill="rgba(255,255,255,0.58)" />
+                        <text class="destination-subtitle" x="270" y="96">Profile</text>
+                        <text class="destination-label" x="270" y="138">Resume</text>
+                        <text class="destination-detail" x="270" y="176">Experience, education, skills,</text>
+                        <text class="destination-detail" x="270" y="198">and a concise view of my work.</text>
+                    </svg>
+                </a>
 
-                <article class="destination-card">
-                    <span class="destination-number">02</span>
-                    <h3>Apartment Hunt</h3>
-                    <p>
-                        A curated apartment board with filters, fit scoring, and quick browsing.
-                    </p>
-                    <a class="destination-link" href="apartments/">Open Apartments</a>
-                </article>
+                <a class="destination-card" href="apartments/" aria-label="Open Apartment Hunt page">
+                    <svg class="destination-art" viewBox="0 0 520 320" role="img" aria-hidden="true">
+                        <defs>
+                            <linearGradient id="apartmentGradientSimple" x1="0%" x2="100%" y1="0%" y2="100%">
+                                <stop offset="0%" stop-color="#17354d" />
+                                <stop offset="100%" stop-color="#3b7b88" />
+                            </linearGradient>
+                        </defs>
+                        <rect width="520" height="320" rx="30" fill="url(#apartmentGradientSimple)" />
+                        <circle cx="430" cy="78" r="98" fill="rgba(255,255,255,0.08)" />
+                        <rect x="62" y="82" width="156" height="156" rx="24" fill="rgba(255,255,255,0.12)" stroke="rgba(255,255,255,0.34)" stroke-width="2" />
+                        <path d="M90 156l50-40l50 40v56H90z" fill="rgba(255,255,255,0.9)" />
+                        <path d="M102 150h76l-38-30z" fill="rgba(255,255,255,0.64)" />
+                        <rect x="128" y="182" width="22" height="30" rx="6" fill="#295f6c" />
+                        <rect x="159" y="180" width="18" height="16" rx="5" fill="#295f6c" />
+                        <text class="destination-subtitle" x="270" y="96">Browse</text>
+                        <text class="destination-label" x="270" y="138">Apartments</text>
+                        <text class="destination-detail" x="270" y="176">Current listings, fit scoring,</text>
+                        <text class="destination-detail" x="270" y="198">and quick apartment comparison.</text>
+                    </svg>
+                </a>
+
             </div>
         </section>
 
