@@ -133,6 +133,47 @@
     position: relative;
 }
 
+.gremlin-art {
+    position: relative;
+    background:
+        radial-gradient(circle at 70% 16%, rgba(255, 255, 255, 0.16), transparent 20%),
+        linear-gradient(145deg, #173354 0%, #365087 100%);
+}
+
+.gremlin-orb {
+    width: 154px;
+    height: 154px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 28%, #60d2ff 0%, #4eb7ff 36%, #1a4f90 100%);
+    box-shadow: 0 22px 34px rgba(0, 0, 0, 0.18);
+}
+
+.gremlin-eye {
+    position: absolute;
+    top: 112px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #0f1730;
+}
+
+.gremlin-eye.left {
+    left: 118px;
+}
+
+.gremlin-eye.right {
+    right: 118px;
+}
+
+.gremlin-splash {
+    position: absolute;
+    width: 220px;
+    height: 220px;
+    border-radius: 44% 56% 58% 42%;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    transform: rotate(18deg);
+}
+
 .travel-globe {
     width: 170px;
     height: 170px;

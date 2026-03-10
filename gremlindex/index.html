@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gremlin Dex | Ethan Mayer</title>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="gremlindex-body">
+    <header class="gremlindex-header">
+        <nav>
+            <ul>
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="../resume/">Resume</a></li>
+                <li><a href="../projects/">Projects</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="gremlindex-shell">
+        <section class="gremlindex-top">
+            <div class="gremlindex-copy">
+                <p class="eyebrow">Gremlin Dex</p>
+                <h1>Opposite-of-Fly</h1>
+                <p class="gremlindex-summary">
+                    A Pokemon-style gremlin prototype exported from Gremlin Hub. Pick a starter, wander the route, hit the
+                    grass, and see what emerges from the Splash Zone.
+                </p>
+                <div class="gremlindex-actions">
+                    <button id="start-btn" class="primary-action">Start Run</button>
+                    <button id="reset-btn" class="secondary-action">Back To Title</button>
+                    <button id="fullscreen-btn" class="secondary-action">Fullscreen</button>
+                </div>
+            </div>
+            <div class="gremlindex-status">
+                <div class="status-card">
+                    <span>Mode</span>
+                    <strong id="status-mode">title</strong>
+                </div>
+                <div class="status-card">
+                    <span>Starter</span>
+                    <strong id="status-starter">Caleb</strong>
+                </div>
+                <div class="status-card">
+                    <span>Wins</span>
+                    <strong id="status-wins">0</strong>
+                </div>
+            </div>
+        </section>
+
+        <section class="gremlindex-layout">
+            <section class="game-panel">
+                <div class="panel-head">
+                    <h2>Route Zero</h2>
+                    <p>Splash Zone perimeter and Mickey&apos;s rumor route.</p>
+                </div>
+                <div class="canvas-wrap">
+                    <canvas id="game-canvas" width="640" height="384"></canvas>
+                </div>
+                <div class="controls-grid">
+                    <button data-dir="up">Up</button>
+                    <button data-dir="left">Left</button>
+                    <button id="action-btn">Action</button>
+                    <button data-dir="right">Right</button>
+                    <button data-dir="down">Down</button>
+                </div>
+            </section>
+
+            <aside class="side-panel">
+                <section class="panel-block">
+                    <div class="panel-head">
+                        <h2>Starters</h2>
+                        <p>Choose your gremlin.</p>
+                    </div>
+                    <div id="starter-list" class="starter-list"></div>
+                </section>
+
+                <section class="panel-block">
+                    <div class="panel-head">
+                        <h2>Live State</h2>
+                    </div>
+                    <pre id="live-state" class="live-state"></pre>
+                </section>
+            </aside>
+        </section>
+
+        <section class="codex-panel">
+            <div class="panel-head">
+                <h2>Gremlin Codex</h2>
+                <p>Opposite-of-Fly regional roster.</p>
+            </div>
+            <div id="codex-grid" class="codex-grid"></div>
+        </section>
+    </main>
+
+    <footer class="gremlindex-footer">
+        <p>&copy; 2026 Ethan Mayer</p>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>
