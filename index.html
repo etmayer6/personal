@@ -255,6 +255,13 @@
             stroke-width: 2;
         }
 
+        .blog-accent,
+        .photos-accent {
+            fill: rgba(255, 255, 255, 0.14);
+            stroke: rgba(255, 255, 255, 0.28);
+            stroke-width: 2;
+        }
+
         .home-footer {
             padding: 24px 20px 34px;
             text-align: center;
@@ -321,6 +328,39 @@
             </aside>
         </section>
 
+        <section class="now-section">
+            <div class="now-panel">
+                <div class="now-copy">
+                    <p class="eyebrow">Now</p>
+                    <h2>Current Work</h2>
+                    <p>
+                        Right now I am finishing my final semester at Iowa State while continuing my work at Collins
+                        Aerospace in Next Gen Systems. Most of my attention is on automated systems testing, reliable
+                        engineering workflows, and practical software that helps teams move faster.
+                    </p>
+                    <ul class="now-list">
+                        <li>Building automated systems testing software and verification workflows at Collins Aerospace.</li>
+                        <li>Finishing my Software Engineering degree at Iowa State with graduation in May 2026.</li>
+                        <li>Turning personal tools like the apartment board and Gremlin Hub into cleaner public-facing projects.</li>
+                    </ul>
+                </div>
+                <div class="now-side">
+                    <div class="now-card">
+                        <span>Current Role</span>
+                        Collins Aerospace, Next Gen Systems
+                    </div>
+                    <div class="now-card">
+                        <span>School</span>
+                        Iowa State University, final semester in Software Engineering
+                    </div>
+                    <div class="now-card">
+                        <span>Focus</span>
+                        Systems testing, automation, and AI-enabled software engineering
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <section class="destinations">
             <div class="destination-grid">
                 <a class="destination-card" href="resume/" aria-label="Open Resume page">
@@ -367,39 +407,49 @@
                     </svg>
                 </a>
 
-            </div>
-        </section>
+                <a class="destination-card" href="photos/" aria-label="Open Photos page">
+                    <svg class="destination-art" viewBox="0 0 520 320" role="img" aria-hidden="true">
+                        <defs>
+                            <linearGradient id="photosGradient" x1="0%" x2="100%" y1="0%" y2="100%">
+                                <stop offset="0%" stop-color="#23415e" />
+                                <stop offset="100%" stop-color="#6a8d8d" />
+                            </linearGradient>
+                        </defs>
+                        <rect width="520" height="320" rx="30" fill="url(#photosGradient)" />
+                        <circle cx="430" cy="78" r="98" fill="rgba(255,255,255,0.08)" />
+                        <rect class="photos-accent" x="58" y="68" width="162" height="184" rx="24" />
+                        <circle cx="108" cy="116" r="20" fill="rgba(255,255,255,0.86)" />
+                        <path d="M78 220 L126 168 L164 204 L196 150 L220 220 Z" fill="rgba(255,255,255,0.8)" />
+                        <text class="destination-subtitle" x="270" y="96">Gallery</text>
+                        <text class="destination-label" x="270" y="138">Photos</text>
+                        <text class="destination-detail" x="270" y="176">A rotating wall of images</text>
+                        <text class="destination-detail" x="270" y="198">from the site photo folder.</text>
+                    </svg>
+                </a>
 
-        <section class="now-section">
-            <div class="now-panel">
-                <div class="now-copy">
-                    <p class="eyebrow">Now</p>
-                    <h2>Current Work</h2>
-                    <p>
-                        Right now I am finishing my final semester at Iowa State while continuing my work at Collins
-                        Aerospace in Next Gen Systems. Most of my attention is on automated systems testing, reliable
-                        engineering workflows, and practical software that helps teams move faster.
-                    </p>
-                    <ul class="now-list">
-                        <li>Building automated systems testing software and verification workflows at Collins Aerospace.</li>
-                        <li>Finishing my Software Engineering degree at Iowa State with graduation in May 2026.</li>
-                        <li>Turning personal tools like the apartment board and Gremlin Hub into cleaner public-facing projects.</li>
-                    </ul>
-                </div>
-                <div class="now-side">
-                    <div class="now-card">
-                        <span>Current Role</span>
-                        Collins Aerospace, Next Gen Systems
-                    </div>
-                    <div class="now-card">
-                        <span>School</span>
-                        Iowa State University, final semester in Software Engineering
-                    </div>
-                    <div class="now-card">
-                        <span>Focus</span>
-                        Systems testing, automation, and AI-enabled software engineering
-                    </div>
-                </div>
+                <a class="destination-card" href="blog/" aria-label="Open Blog page">
+                    <svg class="destination-art" viewBox="0 0 520 320" role="img" aria-hidden="true">
+                        <defs>
+                            <linearGradient id="blogGradient" x1="0%" x2="100%" y1="0%" y2="100%">
+                                <stop offset="0%" stop-color="#243657" />
+                                <stop offset="100%" stop-color="#6e7c9c" />
+                            </linearGradient>
+                        </defs>
+                        <rect width="520" height="320" rx="30" fill="url(#blogGradient)" />
+                        <circle cx="430" cy="78" r="98" fill="rgba(255,255,255,0.08)" />
+                        <rect class="blog-accent" x="64" y="58" width="150" height="196" rx="22" />
+                        <rect x="92" y="94" width="94" height="14" rx="7" fill="rgba(255,255,255,0.88)" />
+                        <rect x="92" y="126" width="106" height="12" rx="6" fill="rgba(255,255,255,0.72)" />
+                        <rect x="92" y="150" width="92" height="12" rx="6" fill="rgba(255,255,255,0.72)" />
+                        <rect x="92" y="174" width="100" height="12" rx="6" fill="rgba(255,255,255,0.72)" />
+                        <rect x="92" y="198" width="76" height="12" rx="6" fill="rgba(255,255,255,0.58)" />
+                        <text class="destination-subtitle" x="270" y="96">Writing</text>
+                        <text class="destination-label" x="270" y="138">Blog</text>
+                        <text class="destination-detail" x="270" y="176">A place for notes, writeups,</text>
+                        <text class="destination-detail" x="270" y="198">and project-side thinking.</text>
+                    </svg>
+                </a>
+
             </div>
         </section>
 

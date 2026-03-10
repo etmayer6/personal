@@ -83,38 +83,11 @@
     overflow: hidden;
 }
 
-.photo-card.featured {
-    grid-column: span 2;
-}
-
 .photo-card img {
     width: 100%;
     height: 320px;
     object-fit: cover;
     display: block;
-}
-
-.photo-card.featured img {
-    height: 460px;
-}
-
-.photo-card figcaption {
-    display: grid;
-    gap: 8px;
-    padding: 20px;
-}
-
-.photo-tag {
-    font-size: 12px;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: #5a7b9b;
-    font-weight: 700;
-}
-
-.photo-card strong {
-    color: #14304a;
-    font-size: 22px;
 }
 
 .photos-footer {
@@ -132,12 +105,7 @@
         padding: 22px;
     }
 
-    .photo-card.featured {
-        grid-column: span 1;
-    }
-
-    .photo-card img,
-    .photo-card.featured img {
+    .photo-card img {
         height: 300px;
     }
 }
