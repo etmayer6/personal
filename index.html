@@ -109,6 +109,66 @@
             margin-top: 28px;
         }
 
+        .now-section {
+            margin-top: 28px;
+        }
+
+        .now-panel {
+            display: grid;
+            grid-template-columns: minmax(0, 1.2fr) minmax(260px, 0.8fr);
+            gap: 20px;
+            border-radius: 30px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.88);
+            border: 1px solid rgba(29, 53, 87, 0.08);
+            box-shadow: 0 18px 40px rgba(20, 50, 79, 0.08);
+        }
+
+        .now-panel h2 {
+            margin: 0;
+            font-size: 32px;
+            color: #14304a;
+        }
+
+        .now-copy {
+            display: grid;
+            gap: 14px;
+        }
+
+        .now-copy p {
+            margin: 0;
+            line-height: 1.8;
+            color: #48627c;
+        }
+
+        .now-list {
+            margin: 0;
+            padding-left: 18px;
+            line-height: 1.9;
+            color: #35506b;
+        }
+
+        .now-side {
+            display: grid;
+            gap: 12px;
+        }
+
+        .now-card {
+            border-radius: 20px;
+            padding: 18px;
+            background: linear-gradient(180deg, #f8fbfe 0%, #edf4fb 100%);
+        }
+
+        .now-card span {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 12px;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: #5a7b9b;
+            font-weight: 700;
+        }
+
         .section-heading {
             display: flex;
             justify-content: space-between;
@@ -217,6 +277,11 @@
                 padding: 22px;
             }
 
+            .now-panel {
+                grid-template-columns: 1fr;
+                padding: 22px;
+            }
+
             .section-heading h2 {
                 font-size: 26px;
             }
@@ -229,7 +294,7 @@
             <ul>
                 <li><a href="index.html">Home</a></li>
                 <li><a href="resume/">Resume</a></li>
-                <li><a href="apartments/">Apartments</a></li>
+                <li><a href="projects/">Projects</a></li>
             </ul>
         </nav>
     </header>
@@ -240,9 +305,9 @@
                 <p class="eyebrow">Personal Site</p>
                 <h1>Ethan Mayer</h1>
                 <p class="hero-summary">
-                    This site is a sharper home for my resume and the project pages I want to keep improving over time.
-                    It brings together my background, a public apartment board, and room to add more polished project
-                    pages as the site grows.
+                    This site is a sharper home for my resume, current work, and the project pages I want to keep
+                    improving over time. It brings together my background, selected builds, and the work I am focused
+                    on right now.
                 </p>
 
             </div>
@@ -278,28 +343,61 @@
                     </svg>
                 </a>
 
-                <a class="destination-card" href="apartments/" aria-label="Open Apartment Hunt page">
+                <a class="destination-card" href="projects/" aria-label="Open Projects page">
                     <svg class="destination-art" viewBox="0 0 520 320" role="img" aria-hidden="true">
                         <defs>
-                            <linearGradient id="apartmentGradientSimple" x1="0%" x2="100%" y1="0%" y2="100%">
-                                <stop offset="0%" stop-color="#17354d" />
-                                <stop offset="100%" stop-color="#3b7b88" />
+                            <linearGradient id="projectsGradient" x1="0%" x2="100%" y1="0%" y2="100%">
+                                <stop offset="0%" stop-color="#1f3558" />
+                                <stop offset="100%" stop-color="#4e7b71" />
                             </linearGradient>
                         </defs>
-                        <rect width="520" height="320" rx="30" fill="url(#apartmentGradientSimple)" />
+                        <rect width="520" height="320" rx="30" fill="url(#projectsGradient)" />
                         <circle cx="430" cy="78" r="98" fill="rgba(255,255,255,0.08)" />
                         <rect x="62" y="82" width="156" height="156" rx="24" fill="rgba(255,255,255,0.12)" stroke="rgba(255,255,255,0.34)" stroke-width="2" />
-                        <path d="M90 156l50-40l50 40v56H90z" fill="rgba(255,255,255,0.9)" />
-                        <path d="M102 150h76l-38-30z" fill="rgba(255,255,255,0.64)" />
-                        <rect x="128" y="182" width="22" height="30" rx="6" fill="#295f6c" />
-                        <rect x="159" y="180" width="18" height="16" rx="5" fill="#295f6c" />
-                        <text class="destination-subtitle" x="270" y="96">Browse</text>
-                        <text class="destination-label" x="270" y="138">Apartments</text>
-                        <text class="destination-detail" x="270" y="176">Current listings, fit scoring,</text>
-                        <text class="destination-detail" x="270" y="198">and quick apartment comparison.</text>
+                        <rect x="88" y="108" width="44" height="44" rx="10" fill="rgba(255,255,255,0.88)" />
+                        <rect x="146" y="108" width="44" height="44" rx="10" fill="rgba(255,255,255,0.68)" />
+                        <rect x="88" y="166" width="102" height="16" rx="8" fill="rgba(255,255,255,0.84)" />
+                        <rect x="88" y="194" width="84" height="16" rx="8" fill="rgba(255,255,255,0.56)" />
+                        <text class="destination-subtitle" x="270" y="96">Work</text>
+                        <text class="destination-label" x="270" y="138">Projects</text>
+                        <text class="destination-detail" x="270" y="176">Selected builds, public tools,</text>
+                        <text class="destination-detail" x="270" y="198">and project pages worth exploring.</text>
                     </svg>
                 </a>
 
+            </div>
+        </section>
+
+        <section class="now-section">
+            <div class="now-panel">
+                <div class="now-copy">
+                    <p class="eyebrow">Now</p>
+                    <h2>Current Work</h2>
+                    <p>
+                        Right now I am finishing my final semester at Iowa State while continuing my work at Collins
+                        Aerospace in Next Gen Systems. Most of my attention is on automated systems testing, reliable
+                        engineering workflows, and practical software that helps teams move faster.
+                    </p>
+                    <ul class="now-list">
+                        <li>Building automated systems testing software and verification workflows at Collins Aerospace.</li>
+                        <li>Finishing my Software Engineering degree at Iowa State with graduation in May 2026.</li>
+                        <li>Turning personal tools like the apartment board and Gremlin Hub into cleaner public-facing projects.</li>
+                    </ul>
+                </div>
+                <div class="now-side">
+                    <div class="now-card">
+                        <span>Current Role</span>
+                        Collins Aerospace, Next Gen Systems
+                    </div>
+                    <div class="now-card">
+                        <span>School</span>
+                        Iowa State University, final semester in Software Engineering
+                    </div>
+                    <div class="now-card">
+                        <span>Focus</span>
+                        Systems testing, automation, and AI-enabled software engineering
+                    </div>
+                </div>
             </div>
         </section>
 

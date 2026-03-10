@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Travel Map | Ethan Mayer</title>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="style.css">
+    <link
+        rel="stylesheet"
+        href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+        crossorigin=""
+    >
+</head>
+<body class="travel-body">
+    <header class="travel-header">
+        <nav>
+            <ul>
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="../resume/">Resume</a></li>
+                <li><a href="../projects/">Projects</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="travel-shell">
+        <section class="travel-hero">
+            <p class="eyebrow">Travel Map</p>
+            <h1>Places I Have Been</h1>
+            <p class="travel-summary">
+                A public snapshot of the visited places tracked in Gremlin Hub, exported as a static frontend page with no backend.
+            </p>
+        </section>
+
+        <section class="travel-stats" id="stats-strip">
+            <div class="travel-stat-card">
+                <span>Places</span>
+                <strong id="places-count">0</strong>
+            </div>
+            <div class="travel-stat-card">
+                <span>Countries</span>
+                <strong id="countries-count">0</strong>
+            </div>
+            <div class="travel-stat-card">
+                <span>Regions</span>
+                <strong id="regions-count">0</strong>
+            </div>
+            <div class="travel-stat-card">
+                <span>Updated</span>
+                <strong id="updated-at">Waiting</strong>
+            </div>
+        </section>
+
+        <section class="travel-layout">
+            <div class="travel-map-panel">
+                <div class="travel-panel-header">
+                    <h2>Map</h2>
+                    <p>Every marker is one place from the current public export.</p>
+                </div>
+                <div id="travel-map" class="travel-map"></div>
+            </div>
+
+            <aside class="travel-list-panel">
+                <div class="travel-panel-header">
+                    <h2>Visited Places</h2>
+                    <p id="travel-status">Loading travel data...</p>
+                </div>
+                <label class="travel-search">
+                    Search
+                    <input id="search-input" type="search" placeholder="Search places">
+                </label>
+                <div id="places-list" class="places-list"></div>
+            </aside>
+        </section>
+    </main>
+
+    <footer class="travel-footer">
+        <p>&copy; 2026 Ethan Mayer</p>
+    </footer>
+
+    <script
+        src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+        crossorigin=""
+    ></script>
+    <script src="app.js"></script>
+</body>
+</html>
