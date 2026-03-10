@@ -133,6 +133,232 @@
     position: relative;
 }
 
+.website-art {
+    background:
+        radial-gradient(circle at 72% 18%, rgba(255, 255, 255, 0.16), transparent 20%),
+        linear-gradient(145deg, #173149 0%, #3f6784 100%);
+}
+
+.site-window {
+    width: min(300px, calc(100% - 28px));
+    border-radius: 24px;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.94);
+    box-shadow: 0 20px 30px rgba(0, 0, 0, 0.14);
+}
+
+.site-window-bar {
+    height: 18px;
+    background: linear-gradient(90deg, #d8e4ef 0%, #edf3f8 100%);
+}
+
+.site-window-hero {
+    height: 84px;
+    background: linear-gradient(135deg, #d7e7f4 0%, #eef5fb 100%);
+}
+
+.site-window-grid {
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: 12px;
+    padding: 16px;
+    background: #fbfdff;
+}
+
+.site-window-card {
+    min-height: 52px;
+    border-radius: 14px;
+    background: #d8e6f1;
+}
+
+.site-window-card.tall {
+    grid-row: span 2;
+    min-height: 116px;
+    background: #c8dced;
+}
+
+.courseflow-art {
+    position: relative;
+    background:
+        radial-gradient(circle at 70% 16%, rgba(255, 255, 255, 0.16), transparent 20%),
+        linear-gradient(145deg, #16324a 0%, #476f88 100%);
+}
+
+.zulip-art {
+    position: relative;
+    background:
+        radial-gradient(circle at 72% 18%, rgba(255, 255, 255, 0.16), transparent 20%),
+        linear-gradient(145deg, #15324b 0%, #31627f 100%);
+}
+
+.zulip-bubble {
+    position: absolute;
+    border-radius: 24px;
+    background: rgba(255, 255, 255, 0.92);
+    box-shadow: 0 16px 24px rgba(0, 0, 0, 0.12);
+}
+
+.zulip-bubble::after {
+    content: "";
+    position: absolute;
+    bottom: -10px;
+    left: 18px;
+    width: 18px;
+    height: 18px;
+    background: inherit;
+    clip-path: polygon(0 0, 100% 0, 0 100%);
+}
+
+.zulip-bubble.large {
+    width: 138px;
+    height: 88px;
+    top: 62px;
+    left: 62px;
+}
+
+.zulip-bubble.mid {
+    width: 112px;
+    height: 72px;
+    top: 118px;
+    right: 70px;
+}
+
+.zulip-bubble.small {
+    width: 88px;
+    height: 58px;
+    bottom: 48px;
+    left: 114px;
+}
+
+.zulip-thread {
+    position: absolute;
+    border-top: 2px dashed rgba(255, 255, 255, 0.42);
+}
+
+.zulip-thread.one {
+    width: 132px;
+    top: 112px;
+    left: 138px;
+    transform: rotate(14deg);
+}
+
+.zulip-thread.two {
+    width: 98px;
+    top: 176px;
+    left: 128px;
+    transform: rotate(-18deg);
+}
+
+.se319-art {
+    background:
+        radial-gradient(circle at 72% 18%, rgba(255, 255, 255, 0.16), transparent 20%),
+        linear-gradient(145deg, #18334d 0%, #557996 100%);
+}
+
+.browser-frame {
+    width: min(290px, calc(100% - 28px));
+    border-radius: 22px;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.93);
+    box-shadow: 0 20px 30px rgba(0, 0, 0, 0.14);
+}
+
+.browser-dots {
+    display: flex;
+    gap: 8px;
+    padding: 14px 16px;
+    background: rgba(20, 49, 74, 0.08);
+}
+
+.browser-dots span {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #9fb9d0;
+}
+
+.browser-layout {
+    display: grid;
+    grid-template-columns: 72px 1fr;
+    min-height: 180px;
+}
+
+.browser-sidebar {
+    background: #dce8f3;
+}
+
+.browser-panels {
+    display: grid;
+    gap: 12px;
+    padding: 16px;
+    background: #f8fbfe;
+}
+
+.browser-panel {
+    border-radius: 12px;
+    min-height: 34px;
+    background: #d6e4f0;
+}
+
+.browser-panel.wide {
+    min-height: 62px;
+    background: #c7d9ea;
+}
+
+.courseflow-grid {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 22px 26px;
+    width: min(270px, 100%);
+    z-index: 2;
+}
+
+.course-node {
+    display: grid;
+    place-items: center;
+    min-height: 74px;
+    padding: 14px;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.92);
+    color: #15314a;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    box-shadow: 0 16px 24px rgba(0, 0, 0, 0.12);
+}
+
+.course-node.core {
+    background: #d8ecff;
+}
+
+.course-node.accent {
+    background: #dff9ec;
+}
+
+.courseflow-link {
+    position: absolute;
+    left: 50%;
+    width: 120px;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.4);
+    transform-origin: left center;
+}
+
+.courseflow-link.top {
+    top: 82px;
+    transform: translateX(-34%) rotate(32deg);
+}
+
+.courseflow-link.mid {
+    top: 128px;
+    transform: translateX(-50%) rotate(0deg);
+}
+
+.courseflow-link.bottom {
+    top: 176px;
+    transform: translateX(-66%) rotate(-32deg);
+}
+
 .gremlin-art {
     position: relative;
     background:
