@@ -1,0 +1,143 @@
+.photos-body {
+    margin: 0;
+    min-height: 100vh;
+    background:
+        radial-gradient(circle at 14% 16%, rgba(92, 138, 192, 0.16), transparent 24%),
+        linear-gradient(180deg, #eef4fb 0%, #ffffff 42%, #f5f8fc 100%);
+    color: #17324d;
+}
+
+.photos-header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    backdrop-filter: blur(14px);
+    background: rgba(10, 25, 41, 0.82);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.photos-shell {
+    width: min(1180px, calc(100% - 40px));
+    margin: 0 auto;
+    padding: 34px 0 56px;
+}
+
+.photos-hero,
+.photo-card {
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(29, 53, 87, 0.08);
+    box-shadow: 0 18px 40px rgba(20, 50, 79, 0.08);
+}
+
+.photos-hero {
+    border-radius: 30px;
+    padding: 40px;
+}
+
+.eyebrow {
+    margin: 0 0 10px;
+    font-size: 12px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #5a7b9b;
+    font-weight: 700;
+}
+
+.photos-hero h1 {
+    margin: 0;
+    font-size: clamp(42px, 7vw, 76px);
+    line-height: 0.96;
+    letter-spacing: -0.04em;
+    color: #10263b;
+}
+
+.photos-summary {
+    max-width: 760px;
+    margin: 18px 0 0;
+    line-height: 1.8;
+    font-size: 18px;
+    color: #48627c;
+}
+
+.photos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 22px;
+    margin-top: 24px;
+}
+
+.photos-empty {
+    margin-top: 24px;
+    border-radius: 28px;
+    padding: 28px;
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(29, 53, 87, 0.08);
+    box-shadow: 0 18px 40px rgba(20, 50, 79, 0.08);
+    color: #48627c;
+    line-height: 1.8;
+}
+
+.photo-card {
+    margin: 0;
+    border-radius: 28px;
+    overflow: hidden;
+}
+
+.photo-card.featured {
+    grid-column: span 2;
+}
+
+.photo-card img {
+    width: 100%;
+    height: 320px;
+    object-fit: cover;
+    display: block;
+}
+
+.photo-card.featured img {
+    height: 460px;
+}
+
+.photo-card figcaption {
+    display: grid;
+    gap: 8px;
+    padding: 20px;
+}
+
+.photo-tag {
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #5a7b9b;
+    font-weight: 700;
+}
+
+.photo-card strong {
+    color: #14304a;
+    font-size: 22px;
+}
+
+.photos-footer {
+    padding: 22px 20px 34px;
+    text-align: center;
+    color: #6a859f;
+}
+
+@media (max-width: 700px) {
+    .photos-shell {
+        width: min(100% - 24px, 1180px);
+    }
+
+    .photos-hero {
+        padding: 22px;
+    }
+
+    .photo-card.featured {
+        grid-column: span 1;
+    }
+
+    .photo-card img,
+    .photo-card.featured img {
+        height: 300px;
+    }
+}

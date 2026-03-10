@@ -1,0 +1,120 @@
+.blog-body {
+    margin: 0;
+    min-height: 100vh;
+    background:
+        radial-gradient(circle at 14% 16%, rgba(89, 131, 183, 0.16), transparent 24%),
+        linear-gradient(180deg, #eef4fb 0%, #ffffff 42%, #f5f8fc 100%);
+    color: #17324d;
+}
+
+.blog-header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    backdrop-filter: blur(14px);
+    background: rgba(10, 25, 41, 0.82);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.blog-shell {
+    width: min(1180px, calc(100% - 40px));
+    margin: 0 auto;
+    padding: 34px 0 56px;
+}
+
+.blog-hero,
+.blog-card {
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(29, 53, 87, 0.08);
+    box-shadow: 0 18px 40px rgba(20, 50, 79, 0.08);
+}
+
+.blog-hero {
+    border-radius: 30px;
+    padding: 40px;
+}
+
+.eyebrow {
+    margin: 0 0 10px;
+    font-size: 12px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #5a7b9b;
+    font-weight: 700;
+}
+
+.blog-hero h1 {
+    margin: 0;
+    font-size: clamp(42px, 7vw, 76px);
+    line-height: 0.96;
+    letter-spacing: -0.04em;
+    color: #10263b;
+    max-width: 760px;
+}
+
+.blog-summary {
+    max-width: 760px;
+    margin: 18px 0 0;
+    line-height: 1.8;
+    font-size: 18px;
+    color: #48627c;
+}
+
+.blog-grid {
+    display: grid;
+    gap: 22px;
+    margin-top: 24px;
+}
+
+.blog-card {
+    border-radius: 28px;
+    padding: 28px;
+}
+
+.blog-card h2 {
+    margin: 0;
+    font-size: 32px;
+    color: #14304a;
+}
+
+.blog-card p {
+    margin: 14px 0 0;
+    line-height: 1.8;
+    color: #48627c;
+}
+
+.blog-tag {
+    margin: 0 0 10px;
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #5a7b9b;
+    font-weight: 700;
+}
+
+.featured {
+    background:
+        radial-gradient(circle at 86% 18%, rgba(98, 147, 201, 0.12), transparent 22%),
+        rgba(255, 255, 255, 0.92);
+}
+
+.blog-footer {
+    padding: 22px 20px 34px;
+    text-align: center;
+    color: #6a859f;
+}
+
+@media (max-width: 700px) {
+    .blog-shell {
+        width: min(100% - 24px, 1180px);
+    }
+
+    .blog-hero,
+    .blog-card {
+        padding: 22px;
+    }
+
+    .blog-card h2 {
+        font-size: 28px;
+    }
+}

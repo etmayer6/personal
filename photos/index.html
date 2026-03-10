@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Photos | Ethan Mayer</title>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="photos-body">
+    <header class="photos-header">
+        <nav>
+            <ul>
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="../resume/">Resume</a></li>
+                <li><a href="../projects/">Projects</a></li>
+                <li><a href="../blog/">Blog</a></li>
+                <li><a href="../photos/">Photos</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="photos-shell">
+        <section class="photos-hero">
+            <p class="eyebrow">Photos</p>
+            <h1>A gallery built from its own photo folder.</h1>
+            <p class="photos-summary">
+                Gallery images now live under <code>images/photos/</code>. Add as many as you want there, then register
+                them in the photo data file and this page will render them automatically.
+            </p>
+        </section>
+
+        <section id="photos-grid" class="photos-grid"></section>
+        <section id="photos-empty" class="photos-empty" hidden>
+            <p>No gallery photos yet. Add images to <code>images/photos/</code> and list them in <code>photos/data.js</code>.</p>
+        </section>
+    </main>
+
+    <footer class="photos-footer">
+        <p>&copy; 2026 Ethan Mayer</p>
+    </footer>
+
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
