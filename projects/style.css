@@ -133,6 +133,151 @@
     position: relative;
 }
 
+.diet-art {
+    position: relative;
+    background:
+        radial-gradient(circle at 72% 18%, rgba(255, 255, 255, 0.16), transparent 20%),
+        linear-gradient(145deg, #1a3643 0%, #4e7f72 100%);
+}
+
+.childhood-art {
+    position: relative;
+    background:
+        radial-gradient(circle at 72% 18%, rgba(255, 255, 255, 0.16), transparent 20%),
+        linear-gradient(145deg, #2a3557 0%, #6f7ba7 100%);
+}
+
+.timeline-stack {
+    position: relative;
+    width: 240px;
+    height: 220px;
+}
+
+.timeline-card-a,
+.timeline-card-b,
+.timeline-card-c {
+    position: absolute;
+    left: 42px;
+    right: 22px;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 16px 24px rgba(0, 0, 0, 0.12);
+}
+
+.timeline-card-a {
+    top: 18px;
+    height: 54px;
+}
+
+.timeline-card-b {
+    top: 84px;
+    height: 54px;
+}
+
+.timeline-card-c {
+    top: 150px;
+    height: 54px;
+}
+
+.timeline-line {
+    position: absolute;
+    left: 17px;
+    top: 28px;
+    width: 4px;
+    height: 156px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.34);
+}
+
+.timeline-dot {
+    position: absolute;
+    left: 8px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.92);
+}
+
+.timeline-dot.top {
+    top: 32px;
+}
+
+.timeline-dot.mid {
+    top: 98px;
+}
+
+.timeline-dot.bottom {
+    top: 164px;
+}
+
+.diet-plate {
+    position: relative;
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.92);
+    box-shadow: 0 20px 30px rgba(0, 0, 0, 0.14);
+}
+
+.diet-food {
+    position: absolute;
+    border-radius: 999px;
+}
+
+.diet-food.protein {
+    width: 60px;
+    height: 44px;
+    top: 46px;
+    left: 56px;
+    background: #d18863;
+}
+
+.diet-food.carb {
+    width: 72px;
+    height: 28px;
+    bottom: 44px;
+    left: 44px;
+    background: #f2c56a;
+}
+
+.diet-food.greens {
+    width: 46px;
+    height: 46px;
+    top: 72px;
+    right: 36px;
+    background: #7dcf87;
+}
+
+.diet-panel {
+    position: absolute;
+    right: 36px;
+    bottom: 36px;
+    width: 120px;
+    padding: 14px;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.18);
+    backdrop-filter: blur(6px);
+}
+
+.diet-line {
+    height: 10px;
+    margin-top: 10px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.76);
+}
+
+.diet-line:first-child {
+    margin-top: 0;
+}
+
+.diet-line.wide {
+    width: 100%;
+}
+
+.diet-line.short {
+    width: 62%;
+}
+
 .website-art {
     background:
         radial-gradient(circle at 72% 18%, rgba(255, 255, 255, 0.16), transparent 20%),
