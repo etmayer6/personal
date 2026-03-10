@@ -4,7 +4,7 @@ const MAP_H = 12;
 const CANVAS_W = MAP_W * TILE;
 const CANVAS_H = MAP_H * TILE;
 const SPEED = 3.2;
-const GREMLINDEX_PASSWORD = "splashzone";
+const GREMLINDEX_PASSWORD = "cactus";
 const GREMLINDEX_SESSION_KEY = "gremlindex-unlocked";
 
 const GREMLINS = {
@@ -480,7 +480,7 @@ window.advanceTime = (ms) => {
 
 gateForm.addEventListener("submit", (event) => {
     event.preventDefault();
-    if (gatePassword.value === GREMLINDEX_PASSWORD) {
+    if (gatePassword.value.trim() === GREMLINDEX_PASSWORD) {
         gateError.hidden = true;
         gatePassword.value = "";
         unlockGremlinDex();
