@@ -4,6 +4,8 @@ const MAP_H = 12;
 const CANVAS_W = MAP_W * TILE;
 const CANVAS_H = MAP_H * TILE;
 const SPEED = 3.2;
+const GREMLINDEX_PASSWORD = "splashzone";
+const GREMLINDEX_SESSION_KEY = "gremlindex-unlocked";
 
 const GREMLINS = {
     gayden: { id: "gayden", name: "Gayden Dicks", title: "The Splash Gremlin", types: ["Chaos", "Water"], role: "Reality-interfering overseer", personality: "Loud, authoritative, slightly damp.", description: "A clipboard-wielding gremlin that materializes from Splash Zones whenever confusion or questionable strategy occurs.", abilities: ["Splash Entry", "Clipboard Judgment", "Tan Decree"], accent: "#4eb7ff", hp: 8, atk: 3, vibe: "Declares a ruling nobody asked for." },
@@ -24,10 +26,17 @@ const SIGN_DIALOGUE = { speaker: "Trail Sign", lines: ["Route Zero: Splash Zone 
 
 const canvas = document.getElementById("game-canvas");
 const ctx = canvas.getContext("2d");
+const gatePanel = document.getElementById("gate-panel");
+const gateForm = document.getElementById("gate-form");
+const gatePassword = document.getElementById("gate-password");
+const gateError = document.getElementById("gate-error");
+const content = document.getElementById("gremlindex-content");
+const footer = document.getElementById("gremlindex-footer");
 const pressed = {};
 const state = createInitialState("caleb");
 let selectedStarter = "caleb";
 let frameHandle = null;
+let isUnlocked = false;
 
 function createInitialState(starterId) {
     return {
@@ -390,9 +399,28 @@ function render() {
 }
 
 function loop() {
+    if (!isUnlocked) return;
     update(1 / 60);
     render();
     frameHandle = window.requestAnimationFrame(loop);
+}
+
+function revealGame() {
+    isUnlocked = true;
+    gatePanel.hidden = true;
+    content.hidden = false;
+    footer.hidden = false;
+    renderStarters();
+    renderCodex();
+    render();
+    if (!frameHandle) {
+        frameHandle = window.requestAnimationFrame(loop);
+    }
+}
+
+function unlockGremlinDex() {
+    sessionStorage.setItem(GREMLINDEX_SESSION_KEY, "true");
+    revealGame();
 }
 
 function setVirtualDirection(direction) {
@@ -450,7 +478,20 @@ window.advanceTime = (ms) => {
     render();
 };
 
-renderStarters();
-renderCodex();
-render();
-frameHandle = window.requestAnimationFrame(loop);
+gateForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    if (gatePassword.value === GREMLINDEX_PASSWORD) {
+        gateError.hidden = true;
+        gatePassword.value = "";
+        unlockGremlinDex();
+        return;
+    }
+    gateError.hidden = false;
+    gatePassword.select();
+});
+
+if (sessionStorage.getItem(GREMLINDEX_SESSION_KEY) === "true") {
+    revealGame();
+} else {
+    gatePassword.focus();
+}

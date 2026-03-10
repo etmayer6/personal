@@ -12,8 +12,15 @@
     top: 0;
     z-index: 1000;
     backdrop-filter: blur(14px);
-    background: rgba(10, 25, 41, 0.82);
+    background: #0a1929;
     border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 10px 24px rgba(8, 20, 33, 0.22);
+    isolation: isolate;
+}
+
+.travel-header nav {
+    position: relative;
+    z-index: 2;
 }
 
 .travel-shell {
@@ -129,6 +136,12 @@
 .travel-map .leaflet-bottom,
 .travel-map .leaflet-control {
     z-index: 1;
+}
+
+.travel-map .leaflet-container,
+.travel-map .leaflet-pane,
+.travel-map .leaflet-control-container {
+    z-index: 0;
 }
 
 .travel-search {

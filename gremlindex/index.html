@@ -18,7 +18,23 @@
         </nav>
     </header>
 
-    <main class="gremlindex-shell">
+    <section id="gate-panel" class="gate-shell">
+        <div class="gate-card">
+            <p class="eyebrow">Gremlin Dex</p>
+            <h1>Private Route Access</h1>
+            <p class="gate-copy">
+                Enter the shared password to open the Opposite-of-Fly build.
+            </p>
+            <form id="gate-form" class="gate-form">
+                <label class="gate-label" for="gate-password">Password</label>
+                <input id="gate-password" class="gate-input" type="password" autocomplete="current-password">
+                <button type="submit" class="primary-action">Unlock Gremlin Dex</button>
+            </form>
+            <p id="gate-error" class="gate-error" hidden>Wrong password.</p>
+        </div>
+    </section>
+
+    <main id="gremlindex-content" class="gremlindex-shell" hidden>
         <section class="gremlindex-top">
             <div class="gremlindex-copy">
                 <p class="eyebrow">Gremlin Dex</p>
@@ -94,7 +110,7 @@
         </section>
     </main>
 
-    <footer class="gremlindex-footer">
+    <footer id="gremlindex-footer" class="gremlindex-footer" hidden>
         <p>&copy; 2026 Ethan Mayer</p>
     </footer>
 
