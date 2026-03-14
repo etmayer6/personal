@@ -142,6 +142,70 @@
 
             <article class="project-card featured">
                 <div class="project-copy">
+                    <p class="project-tag">Simulation Project</p>
+                    <h2>Flight Sim</h2>
+                    <p>
+                        A browser flight simulator built inside Gremlin Hub that grew from a lightweight prototype into a
+                        proper 3D flying sandbox. The focus is on readable runway approaches, believable control feel, and
+                        the kind of short landing practice loop that is fun to keep tuning.
+                    </p>
+                    <ul class="project-list">
+                        <li>Custom WebGL-style 3D scene with aircraft, runway, and terrain rendering</li>
+                        <li>Iterated around fixed-wing handling, camera behavior, trim, and landing feel</li>
+                        <li>Validated with repeatable scripted checks for flight, crash, and landing behavior</li>
+                    </ul>
+                </div>
+                <div class="project-art flightsim-art" aria-hidden="true">
+                    <div class="flightsim-sun"></div>
+                    <div class="flightsim-horizon"></div>
+                    <div class="flightsim-runway"></div>
+                    <div class="flightsim-plane">
+                        <div class="plane-body"></div>
+                        <div class="plane-wing"></div>
+                        <div class="plane-tail"></div>
+                    </div>
+                    <div class="flightsim-hud"></div>
+                </div>
+            </article>
+
+            <article class="project-card featured">
+                <div class="project-copy">
+                    <p class="project-tag">Meal Planning Tool</p>
+                    <h2>Receipt Meal Planner</h2>
+                    <p>
+                        A grocery receipt analysis tool inside Gremlin Hub that turns a store receipt into a usable meal
+                        planning pass. It extracts receipt text, identifies what was bought, infers ingredients, and turns
+                        the haul into realistic recipe ideas without manually typing everything in.
+                    </p>
+                    <ul class="project-list">
+                        <li>OCR-first workflow tuned for tall grocery receipt photos and screenshots</li>
+                        <li>Uses local model pipelines with a faster Codex CLI fallback for analysis</li>
+                        <li>Saves dated analyses with parsed items, inferred ingredients, and recipe suggestions</li>
+                    </ul>
+                </div>
+                <div class="project-art mealplan-art" aria-hidden="true">
+                    <div class="mealplan-receipt">
+                        <div class="mealplan-line short"></div>
+                        <div class="mealplan-line"></div>
+                        <div class="mealplan-line"></div>
+                        <div class="mealplan-line wide"></div>
+                        <div class="mealplan-line short"></div>
+                    </div>
+                    <div class="mealplan-card ingredients">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                    <div class="mealplan-card recipes">
+                        <div class="mealplan-dot"></div>
+                        <div class="mealplan-dot"></div>
+                        <div class="mealplan-dot"></div>
+                    </div>
+                </div>
+            </article>
+
+            <article class="project-card featured">
+                <div class="project-copy">
                     <p class="project-tag">Archive Project</p>
                     <h2>Childhood Timeline</h2>
                     <p>

@@ -147,6 +147,20 @@
         linear-gradient(145deg, #2a3557 0%, #6f7ba7 100%);
 }
 
+.flightsim-art {
+    position: relative;
+    background:
+        radial-gradient(circle at 72% 18%, rgba(255, 255, 255, 0.18), transparent 20%),
+        linear-gradient(180deg, #7cb8ef 0%, #3f81b6 45%, #1c3e64 100%);
+}
+
+.mealplan-art {
+    position: relative;
+    background:
+        radial-gradient(circle at 72% 18%, rgba(255, 255, 255, 0.18), transparent 20%),
+        linear-gradient(145deg, #21424a 0%, #4d8d6f 100%);
+}
+
 .timeline-stack {
     position: relative;
     width: 240px;
@@ -208,6 +222,113 @@
 
 .timeline-dot.bottom {
     top: 164px;
+}
+
+.flightsim-sun {
+    position: absolute;
+    top: 34px;
+    right: 42px;
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    background: rgba(255, 242, 188, 0.92);
+    box-shadow: 0 0 0 14px rgba(255, 242, 188, 0.12);
+}
+
+.flightsim-horizon {
+    position: absolute;
+    inset: auto 0 0;
+    height: 44%;
+    background:
+        linear-gradient(180deg, rgba(36, 90, 70, 0.28) 0%, rgba(27, 71, 56, 0.68) 100%);
+}
+
+.flightsim-runway {
+    position: absolute;
+    bottom: -12px;
+    left: 50%;
+    width: 150px;
+    height: 210px;
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.9) 0 16px, transparent 16px 30px),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.9) 34px 50px, transparent 50px 64px),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.9) 68px 84px, transparent 84px 98px),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.9) 102px 118px, transparent 118px 132px),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.9) 136px 152px, transparent 152px 166px),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.9) 170px 186px, transparent 186px 100%),
+        linear-gradient(180deg, #485966 0%, #273844 100%);
+    clip-path: polygon(46% 0%, 54% 0%, 100% 100%, 0% 100%);
+    transform: translateX(-50%);
+    box-shadow: 0 -16px 36px rgba(0, 0, 0, 0.12);
+}
+
+.flightsim-plane {
+    position: absolute;
+    top: 88px;
+    left: 78px;
+    width: 124px;
+    height: 72px;
+    transform: rotate(-10deg);
+}
+
+.plane-body,
+.plane-wing,
+.plane-tail {
+    position: absolute;
+    background: rgba(255, 255, 255, 0.94);
+    box-shadow: 0 10px 18px rgba(0, 0, 0, 0.16);
+}
+
+.plane-body {
+    top: 24px;
+    left: 50px;
+    width: 18px;
+    height: 42px;
+    border-radius: 14px;
+}
+
+.plane-wing {
+    top: 30px;
+    left: 14px;
+    width: 90px;
+    height: 12px;
+    border-radius: 999px;
+}
+
+.plane-tail {
+    top: 14px;
+    left: 56px;
+    width: 10px;
+    height: 18px;
+    border-radius: 8px 8px 2px 2px;
+}
+
+.flightsim-hud {
+    position: absolute;
+    inset: 32px;
+    border-radius: 26px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.flightsim-hud::before,
+.flightsim-hud::after {
+    content: "";
+    position: absolute;
+    background: rgba(255, 255, 255, 0.34);
+}
+
+.flightsim-hud::before {
+    left: 50%;
+    top: 22px;
+    bottom: 22px;
+    width: 1px;
+}
+
+.flightsim-hud::after {
+    left: 22px;
+    right: 22px;
+    top: 50%;
+    height: 1px;
 }
 
 .diet-plate {
@@ -276,6 +397,102 @@
 
 .diet-line.short {
     width: 62%;
+}
+
+.mealplan-receipt {
+    position: absolute;
+    top: 34px;
+    left: 44px;
+    width: 116px;
+    height: 178px;
+    padding: 18px 14px;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.94);
+    box-shadow: 0 18px 28px rgba(0, 0, 0, 0.16);
+    transform: rotate(-8deg);
+}
+
+.mealplan-receipt::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -14px;
+    height: 22px;
+    background:
+        radial-gradient(circle at 10px 0, transparent 10px, rgba(255, 255, 255, 0.94) 11px) 0 0 / 22px 100% repeat-x;
+}
+
+.mealplan-line {
+    height: 9px;
+    margin-top: 10px;
+    border-radius: 999px;
+    background: #c7d7dd;
+}
+
+.mealplan-line:first-child {
+    margin-top: 0;
+}
+
+.mealplan-line.short {
+    width: 58%;
+}
+
+.mealplan-line.wide {
+    width: 92%;
+}
+
+.mealplan-card {
+    position: absolute;
+    right: 40px;
+    width: 122px;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.16);
+    backdrop-filter: blur(6px);
+    box-shadow: 0 16px 24px rgba(0, 0, 0, 0.12);
+}
+
+.mealplan-card.ingredients {
+    top: 52px;
+    padding: 16px 14px;
+}
+
+.mealplan-card.ingredients span {
+    display: block;
+    height: 14px;
+    margin-top: 10px;
+    border-radius: 999px;
+    background: rgba(215, 255, 230, 0.9);
+}
+
+.mealplan-card.ingredients span:first-child {
+    margin-top: 0;
+    width: 76%;
+}
+
+.mealplan-card.ingredients span:nth-child(2) {
+    width: 92%;
+}
+
+.mealplan-card.ingredients span:nth-child(3) {
+    width: 68%;
+}
+
+.mealplan-card.recipes {
+    bottom: 42px;
+    padding: 16px;
+}
+
+.mealplan-dot {
+    width: 44px;
+    height: 44px;
+    margin-top: 10px;
+    border-radius: 14px;
+    background: rgba(255, 236, 184, 0.9);
+}
+
+.mealplan-dot:first-child {
+    margin-top: 0;
 }
 
 .website-art {
