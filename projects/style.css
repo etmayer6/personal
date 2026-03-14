@@ -161,6 +161,13 @@
         linear-gradient(145deg, #21424a 0%, #4d8d6f 100%);
 }
 
+.blockblast-art {
+    position: relative;
+    background:
+        radial-gradient(circle at 72% 18%, rgba(255, 255, 255, 0.18), transparent 20%),
+        linear-gradient(145deg, #1a2447 0%, #3f5ea2 100%);
+}
+
 .timeline-stack {
     position: relative;
     width: 240px;
@@ -493,6 +500,136 @@
 
 .mealplan-dot:first-child {
     margin-top: 0;
+}
+
+.blockblast-frame {
+    width: min(300px, calc(100% - 28px));
+    padding: 18px;
+    border-radius: 26px;
+    background: rgba(11, 18, 35, 0.54);
+    box-shadow: 0 22px 36px rgba(0, 0, 0, 0.2);
+}
+
+.blockblast-score {
+    width: 96px;
+    height: 14px;
+    margin: 0 auto 16px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, rgba(255, 210, 119, 0.95), rgba(255, 140, 108, 0.9));
+    box-shadow: 0 0 0 6px rgba(255, 255, 255, 0.08);
+}
+
+.blockblast-grid {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: 6px;
+    padding: 12px;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.08);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+
+.blockblast-cell {
+    aspect-ratio: 1;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.08);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+}
+
+.blockblast-cell.filled {
+    box-shadow:
+        inset 0 2px 4px rgba(255, 255, 255, 0.34),
+        inset 0 -3px 4px rgba(0, 0, 0, 0.16),
+        0 8px 14px rgba(0, 0, 0, 0.14);
+}
+
+.blockblast-cell.cyan {
+    background: linear-gradient(180deg, #73f1ff 0%, #31b6ff 100%);
+}
+
+.blockblast-cell.yellow {
+    background: linear-gradient(180deg, #ffe78b 0%, #ffb142 100%);
+}
+
+.blockblast-cell.pink {
+    background: linear-gradient(180deg, #ff9be5 0%, #d75eff 100%);
+}
+
+.blockblast-cell.green {
+    background: linear-gradient(180deg, #85ffba 0%, #33c875 100%);
+}
+
+.blockblast-cell.orange {
+    background: linear-gradient(180deg, #ffbf86 0%, #ff7a59 100%);
+}
+
+.blockblast-cell.violet {
+    background: linear-gradient(180deg, #b9abff 0%, #7a68ff 100%);
+}
+
+.blockblast-cell.red {
+    background: linear-gradient(180deg, #ff9b95 0%, #ff576d 100%);
+}
+
+.blockblast-tray {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 16px;
+}
+
+.tray-piece {
+    position: relative;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.12);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+
+.piece-line {
+    width: 72px;
+    height: 24px;
+}
+
+.piece-line::before {
+    content: "";
+    position: absolute;
+    inset: 5px;
+    border-radius: 10px;
+    background: linear-gradient(180deg, #73f1ff 0%, #31b6ff 100%);
+}
+
+.piece-corner {
+    width: 44px;
+    height: 44px;
+}
+
+.piece-corner::before,
+.piece-corner::after {
+    content: "";
+    position: absolute;
+    border-radius: 10px;
+    background: linear-gradient(180deg, #ff9be5 0%, #d75eff 100%);
+}
+
+.piece-corner::before {
+    inset: 5px 20px 5px 5px;
+}
+
+.piece-corner::after {
+    inset: 20px 5px 5px 5px;
+}
+
+.piece-square {
+    width: 44px;
+    height: 44px;
+}
+
+.piece-square::before {
+    content: "";
+    position: absolute;
+    inset: 5px;
+    border-radius: 10px;
+    background: linear-gradient(180deg, #ffe78b 0%, #ffb142 100%);
 }
 
 .website-art {
