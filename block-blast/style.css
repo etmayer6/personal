@@ -1,4 +1,4 @@
-.blockblast-site-body {
+﻿.blockblast-site-body {
     margin: 0;
     min-height: 100vh;
     color: #edf4ff;
@@ -125,3 +125,65 @@
         padding: 12px;
     }
 }
+
+@media (max-width: 760px) {
+    .blockblast-site-header {
+        position: static;
+    }
+
+    .blockblast-site-header nav {
+        width: calc(100% - 12px);
+        padding: 10px 0 6px;
+    }
+
+    .blockblast-site-header nav a {
+        min-height: 34px;
+        padding: 7px 10px;
+        font-size: 11px;
+    }
+
+    .blockblast-site-shell {
+        width: calc(100% - 10px);
+        padding-top: 6px;
+        gap: 8px;
+    }
+
+    .blockblast-site-app {
+        order: 1;
+        border-radius: 20px;
+        padding: 6px;
+    }
+
+    .blockblast-site-hero {
+        order: 2;
+    }
+
+    .blockblast-site-copy {
+        gap: 10px;
+        padding: 15px 14px 16px;
+        border-radius: 20px;
+    }
+
+    .blockblast-site-copy h1 {
+        font-size: clamp(30px, 9vw, 42px);
+    }
+
+    .blockblast-site-summary {
+        font-size: 14px;
+        line-height: 1.5;
+    }
+
+    .blockblast-site-notes {
+        gap: 8px;
+    }
+
+    .blockblast-site-notes span {
+        padding: 7px 10px;
+        font-size: 11px;
+    }
+
+    .blockblast-site-footer {
+        padding: 6px 0 18px;
+    }
+}
+
