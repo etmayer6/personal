@@ -1,0 +1,157 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128" role="img" aria-label="Clawd avatar">
+  <defs>
+    <!-- Hologram palette -->
+    <linearGradient id="holoRing" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#46f7ff"/>
+      <stop offset="38%" stop-color="#74a8ff"/>
+      <stop offset="72%" stop-color="#b46fff"/>
+      <stop offset="100%" stop-color="#46f7ff"/>
+    </linearGradient>
+
+    <radialGradient id="holoGlow" cx="45%" cy="30%" r="75%">
+      <stop offset="0%" stop-color="#b9ffff" stop-opacity="0.22"/>
+      <stop offset="45%" stop-color="#4ef2ff" stop-opacity="0.10"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0"/>
+    </radialGradient>
+
+    <linearGradient id="gremlinBody" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#243154"/>
+      <stop offset="1" stop-color="#101624"/>
+    </linearGradient>
+
+    <linearGradient id="keyMetal" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#d9ffff" stop-opacity="0.9"/>
+      <stop offset="45%" stop-color="#74a8ff" stop-opacity="0.75"/>
+      <stop offset="100%" stop-color="#b46fff" stop-opacity="0.75"/>
+    </linearGradient>
+
+    <filter id="outerGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="2.4" result="b"/>
+      <feColorMatrix in="b" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0.55 0" result="g"/>
+      <feMerge>
+        <feMergeNode in="g"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <filter id="innerGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="1.3" result="b"/>
+      <feComposite in="b" in2="SourceAlpha" operator="in" result="bi"/>
+      <feColorMatrix in="bi" type="matrix" values="0 0 0 0 0.30  0 0 0 0 0.95  0 0 0 0 1.00  0 0 0 0.70 0" result="c"/>
+      <feMerge>
+        <feMergeNode in="c"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <filter id="keyGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="2" result="b"/>
+      <feColorMatrix in="b" type="matrix" values="0 0 0 0 0.35  0 0 0 0 0.95  0 0 0 0 1.00  0 0 0 0.55 0" result="c"/>
+      <feMerge>
+        <feMergeNode in="c"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Hologram grid pattern -->
+    <pattern id="grid" width="14" height="14" patternUnits="userSpaceOnUse">
+      <path d="M0 14V0H14" fill="none" stroke="#7ff8ff" stroke-opacity="0.10" stroke-width="1"/>
+      <circle cx="2" cy="2" r="0.7" fill="#cfffff" opacity="0.20"/>
+    </pattern>
+
+    <!-- Subtle scanline pattern inside the avatar -->
+    <pattern id="scan" width="6" height="6" patternUnits="userSpaceOnUse">
+      <rect x="0" y="0" width="6" height="1" fill="#8efbff" opacity="0.14"/>
+      <rect x="0" y="1" width="6" height="5" fill="transparent"/>
+    </pattern>
+
+    <!-- Tiny sparkles -->
+    <pattern id="stars" width="42" height="42" patternUnits="userSpaceOnUse">
+      <circle cx="8" cy="12" r="1" fill="#fff" opacity="0.26"/>
+      <circle cx="30" cy="16" r="0.9" fill="#fff" opacity="0.20"/>
+      <circle cx="18" cy="32" r="1.1" fill="#fff" opacity="0.18"/>
+      <circle cx="38" cy="34" r="0.8" fill="#fff" opacity="0.16"/>
+    </pattern>
+
+    <mask id="innerMask">
+      <rect width="128" height="128" fill="black"/>
+      <circle cx="64" cy="64" r="52" fill="white"/>
+    </mask>
+  </defs>
+
+  <!-- Outer ring -->
+  <g filter="url(#outerGlow)">
+    <circle cx="64" cy="64" r="58" fill="#0b1020" stroke="url(#holoRing)" stroke-width="8"/>
+    <circle cx="64" cy="64" r="52" fill="none" stroke="#b9ffff" stroke-opacity="0.14" stroke-width="2"/>
+  </g>
+
+  <!-- Inner background -->
+  <circle cx="64" cy="64" r="52" fill="#0f1117"/>
+
+  <!-- Hologram environment -->
+  <g mask="url(#innerMask)">
+    <rect x="12" y="12" width="104" height="104" fill="url(#grid)" opacity="0.9"/>
+    <rect x="12" y="12" width="104" height="104" fill="url(#stars)" opacity="0.8"/>
+    <circle cx="64" cy="64" r="52" fill="url(#holoGlow)"/>
+    <g opacity="0.18">
+      <path d="M18 78 L44 58 L50 66 L24 86 Z" fill="#6ef7ff"/>
+      <path d="M82 44 L112 34 L110 52 L78 62 Z" fill="#a27bff"/>
+      <path d="M58 106 L94 88 L102 102 L66 120 Z" fill="#74a8ff"/>
+    </g>
+    <rect x="12" y="12" width="104" height="104" fill="url(#scan)" opacity="0.55"/>
+  </g>
+
+  <!-- Mascot: mischievous key gremlin -->
+  <g filter="url(#innerGlow)">
+    <!-- gremlin silhouette -->
+    <path
+      d="M64 30c-10 0-18 7.5-18 17.2 0 4.5 1.8 8.6 4.9 11.6-6.2 3.7-10.2 10.4-10.2 18.2 0 2.9 2.4 5.3 5.3 5.3h36c2.9 0 5.3-2.4 5.3-5.3 0-7.8-4-14.5-10.2-18.2 3.1-3 4.9-7.1 4.9-11.6C82 37.5 74 30 64 30z"
+      fill="url(#gremlinBody)"/>
+
+    <!-- ears -->
+    <path d="M49 44 38 38 44 54" fill="none" stroke="#8efbff" stroke-opacity="0.30" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M79 44 90 38 84 54" fill="none" stroke="#8efbff" stroke-opacity="0.30" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+
+    <!-- eyes (mischievous) -->
+    <g>
+      <ellipse cx="57" cy="54" rx="6.3" ry="5.5" fill="#eaffff" opacity="0.92"/>
+      <ellipse cx="74" cy="54" rx="6.3" ry="5.5" fill="#eaffff" opacity="0.92"/>
+      <!-- angled lids -->
+      <path d="M51 52c4-4 10-4 14 0" fill="none" stroke="#0b1020" stroke-opacity="0.55" stroke-width="2.6" stroke-linecap="round"/>
+      <path d="M68 52c4-4 10-4 14 0" fill="none" stroke="#0b1020" stroke-opacity="0.55" stroke-width="2.6" stroke-linecap="round"/>
+      <!-- pupils (slightly inward) -->
+      <circle cx="59.2" cy="55.1" r="2.2" fill="#0b1020" opacity="0.78"/>
+      <circle cx="71.8" cy="55.1" r="2.2" fill="#0b1020" opacity="0.78"/>
+      <!-- sparkle -->
+      <circle cx="55.1" cy="52.7" r="1.2" fill="#ffffff" opacity="0.65"/>
+      <circle cx="72.6" cy="52.7" r="1.2" fill="#ffffff" opacity="0.65"/>
+    </g>
+
+    <!-- smirk -->
+    <path d="M55 70c5 4 16 4 18-1" fill="none" stroke="#cfefff" stroke-width="4" stroke-linecap="round"/>
+    <circle cx="75" cy="68" r="0.9" fill="#cfefff" opacity="0.85"/>
+
+    <!-- cheek glows -->
+    <circle cx="46" cy="64" r="7" fill="#ff7bd6" opacity="0.10"/>
+    <circle cx="82" cy="64" r="7" fill="#74a8ff" opacity="0.10"/>
+
+    <!-- Key (held) -->
+    <g filter="url(#keyGlow)">
+      <!-- key bow -->
+      <circle cx="86" cy="78" r="7.5" fill="none" stroke="url(#keyMetal)" stroke-width="3.5"/>
+      <circle cx="86" cy="78" r="2.3" fill="url(#keyMetal)" opacity="0.7"/>
+
+      <!-- key shaft -->
+      <path d="M78 78h-18" stroke="url(#keyMetal)" stroke-width="4.2" stroke-linecap="round"/>
+
+      <!-- key teeth -->
+      <path d="M64 78v7" stroke="url(#keyMetal)" stroke-width="3.6" stroke-linecap="round"/>
+      <path d="M59 78v5" stroke="url(#keyMetal)" stroke-width="3.6" stroke-linecap="round"/>
+
+      <!-- rune spark -->
+      <path d="M92 70l2 4 4 2-4 2-2 4-2-4-4-2 4-2z" fill="#b9ffff" opacity="0.45"/>
+    </g>
+  </g>
+
+  <text x="64" y="118" font-family="system-ui,Segoe UI,Roboto" font-size="12" text-anchor="middle" fill="#cfffff" opacity="0.92" letter-spacing="0.18em">GREMLIN</text>
+</svg>
