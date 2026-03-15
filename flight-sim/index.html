@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flight Sim | Ethan Mayer</title>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="./assets/flight-sim-export.css">
+</head>
+<body class="flight-site-body">
+    <header class="flight-site-header">
+        <nav>
+            <ul>
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="../resume/">Resume</a></li>
+                <li><a href="../projects/">Projects</a></li>
+                <li><a href="../blog/">Blog</a></li>
+                <li><a href="../photos/">Photos</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="flight-site-shell">
+        <section class="flight-site-hero">
+            <div class="flight-site-copy">
+                <p class="eyebrow">Playable Export</p>
+                <h1>Gremlin Approach</h1>
+                <p class="flight-site-summary">
+                    A standalone public export of the Gremlin Hub flight simulator. The goal is simple: fly the gate
+                    sequence, settle onto the runway, and keep the approach smooth enough to feel intentional.
+                </p>
+                <div class="flight-site-notes">
+                    <span>Desktop-first controls</span>
+                    <span>Fullscreen inside the sim</span>
+                    <span>No backend required</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="flight-site-app">
+            <div id="flight-sim-root" class="flight-site-root">
+                <div class="flight-site-loading">
+                    <div class="flight-site-loading-title">Loading Flight Sim...</div>
+                    <div class="flight-site-loading-copy">Starting the exported Gremlin Hub flight sandbox.</div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="flight-site-footer">
+        <p>&copy; 2026 Ethan Mayer</p>
+    </footer>
+
+    <script type="module" src="./assets/flight-sim-export.js"></script>
+</body>
+</html>

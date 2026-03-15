@@ -1,0 +1,120 @@
+.flight-site-body {
+    margin: 0;
+    min-height: 100vh;
+    background:
+        radial-gradient(circle at 12% 12%, rgba(116, 184, 255, 0.18), transparent 24%),
+        radial-gradient(circle at 88% 16%, rgba(137, 233, 200, 0.12), transparent 22%),
+        linear-gradient(180deg, #eef5fb 0%, #f7fbff 42%, #edf3fb 100%);
+    color: #14324f;
+}
+
+.flight-site-header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    backdrop-filter: blur(14px);
+    background: rgba(10, 25, 41, 0.82);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.flight-site-shell {
+    width: min(1220px, calc(100% - 40px));
+    margin: 0 auto;
+    padding: 30px 0 56px;
+}
+
+.flight-site-hero {
+    margin-bottom: 24px;
+}
+
+.flight-site-copy {
+    border-radius: 32px;
+    padding: 40px;
+    background:
+        radial-gradient(circle at 84% 18%, rgba(126, 188, 242, 0.16), transparent 22%),
+        linear-gradient(160deg, rgba(255, 255, 255, 0.92) 0%, rgba(246, 250, 255, 0.94) 100%);
+    border: 1px solid rgba(29, 53, 87, 0.08);
+    box-shadow: 0 18px 40px rgba(20, 50, 79, 0.08);
+}
+
+.flight-site-copy h1 {
+    margin: 0;
+    font-size: clamp(42px, 7vw, 78px);
+    line-height: 0.96;
+    letter-spacing: -0.04em;
+    color: #10263b;
+}
+
+.flight-site-summary {
+    max-width: 780px;
+    margin: 18px 0 0;
+    line-height: 1.8;
+    font-size: 18px;
+    color: #48627c;
+}
+
+.flight-site-notes {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+}
+
+.flight-site-notes span {
+    display: inline-flex;
+    align-items: center;
+    padding: 10px 14px;
+    border-radius: 999px;
+    background: rgba(20, 59, 99, 0.08);
+    border: 1px solid rgba(20, 59, 99, 0.08);
+    color: #244664;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.flight-site-app {
+    border-radius: 30px;
+    padding: 20px;
+    background: rgba(8, 17, 27, 0.92);
+    border: 1px solid rgba(20, 50, 79, 0.12);
+    box-shadow: 0 22px 52px rgba(9, 18, 28, 0.18);
+}
+
+.flight-site-root {
+    min-height: 420px;
+}
+
+.flight-site-loading {
+    min-height: 380px;
+    display: grid;
+    place-items: center;
+    gap: 10px;
+    text-align: center;
+    color: #eaf3ff;
+}
+
+.flight-site-loading-title {
+    font-size: 26px;
+    font-weight: 800;
+}
+
+.flight-site-loading-copy {
+    opacity: 0.78;
+}
+
+.flight-site-footer {
+    padding: 22px 20px 34px;
+    text-align: center;
+    color: #6a859f;
+}
+
+@media (max-width: 700px) {
+    .flight-site-shell {
+        width: min(100% - 24px, 1220px);
+    }
+
+    .flight-site-copy,
+    .flight-site-app {
+        padding: 22px;
+    }
+}
