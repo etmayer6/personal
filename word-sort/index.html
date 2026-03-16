@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Word Sort Solitaire | Ethan Mayer</title>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="./assets/word-sort-export.css">
+</head>
+<body class="wordsort-site-body">
+    <header class="wordsort-site-header">
+        <nav>
+            <ul>
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="../resume/">Resume</a></li>
+                <li><a href="../projects/">Projects</a></li>
+                <li><a href="../blog/">Blog</a></li>
+                <li><a href="../photos/">Photos</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="wordsort-site-shell">
+        <section class="wordsort-site-hero">
+            <div class="wordsort-site-copy">
+                <p class="eyebrow">Playable Export</p>
+                <h1>Word Sort Solitaire</h1>
+                <p class="wordsort-site-summary">
+                    A public export of the Gremlin Hub word sorter built around buried clue cards, limited crown slots,
+                    and tighter association solving. Reveal clue cards from the deal, claim crowns, and stack matching
+                    words in the right order before the board dead-ends.
+                </p>
+                <div class="wordsort-site-notes">
+                    <span>Desktop + touch play</span>
+                    <span>Fullscreen inside the game</span>
+                    <span>No backend required</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="wordsort-site-app">
+            <div id="word-sort-root" class="wordsort-site-root">
+                <div class="wordsort-site-loading">
+                    <div class="wordsort-site-loading-title">Loading Word Sort...</div>
+                    <div class="wordsort-site-loading-copy">Starting the exported Gremlin Hub word puzzle.</div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="wordsort-site-footer">
+        <p>&copy; 2026 Ethan Mayer</p>
+    </footer>
+
+    <script type="module" src="./assets/word-sort-export.js"></script>
+</body>
+</html>

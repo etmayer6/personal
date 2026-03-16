@@ -1,0 +1,19 @@
+HOME
+RESUME
+PROJECTS
+BLOG
+PHOTOS
+
+Playable Export
+
+Word Sort Solitaire
+
+A public export of the Gremlin Hub word sorter built around buried clue cards, limited crown slots, and tighter association solving. Reveal clue cards from the deal, claim crowns, and stack matching words in the right order before the board dead-ends.
+
+Desktop + touch play
+Fullscreen inside the game
+No backend required
+Loading Word Sort...
+Starting the exported Gremlin Hub word puzzle.
+
+© 2026 Ethan Mayer
