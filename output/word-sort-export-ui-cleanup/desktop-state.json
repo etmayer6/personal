@@ -1,0 +1,176 @@
+{
+  "coordinateSystem": {
+    "origin": "top-left",
+    "x": "right",
+    "y": "down"
+  },
+  "mode": "title",
+  "levelNumber": 1,
+  "dealType": "curated",
+  "level": "Association Deal",
+  "tagline": "Use the clue cards, not the labels. Build each crown stack by association.",
+  "totalCategories": 6,
+  "crownSlots": 5,
+  "completedCategories": 0,
+  "movesLeft": 72,
+  "score": 0,
+  "streak": 0,
+  "selectedSource": "none",
+  "activeClue": null,
+  "clueQueue": [],
+  "visibleClues": [
+    {
+      "source": "column-4",
+      "label": "Ignition"
+    }
+  ],
+  "reserveCount": 22,
+  "wasteTop": null,
+  "foundations": [
+    {
+      "slot": 0,
+      "clueIcon": null,
+      "clueTitle": null,
+      "count": 0,
+      "words": []
+    },
+    {
+      "slot": 1,
+      "clueIcon": null,
+      "clueTitle": null,
+      "count": 0,
+      "words": []
+    },
+    {
+      "slot": 2,
+      "clueIcon": null,
+      "clueTitle": null,
+      "count": 0,
+      "words": []
+    },
+    {
+      "slot": 3,
+      "clueIcon": null,
+      "clueTitle": null,
+      "count": 0,
+      "words": []
+    },
+    {
+      "slot": 4,
+      "clueIcon": null,
+      "clueTitle": null,
+      "count": 0,
+      "words": []
+    }
+  ],
+  "columns": [
+    {
+      "index": 0,
+      "count": 4,
+      "hidden": 3,
+      "top": "Birch",
+      "topRole": "word",
+      "topDisplay": "Birch",
+      "revealed": [
+        {
+          "label": "Birch",
+          "role": "word",
+          "display": "Birch",
+          "faceStyle": "iconWord"
+        }
+      ]
+    },
+    {
+      "index": 1,
+      "count": 4,
+      "hidden": 3,
+      "top": "Saddle",
+      "topRole": "word",
+      "topDisplay": "Saddle",
+      "revealed": [
+        {
+          "label": "Saddle",
+          "role": "word",
+          "display": "Saddle",
+          "faceStyle": "iconWord"
+        }
+      ]
+    },
+    {
+      "index": 2,
+      "count": 4,
+      "hidden": 3,
+      "top": "Whisk",
+      "topRole": "word",
+      "topDisplay": "Whisk",
+      "revealed": [
+        {
+          "label": "Whisk",
+          "role": "word",
+          "display": "Whisk",
+          "faceStyle": "iconWord"
+        }
+      ]
+    },
+    {
+      "index": 3,
+      "count": 4,
+      "hidden": 3,
+      "top": "Turnsignal",
+      "topRole": "word",
+      "topDisplay": "Turnsignal",
+      "revealed": [
+        {
+          "label": "Turnsignal",
+          "role": "word",
+          "display": "Turnsignal",
+          "faceStyle": "iconWord"
+        }
+      ]
+    },
+    {
+      "index": 4,
+      "count": 4,
+      "hidden": 3,
+      "top": "Ignition",
+      "topRole": "clue",
+      "topDisplay": "Ignition",
+      "revealed": [
+        {
+          "label": "Ignition",
+          "role": "clue",
+          "display": "Ignition",
+          "faceStyle": "iconWord"
+        }
+      ]
+    }
+  ],
+  "boosters": {
+    "undo": 1,
+    "joker": 0,
+    "shuffle": 1
+  },
+  "actions": {
+    "cluePlacement": true,
+    "foundationSort": false,
+    "columnParking": true,
+    "reserveDraw": true,
+    "joker": false,
+    "shuffle": true,
+    "undo": false,
+    "any": true,
+    "hint": "Ignition can claim an empty crown."
+  },
+  "animations": {
+    "motionCards": 0,
+    "feedbackTexts": 0,
+    "foundationPulses": 0
+  },
+  "message": "Uncover clue cards from the deal, claim crowns, and stack matching words by association.",
+  "fullscreen": false,
+  "fullscreenMode": "off",
+  "viewport": {
+    "width": 1440,
+    "height": 1600
+  }
+}

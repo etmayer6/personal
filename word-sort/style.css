@@ -16,16 +16,21 @@
 .wordsort-site-shell {
     width: min(1480px, calc(100% - 24px));
     margin: 0 auto;
-    padding: 16px 0 48px;
+    padding: 12px 0 40px;
     display: grid;
-    gap: 16px;
+    gap: 12px;
+}
+
+.wordsort-site-hero {
+    display: grid;
+    gap: 0;
 }
 
 .wordsort-site-copy {
     display: grid;
-    gap: 14px;
+    gap: 12px;
     border-radius: 32px;
-    padding: 24px 28px;
+    padding: 20px 24px;
     background:
         radial-gradient(circle at 18% 18%, rgba(255, 221, 132, 0.2), transparent 24%),
         radial-gradient(circle at 82% 20%, rgba(117, 233, 191, 0.16), transparent 24%),
@@ -43,10 +48,10 @@
 }
 
 .wordsort-site-summary {
-    max-width: 70ch;
+    max-width: 62ch;
     margin: 0;
-    line-height: 1.72;
-    font-size: 16px;
+    line-height: 1.64;
+    font-size: 15px;
     color: rgba(228, 244, 237, 0.82);
 }
 
@@ -60,18 +65,18 @@
 .wordsort-site-notes span {
     display: inline-flex;
     align-items: center;
-    padding: 10px 14px;
+    padding: 8px 12px;
     border-radius: 999px;
     background: rgba(255, 255, 255, 0.08);
     border: 1px solid rgba(255, 255, 255, 0.1);
     color: #e9f7f0;
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 700;
 }
 
 .wordsort-site-app {
     border-radius: 32px;
-    padding: clamp(12px, 1.8vw, 20px);
+    padding: clamp(10px, 1.5vw, 16px);
     background: linear-gradient(180deg, rgba(7, 22, 19, 0.98), rgba(6, 16, 14, 0.98));
     border: 1px solid rgba(255, 255, 255, 0.08);
     box-shadow: 0 28px 70px rgba(0, 0, 0, 0.26);
@@ -108,17 +113,17 @@
 @media (max-width: 900px) {
     .wordsort-site-shell {
         width: min(100% - 18px, 1480px);
-        padding-top: 12px;
+        padding-top: 10px;
     }
 
     .wordsort-site-copy {
-        padding: 20px 18px;
+        padding: 18px 18px;
         border-radius: 24px;
     }
 
     .wordsort-site-app {
         border-radius: 24px;
-        padding: 12px;
+        padding: 10px;
     }
 }
 
@@ -151,7 +156,7 @@
 
     .wordsort-site-copy {
         gap: 10px;
-        padding: 15px 14px 16px;
+        padding: 14px 14px 15px;
         border-radius: 20px;
     }
 
@@ -160,8 +165,7 @@
     }
 
     .wordsort-site-summary {
-        font-size: 14px;
-        line-height: 1.5;
+        display: none;
     }
 
     .wordsort-site-notes {
@@ -178,10 +182,13 @@
     }
 }
 
-@media (max-width: 560px) {
+@media (max-width: 720px) {
     .wordsort-site-hero {
         display: none;
     }
+}
+
+@media (max-width: 560px) {
 
     .wordsort-site-shell {
         width: calc(100% - 8px);

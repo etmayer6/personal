@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Groggy Climbs | Ethan Mayer</title>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="groggy-body">
+    <header class="groggy-header">
+        <nav>
+            <ul>
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="../resume/">Resume</a></li>
+                <li><a href="../projects/">Projects</a></li>
+                <li><a href="../games/">Games</a></li>
+                <li><a href="../blog/">Blog</a></li>
+                <li><a href="../photos/">Photos</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="groggy-shell">
+        <section class="groggy-hero">
+            <div class="groggy-hero-copy">
+                <p class="eyebrow">Climbing Project</p>
+                <h1>Groggy Climbs</h1>
+                <p class="groggy-summary">
+                    A sortable route shortlist built around Garrett Roggy's style: vertical, crimpy sport climbs that
+                    should feel like real sends or good first projects, not endless sieges. Every route here is one of
+                    the recommendations I put together from his ticks, style preferences, and follow-up refinement.
+                </p>
+            </div>
+            <aside class="groggy-fit-card">
+                <p class="fit-label">Target Style</p>
+                <ul class="fit-list">
+                    <li>Vertical and technical over steep and thuggy</li>
+                    <li>Crimps over pockets</li>
+                    <li>A few real burns, not a giant project</li>
+                    <li>One clearly marked first 12a lane</li>
+                </ul>
+            </aside>
+        </section>
+
+        <section class="groggy-stats" id="groggy-stats">
+            <div class="groggy-stat-card">
+                <span>Routes</span>
+                <strong id="routes-count">0</strong>
+            </div>
+            <div class="groggy-stat-card">
+                <span>Peak Matches</span>
+                <strong id="peak-count">0</strong>
+            </div>
+            <div class="groggy-stat-card">
+                <span>Locations</span>
+                <strong id="locations-count">0</strong>
+            </div>
+            <div class="groggy-stat-card">
+                <span>12a Options</span>
+                <strong id="project-count">0</strong>
+            </div>
+        </section>
+
+        <section class="groggy-controls">
+            <label class="control-field">
+                Sort
+                <select id="sort-select">
+                    <option value="relevance">Relevance</option>
+                    <option value="location">Location</option>
+                    <option value="grade">Grade</option>
+                    <option value="name">Route Name</option>
+                </select>
+            </label>
+            <label class="control-field">
+                Location
+                <select id="location-select">
+                    <option value="all">All Locations</option>
+                </select>
+            </label>
+            <label class="control-field">
+                Relevance
+                <select id="relevance-select">
+                    <option value="all">All Levels</option>
+                    <option value="Peak Match">Peak Match</option>
+                    <option value="Strong Match">Strong Match</option>
+                    <option value="Worth a Shot">Worth a Shot</option>
+                    <option value="Style Borderline">Style Borderline</option>
+                    <option value="First 12a Project">First 12a Project</option>
+                </select>
+            </label>
+        </section>
+
+        <section class="groggy-list-wrap">
+            <div class="groggy-list-header">
+                <div>
+                    <p class="eyebrow">Route Board</p>
+                    <h2>Recommended Routes</h2>
+                </div>
+                <p id="results-status" class="results-status">Loading routes...</p>
+            </div>
+            <div id="routes-list" class="routes-list"></div>
+            <div id="routes-empty" class="routes-empty" hidden>
+                No routes match that combination yet.
+            </div>
+        </section>
+    </main>
+
+    <footer class="groggy-footer">
+        <p>&copy; 2026 Ethan Mayer</p>
+    </footer>
+
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

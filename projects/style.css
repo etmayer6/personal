@@ -175,6 +175,13 @@
         linear-gradient(145deg, #143b36 0%, #2b7b6a 100%);
 }
 
+.groggy-art {
+    position: relative;
+    background:
+        radial-gradient(circle at 72% 18%, rgba(255, 255, 255, 0.18), transparent 20%),
+        linear-gradient(145deg, #29362a 0%, #62795c 100%);
+}
+
 .timeline-stack {
     position: relative;
     width: 240px;
@@ -750,6 +757,94 @@
 
 .wordsort-stack.accent span {
     background: linear-gradient(180deg, rgba(255, 239, 196, 0.98), rgba(239, 191, 88, 0.95));
+}
+
+.groggy-wall {
+    position: relative;
+    width: min(290px, calc(100% - 28px));
+    height: 226px;
+    border-radius: 28px;
+    overflow: hidden;
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.04)),
+        linear-gradient(135deg, #b69068 0%, #8b6d51 48%, #6e5943 100%);
+    box-shadow: 0 22px 36px rgba(0, 0, 0, 0.2);
+}
+
+.groggy-wall::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(circle at 18% 18%, rgba(255, 255, 255, 0.2), transparent 18%),
+        radial-gradient(circle at 76% 26%, rgba(255, 255, 255, 0.14), transparent 16%),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.07) 0 1px, transparent 1px 54px),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0 1px, transparent 1px 54px);
+    opacity: 0.55;
+}
+
+.groggy-route-line {
+    position: absolute;
+    left: 46%;
+    top: 22px;
+    width: 4px;
+    height: 178px;
+    border-radius: 999px;
+    background: linear-gradient(180deg, rgba(125, 255, 168, 0.95), rgba(76, 209, 127, 0.4));
+    transform: rotate(14deg);
+    box-shadow: 0 0 0 10px rgba(109, 244, 154, 0.12);
+}
+
+.groggy-hold {
+    position: absolute;
+    border-radius: 48% 52% 56% 44%;
+    box-shadow: inset 0 3px 5px rgba(255, 255, 255, 0.36), 0 10px 14px rgba(0, 0, 0, 0.16);
+}
+
+.hold-one {
+    left: 52px;
+    top: 46px;
+    width: 34px;
+    height: 24px;
+    background: #77d6a0;
+}
+
+.hold-two {
+    left: 164px;
+    top: 74px;
+    width: 36px;
+    height: 22px;
+    background: #ffd889;
+}
+
+.hold-three {
+    left: 100px;
+    top: 118px;
+    width: 30px;
+    height: 24px;
+    background: #8fd2ff;
+}
+
+.hold-four {
+    left: 180px;
+    bottom: 34px;
+    width: 40px;
+    height: 24px;
+    background: #ffa98f;
+}
+
+.groggy-badge {
+    position: absolute;
+    right: 18px;
+    bottom: 18px;
+    padding: 10px 14px;
+    border-radius: 999px;
+    background: rgba(15, 31, 24, 0.72);
+    color: rgba(255, 255, 255, 0.95);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-weight: 700;
 }
 
 .website-art {
