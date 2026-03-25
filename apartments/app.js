@@ -14,10 +14,28 @@
     const errorBox = document.getElementById("error-box");
     const snapshotUpdated = document.getElementById("snapshot-updated");
     const snapshotCount = document.getElementById("snapshot-count");
-    const ethanTopPickMatchers = [
-        [["watts", "sinclair"], ["sinclair"]],
-        [["crossing", "boyson"], ["crossing", "boysen"]],
-        [["hidden", "creek"]]
+    const ethanTopPickConfigs = [
+        {
+            matchUrl: "https://www.wattsgroupiowa.com/plan/sinclair-on-16th/sinclair-on-16th-layout-1a",
+            fallback: {
+                id: "ethan-top-pick-sinclair-on-16th",
+                title: "Sinclair on 16th Layout 1A | Watts Group",
+                source: "wattsgroupiowa.com",
+                url: "https://www.wattsgroupiowa.com/plan/sinclair-on-16th/sinclair-on-16th-layout-1a",
+                location: "Sinclair on 16th",
+                availabilityLabel: "Pinned pick",
+                availabilityBucket: "available_now",
+                summaryText: "Watts Group floor plan link for Ethan's Sinclair on 16th pick.",
+                hideDefaultFlags: true
+            },
+            matcherGroups: [["sinclair", "16th"], ["watts", "sinclair"]]
+        },
+        {
+            matcherGroups: [["crossing", "boyson"], ["crossing", "boysen"]]
+        },
+        {
+            matcherGroups: [["hidden", "creek"]]
+        }
     ];
 
     const DAY = 24 * 60 * 60 * 1000;
@@ -138,6 +156,24 @@
         return span;
     }
 
+    function availabilityVariant(bucket) {
+        if (bucket === "available_now") return "good";
+        if (bucket === "stale" || bucket === "unavailable") return "bad";
+        return "warn";
+    }
+
+    function buildSummaryText(item) {
+        if (item.summaryText) return item.summaryText;
+
+        const parts = [];
+        if (item.location) parts.push(item.location);
+        if (item.price != null) parts.push("rent " + fmtMoney(item.price));
+        if (item.allInMonthly != null) parts.push("all-in " + fmtMoney(item.allInMonthly));
+        if (item.commuteMin != null) parts.push(item.commuteMin + "m commute");
+
+        return parts.length ? parts.join(" | ") : "Details pending";
+    }
+
     function renderCards(target, items, emptyText) {
         target.innerHTML = "";
 
@@ -158,29 +194,33 @@
 
             const meta = document.createElement("div");
             meta.className = "listing-meta";
-            meta.appendChild(createPill("Fit " + item.fit, item.fit >= prefs.goodFitThreshold ? "good" : ""));
-            meta.appendChild(createPill(item.availabilityLabel, item.availabilityBucket === "available_now" ? "good" : item.availabilityBucket === "stale" || item.availabilityBucket === "unavailable" ? "bad" : "warn"));
+            if (item.fit != null) {
+                meta.appendChild(createPill("Fit " + item.fit, item.fit >= prefs.goodFitThreshold ? "good" : ""));
+            }
+            if (item.availabilityLabel) {
+                meta.appendChild(createPill(item.availabilityLabel, availabilityVariant(item.availabilityBucket)));
+            }
             if (item.source) meta.appendChild(createPill(item.source));
-            card.appendChild(meta);
+            if (meta.childElementCount) {
+                card.appendChild(meta);
+            }
 
             const summary = document.createElement("div");
-            summary.textContent =
-                (item.location || "Location unknown") +
-                " | rent " + fmtMoney(item.price) +
-                " | all-in " + fmtMoney(item.allInMonthly) +
-                (item.commuteMin != null ? " | " + item.commuteMin + "m commute" : "");
+            summary.textContent = buildSummaryText(item);
             card.appendChild(summary);
 
-            const flags = document.createElement("div");
-            flags.className = "listing-flags";
-            flags.appendChild(createPill("W/D: " + triText(item.washerDryer)));
-            flags.appendChild(createPill("DW: " + triText(item.dishwasher)));
-            flags.appendChild(createPill("Parking: " + triText(item.parking)));
-            flags.appendChild(createPill("Pets: " + triText(item.petFriendly)));
-            flags.appendChild(createPill("Available: " + fmtDate(item.availableAt)));
-            card.appendChild(flags);
+            if (!item.hideDefaultFlags) {
+                const flags = document.createElement("div");
+                flags.className = "listing-flags";
+                flags.appendChild(createPill("W/D: " + triText(item.washerDryer)));
+                flags.appendChild(createPill("DW: " + triText(item.dishwasher)));
+                flags.appendChild(createPill("Parking: " + triText(item.parking)));
+                flags.appendChild(createPill("Pets: " + triText(item.petFriendly)));
+                flags.appendChild(createPill("Available: " + fmtDate(item.availableAt)));
+                card.appendChild(flags);
+            }
 
-            if (item.blockers.length) {
+            if (item.blockers && item.blockers.length) {
                 const blockers = document.createElement("div");
                 blockers.className = "listing-flags";
                 item.blockers.forEach(function (blocker) {
@@ -216,7 +256,7 @@
     function pickCuratedListings(items) {
         const usedIds = new Set();
 
-        return ethanTopPickMatchers.map(function (matcherGroups) {
+        return ethanTopPickConfigs.map(function (config) {
             const match = items.find(function (item) {
                 if (usedIds.has(item.id)) return false;
 
@@ -225,7 +265,11 @@
                     .join(" ")
                     .toLowerCase();
 
-                return matcherGroups.some(function (terms) {
+                if (config.matchUrl && item.url === config.matchUrl) {
+                    return true;
+                }
+
+                return (config.matcherGroups || []).some(function (terms) {
                     return terms.every(function (term) {
                         return haystack.indexOf(term) >= 0;
                     });
@@ -234,9 +278,10 @@
 
             if (match) {
                 usedIds.add(match.id);
+                return match;
             }
 
-            return match;
+            return config.fallback || null;
         }).filter(Boolean);
     }
 
