@@ -8,11 +8,17 @@
     const goodFitOnlyInput = document.getElementById("good-fit-only-input");
     const statusText = document.getElementById("status-text");
     const listingCountText = document.getElementById("listing-count-text");
+    const ethanTopPicks = document.getElementById("ethan-top-picks");
     const topMatches = document.getElementById("top-matches");
     const listingsGrid = document.getElementById("listings-grid");
     const errorBox = document.getElementById("error-box");
     const snapshotUpdated = document.getElementById("snapshot-updated");
     const snapshotCount = document.getElementById("snapshot-count");
+    const ethanTopPickMatchers = [
+        [["watts", "sinclair"], ["sinclair"]],
+        [["crossing", "boyson"], ["crossing", "boysen"]],
+        [["hidden", "creek"]]
+    ];
 
     const DAY = 24 * 60 * 60 * 1000;
     const prefs = {
@@ -132,12 +138,12 @@
         return span;
     }
 
-    function renderCards(target, items) {
+    function renderCards(target, items, emptyText) {
         target.innerHTML = "";
 
         if (!items.length) {
             const empty = document.createElement("p");
-            empty.textContent = "No listings matched your filters.";
+            empty.textContent = emptyText || "No listings matched your filters.";
             target.appendChild(empty);
             return;
         }
@@ -207,6 +213,33 @@
         });
     }
 
+    function pickCuratedListings(items) {
+        const usedIds = new Set();
+
+        return ethanTopPickMatchers.map(function (matcherGroups) {
+            const match = items.find(function (item) {
+                if (usedIds.has(item.id)) return false;
+
+                const haystack = [item.title, item.location, item.source, item.url]
+                    .filter(Boolean)
+                    .join(" ")
+                    .toLowerCase();
+
+                return matcherGroups.some(function (terms) {
+                    return terms.every(function (term) {
+                        return haystack.indexOf(term) >= 0;
+                    });
+                });
+            });
+
+            if (match) {
+                usedIds.add(match.id);
+            }
+
+            return match;
+        }).filter(Boolean);
+    }
+
     function render() {
         const query = String(searchInput.value || "").trim().toLowerCase();
         prefs.maxAllIn = Number(maxAllInInput.value) || 0;
@@ -224,8 +257,10 @@
             const hay = [row.title, row.location, row.source, row.url].join(" ").toLowerCase();
             return hay.indexOf(query) >= 0;
         });
+        const curatedPicks = pickCuratedListings(enriched);
 
         listingCountText.textContent = visible.length + " listings";
+        renderCards(ethanTopPicks, curatedPicks, "Top picks are unavailable right now.");
         renderCards(topMatches, visible.slice(0, 3));
         renderCards(listingsGrid, visible);
     }
