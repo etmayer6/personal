@@ -828,7 +828,30 @@
       "status": "saved",
       "rating": 3,
       "updatedAt": 1772424187021
+    },
+    {
+      "id": "8a7954cc-4b8a-4b24-a905-74506d73c65a",
+      "title": "Broad + Main on 7th",
+      "source": "apartments.com",
+      "url": "https://www.apartments.com/broad-main-on-7th-marion-ia/0meb913/",
+      "location": "1107 7th, Marion, IA 52302",
+      "price": 975,
+      "beds": 0,
+      "baths": 1,
+      "sqft": 730,
+      "commuteMin": null,
+      "washerDryer": 1,
+      "dishwasher": 1,
+      "parking": 1,
+      "petFriendly": 1,
+      "monthlyFees": null,
+      "deposit": 795,
+      "applicationFee": 35,
+      "availableAt": 1775498558101,
+      "status": "saved",
+      "rating": 4,
+      "updatedAt": 1775498558101
     }
   ],
-  "generatedAt": 1773269403949
+  "generatedAt": 1775498558101
 }
