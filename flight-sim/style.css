@@ -1,6 +1,7 @@
 .flight-site-body {
     margin: 0;
-    min-height: 100vh;
+    min-height: 100dvh;
+    overflow-x: hidden;
     color: #eaf4ff;
 }
 
@@ -127,5 +128,61 @@
     .flight-site-app {
         border-radius: 24px;
         padding: 12px;
+    }
+}
+
+@media (max-width: 760px) {
+    .flight-site-header {
+        position: static;
+    }
+
+    .flight-site-header nav {
+        width: calc(100% - 12px);
+        padding: 10px 0 6px;
+    }
+
+    .flight-site-header nav a {
+        min-height: 34px;
+        padding: 7px 10px;
+        font-size: 11px;
+    }
+
+    .flight-site-shell {
+        width: calc(100% - 10px);
+        padding-top: 6px;
+        gap: 8px;
+    }
+
+    .flight-site-app {
+        border-radius: 20px;
+        padding: 6px;
+    }
+
+    .flight-site-copy {
+        gap: 10px;
+        padding: 15px 14px 16px;
+        border-radius: 20px;
+    }
+
+    .flight-site-copy h1 {
+        font-size: clamp(30px, 9vw, 42px);
+    }
+
+    .flight-site-summary {
+        font-size: 14px;
+        line-height: 1.5;
+    }
+
+    .flight-site-notes {
+        gap: 8px;
+    }
+
+    .flight-site-notes span {
+        padding: 7px 10px;
+        font-size: 11px;
+    }
+
+    .flight-site-footer {
+        padding: 6px 0 18px;
     }
 }

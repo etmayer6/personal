@@ -1,0 +1,101 @@
+[
+  {
+    "name": "block-blast",
+    "url": "http://127.0.0.1:4173/block-blast/index.html",
+    "metrics": {
+      "innerWidth": 390,
+      "innerHeight": 844,
+      "clientWidth": 390,
+      "clientHeight": 844,
+      "scrollWidth": 390,
+      "scrollHeight": 1362,
+      "bodyScrollWidth": 390,
+      "bodyScrollHeight": 1362,
+      "buttons": [
+        "Start Run",
+        "Title",
+        "Exit Fullscreen"
+      ]
+    },
+    "screenshot": "C:\\Codex\\personal_site\\personal\\output\\mobile-fullscreen-check\\block-blast.png"
+  },
+  {
+    "name": "flight-sim",
+    "url": "http://127.0.0.1:4173/flight-sim/index.html",
+    "metrics": {
+      "innerWidth": 390,
+      "innerHeight": 844,
+      "clientWidth": 390,
+      "clientHeight": 844,
+      "scrollWidth": 390,
+      "scrollHeight": 1373,
+      "bodyScrollWidth": 390,
+      "bodyScrollHeight": 1373,
+      "buttons": [
+        "Start Flight",
+        "Switch Camera",
+        "Show Advanced Flight Deck",
+        "Back To Title",
+        "Cockpit Camera",
+        "Hide Controls",
+        "Show Instruments",
+        "Start",
+        "Exit Fullscreen",
+        "Launch Sortie",
+        "Use Cockpit Cam",
+        "Nose Up",
+        "Nose Down",
+        "Bank Left",
+        "Bank Right",
+        "Rudder Left",
+        "Rudder Right",
+        "Throttle Down",
+        "Throttle Up",
+        "Trim Down",
+        "Trim Up",
+        "Brakes",
+        "Flaps Up",
+        "Flaps Down",
+        "Switch Camera",
+        "Reset Run"
+      ]
+    },
+    "screenshot": "C:\\Codex\\personal_site\\personal\\output\\mobile-fullscreen-check\\flight-sim.png"
+  },
+  {
+    "name": "word-sort",
+    "url": "http://127.0.0.1:4173/word-sort/index.html",
+    "metrics": {
+      "innerWidth": 390,
+      "innerHeight": 844,
+      "clientWidth": 390,
+      "clientHeight": 844,
+      "scrollWidth": 390,
+      "scrollHeight": 844,
+      "bodyScrollWidth": 390,
+      "bodyScrollHeight": 844,
+      "buttons": [
+        "Start Round",
+        "Next Level",
+        "Hint",
+        "Draw",
+        "Exit Fullscreen",
+        "Column 1: Birch",
+        "Column 2: Saddle",
+        "Column 3: Whisk",
+        "Column 4: Turnsignal",
+        "Column 5: Ignition",
+        "Waste: Empty",
+        "Empty 1",
+        "Empty 2",
+        "Empty 3",
+        "Empty 4",
+        "Empty 5",
+        "Undo (1)",
+        "Joker (0)",
+        "Shuffle (1)"
+      ]
+    },
+    "screenshot": "C:\\Codex\\personal_site\\personal\\output\\mobile-fullscreen-check\\word-sort.png"
+  }
+]

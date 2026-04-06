@@ -1,0 +1,62 @@
+[
+  {
+    "name": "block-blast",
+    "url": "http://127.0.0.1:4173/block-blast/index.html",
+    "stageSelector": "section",
+    "metrics": {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "stageRect": {
+        "x": 5,
+        "y": 965,
+        "width": 380,
+        "height": 274.328125
+      },
+      "scrollWidth": 390,
+      "clientWidth": 390
+    },
+    "screenshot": "C:\\Codex\\personal_site\\personal\\output\\mobile-fullscreen-visible\\block-blast.png"
+  },
+  {
+    "name": "flight-sim",
+    "url": "http://127.0.0.1:4173/flight-sim/index.html",
+    "stageSelector": ".panel",
+    "metrics": {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "stageRect": {
+        "x": 0,
+        "y": 0,
+        "width": 390,
+        "height": 844
+      },
+      "scrollWidth": 390,
+      "clientWidth": 390
+    },
+    "screenshot": "C:\\Codex\\personal_site\\personal\\output\\mobile-fullscreen-visible\\flight-sim.png"
+  },
+  {
+    "name": "word-sort",
+    "url": "http://127.0.0.1:4173/word-sort/index.html",
+    "stageSelector": "section",
+    "metrics": {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "stageRect": {
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0
+      },
+      "scrollWidth": 390,
+      "clientWidth": 390
+    },
+    "screenshot": "C:\\Codex\\personal_site\\personal\\output\\mobile-fullscreen-visible\\word-sort.png"
+  }
+]

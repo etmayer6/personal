@@ -1,0 +1,59 @@
+[
+  {
+    "name": "block-blast",
+    "url": "http://127.0.0.1:4173/block-blast/index.html",
+    "metrics": {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "largestCanvas": {
+        "x": 8,
+        "y": 307.0625,
+        "width": 374,
+        "height": 483.078125
+      },
+      "scrollWidth": 390,
+      "clientWidth": 390
+    },
+    "screenshot": "C:\\Codex\\personal_site\\personal\\output\\mobile-fullscreen-canvas\\block-blast.png"
+  },
+  {
+    "name": "flight-sim",
+    "url": "http://127.0.0.1:4173/flight-sim/index.html",
+    "metrics": {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "largestCanvas": {
+        "x": 26,
+        "y": 263,
+        "width": 338,
+        "height": 596
+      },
+      "scrollWidth": 390,
+      "clientWidth": 390
+    },
+    "screenshot": "C:\\Codex\\personal_site\\personal\\output\\mobile-fullscreen-canvas\\flight-sim.png"
+  },
+  {
+    "name": "word-sort",
+    "url": "http://127.0.0.1:4173/word-sort/index.html",
+    "metrics": {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "largestCanvas": {
+        "x": 9,
+        "y": 161.46875,
+        "width": 372,
+        "height": 480.5
+      },
+      "scrollWidth": 390,
+      "clientWidth": 390
+    },
+    "screenshot": "C:\\Codex\\personal_site\\personal\\output\\mobile-fullscreen-canvas\\word-sort.png"
+  }
+]
