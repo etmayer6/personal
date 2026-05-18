@@ -281,5 +281,149 @@ window.PHOTOS_GALLERY = [
         alt: "Gallery photo P1020612",
         tag: "Gallery",
         title: "P1020612"
+    },
+    {
+        src: "../images/photos/P1020697.JPG",
+        alt: "Gallery photo P1020697",
+        tag: "Gallery",
+        title: "P1020697"
+    },
+    {
+        src: "../images/photos/P1020716.JPG",
+        alt: "Gallery photo P1020716",
+        tag: "Gallery",
+        title: "P1020716"
+    },
+    {
+        src: "../images/photos/P1020729.JPG",
+        alt: "Gallery photo P1020729",
+        tag: "Gallery",
+        title: "P1020729"
+    },
+    {
+        src: "../images/photos/P1020731.JPG",
+        alt: "Gallery photo P1020731",
+        tag: "Gallery",
+        title: "P1020731"
+    },
+    {
+        src: "../images/photos/P1020733.JPG",
+        alt: "Gallery photo P1020733",
+        tag: "Gallery",
+        title: "P1020733"
+    },
+    {
+        src: "../images/photos/P1020738.JPG",
+        alt: "Gallery photo P1020738",
+        tag: "Gallery",
+        title: "P1020738"
+    },
+    {
+        src: "../images/photos/P1020741.JPG",
+        alt: "Gallery photo P1020741",
+        tag: "Gallery",
+        title: "P1020741"
+    },
+    {
+        src: "../images/photos/P1020750.JPG",
+        alt: "Gallery photo P1020750",
+        tag: "Gallery",
+        title: "P1020750"
+    },
+    {
+        src: "../images/photos/P1020764.JPG",
+        alt: "Gallery photo P1020764",
+        tag: "Gallery",
+        title: "P1020764"
+    },
+    {
+        src: "../images/photos/P1020770.JPG",
+        alt: "Gallery photo P1020770",
+        tag: "Gallery",
+        title: "P1020770"
+    },
+    {
+        src: "../images/photos/P1020771.JPG",
+        alt: "Gallery photo P1020771",
+        tag: "Gallery",
+        title: "P1020771"
+    },
+    {
+        src: "../images/photos/P1020773.JPG",
+        alt: "Gallery photo P1020773",
+        tag: "Gallery",
+        title: "P1020773"
+    },
+    {
+        src: "../images/photos/P1020774.JPG",
+        alt: "Gallery photo P1020774",
+        tag: "Gallery",
+        title: "P1020774"
+    },
+    {
+        src: "../images/photos/P1020776.JPG",
+        alt: "Gallery photo P1020776",
+        tag: "Gallery",
+        title: "P1020776"
+    },
+    {
+        src: "../images/photos/P1020779.JPG",
+        alt: "Gallery photo P1020779",
+        tag: "Gallery",
+        title: "P1020779"
+    },
+    {
+        src: "../images/photos/P1020780.JPG",
+        alt: "Gallery photo P1020780",
+        tag: "Gallery",
+        title: "P1020780"
+    },
+    {
+        src: "../images/photos/P1020791.JPG",
+        alt: "Gallery photo P1020791",
+        tag: "Gallery",
+        title: "P1020791"
+    },
+    {
+        src: "../images/photos/P1020793.JPG",
+        alt: "Gallery photo P1020793",
+        tag: "Gallery",
+        title: "P1020793"
+    },
+    {
+        src: "../images/photos/P1020797.JPG",
+        alt: "Gallery photo P1020797",
+        tag: "Gallery",
+        title: "P1020797"
+    },
+    {
+        src: "../images/photos/P1020799.JPG",
+        alt: "Gallery photo P1020799",
+        tag: "Gallery",
+        title: "P1020799"
+    },
+    {
+        src: "../images/photos/P1020802.JPG",
+        alt: "Gallery photo P1020802",
+        tag: "Gallery",
+        title: "P1020802"
+    },
+    {
+        src: "../images/photos/P1020803.JPG",
+        alt: "Gallery photo P1020803",
+        tag: "Gallery",
+        title: "P1020803"
+    },
+    {
+        src: "../images/photos/P1020804.JPG",
+        alt: "Gallery photo P1020804",
+        tag: "Gallery",
+        title: "P1020804"
+    },
+    {
+        src: "../images/photos/P1020805.JPG",
+        alt: "Gallery photo P1020805",
+        tag: "Gallery",
+        title: "P1020805"
     }
 ];
