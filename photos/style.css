@@ -1,111 +1,137 @@
 .photos-body {
     margin: 0;
     min-height: 100vh;
-    background:
-        radial-gradient(circle at 14% 16%, rgba(92, 138, 192, 0.16), transparent 24%),
-        linear-gradient(180deg, #eef4fb 0%, #ffffff 42%, #f5f8fc 100%);
-    color: #17324d;
-}
-
-.photos-header {
-    position: sticky;
-    top: 0;
-    z-index: 10;
-    backdrop-filter: blur(14px);
-    background: rgba(10, 25, 41, 0.82);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .photos-shell {
-    width: min(1180px, calc(100% - 40px));
     margin: 0 auto;
-    padding: 34px 0 56px;
+    padding: 58px 0 72px;
 }
 
-.photos-hero,
-.photo-card {
-    background: rgba(255, 255, 255, 0.9);
-    border: 1px solid rgba(29, 53, 87, 0.08);
-    box-shadow: 0 18px 40px rgba(20, 50, 79, 0.08);
-}
-
-.photos-hero {
-    border-radius: 30px;
-    padding: 40px;
+.photos-intro {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(260px, 0.8fr);
+    gap: 36px;
+    align-items: end;
+    padding: 14px 0 42px;
+    border-bottom: 1px solid rgba(16, 43, 54, 0.18);
 }
 
 .eyebrow {
-    margin: 0 0 10px;
+    margin: 0 0 12px;
     font-size: 12px;
+    font-weight: 800;
     letter-spacing: 0.16em;
     text-transform: uppercase;
-    color: #5a7b9b;
-    font-weight: 700;
 }
 
-.photos-hero h1 {
+.photos-intro h1 {
     margin: 0;
-    font-size: clamp(42px, 7vw, 76px);
-    line-height: 0.96;
-    letter-spacing: -0.04em;
-    color: #10263b;
+    color: #102b36;
+    font-size: clamp(68px, 10vw, 112px);
+    line-height: 0.84;
+    letter-spacing: -0.065em;
 }
 
-.photos-summary {
-    max-width: 760px;
-    margin: 18px 0 0;
-    line-height: 1.8;
-    font-size: 18px;
-    color: #48627c;
+.photos-intro > p {
+    max-width: 430px;
+    margin: 0 0 4px;
+    color: #4c636a;
+    font-size: 17px;
+    line-height: 1.65;
 }
 
 .photos-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 22px;
-    margin-top: 24px;
-}
-
-.photos-empty {
-    margin-top: 24px;
-    border-radius: 28px;
-    padding: 28px;
-    background: rgba(255, 255, 255, 0.9);
-    border: 1px solid rgba(29, 53, 87, 0.08);
-    box-shadow: 0 18px 40px rgba(20, 50, 79, 0.08);
-    color: #48627c;
-    line-height: 1.8;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-auto-rows: 150px;
+    grid-auto-flow: dense;
+    gap: 14px;
+    margin-top: 28px;
 }
 
 .photo-card {
+    min-width: 0;
+    grid-row: span 2;
     margin: 0;
-    border-radius: 28px;
     overflow: hidden;
+    border: 1px solid rgba(16, 43, 54, 0.12);
+    background: #e5e7df;
+    content-visibility: auto;
+    contain-intrinsic-size: auto 300px;
+}
+
+.photo-card:nth-child(8n + 1),
+.photo-card:nth-child(8n + 6) {
+    grid-row: span 3;
 }
 
 .photo-card img {
-    width: 100%;
-    height: 320px;
-    object-fit: cover;
     display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 420ms ease, filter 420ms ease;
+}
+
+.photo-card:hover img {
+    transform: scale(1.025);
+    filter: saturate(1.04);
+}
+
+.photos-empty {
+    margin-top: 28px;
+    padding: 26px;
+    border: 1px solid rgba(16, 43, 54, 0.16);
+    color: #4c636a;
+    background: rgba(255, 253, 248, 0.9);
+}
+
+.photos-empty p {
+    margin: 0;
 }
 
 .photos-footer {
-    padding: 22px 20px 34px;
-    text-align: center;
-    color: #6a859f;
+    padding: 0 20px 36px;
+}
+
+@media (max-width: 840px) {
+    .photos-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
 }
 
 @media (max-width: 700px) {
     .photos-shell {
-        width: min(100% - 24px, 1180px);
+        padding: 42px 0 58px;
     }
 
-    .photos-hero {
-        padding: 22px;
+    .photos-intro {
+        grid-template-columns: 1fr;
+        gap: 18px;
+        padding-bottom: 30px;
     }
 
+    .photos-intro h1 {
+        font-size: 64px;
+    }
+
+    .photos-grid {
+        grid-template-columns: 1fr;
+        grid-auto-rows: 145px;
+        gap: 12px;
+        margin-top: 20px;
+    }
+
+    .photo-card,
+    .photo-card:nth-child(8n + 1),
+    .photo-card:nth-child(8n + 6) {
+        grid-row: span 2;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
     .photo-card img {
-        height: 300px;
+        transition: none;
     }
 }

@@ -55,25 +55,6 @@
     color: rgba(223, 236, 250, 0.76);
 }
 
-.flight-site-notes {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-    margin: 0;
-}
-
-.flight-site-notes span {
-    display: inline-flex;
-    align-items: center;
-    padding: 10px 14px;
-    border-radius: 999px;
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    color: #dbe8f5;
-    font-size: 13px;
-    font-weight: 700;
-}
-
 .flight-site-app {
     border-radius: 32px;
     padding: clamp(12px, 1.8vw, 20px);
@@ -98,10 +79,6 @@
 .flight-site-loading-title {
     font-size: 26px;
     font-weight: 800;
-}
-
-.flight-site-loading-copy {
-    opacity: 0.78;
 }
 
 .flight-site-footer {
@@ -171,15 +148,6 @@
     .flight-site-summary {
         font-size: 14px;
         line-height: 1.5;
-    }
-
-    .flight-site-notes {
-        gap: 8px;
-    }
-
-    .flight-site-notes span {
-        padding: 7px 10px;
-        font-size: 11px;
     }
 
     .flight-site-footer {

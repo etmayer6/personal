@@ -56,25 +56,6 @@
     color: rgba(228, 244, 237, 0.82);
 }
 
-.wordsort-site-notes {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-    margin: 0;
-}
-
-.wordsort-site-notes span {
-    display: inline-flex;
-    align-items: center;
-    padding: 8px 12px;
-    border-radius: 999px;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: #e9f7f0;
-    font-size: 12px;
-    font-weight: 700;
-}
-
 .wordsort-site-app {
     border-radius: 32px;
     padding: clamp(10px, 1.5vw, 16px);
@@ -99,10 +80,6 @@
 .wordsort-site-loading-title {
     font-size: 26px;
     font-weight: 800;
-}
-
-.wordsort-site-loading-copy {
-    opacity: 0.78;
 }
 
 .wordsort-site-footer {
@@ -169,23 +146,8 @@
         display: none;
     }
 
-    .wordsort-site-notes {
-        gap: 8px;
-    }
-
-    .wordsort-site-notes span {
-        padding: 7px 10px;
-        font-size: 11px;
-    }
-
     .wordsort-site-footer {
         padding: 6px 0 18px;
-    }
-}
-
-@media (max-width: 720px) {
-    .wordsort-site-hero {
-        display: none;
     }
 }
 

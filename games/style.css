@@ -1,525 +1,330 @@
 .games-body {
     margin: 0;
     min-height: 100vh;
-    background:
-        radial-gradient(circle at 15% 14%, rgba(75, 126, 180, 0.18), transparent 24%),
-        radial-gradient(circle at 88% 18%, rgba(43, 114, 97, 0.16), transparent 24%),
-        linear-gradient(180deg, #eef4fb 0%, #ffffff 42%, #f4f8fc 100%);
-    color: #16324f;
-}
-
-.games-header {
-    position: sticky;
-    top: 0;
-    z-index: 10;
-    backdrop-filter: blur(14px);
-    background: rgba(10, 25, 41, 0.82);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .games-shell {
-    width: min(1180px, calc(100% - 40px));
     margin: 0 auto;
-    padding: 34px 0 56px;
+    padding: 58px 0 72px;
 }
 
 .games-hero {
-    margin-bottom: 24px;
-}
-
-.games-hero-copy {
-    border-radius: 30px;
-    padding: 40px;
-    background: rgba(255, 255, 255, 0.88);
-    border: 1px solid rgba(29, 53, 87, 0.08);
-    box-shadow: 0 18px 40px rgba(20, 50, 79, 0.08);
+    display: grid;
+    grid-template-columns: minmax(0, 1.25fr) minmax(260px, 0.75fr);
+    gap: 40px;
+    align-items: end;
+    padding: 14px 0 44px;
+    border-bottom: 1px solid rgba(16, 43, 54, 0.18);
 }
 
 .eyebrow {
-    margin: 0 0 10px;
+    margin: 0 0 12px;
     font-size: 12px;
+    font-weight: 800;
     letter-spacing: 0.16em;
     text-transform: uppercase;
-    color: #5a7b9b;
-    font-weight: 700;
 }
 
-.games-hero-copy h1 {
+.games-hero h1 {
     margin: 0;
-    font-size: clamp(42px, 7vw, 76px);
-    line-height: 0.96;
-    letter-spacing: -0.04em;
-    color: #10263b;
+    color: #102b36;
+    font-size: clamp(68px, 9vw, 106px);
+    line-height: 0.86;
+    letter-spacing: -0.065em;
 }
 
-.games-summary {
-    max-width: 760px;
-    margin: 18px 0 0;
-    line-height: 1.8;
-    font-size: 18px;
-    color: #48627c;
+.games-hero > p {
+    max-width: 390px;
+    margin: 0 0 4px;
+    color: #4c636a;
+    font-size: 17px;
+    line-height: 1.65;
 }
 
 .games-grid {
     display: grid;
-    gap: 22px;
+    grid-template-columns: minmax(0, 1.22fr) minmax(330px, 0.78fr);
+    gap: 16px;
+    margin-top: 30px;
+}
+
+.games-side {
+    display: grid;
+    gap: 16px;
 }
 
 .game-card {
-    border-radius: 28px;
-    padding: 28px;
-    background: rgba(255, 255, 255, 0.9);
-    border: 1px solid rgba(29, 53, 87, 0.08);
-    box-shadow: 0 16px 36px rgba(20, 50, 79, 0.08);
+    min-width: 0;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(16, 43, 54, 0.17);
+    background: #fffdf8;
+    transition: transform 190ms ease, box-shadow 190ms ease;
+}
+
+.game-card:hover,
+.game-card:focus-within {
+    transform: translateY(-4px);
+    box-shadow: 0 24px 50px rgba(16, 43, 54, 0.13);
+}
+
+.game-flight {
+    min-height: 650px;
+    display: grid;
+    grid-template-rows: auto 1fr;
+    color: #f8f1e6;
+    background: #194f61;
+}
+
+.games-side .game-card {
+    min-height: 317px;
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(150px, 0.95fr);
+}
+
+.game-copy {
+    position: relative;
+    z-index: 2;
+    padding: 30px;
+}
+
+.game-flight .game-copy {
+    padding: 38px;
+}
+
+.game-meta {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    color: #8f3e24;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+}
+
+.game-flight .game-meta {
+    color: #efad84;
 }
 
 .game-card h2 {
-    margin: 0;
-    font-size: 32px;
-    color: #14304a;
+    margin: 42px 0 14px;
+    color: #102b36;
+    font-size: clamp(34px, 4.5vw, 58px);
+    line-height: 0.95;
+    letter-spacing: -0.045em;
+}
+
+.game-flight h2 {
+    color: #f8f1e6;
+    font-size: clamp(48px, 6vw, 72px);
+}
+
+.games-side .game-card h2 {
+    margin-top: 28px;
+    font-size: 35px;
 }
 
 .game-card p {
-    margin: 14px 0 0;
-    line-height: 1.8;
-    color: #48627c;
+    max-width: 520px;
+    margin: 0;
+    color: #4c636a;
+    line-height: 1.62;
 }
 
-.game-tag {
-    margin: 0 0 10px;
-    font-size: 12px;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: #5a7b9b;
-    font-weight: 700;
+.game-flight p {
+    color: rgba(255, 255, 255, 0.72);
 }
 
-.featured {
-    display: grid;
-    grid-template-columns: minmax(0, 1.2fr) minmax(250px, 0.8fr);
-    gap: 24px;
-    align-items: center;
-}
-
-.game-list {
-    margin: 16px 0 0;
-    padding-left: 18px;
-    line-height: 1.9;
-    color: #35506b;
-}
-
-.game-link {
+.game-card a,
+.back-to-work {
     display: inline-flex;
-    margin-top: 20px;
-    padding: 14px 20px;
-    border-radius: 999px;
-    text-decoration: none;
-    font-weight: 700;
-    background: #143b63;
+    gap: 12px;
+    margin-top: 26px;
+    color: #194f61;
+    font-weight: 800;
+    text-underline-offset: 5px;
+}
+
+.game-flight a {
     color: #fff;
 }
 
-.game-art {
-    min-height: 260px;
-    border-radius: 26px;
-    display: grid;
-    place-items: center;
+.flight-poster {
+    position: relative;
+    min-height: 340px;
+    margin: 0 38px 38px;
     overflow: hidden;
+    background: linear-gradient(180deg, #cae3e7 0 48%, #829b83 48% 100%);
 }
 
-.flightsim-art {
-    position: relative;
-    background:
-        radial-gradient(circle at 72% 18%, rgba(255, 255, 255, 0.18), transparent 20%),
-        linear-gradient(180deg, #7cb8ef 0%, #3f81b6 45%, #1c3e64 100%);
-}
-
-.blockblast-art {
-    position: relative;
-    background:
-        radial-gradient(circle at 72% 18%, rgba(255, 255, 255, 0.18), transparent 20%),
-        linear-gradient(145deg, #1a2447 0%, #3f5ea2 100%);
-}
-
-.wordsort-art {
-    position: relative;
-    background:
-        radial-gradient(circle at 72% 18%, rgba(255, 255, 255, 0.18), transparent 20%),
-        linear-gradient(145deg, #143b36 0%, #2b7b6a 100%);
-}
-
-.flightsim-sun {
+.poster-sun {
     position: absolute;
-    top: 34px;
+    top: 36px;
     right: 42px;
-    width: 54px;
-    height: 54px;
+    width: 60px;
+    height: 60px;
     border-radius: 50%;
-    background: rgba(255, 242, 188, 0.92);
-    box-shadow: 0 0 0 14px rgba(255, 242, 188, 0.12);
+    background: #f4b45c;
+    box-shadow: 0 0 0 16px rgba(244, 180, 92, 0.18);
 }
 
-.flightsim-horizon {
+.poster-plane {
     position: absolute;
-    inset: auto 0 0;
-    height: 44%;
-    background: linear-gradient(180deg, rgba(36, 90, 70, 0.28) 0%, rgba(27, 71, 56, 0.68) 100%);
+    top: 90px;
+    left: 64px;
+    width: 94px;
+    height: 20px;
+    border-radius: 60% 30% 30% 60%;
+    background: #c55a32;
+    transform: rotate(-8deg);
 }
 
-.flightsim-runway {
+.poster-plane::after {
+    content: "";
     position: absolute;
-    bottom: -12px;
+    top: -27px;
+    left: 42px;
+    width: 17px;
+    height: 74px;
+    background: #c55a32;
+    clip-path: polygon(36% 0, 64% 0, 100% 100%, 0 100%);
+}
+
+.poster-runway {
+    position: absolute;
+    bottom: -34px;
     left: 50%;
     width: 150px;
-    height: 210px;
-    background:
-        linear-gradient(180deg, rgba(255, 255, 255, 0.9) 0 16px, transparent 16px 30px),
-        linear-gradient(180deg, rgba(255, 255, 255, 0.9) 34px 50px, transparent 50px 64px),
-        linear-gradient(180deg, rgba(255, 255, 255, 0.9) 68px 84px, transparent 84px 98px),
-        linear-gradient(180deg, rgba(255, 255, 255, 0.9) 102px 118px, transparent 118px 132px),
-        linear-gradient(180deg, rgba(255, 255, 255, 0.9) 136px 152px, transparent 152px 166px),
-        linear-gradient(180deg, rgba(255, 255, 255, 0.9) 170px 186px, transparent 186px 100%),
-        linear-gradient(180deg, #485966 0%, #273844 100%);
-    clip-path: polygon(46% 0%, 54% 0%, 100% 100%, 0% 100%);
+    height: 250px;
+    background: #344a4e;
+    clip-path: polygon(45% 0, 55% 0, 100% 100%, 0 100%);
     transform: translateX(-50%);
-    box-shadow: 0 -16px 36px rgba(0, 0, 0, 0.12);
 }
 
-.flightsim-plane {
-    position: absolute;
-    top: 88px;
-    left: 78px;
-    width: 124px;
-    height: 72px;
-    transform: rotate(-10deg);
-}
-
-.plane-body,
-.plane-wing,
-.plane-tail {
-    position: absolute;
-    background: rgba(255, 255, 255, 0.94);
-    box-shadow: 0 10px 18px rgba(0, 0, 0, 0.16);
-}
-
-.plane-body {
-    top: 24px;
-    left: 50px;
-    width: 18px;
-    height: 42px;
-    border-radius: 14px;
-}
-
-.plane-wing {
-    top: 30px;
-    left: 14px;
-    width: 90px;
-    height: 12px;
-    border-radius: 999px;
-}
-
-.plane-tail {
-    top: 14px;
-    left: 56px;
-    width: 10px;
-    height: 18px;
-    border-radius: 8px 8px 2px 2px;
-}
-
-.flightsim-hud {
-    position: absolute;
-    inset: 32px;
-    border-radius: 26px;
-    border: 1px solid rgba(255, 255, 255, 0.18);
-}
-
-.flightsim-hud::before,
-.flightsim-hud::after {
+.poster-runway::after {
     content: "";
     position: absolute;
-    background: rgba(255, 255, 255, 0.34);
-}
-
-.flightsim-hud::before {
+    top: 20px;
     left: 50%;
-    top: 22px;
-    bottom: 22px;
-    width: 1px;
-}
-
-.flightsim-hud::after {
-    left: 22px;
-    right: 22px;
-    top: 50%;
-    height: 1px;
-}
-
-.blockblast-frame {
-    width: min(300px, calc(100% - 28px));
-    padding: 18px;
-    border-radius: 26px;
-    background: rgba(11, 18, 35, 0.54);
-    box-shadow: 0 22px 36px rgba(0, 0, 0, 0.2);
-}
-
-.blockblast-score {
-    width: 96px;
-    height: 14px;
-    margin: 0 auto 16px;
-    border-radius: 999px;
-    background: linear-gradient(90deg, rgba(255, 210, 119, 0.95), rgba(255, 140, 108, 0.9));
-    box-shadow: 0 0 0 6px rgba(255, 255, 255, 0.08);
-}
-
-.blockblast-grid {
-    display: grid;
-    grid-template-columns: repeat(8, 1fr);
-    gap: 6px;
-    padding: 12px;
-    border-radius: 20px;
-    background: rgba(255, 255, 255, 0.08);
-    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
-}
-
-.blockblast-cell {
-    aspect-ratio: 1;
-    border-radius: 10px;
-    background: rgba(255, 255, 255, 0.08);
-    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
-}
-
-.blockblast-cell.filled {
-    box-shadow:
-        inset 0 2px 4px rgba(255, 255, 255, 0.34),
-        inset 0 -3px 4px rgba(0, 0, 0, 0.16),
-        0 8px 14px rgba(0, 0, 0, 0.14);
-}
-
-.blockblast-cell.cyan {
-    background: linear-gradient(180deg, #73f1ff 0%, #31b6ff 100%);
-}
-
-.blockblast-cell.yellow {
-    background: linear-gradient(180deg, #ffe78b 0%, #ffb142 100%);
-}
-
-.blockblast-cell.pink {
-    background: linear-gradient(180deg, #ff9be5 0%, #d75eff 100%);
-}
-
-.blockblast-cell.green {
-    background: linear-gradient(180deg, #85ffba 0%, #33c875 100%);
-}
-
-.blockblast-cell.orange {
-    background: linear-gradient(180deg, #ffbf86 0%, #ff7a59 100%);
-}
-
-.blockblast-cell.violet {
-    background: linear-gradient(180deg, #b9abff 0%, #7a68ff 100%);
-}
-
-.blockblast-cell.red {
-    background: linear-gradient(180deg, #ff9b95 0%, #ff576d 100%);
-}
-
-.blockblast-tray {
-    display: flex;
-    justify-content: center;
-    gap: 12px;
-    margin-top: 16px;
-}
-
-.tray-piece {
-    position: relative;
-    border-radius: 14px;
-    background: rgba(255, 255, 255, 0.12);
-    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
-}
-
-.piece-line {
-    width: 72px;
-    height: 24px;
-}
-
-.piece-line::before {
-    content: "";
-    position: absolute;
-    inset: 5px;
-    border-radius: 10px;
-    background: linear-gradient(180deg, #73f1ff 0%, #31b6ff 100%);
-}
-
-.piece-corner {
-    width: 44px;
-    height: 44px;
-}
-
-.piece-corner::before,
-.piece-corner::after {
-    content: "";
-    position: absolute;
-    border-radius: 10px;
-    background: linear-gradient(180deg, #ff9be5 0%, #d75eff 100%);
-}
-
-.piece-corner::before {
-    inset: 5px 20px 5px 5px;
-}
-
-.piece-corner::after {
-    inset: 20px 5px 5px 5px;
-}
-
-.piece-square {
-    width: 44px;
-    height: 44px;
-}
-
-.piece-square::before {
-    content: "";
-    position: absolute;
-    inset: 5px;
-    border-radius: 10px;
-    background: linear-gradient(180deg, #ffe78b 0%, #ffb142 100%);
-}
-
-.wordsort-board {
-    width: min(300px, calc(100% - 28px));
-    padding: 18px;
-    border-radius: 28px;
-    background: rgba(7, 31, 27, 0.42);
-    box-shadow: 0 22px 36px rgba(0, 0, 0, 0.2);
-}
-
-.wordsort-top {
-    display: grid;
-    grid-template-columns: 68px repeat(3, 1fr);
-    gap: 10px;
-    align-items: end;
-}
-
-.wordsort-pile {
-    height: 88px;
-    border-radius: 18px;
-    background:
-        linear-gradient(180deg, rgba(255, 232, 166, 0.94) 0 18px, transparent 18px),
-        linear-gradient(145deg, #4a74b8 0%, #2d538f 100%);
-    box-shadow:
-        inset 0 0 0 2px rgba(255, 255, 255, 0.18),
-        0 14px 22px rgba(0, 0, 0, 0.18);
-}
-
-.wordsort-crown {
-    height: 108px;
-    border-radius: 20px;
-    border: 2px dashed rgba(255, 255, 255, 0.22);
-    position: relative;
-}
-
-.wordsort-crown::before {
-    content: "";
-    position: absolute;
-    left: 50%;
-    top: 16px;
-    width: 34px;
-    height: 24px;
-    border-radius: 10px 10px 12px 12px;
+    width: 5px;
+    height: 190px;
+    background: repeating-linear-gradient(180deg, #fff 0 17px, transparent 17px 34px);
     transform: translateX(-50%);
-    background: linear-gradient(180deg, rgba(255, 242, 200, 0.96), rgba(240, 192, 90, 0.92));
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.14);
 }
 
-.wordsort-crown::after {
-    content: "";
-    position: absolute;
-    left: 50%;
-    bottom: 14px;
-    width: 36px;
-    height: 12px;
-    transform: translateX(-50%);
-    border-radius: 999px;
-    background: rgba(255, 255, 255, 0.18);
+.game-block {
+    background: #fff6e9;
 }
 
-.wordsort-columns {
+.block-poster {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 12px;
-    margin-top: 18px;
+    align-content: center;
+    gap: 7px;
+    padding: 22px;
+    background: #1b3140;
 }
 
-.wordsort-stack {
-    position: relative;
-    height: 146px;
-    border-radius: 22px;
-    background: rgba(255, 255, 255, 0.12);
+.block-poster span {
+    aspect-ratio: 1;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.04);
 }
 
-.wordsort-stack::before,
-.wordsort-stack::after,
-.wordsort-stack span {
-    content: "";
-    position: absolute;
-    left: 9px;
-    right: 9px;
-    height: 34px;
-    border-radius: 12px;
-    background: linear-gradient(180deg, rgba(255, 250, 240, 0.98), rgba(243, 236, 221, 0.95));
-    box-shadow: 0 10px 16px rgba(0, 0, 0, 0.12);
+.block-poster .filled.rust { background: #c55a32; }
+.block-poster .filled.teal { background: #4c9a97; }
+.block-poster .filled.gold { background: #d7a84a; }
+.block-poster .filled.green { background: #6c946c; }
+
+.game-word {
+    background: #edf1e8;
 }
 
-.wordsort-stack::before {
-    top: 28px;
+.word-poster {
+    display: grid;
+    align-content: center;
+    gap: 7px;
+    padding: 22px;
+    background: #d7e1d0;
 }
 
-.wordsort-stack::after {
-    top: 48px;
+.word-poster span {
+    padding: 8px;
+    color: #194f61;
+    background: #fffdf8;
+    font-family: Georgia, "Palatino Linotype", serif;
+    font-size: 12px;
+    transform: rotate(1.5deg);
 }
 
-.wordsort-stack span {
-    top: 70px;
+.word-poster span:nth-child(even) {
+    transform: rotate(-1.5deg);
 }
 
-.wordsort-stack.tall::before {
-    top: 16px;
-}
-
-.wordsort-stack.tall::after {
-    top: 38px;
-}
-
-.wordsort-stack.tall span {
-    top: 60px;
-}
-
-.wordsort-stack.accent span {
-    background: linear-gradient(180deg, rgba(255, 239, 196, 0.98), rgba(239, 191, 88, 0.95));
+.back-to-work {
+    margin: 30px 0 0;
 }
 
 .games-footer {
-    padding: 22px 20px 34px;
-    text-align: center;
-    color: #6a859f;
+    padding: 0 20px 36px;
 }
 
-@media (max-width: 820px) {
-    .featured {
+@media (max-width: 900px) {
+    .games-grid {
         grid-template-columns: 1fr;
+    }
+
+    .games-side {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .games-side .game-card {
+        grid-template-columns: 1fr;
+    }
+
+    .block-poster,
+    .word-poster {
+        min-height: 230px;
     }
 }
 
 @media (max-width: 700px) {
     .games-shell {
-        width: min(100% - 24px, 1180px);
+        padding: 42px 0 58px;
     }
 
-    .games-hero-copy,
+    .games-hero {
+        grid-template-columns: 1fr;
+        gap: 18px;
+        padding-bottom: 30px;
+    }
+
+    .games-hero h1 {
+        font-size: 58px;
+    }
+
+    .games-side {
+        grid-template-columns: 1fr;
+    }
+
+    .game-flight {
+        min-height: 0;
+    }
+
+    .game-flight .game-copy,
+    .game-copy {
+        padding: 24px;
+    }
+
+    .flight-poster {
+        min-height: 300px;
+        margin: 0 24px 24px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
     .game-card {
-        padding: 22px;
-    }
-
-    .game-card h2 {
-        font-size: 28px;
+        transition: none;
     }
 }

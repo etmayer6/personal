@@ -425,5 +425,161 @@ window.PHOTOS_GALLERY = [
         alt: "Gallery photo P1020805",
         tag: "Gallery",
         title: "P1020805"
+    },
+    {
+        src: "../images/photos/P1020872.JPG",
+        alt: "Gallery photo P1020872",
+        tag: "Gallery",
+        title: "P1020872"
+    },
+    {
+        src: "../images/photos/P1020880.JPG",
+        alt: "Gallery photo P1020880",
+        tag: "Gallery",
+        title: "P1020880"
+    },
+    {
+        src: "../images/photos/P1020883.JPG",
+        alt: "Gallery photo P1020883",
+        tag: "Gallery",
+        title: "P1020883"
+    },
+    {
+        src: "../images/photos/P1020884.JPG",
+        alt: "Gallery photo P1020884",
+        tag: "Gallery",
+        title: "P1020884"
+    },
+    {
+        src: "../images/photos/P1020885.JPG",
+        alt: "Gallery photo P1020885",
+        tag: "Gallery",
+        title: "P1020885"
+    },
+    {
+        src: "../images/photos/P1020887.JPG",
+        alt: "Gallery photo P1020887",
+        tag: "Gallery",
+        title: "P1020887"
+    },
+    {
+        src: "../images/photos/P1020888.JPG",
+        alt: "Gallery photo P1020888",
+        tag: "Gallery",
+        title: "P1020888"
+    },
+    {
+        src: "../images/photos/P1020892.JPG",
+        alt: "Gallery photo P1020892",
+        tag: "Gallery",
+        title: "P1020892"
+    },
+    {
+        src: "../images/photos/P1020895.JPG",
+        alt: "Gallery photo P1020895",
+        tag: "Gallery",
+        title: "P1020895"
+    },
+    {
+        src: "../images/photos/P1020899.JPG",
+        alt: "Gallery photo P1020899",
+        tag: "Gallery",
+        title: "P1020899"
+    },
+    {
+        src: "../images/photos/P1020902.JPG",
+        alt: "Gallery photo P1020902",
+        tag: "Gallery",
+        title: "P1020902"
+    },
+    {
+        src: "../images/photos/P1020905.JPG",
+        alt: "Gallery photo P1020905",
+        tag: "Gallery",
+        title: "P1020905"
+    },
+    {
+        src: "../images/photos/P1020906.JPG",
+        alt: "Gallery photo P1020906",
+        tag: "Gallery",
+        title: "P1020906"
+    },
+    {
+        src: "../images/photos/P1020909.JPG",
+        alt: "Gallery photo P1020909",
+        tag: "Gallery",
+        title: "P1020909"
+    },
+    {
+        src: "../images/photos/P1020911.JPG",
+        alt: "Gallery photo P1020911",
+        tag: "Gallery",
+        title: "P1020911"
+    },
+    {
+        src: "../images/photos/P1020915.JPG",
+        alt: "Gallery photo P1020915",
+        tag: "Gallery",
+        title: "P1020915"
+    },
+    {
+        src: "../images/photos/P1020918.JPG",
+        alt: "Gallery photo P1020918",
+        tag: "Gallery",
+        title: "P1020918"
+    },
+    {
+        src: "../images/photos/P1020920.JPG",
+        alt: "Gallery photo P1020920",
+        tag: "Gallery",
+        title: "P1020920"
+    },
+    {
+        src: "../images/photos/P1020923.JPG",
+        alt: "Gallery photo P1020923",
+        tag: "Gallery",
+        title: "P1020923"
+    },
+    {
+        src: "../images/photos/P1020929.JPG",
+        alt: "Gallery photo P1020929",
+        tag: "Gallery",
+        title: "P1020929"
+    },
+    {
+        src: "../images/photos/P1020933.JPG",
+        alt: "Gallery photo P1020933",
+        tag: "Gallery",
+        title: "P1020933"
+    },
+    {
+        src: "../images/photos/P1020934.JPG",
+        alt: "Gallery photo P1020934",
+        tag: "Gallery",
+        title: "P1020934"
+    },
+    {
+        src: "../images/photos/P1020938.JPG",
+        alt: "Gallery photo P1020938",
+        tag: "Gallery",
+        title: "P1020938"
+    },
+    {
+        src: "../images/photos/P1020943.JPG",
+        alt: "Gallery photo P1020943",
+        tag: "Gallery",
+        title: "P1020943"
+    },
+    {
+        src: "../images/photos/P1020946.JPG",
+        alt: "Gallery photo P1020946",
+        tag: "Gallery",
+        title: "P1020946"
+    },
+    {
+        src: "../images/photos/P1020949.JPG",
+        alt: "Gallery photo P1020949",
+        tag: "Gallery",
+        title: "P1020949"
     }
 ];

@@ -55,25 +55,6 @@
     color: rgba(229, 239, 255, 0.8);
 }
 
-.blockblast-site-notes {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-    margin: 0;
-}
-
-.blockblast-site-notes span {
-    display: inline-flex;
-    align-items: center;
-    padding: 10px 14px;
-    border-radius: 999px;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: #e6efff;
-    font-size: 13px;
-    font-weight: 700;
-}
-
 .blockblast-site-app {
     border-radius: 32px;
     padding: clamp(12px, 1.8vw, 20px);
@@ -98,10 +79,6 @@
 .blockblast-site-loading-title {
     font-size: 26px;
     font-weight: 800;
-}
-
-.blockblast-site-loading-copy {
-    opacity: 0.78;
 }
 
 .blockblast-site-footer {
@@ -150,13 +127,8 @@
     }
 
     .blockblast-site-app {
-        order: 1;
         border-radius: 20px;
         padding: 6px;
-    }
-
-    .blockblast-site-hero {
-        order: 2;
     }
 
     .blockblast-site-copy {
@@ -172,15 +144,6 @@
     .blockblast-site-summary {
         font-size: 14px;
         line-height: 1.5;
-    }
-
-    .blockblast-site-notes {
-        gap: 8px;
-    }
-
-    .blockblast-site-notes span {
-        padding: 7px 10px;
-        font-size: 11px;
     }
 
     .blockblast-site-footer {

@@ -24,448 +24,171 @@
     <main class="projects-shell">
         <section class="projects-hero">
             <div class="projects-hero-copy">
-                <p class="eyebrow">Projects</p>
-                <h1>Selected Work</h1>
+                <p class="eyebrow">Selected work / 2026</p>
+                <h1>Built to be used.</h1>
                 <p class="projects-summary">
-                    Practical software, full-stack builds, and interactive experiments. This is the work I can share
-                    publicly, from a completed capstone to small tools and browser games.
+                    Full-stack applications, engineering tools, and browser experiments that turn messy processes into
+                    clear, testable products.
                 </p>
+            </div>
+
+            <aside class="project-tally" aria-label="Project totals">
+                <p>Project index</p>
+                <strong>12</strong>
+                <span>builds</span>
+                <dl>
+                    <div><dt>Featured</dt><dd>3</dd></div>
+                    <div><dt>Open workbench</dt><dd>6</dd></div>
+                    <div><dt>Private builds</dt><dd>3</dd></div>
+                </dl>
+            </aside>
+        </section>
+
+        <section id="featured" class="portfolio-section">
+            <div class="section-heading">
+                <div>
+                    <p class="eyebrow">Featured builds</p>
+                    <h2>Three projects, three kinds of problem.</h2>
+                </div>
+            </div>
+
+            <div class="featured-layout">
+                <article class="feature-card feature-primary">
+                    <div class="feature-copy">
+                        <div class="feature-meta">
+                            <span>01</span>
+                            <span>Capstone / Full-stack</span>
+                        </div>
+                        <h3>CourseFlow</h3>
+                        <p>
+                            A visual course-planning system that turns degree requirements, prerequisite chains, and
+                            semester decisions into a flow students can actually reason about.
+                        </p>
+                        <div class="project-tags" aria-label="CourseFlow focus areas">
+                            <span>Planning UX</span><span>Data modeling</span><span>Full-stack</span>
+                        </div>
+                        <a class="feature-link" href="https://sdmay26-19.sd.ece.iastate.edu/" target="_blank" rel="noopener noreferrer">Open CourseFlow <span aria-hidden="true">&nearr;</span></a>
+                    </div>
+                    <div class="courseflow-visual" aria-hidden="true">
+                        <div class="flow-line flow-line-a"></div>
+                        <div class="flow-line flow-line-b"></div>
+                        <div class="flow-line flow-line-c"></div>
+                        <div class="flow-node flow-node-a"><small>Start</small><strong>Degree</strong></div>
+                        <div class="flow-node flow-node-b"><small>Map</small><strong>Requirements</strong></div>
+                        <div class="flow-node flow-node-c"><small>Plan</small><strong>Semesters</strong></div>
+                        <div class="flow-node flow-node-d"><small>Track</small><strong>Progress</strong></div>
+                    </div>
+                </article>
+
+                <div class="feature-stack">
+                    <article class="feature-card feature-flight">
+                        <div class="feature-copy">
+                            <div class="feature-meta"><span>02</span><span>Simulation</span></div>
+                            <h3>Flight Sim</h3>
+                            <p>A browser flying sandbox tuned around readable approaches, responsive controls, and repeatable landing practice.</p>
+                            <a class="feature-link" href="../flight-sim/">Take off <span aria-hidden="true">&rarr;</span></a>
+                        </div>
+                        <div class="flight-visual" aria-hidden="true">
+                            <span class="flight-sun"></span>
+                            <span class="flight-horizon"></span>
+                            <span class="flight-runway"></span>
+                            <span class="flight-plane"></span>
+                        </div>
+                    </article>
+
+                    <article class="feature-card feature-word">
+                        <div class="feature-copy">
+                            <div class="feature-meta"><span>03</span><span>Puzzle design</span></div>
+                            <h3>Word Sort Solitaire</h3>
+                            <p>An association puzzle built around clue cards, limited crown slots, and a board that tightens as you solve.</p>
+                            <a class="feature-link" href="../word-sort/">Play a round <span aria-hidden="true">&rarr;</span></a>
+                        </div>
+                        <div class="word-visual" aria-hidden="true">
+                            <div><span>Orbit</span><span>Comet</span><span>Moon</span></div>
+                            <div><span>Tempo</span><span>Chord</span></div>
+                            <div><span>Quartz</span><span>Opal</span><span>Jade</span></div>
+                        </div>
+                    </article>
+                </div>
             </div>
         </section>
 
-        <section class="projects-grid">
-            <article class="project-card featured">
-                <div class="project-copy">
-                    <p class="project-tag">Featured Project</p>
-                    <h2>Apartment Hunt</h2>
-                    <p>
-                        A curated apartment board built for quick filtering, fit scoring, and practical comparison. It turns
-                        a messy search process into something faster to review and easier to share.
-                    </p>
-                    <ul class="project-list">
-                        <li>Static public board backed by a sanitized data snapshot</li>
-                        <li>Filterable listings with fit-based ranking</li>
-                        <li>Designed as a safe public slice of a larger private system</li>
-                    </ul>
-                    <a class="project-link" href="../apartments/">Open Apartment Hunt</a>
+        <section id="workbench" class="portfolio-section workbench-section">
+            <div class="section-heading">
+                <div>
+                    <p class="eyebrow">The workbench</p>
+                    <h2>Useful tools and curious detours.</h2>
                 </div>
-                <div class="project-art" aria-hidden="true">
-                    <div class="project-house">
-                        <div class="roof"></div>
-                        <div class="body"></div>
-                        <div class="door"></div>
-                        <div class="window left"></div>
-                        <div class="window right"></div>
-                    </div>
-                </div>
-            </article>
+            </div>
 
-            <article class="project-card featured">
-                <div class="project-copy">
-                    <p class="project-tag">Public Export</p>
-                    <h2>Travel Map</h2>
-                    <p>
-                        A sanitized frontend export of my travel map that shows the places I have been on a public
-                        static map, with no backend behind it.
-                    </p>
-                    <ul class="project-list">
-                        <li>Static JSON export from personal travel data</li>
-                        <li>Interactive map and searchable place list</li>
-                        <li>Public-safe version of a larger private feature</li>
-                    </ul>
-                    <a class="project-link" href="../travel/">Open Travel Map</a>
-                </div>
-                <div class="project-art travel-art" aria-hidden="true">
-                    <div class="travel-globe"></div>
-                    <div class="travel-dot one"></div>
-                    <div class="travel-dot two"></div>
-                    <div class="travel-dot three"></div>
-                </div>
-            </article>
+            <div class="archive-grid">
+                <article class="archive-card tone-rust">
+                    <div class="archive-top"><span class="archive-number">04</span><span class="archive-type">Decision tool</span></div>
+                    <h3>Apartment Hunt</h3>
+                    <p>A filterable apartment board with fit scoring that turns a messy search into a practical shortlist.</p>
+                    <div class="archive-footer"><span>Ranking / Filters</span><a href="../apartments/" aria-label="Open Apartment Hunt">&rarr;</a></div>
+                </article>
 
-            <article class="project-card featured">
-                <div class="project-copy">
-                    <p class="project-tag">Simulation Project</p>
-                    <h2>Flight Sim</h2>
-                    <p>
-                        A browser flight simulator that grew from a lightweight prototype into a proper 3D flying
-                        sandbox. The focus is on readable runway approaches, believable control feel, and the kind of
-                        short landing practice loop that is fun to keep tuning.
-                    </p>
-                    <ul class="project-list">
-                        <li>Custom WebGL-style 3D scene with aircraft, runway, and terrain rendering</li>
-                        <li>Iterated around fixed-wing handling, camera behavior, trim, and landing feel</li>
-                        <li>Validated with repeatable scripted checks for flight, crash, and landing behavior</li>
-                    </ul>
-                    <a class="project-link" href="../flight-sim/">Open Flight Sim</a>
-                </div>
-                <div class="project-art flightsim-art" aria-hidden="true">
-                    <div class="flightsim-sun"></div>
-                    <div class="flightsim-horizon"></div>
-                    <div class="flightsim-runway"></div>
-                    <div class="flightsim-plane">
-                        <div class="plane-body"></div>
-                        <div class="plane-wing"></div>
-                        <div class="plane-tail"></div>
-                    </div>
-                    <div class="flightsim-hud"></div>
-                </div>
-            </article>
+                <article class="archive-card tone-blue">
+                    <div class="archive-top"><span class="archive-number">05</span><span class="archive-type">Data map</span></div>
+                    <h3>Travel Map</h3>
+                    <p>A searchable map generated from photo GPS data.</p>
+                    <div class="archive-footer"><span>Map / Search</span><a href="../travel/" aria-label="Open Travel Map">&rarr;</a></div>
+                </article>
 
-            <article class="project-card featured">
-                <div class="project-copy">
-                    <p class="project-tag">Arcade Game</p>
-                    <h2>Block Blast</h2>
-                    <p>
-                        A browser puzzle game built around the satisfying loop of placing pieces, clearing rows and
-                        columns, and keeping the board alive as long as possible. It takes the feel of a mobile block
-                        puzzle and turns it into a polished desktop-and-phone web version.
-                    </p>
-                    <ul class="project-list">
-                        <li>8x8 endless puzzle board with drag-and-place and click placement</li>
-                        <li>Row and column clears, combo scoring, fullscreen mode, and seeded opening racks</li>
-                        <li>Designed and tuned as a lightweight standalone game experiment</li>
-                    </ul>
-                    <a class="project-link" href="../block-blast/">Open Block Blast</a>
-                </div>
-                <div class="project-art blockblast-art" aria-hidden="true">
-                    <div class="blockblast-frame">
-                        <div class="blockblast-score"></div>
-                        <div class="blockblast-grid">
-                            <span class="blockblast-cell filled cyan"></span>
-                            <span class="blockblast-cell filled cyan"></span>
-                            <span class="blockblast-cell filled cyan"></span>
-                            <span class="blockblast-cell"></span>
-                            <span class="blockblast-cell filled yellow"></span>
-                            <span class="blockblast-cell"></span>
-                            <span class="blockblast-cell"></span>
-                            <span class="blockblast-cell"></span>
+                <article class="archive-card tone-gold">
+                    <div class="archive-top"><span class="archive-number">06</span><span class="archive-type">Arcade game</span></div>
+                    <h3>Block Blast</h3>
+                    <p>An endless 8x8 block puzzle with drag placement, row and column clears, combos, and phone support.</p>
+                    <div class="archive-footer"><span>Game feel / Mobile</span><a href="../block-blast/" aria-label="Open Block Blast">&rarr;</a></div>
+                </article>
 
-                            <span class="blockblast-cell"></span>
-                            <span class="blockblast-cell filled pink"></span>
-                            <span class="blockblast-cell"></span>
-                            <span class="blockblast-cell"></span>
-                            <span class="blockblast-cell filled yellow"></span>
-                            <span class="blockblast-cell"></span>
-                            <span class="blockblast-cell"></span>
-                            <span class="blockblast-cell"></span>
+                <article class="archive-card tone-green">
+                    <div class="archive-top"><span class="archive-number">07</span><span class="archive-type">Recommendation tool</span></div>
+                    <h3>Groggy Climbs</h3>
+                    <p>A sortable climbing shortlist built from route history, preferred style, grades, and location data.</p>
+                    <div class="archive-footer"><span>Ranking / Climbing</span><a href="../groggy-climbs/" aria-label="Open Groggy Climbs">&rarr;</a></div>
+                </article>
 
-                            <span class="blockblast-cell"></span>
-                            <span class="blockblast-cell filled pink"></span>
-                            <span class="blockblast-cell filled pink"></span>
-                            <span class="blockblast-cell filled pink"></span>
-                            <span class="blockblast-cell filled yellow"></span>
-                            <span class="blockblast-cell"></span>
-                            <span class="blockblast-cell filled green"></span>
-                            <span class="blockblast-cell"></span>
+                <article class="archive-card tone-cyan">
+                    <div class="archive-top"><span class="archive-number">08</span><span class="archive-type">Open source</span></div>
+                    <h3>Zulip</h3>
+                    <p>Contributions to a production-scale threaded chat codebase.</p>
+                    <div class="archive-footer"><span>Product / Messaging</span><a href="https://github.com/etmayer6/zulip" target="_blank" rel="noopener noreferrer" aria-label="View Zulip repository">&nearr;</a></div>
+                </article>
 
-                            <span class="blockblast-cell"></span>
-                            <span class="blockblast-cell"></span>
-                            <span class="blockblast-cell"></span>
-                            <span class="blockblast-cell"></span>
-                            <span class="blockblast-cell"></span>
-                            <span class="blockblast-cell"></span>
-                            <span class="blockblast-cell filled green"></span>
-                            <span class="blockblast-cell"></span>
+                <article class="archive-card tone-slate">
+                    <div class="archive-top"><span class="archive-number">09</span><span class="archive-type">Coursework</span></div>
+                    <h3>SE / COM S 319</h3>
+                    <p>An early web application project focused on frontend structure and team delivery.</p>
+                    <div class="archive-footer"><span>Web app / Foundations</span><a href="https://github.com/etmayer6/secoms319" target="_blank" rel="noopener noreferrer" aria-label="View SE COM S 319 repository">&nearr;</a></div>
+                </article>
 
-                            <span class="blockblast-cell filled orange"></span>
-                            <span class="blockblast-cell filled orange"></span>
-                            <span class="blockblast-cell"></span>
-                            <span class="blockblast-cell"></span>
-                            <span class="blockblast-cell"></span>
-                            <span class="blockblast-cell"></span>
-                            <span class="blockblast-cell filled green"></span>
-                            <span class="blockblast-cell filled green"></span>
+                <article class="archive-card tone-berry">
+                    <div class="archive-top"><span class="archive-number">10</span><span class="archive-type">Personal system</span></div>
+                    <h3>Diet Tracker</h3>
+                    <p>A private food-logging tool for quick meal capture, image-assisted analysis, and habit review over time.</p>
+                    <div class="archive-footer"><span>AI-assisted / Data</span><span class="private-label">Private build</span></div>
+                </article>
 
-                            <span class="blockblast-cell"></span>
-                            <span class="blockblast-cell filled violet"></span>
-                            <span class="blockblast-cell filled violet"></span>
-                            <span class="blockblast-cell"></span>
-                            <span class="blockblast-cell"></span>
-                            <span class="blockblast-cell"></span>
-                            <span class="blockblast-cell"></span>
-                            <span class="blockblast-cell"></span>
+                <article class="archive-card tone-orange">
+                    <div class="archive-top"><span class="archive-number">11</span><span class="archive-type">Planning tool</span></div>
+                    <h3>Receipt Meal Planner</h3>
+                    <p>An OCR-first workflow that turns grocery receipts into parsed ingredients and realistic recipe ideas.</p>
+                    <div class="archive-footer"><span>OCR / Local models</span><span class="private-label">Private build</span></div>
+                </article>
 
-                            <span class="blockblast-cell"></span>
-                            <span class="blockblast-cell"></span>
-                            <span class="blockblast-cell filled violet"></span>
-                            <span class="blockblast-cell"></span>
-                            <span class="blockblast-cell"></span>
-                            <span class="blockblast-cell filled red"></span>
-                            <span class="blockblast-cell filled red"></span>
-                            <span class="blockblast-cell"></span>
-
-                            <span class="blockblast-cell"></span>
-                            <span class="blockblast-cell"></span>
-                            <span class="blockblast-cell"></span>
-                            <span class="blockblast-cell"></span>
-                            <span class="blockblast-cell"></span>
-                            <span class="blockblast-cell filled red"></span>
-                            <span class="blockblast-cell filled red"></span>
-                            <span class="blockblast-cell"></span>
-                        </div>
-                        <div class="blockblast-tray">
-                            <div class="tray-piece piece-line"></div>
-                            <div class="tray-piece piece-corner"></div>
-                            <div class="tray-piece piece-square"></div>
-                        </div>
-                    </div>
-                </div>
-            </article>
-
-            <article class="project-card featured">
-                <div class="project-copy">
-                    <p class="project-tag">Puzzle Export</p>
-                    <h2>Word Sort Solitaire</h2>
-                    <p>
-                        A standalone word sorting game built around buried clue cards, limited crown slots, and tighter
-                        association solving. It takes the mobile-style clue-and-sort loop and turns it into a browser
-                        version that still feels like an actual puzzle instead of a word list.
-                    </p>
-                    <ul class="project-list">
-                        <li>Association-based clue stacks with more hidden clue cards than active crowns</li>
-                        <li>Drag-and-drop, fullscreen support, and a progressively tighter board state</li>
-                        <li>Public static export with no backend required</li>
-                    </ul>
-                    <a class="project-link" href="../word-sort/">Open Word Sort</a>
-                </div>
-                <div class="project-art wordsort-art" aria-hidden="true">
-                    <div class="wordsort-board">
-                        <div class="wordsort-top">
-                            <div class="wordsort-pile"></div>
-                            <div class="wordsort-crown crown-one"></div>
-                            <div class="wordsort-crown crown-two"></div>
-                            <div class="wordsort-crown crown-three"></div>
-                        </div>
-                        <div class="wordsort-columns">
-                            <div class="wordsort-stack tall"><span></span></div>
-                            <div class="wordsort-stack"><span></span></div>
-                            <div class="wordsort-stack tall accent"><span></span></div>
-                            <div class="wordsort-stack"><span></span></div>
-                        </div>
-                    </div>
-                </div>
-            </article>
-
-            <article class="project-card featured">
-                <div class="project-copy">
-                    <p class="project-tag">Climbing Export</p>
-                    <h2>Groggy Climbs</h2>
-                    <p>
-                        A climbing recommendation board built around Garrett Roggy's tick history and preferred style.
-                        It turns a long route discussion into a sortable shortlist with relevance tiers, location
-                        grouping, and direct Mountain Project links.
-                    </p>
-                    <ul class="project-list">
-                        <li>Includes every climb I recommended for Garrett, from safe sends to first 12a ideas</li>
-                        <li>Sorts by relevance, location, grade, or route name</li>
-                        <li>Built as a static public page with route notes and Mountain Project links</li>
-                    </ul>
-                    <a class="project-link" href="../groggy-climbs/">Open Groggy Climbs</a>
-                </div>
-                <div class="project-art groggy-art" aria-hidden="true">
-                    <div class="groggy-wall">
-                        <div class="groggy-route-line"></div>
-                        <div class="groggy-hold hold-one"></div>
-                        <div class="groggy-hold hold-two"></div>
-                        <div class="groggy-hold hold-three"></div>
-                        <div class="groggy-hold hold-four"></div>
-                        <div class="groggy-badge">5.10b-12a</div>
-                    </div>
-                </div>
-            </article>
-
-            <article class="project-card featured">
-                <div class="project-copy">
-                    <p class="project-tag">Capstone Project</p>
-                    <h2>CourseFlow</h2>
-                    <p>
-                        A full-stack senior design project built to make course planning easier to understand. CourseFlow
-                        turns degree requirements, prerequisite chains, and semester decisions into a cleaner visual flow
-                        instead of a confusing spreadsheet or catalog crawl.
-                    </p>
-                    <ul class="project-list">
-                        <li>Visualizes course paths and prerequisite dependencies</li>
-                        <li>Helps students reason about semester-by-semester planning</li>
-                        <li>Completed as the capstone for my Software Engineering degree</li>
-                    </ul>
-                    <a class="project-link" href="https://sdmay26-19.sd.ece.iastate.edu/" target="_blank" rel="noreferrer">Open CourseFlow</a>
-                </div>
-                <div class="project-art courseflow-art" aria-hidden="true">
-                    <div class="courseflow-grid">
-                        <div class="course-node core">SE 185</div>
-                        <div class="course-node">COM S 227</div>
-                        <div class="course-node accent">SE 319</div>
-                        <div class="course-node">SE 417</div>
-                    </div>
-                    <div class="courseflow-link top"></div>
-                    <div class="courseflow-link mid"></div>
-                    <div class="courseflow-link bottom"></div>
-                </div>
-            </article>
-
-            <article class="project-card featured">
-                <div class="project-copy">
-                    <p class="project-tag">Open Source Work</p>
-                    <h2>Zulip</h2>
-                    <p>
-                        A fork and working branch around Zulip, the open-source threaded chat platform. I use it as a way
-                        to engage with a large real-world codebase and the kinds of product, messaging, and interface
-                        problems that come with collaborative software.
-                    </p>
-                    <ul class="project-list">
-                        <li>Built around a production-scale open-source chat application</li>
-                        <li>Touches messaging UX, collaboration flows, and web application structure</li>
-                        <li>Included here as a codebase and contribution-oriented project</li>
-                    </ul>
-                    <a class="project-link" href="https://github.com/etmayer6/zulip" target="_blank" rel="noreferrer">View Zulip Repo</a>
-                </div>
-                <div class="project-art zulip-art" aria-hidden="true">
-                    <div class="zulip-bubble large"></div>
-                    <div class="zulip-bubble mid"></div>
-                    <div class="zulip-bubble small"></div>
-                    <div class="zulip-thread one"></div>
-                    <div class="zulip-thread two"></div>
-                </div>
-            </article>
-
-            <article class="project-card featured">
-                <div class="project-copy">
-                    <p class="project-tag">Course Project</p>
-                    <h2>SE / COM S 319</h2>
-                    <p>
-                        A class project repository from COM S 319, centered on building and organizing a real web
-                        application as part of Iowa State software engineering coursework. I keep it here as one of the
-                        earlier foundations for the frontend and project-structure work that shows up elsewhere on this
-                        site.
-                    </p>
-                    <ul class="project-list">
-                        <li>Built in the context of Iowa State web software coursework</li>
-                        <li>Represents earlier application and interface development work</li>
-                        <li>Included as a course-project codebase rather than a public live product</li>
-                    </ul>
-                    <a class="project-link" href="https://github.com/etmayer6/secoms319" target="_blank" rel="noreferrer">View Course Repo</a>
-                </div>
-                <div class="project-art se319-art" aria-hidden="true">
-                    <div class="browser-frame">
-                        <div class="browser-dots">
-                            <span></span>
-                            <span></span>
-                            <span></span>
-                        </div>
-                        <div class="browser-layout">
-                            <div class="browser-sidebar"></div>
-                            <div class="browser-panels">
-                                <div class="browser-panel wide"></div>
-                                <div class="browser-panel"></div>
-                                <div class="browser-panel"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </article>
-
-            <article class="project-card featured">
-                <div class="project-copy">
-                    <p class="project-tag">Personal Tool</p>
-                    <h2>Diet Tracker</h2>
-                    <p>
-                        A food logging and meal analysis tool built to make diet tracking less manual. It is designed
-                        around quick meal capture, image-based analysis, and a clearer view of eating habits over time
-                        instead of a tedious calorie spreadsheet workflow.
-                    </p>
-                    <ul class="project-list">
-                        <li>Built for fast meal logging and photo-driven tracking</li>
-                        <li>Uses AI-assisted analysis to estimate meal details and patterns</li>
-                        <li>Built as a private tool rather than a separate public app</li>
-                    </ul>
-                </div>
-                <div class="project-art diet-art" aria-hidden="true">
-                    <div class="diet-plate">
-                        <div class="diet-food protein"></div>
-                        <div class="diet-food carb"></div>
-                        <div class="diet-food greens"></div>
-                    </div>
-                    <div class="diet-panel">
-                        <div class="diet-line wide"></div>
-                        <div class="diet-line"></div>
-                        <div class="diet-line short"></div>
-                    </div>
-                </div>
-            </article>
-
-            <article class="project-card featured">
-                <div class="project-copy">
-                    <p class="project-tag">Meal Planning Tool</p>
-                    <h2>Receipt Meal Planner</h2>
-                    <p>
-                        A grocery receipt analysis tool that turns a store receipt into a usable meal planning pass. It
-                        extracts receipt text, identifies what was bought, infers ingredients, and turns the haul into
-                        realistic recipe ideas without manually typing everything in.
-                    </p>
-                    <ul class="project-list">
-                        <li>OCR-first workflow tuned for tall grocery receipt photos and screenshots</li>
-                        <li>Uses local model pipelines with a faster Codex CLI fallback for analysis</li>
-                        <li>Saves dated analyses with parsed items, inferred ingredients, and recipe suggestions</li>
-                    </ul>
-                </div>
-                <div class="project-art mealplan-art" aria-hidden="true">
-                    <div class="mealplan-receipt">
-                        <div class="mealplan-line short"></div>
-                        <div class="mealplan-line"></div>
-                        <div class="mealplan-line"></div>
-                        <div class="mealplan-line wide"></div>
-                        <div class="mealplan-line short"></div>
-                    </div>
-                    <div class="mealplan-card ingredients">
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                    </div>
-                    <div class="mealplan-card recipes">
-                        <div class="mealplan-dot"></div>
-                        <div class="mealplan-dot"></div>
-                        <div class="mealplan-dot"></div>
-                    </div>
-                </div>
-            </article>
-
-            <article class="project-card featured">
-                <div class="project-copy">
-                    <p class="project-tag">Archive Project</p>
-                    <h2>Childhood Timeline</h2>
-                    <p>
-                        A timeline project that reconstructs childhood memories and family history into a browsable
-                        narrative view. Instead of manually writing everything from scratch, it turns archived social
-                        media history into something easier to scan, summarize, and revisit.
-                    </p>
-                    <ul class="project-list">
-                        <li>Builds a structured timeline from captured family and childhood posts</li>
-                        <li>Data was acquired by parsing Facebook feed/archive HAR captures into generated timeline data</li>
-                        <li>Combines text extraction, filtering, tagging, and summary generation in one workflow</li>
-                    </ul>
-                </div>
-                <div class="project-art childhood-art" aria-hidden="true">
-                    <div class="timeline-stack">
-                        <div class="timeline-card-a"></div>
-                        <div class="timeline-card-b"></div>
-                        <div class="timeline-card-c"></div>
-                        <div class="timeline-line"></div>
-                        <div class="timeline-dot top"></div>
-                        <div class="timeline-dot mid"></div>
-                        <div class="timeline-dot bottom"></div>
-                    </div>
-                </div>
-            </article>
-
+                <article class="archive-card tone-indigo">
+                    <div class="archive-top"><span class="archive-number">12</span><span class="archive-type">Archive project</span></div>
+                    <h3>Childhood Timeline</h3>
+                    <p>A browsable family-history timeline built by extracting, filtering, and organizing archived social posts.</p>
+                    <div class="archive-footer"><span>Parsing / Narrative</span><span class="private-label">Private build</span></div>
+                </article>
+            </div>
         </section>
+
     </main>
 
-    <footer class="projects-footer">
-        <p>&copy; 2026 Ethan Mayer</p>
-    </footer>
+    <footer class="projects-footer"><p>&copy; 2026 Ethan Mayer</p></footer>
 </body>
 </html>
-
-
-

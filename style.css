@@ -27,6 +27,11 @@ html {
     scroll-behavior: smooth;
 }
 
+::selection {
+    color: #fffdf8;
+    background: var(--aero);
+}
+
 body {
     margin: 0;
     padding: 0;
@@ -44,6 +49,15 @@ h3 {
 
 a {
     color: inherit;
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+    outline: 3px solid #e69a63;
+    outline-offset: 3px;
 }
 
 img {
@@ -140,7 +154,7 @@ footer {
 .home-hero {
     display: grid;
     grid-template-columns: minmax(0, 1.35fr) minmax(320px, 0.65fr);
-    min-height: 690px;
+    min-height: 620px;
     padding: 54px 0 66px;
     gap: 34px;
     align-items: stretch;
@@ -224,49 +238,11 @@ footer {
     text-underline-offset: 4px;
 }
 
-.career-facts {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 1px;
-    margin: 42px 0 0;
-    border: 1px solid var(--line);
-    background: var(--line);
-}
-
-.career-facts div {
-    padding: 16px;
-    background: var(--surface);
-}
-
-.career-facts dt {
-    margin-bottom: 7px;
-    color: var(--ink-soft);
-    font-size: 11px;
-    font-weight: 800;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-}
-
-.career-facts dd {
-    margin: 0;
-    font-weight: 800;
-    line-height: 1.35;
-}
-
 .hero-portrait {
-    position: relative;
     min-width: 0;
     min-height: 560px;
     overflow: hidden;
     background: var(--aero);
-}
-
-.hero-portrait::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(180deg, transparent 45%, rgba(8, 27, 34, 0.8) 100%);
-    pointer-events: none;
 }
 
 .hero-portrait img {
@@ -275,31 +251,6 @@ footer {
     object-fit: cover;
     object-position: center;
     display: block;
-}
-
-.portrait-note {
-    position: absolute;
-    z-index: 2;
-    right: 22px;
-    bottom: 22px;
-    left: 22px;
-    padding: 18px;
-    color: #fff;
-    border-top: 1px solid rgba(255, 255, 255, 0.4);
-}
-
-.portrait-note span {
-    display: block;
-    margin-bottom: 7px;
-    color: rgba(255, 255, 255, 0.72);
-    font-size: 11px;
-    font-weight: 800;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-}
-
-.portrait-note strong {
-    line-height: 1.45;
 }
 
 .home-section {
@@ -426,7 +377,7 @@ footer {
 
 .off-clock {
     display: grid;
-    grid-template-columns: 1.15fr 1fr auto;
+    grid-template-columns: minmax(0, 1fr) auto;
     gap: 36px;
     align-items: center;
     margin: 10px 0 84px;
@@ -441,10 +392,6 @@ footer {
 
 .off-clock h2 {
     font-size: clamp(30px, 4vw, 46px);
-}
-
-.off-clock > p {
-    color: rgba(255, 255, 255, 0.7);
 }
 
 .off-clock-links {
@@ -562,10 +509,6 @@ footer {
         margin-top: 4px;
     }
 
-    .career-facts {
-        grid-template-columns: 1fr;
-    }
-
     .hero-portrait {
         min-height: 460px;
     }
@@ -583,5 +526,255 @@ footer {
     .off-clock {
         margin-bottom: 58px;
         padding: 28px 22px;
+    }
+}
+
+/* Shared frame for secondary pages and embedded projects. */
+body:is(
+    .resume-body,
+    .photos-body,
+    .games-body,
+    .apartment-body,
+    .travel-body,
+    .groggy-body,
+    .blockblast-site-body,
+    .flight-site-body,
+    .wordsort-site-body,
+    .blog-body,
+    .gremlindex-body
+) {
+    background:
+        linear-gradient(90deg, rgba(16, 43, 54, 0.035) 1px, transparent 1px),
+        linear-gradient(rgba(16, 43, 54, 0.035) 1px, transparent 1px),
+        var(--paper);
+    background-size: 42px 42px;
+    color: var(--ink);
+}
+
+body :is(
+    .resume-header,
+    .photos-header,
+    .games-header,
+    .apartment-header,
+    .travel-header,
+    .groggy-header,
+    .blockblast-site-header,
+    .flight-site-header,
+    .wordsort-site-header,
+    .blog-header,
+    .gremlindex-header
+) {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: rgba(12, 35, 43, 0.94);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(14px);
+}
+
+body :is(
+    .resume-header,
+    .photos-header,
+    .games-header,
+    .apartment-header,
+    .travel-header,
+    .groggy-header,
+    .blockblast-site-header,
+    .flight-site-header,
+    .wordsort-site-header,
+    .blog-header,
+    .gremlindex-header
+) nav {
+    width: min(1160px, calc(100% - 40px));
+    min-height: 68px;
+    padding: 0;
+}
+
+body :is(
+    .resume-shell,
+    .photos-shell,
+    .games-shell,
+    .travel-shell,
+    .groggy-shell,
+    .blockblast-site-shell,
+    .flight-site-shell,
+    .wordsort-site-shell,
+    .blog-shell,
+    .gremlindex-shell
+) {
+    width: min(1160px, calc(100% - 40px));
+}
+
+body.apartment-body .container,
+body.apartment-body .apartment-header nav {
+    width: min(1160px, calc(100% - 40px));
+}
+
+body.apartment-body .apartments-page {
+    background: transparent;
+}
+
+body.apartment-body .hero {
+    width: min(1160px, calc(100% - 40px));
+    margin: 34px auto 0;
+    padding: 40px;
+    color: var(--ink);
+}
+
+body.apartment-body .hero .container {
+    width: 100%;
+}
+
+body.apartment-body .hero h1 {
+    color: var(--ink);
+}
+
+body.apartment-body .hero-copy {
+    display: block;
+    max-width: 720px;
+    margin: 16px 0 0;
+    padding: 0;
+    color: var(--ink-soft);
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+    font-size: 18px;
+    line-height: 1.7;
+}
+
+body.apartment-body .button-link {
+    border-radius: 0;
+}
+
+body :is(
+    .resume-footer,
+    .photos-footer,
+    .games-footer,
+    .apartment-footer,
+    .travel-footer,
+    .groggy-footer,
+    .blockblast-site-footer,
+    .flight-site-footer,
+    .wordsort-site-footer,
+    .blog-footer,
+    .gremlindex-footer
+) {
+    color: #6b7b7f;
+}
+
+body:is(
+    .resume-body,
+    .photos-body,
+    .games-body,
+    .apartment-body,
+    .travel-body,
+    .groggy-body,
+    .blockblast-site-body,
+    .flight-site-body,
+    .wordsort-site-body,
+    .blog-body,
+    .gremlindex-body
+) .eyebrow {
+    color: var(--accent-dark);
+}
+
+body :is(
+    .travel-hero,
+    .groggy-hero,
+    .blockblast-site-hero,
+    .flight-site-hero,
+    .wordsort-site-hero,
+    .blog-hero
+),
+body.apartment-body .hero {
+    border-radius: 0;
+    border: 1px solid var(--line);
+    background: rgba(255, 253, 248, 0.9);
+    box-shadow: none;
+}
+
+/* Keep utility dashboards in the same quiet, square surface system. */
+body :is(
+    .travel-stat-card,
+    .travel-map-panel,
+    .travel-list-panel,
+    .travel-map,
+    .place-card,
+    .groggy-stat-card,
+    .groggy-hero-copy,
+    .groggy-fit-card,
+    .groggy-controls,
+    .groggy-list-wrap,
+    .route-card,
+    .gate-card,
+    .gremlindex-top,
+    .game-panel,
+    .panel-block,
+    .codex-panel,
+    .status-card,
+    .blockblast-site-copy,
+    .flight-site-copy,
+    .wordsort-site-copy,
+    .blockblast-site-app,
+    .flight-site-app,
+    .wordsort-site-app
+),
+body.apartment-body :is(
+    .panel,
+    .listing-card
+) {
+    border-radius: 0;
+    border-color: var(--line);
+    box-shadow: none;
+}
+
+@media (max-width: 700px) {
+    body :is(
+        .resume-header,
+        .photos-header,
+        .games-header,
+        .apartment-header,
+        .travel-header,
+        .groggy-header,
+        .blockblast-site-header,
+        .flight-site-header,
+        .wordsort-site-header,
+        .blog-header,
+        .gremlindex-header
+    ) nav,
+    body :is(
+        .resume-shell,
+        .photos-shell,
+        .games-shell,
+        .travel-shell,
+        .groggy-shell,
+        .blockblast-site-shell,
+        .flight-site-shell,
+        .wordsort-site-shell,
+        .blog-shell,
+        .gremlindex-shell
+    ),
+    body.apartment-body .container,
+    body.apartment-body .apartment-header nav {
+        width: min(100% - 24px, 1160px);
+    }
+
+    body.apartment-body .hero {
+        width: min(100% - 24px, 1160px);
+        padding: 24px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms;
+        animation-iteration-count: 1;
+        transition-duration: 0.01ms;
     }
 }

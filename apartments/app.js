@@ -9,11 +9,8 @@
     const statusText = document.getElementById("status-text");
     const listingCountText = document.getElementById("listing-count-text");
     const ethanTopPicks = document.getElementById("ethan-top-picks");
-    const topMatches = document.getElementById("top-matches");
     const listingsGrid = document.getElementById("listings-grid");
     const errorBox = document.getElementById("error-box");
-    const snapshotUpdated = document.getElementById("snapshot-updated");
-    const snapshotCount = document.getElementById("snapshot-count");
     const ethanTopPickConfigs = [
         {
             matchUrl: "https://www.wattsgroupiowa.com/plan/sinclair-on-16th/sinclair-on-16th-layout-1a",
@@ -67,12 +64,6 @@
         if (ts == null) return "-";
         const d = new Date(ts);
         return Number.isFinite(d.getTime()) ? d.toLocaleDateString() : "-";
-    }
-
-    function fmtDateTime(ts) {
-        if (ts == null) return "-";
-        const d = new Date(ts);
-        return Number.isFinite(d.getTime()) ? d.toLocaleString() : "-";
     }
 
     function triText(v) {
@@ -306,7 +297,6 @@
 
         listingCountText.textContent = visible.length + " listings";
         renderCards(ethanTopPicks, curatedPicks, "Top picks are unavailable right now.");
-        renderCards(topMatches, visible.slice(0, 3));
         renderCards(listingsGrid, visible);
     }
 
@@ -346,13 +336,10 @@
             }
             const data = await response.json();
             rows = Array.isArray(data.listings) ? data.listings : [];
-            if (snapshotUpdated) snapshotUpdated.textContent = fmtDateTime(data.exportedAt || null);
-            if (snapshotCount) snapshotCount.textContent = String(data.count || rows.length || 0);
             statusText.textContent = "Listings loaded";
             render();
         } catch (error) {
             statusText.textContent = "Listings unavailable";
-            if (snapshotUpdated) snapshotUpdated.textContent = "Unavailable";
             showError(String(error && error.message ? error.message : error));
         }
     }

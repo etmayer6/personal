@@ -1,206 +1,154 @@
 .resume-body {
     margin: 0;
-    background:
-        radial-gradient(circle at top left, rgba(197, 90, 50, 0.13), transparent 28%),
-        linear-gradient(180deg, #f4f0e8 0%, #fffdf8 44%, #efe9de 100%);
-    color: #102b36;
-}
-
-.resume-header {
-    position: sticky;
-    top: 0;
-    z-index: 10;
-    backdrop-filter: blur(14px);
-    background: rgba(12, 35, 43, 0.94);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    min-height: 100vh;
 }
 
 .resume-shell {
-    width: min(1180px, calc(100% - 40px));
     margin: 0 auto;
-    padding: 36px 0 56px;
+    padding: 54px 0 72px;
 }
 
 .resume-hero {
     display: grid;
-    grid-template-columns: minmax(0, 1.7fr) minmax(260px, 0.95fr);
-    gap: 28px;
+    grid-template-columns: minmax(0, 1.55fr) minmax(280px, 0.65fr);
+    gap: 20px;
     align-items: stretch;
 }
 
 .resume-hero-copy,
 .profile-card,
 .resume-panel {
-    background: rgba(255, 255, 255, 0.86);
-    border: 1px solid rgba(33, 63, 95, 0.09);
-    box-shadow: 0 20px 40px rgba(22, 50, 79, 0.09);
+    border: 1px solid rgba(16, 43, 54, 0.17);
+    background: rgba(255, 253, 248, 0.9);
 }
 
 .resume-hero-copy {
-    border-radius: 28px;
-    padding: 44px;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: clamp(34px, 5vw, 68px);
 }
 
 .eyebrow {
-    margin: 0 0 10px;
+    margin: 0 0 14px;
     font-size: 12px;
+    font-weight: 800;
     letter-spacing: 0.16em;
     text-transform: uppercase;
-    color: #52779a;
-    font-weight: 700;
 }
 
 .resume-hero-copy h1 {
     margin: 0;
-    font-size: clamp(42px, 7vw, 76px);
-    line-height: 0.96;
-    letter-spacing: -0.04em;
-    color: #10263b;
+    color: #102b36;
+    font-size: clamp(54px, 7vw, 82px);
+    line-height: 0.9;
+    letter-spacing: -0.055em;
 }
 
 .hero-role {
-    margin: 14px 0 0;
-    font-size: 20px;
-    font-weight: 700;
-    color: #24496f;
+    margin: 20px 0 0;
+    color: #194f61;
+    font-size: 19px;
+    font-weight: 800;
 }
 
 .hero-summary {
     max-width: 680px;
     margin: 20px 0 0;
+    color: #4c636a;
     font-size: 18px;
-    line-height: 1.75;
-    color: #425d78;
+    line-height: 1.7;
 }
 
 .hero-actions {
     display: flex;
     flex-wrap: wrap;
-    gap: 14px;
+    gap: 10px;
     margin-top: 28px;
 }
 
 .primary-action,
-.secondary-action,
-.contact-link {
+.secondary-action {
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    min-height: 46px;
+    padding: 12px 18px;
+    border: 1px solid rgba(16, 43, 54, 0.2);
     text-decoration: none;
-    font-weight: 700;
-    border-radius: 999px;
+    font-weight: 800;
+    transition: transform 160ms ease, background-color 160ms ease;
 }
 
 .primary-action {
-    background: #143b63;
     color: #fff;
-    padding: 14px 20px;
+    border-color: #194f61;
+    background: #194f61;
 }
 
 .secondary-action {
-    background: #eaf1f8;
-    color: #17324d;
-    padding: 14px 20px;
+    color: #102b36;
+    background: transparent;
 }
 
-.hero-stats {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 14px;
-    margin-top: 30px;
-}
-
-.stat-card {
-    background: linear-gradient(180deg, #f8fbfe 0%, #edf4fb 100%);
-    border-radius: 18px;
-    padding: 16px 18px;
-}
-
-.stat-label {
-    display: block;
-    margin-bottom: 8px;
-    font-size: 12px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: #6184a4;
+.primary-action:hover,
+.secondary-action:hover,
+.primary-action:focus-visible,
+.secondary-action:focus-visible {
+    transform: translateY(-2px);
 }
 
 .profile-card {
-    border-radius: 28px;
-    overflow: hidden;
-    padding: 18px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    min-height: 500px;
+    padding: 16px;
 }
 
 .profile-card img {
     display: block;
-    width: min(100%, 320px);
-    aspect-ratio: 4 / 5;
-    margin: 0;
-    border-radius: 28px;
+    width: 100%;
+    height: 100%;
     object-fit: cover;
-    object-position: center center;
-    box-shadow: 0 18px 36px rgba(20, 50, 79, 0.14);
-}
-
-.profile-card-body {
-    padding: 0;
-}
-
-.profile-title {
-    margin: 0 0 14px;
-    font-size: 13px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: #5c7a98;
-    font-weight: 700;
-}
-
-.profile-list {
-    margin: 0;
-    padding-left: 18px;
-    line-height: 1.9;
-    color: #35506b;
+    object-position: center;
 }
 
 .resume-grid {
     display: grid;
-    grid-template-columns: minmax(0, 1.45fr) minmax(280px, 0.9fr);
-    gap: 28px;
-    margin-top: 28px;
+    grid-template-columns: minmax(0, 1.45fr) minmax(290px, 0.75fr);
+    gap: 20px;
+    margin-top: 20px;
 }
 
 .main-column,
 .side-column {
     display: grid;
-    gap: 24px;
+    align-content: start;
+    gap: 20px;
 }
 
 .resume-panel {
-    border-radius: 24px;
-    padding: 28px;
+    min-width: 0;
+    padding: 30px;
 }
 
 .resume-panel.compact {
-    padding: 24px;
+    padding: 26px;
 }
 
-.section-heading h2 {
-    margin: 0;
-    font-size: 28px;
-    color: #14304a;
+.section-heading {
+    margin-bottom: 18px;
 }
 
 .timeline-card {
     display: grid;
-    gap: 14px;
-    margin-top: 18px;
-    padding: 22px;
-    border-radius: 20px;
-    background: linear-gradient(180deg, #fcfdff 0%, #f4f8fc 100%);
-    border: 1px solid #dbe6f0;
+    gap: 13px;
+    padding: 24px;
+    border: 1px solid rgba(16, 43, 54, 0.14);
+    background: #f8f5ee;
+}
+
+.timeline-card + .timeline-card {
+    margin-top: 14px;
 }
 
 .timeline-card.current-role {
@@ -212,71 +160,62 @@
     flex-wrap: wrap;
     justify-content: space-between;
     gap: 12px;
-    color: #587896;
-    font-size: 14px;
-    font-weight: 700;
+    color: #6b7b7f;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
 }
 
 .timeline-card h3 {
     margin: 0;
-    font-size: 28px;
-    color: #14304a;
+    color: #102b36;
+    font-size: 29px;
+    letter-spacing: -0.025em;
 }
 
 .timeline-company {
     margin: 0;
-    color: #25557e;
-    font-size: 18px;
-    font-weight: 700;
+    color: #194f61;
+    font-size: 17px;
+    font-weight: 800;
+}
+
+.timeline-lead,
+.detail-list {
+    color: #4c636a;
+    line-height: 1.68;
 }
 
 .timeline-lead {
     margin: 0;
-    line-height: 1.7;
-    color: #445f79;
 }
 
 .detail-list {
     margin: 0;
-    padding-left: 20px;
-    line-height: 1.8;
-    color: #35506b;
+    padding-left: 19px;
 }
 
-.course-grid {
+.detail-list li + li {
+    margin-top: 7px;
+}
+
+.course-grid,
+.tag-cloud {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 8px;
 }
 
 .course-grid span,
 .tag-cloud span {
     display: inline-flex;
-    align-items: center;
-    padding: 9px 14px;
-    border-radius: 999px;
-    background: #eaf2f9;
-    color: #214d74;
-    font-weight: 700;
-    font-size: 14px;
-}
-
-.tag-cloud {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-}
-
-.skill-group + .skill-group {
-    margin-top: 24px;
-    padding-top: 22px;
-    border-top: 1px solid #dbe6f0;
-}
-
-.skill-group h3 {
-    margin: 0 0 12px;
-    color: #14304a;
-    font-size: 17px;
+    padding: 8px 11px;
+    border: 1px solid rgba(25, 79, 97, 0.16);
+    color: #194f61;
+    background: #e8efed;
+    font-size: 12px;
+    font-weight: 800;
 }
 
 .education-detail {
@@ -284,146 +223,123 @@
     align-items: baseline;
     gap: 10px;
     width: fit-content;
-    padding: 10px 14px;
-    border-radius: 12px;
-    background: #eaf2f9;
+    padding-top: 6px;
 }
 
 .education-detail span {
-    color: #587896;
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0.08em;
+    color: #6b7b7f;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
 }
 
 .education-detail strong {
+    font-size: 20px;
+}
+
+.skill-group + .skill-group {
+    margin-top: 24px;
+    padding-top: 22px;
+    border-top: 1px solid rgba(16, 43, 54, 0.14);
+}
+
+.skill-group h3 {
+    margin: 0 0 12px;
+    color: #102b36;
     font-size: 18px;
 }
 
 .mini-card {
-    padding: 18px;
-    border-radius: 18px;
-    background: #f4f8fc;
-    color: #35506b;
+    color: #4c636a;
 }
 
-.mini-card p {
-    margin-bottom: 0;
+.mini-card strong {
+    color: #102b36;
 }
 
 .standout {
-    background: linear-gradient(135deg, #163a5f 0%, #244f78 100%);
-    color: #f6fbff;
+    color: #f8f1e6;
+    border-color: #102b36;
+    background: #102b36;
 }
 
-.standout .eyebrow,
-.standout .section-heading h2,
-.standout p {
-    color: inherit;
-}
-
-.quote-line {
-    margin-top: 18px;
-    font-weight: 700;
+.standout .eyebrow {
+    color: #efad84;
 }
 
 .testimonial-card {
-    margin-top: 20px;
     display: grid;
-    grid-template-columns: 76px minmax(0, 1fr);
-    gap: 14px;
+    grid-template-columns: 68px 1fr;
+    gap: 16px;
     align-items: center;
-    padding: 14px;
-    border-radius: 18px;
-    background: rgba(255, 255, 255, 0.12);
-    border: 1px solid rgba(255, 255, 255, 0.14);
 }
 
 .testimonial-card img {
-    width: 76px;
-    height: 76px;
+    width: 68px;
+    height: 68px;
     border-radius: 50%;
     object-fit: cover;
-    border: 2px solid rgba(255, 255, 255, 0.3);
-}
-
-.testimonial-copy {
-    min-width: 0;
-}
-
-.testimonial-label {
-    margin: 0 0 6px;
-    font-size: 12px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    font-weight: 700;
-    opacity: 0.82;
+    border: 2px solid rgba(255, 255, 255, 0.28);
 }
 
 .testimonial-copy blockquote {
     margin: 0;
-    font-size: 22px;
-    line-height: 1.4;
-    font-weight: 700;
-}
-
-.contact-link {
-    margin-top: 6px;
-    padding: 14px 18px;
-    background: #143b63;
-    color: #fff;
-}
-
-.contact-note {
-    margin-bottom: 0;
-    color: #516f8d;
-    line-height: 1.7;
+    font-family: Georgia, "Palatino Linotype", serif;
+    font-size: 23px;
+    line-height: 1.3;
 }
 
 .resume-footer {
-    padding: 22px 20px 34px;
-    text-align: center;
-    color: #64819d;
+    padding: 0 20px 36px;
 }
 
-@media (max-width: 980px) {
+@media (max-width: 920px) {
     .resume-hero,
     .resume-grid {
         grid-template-columns: 1fr;
     }
 
-    .profile-card img {
-        width: min(100%, 420px);
-        height: 420px;
+    .profile-card {
+        min-height: 560px;
     }
 }
 
 @media (max-width: 700px) {
     .resume-shell {
-        width: min(100% - 24px, 1180px);
+        padding: 24px 0 58px;
     }
 
     .resume-hero-copy,
     .resume-panel {
-        padding: 22px;
+        padding: 24px;
     }
 
-    .hero-stats {
-        grid-template-columns: 1fr;
+    .resume-hero-copy h1 {
+        font-size: 52px;
+    }
+
+    .hero-summary {
+        font-size: 16px;
+    }
+
+    .profile-card {
+        min-height: 430px;
+        padding: 10px;
+    }
+
+    .timeline-card {
+        padding: 20px;
     }
 
     .timeline-card h3 {
-        font-size: 24px;
+        font-size: 25px;
     }
+}
 
-    .section-heading h2 {
-        font-size: 24px;
-    }
-
-    .testimonial-card {
-        grid-template-columns: 1fr;
-        text-align: center;
-        justify-items: center;
+@media (prefers-reduced-motion: reduce) {
+    .primary-action,
+    .secondary-action {
+        transition: none;
     }
 }
