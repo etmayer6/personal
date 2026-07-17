@@ -1,9 +1,9 @@
 .resume-body {
     margin: 0;
     background:
-        radial-gradient(circle at top left, rgba(123, 167, 255, 0.25), transparent 28%),
-        linear-gradient(180deg, #eef4fb 0%, #ffffff 44%, #f4f8fc 100%);
-    color: #17324d;
+        radial-gradient(circle at top left, rgba(197, 90, 50, 0.13), transparent 28%),
+        linear-gradient(180deg, #f4f0e8 0%, #fffdf8 44%, #efe9de 100%);
+    color: #102b36;
 }
 
 .resume-header {
@@ -11,7 +11,7 @@
     top: 0;
     z-index: 10;
     backdrop-filter: blur(14px);
-    background: rgba(10, 25, 41, 0.82);
+    background: rgba(12, 35, 43, 0.94);
     border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
@@ -203,6 +203,10 @@
     border: 1px solid #dbe6f0;
 }
 
+.timeline-card.current-role {
+    border-left: 5px solid #c55a32;
+}
+
 .timeline-meta {
     display: flex;
     flex-wrap: wrap;
@@ -261,6 +265,40 @@
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
+}
+
+.skill-group + .skill-group {
+    margin-top: 24px;
+    padding-top: 22px;
+    border-top: 1px solid #dbe6f0;
+}
+
+.skill-group h3 {
+    margin: 0 0 12px;
+    color: #14304a;
+    font-size: 17px;
+}
+
+.education-detail {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 10px;
+    width: fit-content;
+    padding: 10px 14px;
+    border-radius: 12px;
+    background: #eaf2f9;
+}
+
+.education-detail span {
+    color: #587896;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.education-detail strong {
+    font-size: 18px;
 }
 
 .mini-card {
