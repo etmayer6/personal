@@ -122,6 +122,32 @@
     line-height: 1.7;
 }
 
+.travel-view-toggle {
+    display: inline-flex;
+    padding: 4px;
+    border: 1px solid #cfdae5;
+    border-radius: 999px;
+    background: #edf3f7;
+}
+
+.travel-view-toggle button {
+    border: 0;
+    border-radius: 999px;
+    padding: 8px 14px;
+    background: transparent;
+    color: #54718b;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.travel-view-toggle button[aria-pressed="true"] {
+    background: #173f5a;
+    color: #fff;
+    box-shadow: 0 5px 12px rgba(20, 50, 79, 0.2);
+}
+
 .travel-map {
     position: relative;
     z-index: 0;
@@ -168,11 +194,14 @@
 }
 
 .place-card {
+    width: 100%;
     border-radius: 18px;
     padding: 16px;
     background: linear-gradient(180deg, #fcfdff 0%, #f4f8fc 100%);
     border: 1px solid #dbe6f0;
     cursor: pointer;
+    text-align: left;
+    font: inherit;
 }
 
 .place-card:hover,
@@ -191,6 +220,82 @@
     margin-top: 6px;
     font-size: 13px;
     color: #5a7894;
+}
+
+.photo-card {
+    display: grid;
+    grid-template-columns: 86px minmax(0, 1fr);
+    gap: 13px;
+    align-items: center;
+    padding: 10px;
+}
+
+.photo-card > img {
+    width: 86px;
+    height: 68px;
+    border-radius: 12px;
+    object-fit: cover;
+    background: #dce6ec;
+}
+
+.photo-card-copy {
+    min-width: 0;
+}
+
+.photo-card-copy strong,
+.photo-card-copy > span:not(.coordinate-source) {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.photo-card .coordinate-source {
+    display: inline-block;
+    width: fit-content;
+    margin-top: 8px;
+    padding: 4px 7px;
+    border-radius: 999px;
+    background: #e8f3ed;
+    color: #27664d;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.photo-card .coordinate-source.inferred {
+    background: #f9eadf;
+    color: #8f3f24;
+}
+
+.photo-map-popup {
+    display: grid;
+    gap: 7px;
+    color: #17324d;
+}
+
+.photo-map-popup > span,
+.photo-map-popup small {
+    color: #607d99;
+}
+
+.photo-popup-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 5px;
+}
+
+.photo-popup-grid a {
+    display: block;
+    aspect-ratio: 1;
+    overflow: hidden;
+    border-radius: 7px;
+}
+
+.photo-popup-grid img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 .travel-footer {

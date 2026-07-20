@@ -83,3 +83,17 @@ Original prompt: Remove clutter from the games on the website. Right now they do
 - Focused browser QA verified center projection, keyboard movement, dateline result wrapping, fullscreen toggling, and zero mobile horizontal overflow.
 - Desktop, result, canvas-only, and 390px mobile screenshots were visually inspected with no console or page errors.
 - No map-specific TODOs remain.
+
+## Travel photo map pass
+
+- Added a generated location record for every one of the 97 photos in the site gallery.
+- Preserved 35 valid embedded EXIF coordinates and marked 62 camera-untagged photos as inferred from their contiguous trip sequence and visible landmarks.
+- Kept the existing visited-place data separate from the new photo layer so overlapping gallery images can be grouped without adding marker clutter.
+- Added photo/place layer controls, searchable photo cards, optimized thumbnail previews, and location popups.
+
+## Travel photo map verification
+
+- The data builder confirms one-to-one coverage for 97 gallery entries and checks that every optimized thumbnail exists.
+- Browser QA verified nine grouped markers, all 97 photo cards, the 176-place legacy layer, layer toggling, filtering, popup previews, and country/region totals.
+- Desktop, filtered-popup, and 390px mobile screenshots were visually inspected; mobile has no horizontal overflow.
+- No browser console or page errors were recorded.
