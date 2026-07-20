@@ -43,7 +43,7 @@ Original prompt: Remove clutter from the games on the website. Right now they do
 - New request: keep Pinpoint free and use Mapillary for worldwide imagery.
 - Added a browser-safe Mapillary client-token configuration file and a diverse worldwide region pool.
 - Added asynchronous Mapillary image discovery, randomized selection, coordinate-based answers, generated geographic hints, visible attribution, and automatic local-photo fallbacks.
-- Mapillary mode still needs a free client access token in `pinpoint/mapillary-config.js`; the game remains fully playable without it.
+- Mapillary worldwide mode is configured with its browser-safe client token; the client secret is intentionally excluded from the repository.
 
 ## Mapillary verification
 
@@ -53,9 +53,18 @@ Original prompt: Remove clutter from the games on the website. Right now they do
 - Desktop and 390px mobile Mapillary-mode screenshots were inspected.
 - No browser console or page errors were recorded in the completed success/fallback test.
 
-## Mapillary TODO
+## Mapillary configuration
 
-- Add the free Mapillary client token to `pinpoint/mapillary-config.js` to enable worldwide rounds on the deployed site.
+- The deployed static client uses only the Mapillary client access token.
+- Never place the Mapillary client secret in this repository or any browser-delivered file.
+- Updated discovery for Mapillary's current query limits by sampling small cells within curated high-coverage cities on six continents.
+- Prefer standard perspective captures over panoramas to avoid distortion in the photo frame.
+
+## Live Mapillary verification
+
+- Two consecutive five-round browser runs loaded five Mapillary rounds with zero local fallbacks after the search-area update.
+- Live imagery, attribution, answer links, hints, scoring, five-round progression, and final result state all passed with no console or page errors.
+- The required game interaction client was rerun after the final image-quality filter, and desktop screenshots were visually inspected.
 
 ## Pinpoint polish pass
 
