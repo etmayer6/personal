@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Pinpoint is a five-round world location guessing game by Ethan Mayer.">
+    <title>Pinpoint | Ethan Mayer</title>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="pinpoint-body">
+    <header class="pinpoint-header">
+        <nav aria-label="Primary navigation">
+            <a class="nav-name" href="../index.html">Ethan Mayer</a>
+            <ul>
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="../resume/">Resume</a></li>
+                <li><a aria-current="page" href="../projects/">Projects</a></li>
+                <li><a href="../photos/">Photos</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="pinpoint-shell">
+        <section class="pinpoint-game" id="pinpoint-game" aria-labelledby="game-title">
+            <div class="game-topbar">
+                <div>
+                    <p class="game-kicker">World photo challenge</p>
+                    <h1 id="game-title">Pinpoint</h1>
+                </div>
+                <div class="game-actions">
+                    <span class="source-pill" id="source-pill">Local collection</span>
+                    <button class="button-quiet" id="new-game-button" type="button">New game</button>
+                    <button class="button-quiet" id="fullscreen-button" type="button">Fullscreen</button>
+                </div>
+            </div>
+
+            <div class="scorebar" aria-label="Game status">
+                <div><span>Round</span><strong id="round-value">1 / 5</strong></div>
+                <div><span>Score</span><strong id="score-value">0</strong></div>
+                <div><span>Hints</span><strong id="hint-value">0 / 3</strong></div>
+                <p id="game-status" aria-live="polite">Study the photo, then place your pin.</p>
+            </div>
+
+            <div class="challenge-layout">
+                <figure class="photo-stage">
+                    <img id="location-image" src="" alt="Location challenge photo" decoding="async">
+                    <figcaption>
+                        <span id="photo-label">Round 1</span>
+                        <span class="photo-guidance">Look for climate, language, roads, and architecture.</span>
+                        <a class="photo-credit" id="photo-credit" href="https://www.mapillary.com/" target="_blank" rel="noreferrer" hidden>Image via Mapillary</a>
+                    </figcaption>
+                    <div class="image-loading" id="image-loading">Loading location...</div>
+                </figure>
+
+                <section class="guess-panel" aria-labelledby="map-heading">
+                    <div class="map-heading-row">
+                        <div>
+                            <p class="panel-label">Your guess</p>
+                            <h2 id="map-heading">Drop a pin on the world.</h2>
+                        </div>
+                        <span class="coordinate-readout" id="coordinate-readout">No pin yet</span>
+                    </div>
+
+                    <div class="map-frame">
+                        <canvas id="world-map" width="1200" height="600" tabindex="0" role="img" aria-label="Interactive world map. Click or use arrow keys to place a location guess."></canvas>
+                        <div class="map-instruction" id="map-instruction">Click anywhere to place your pin</div>
+                    </div>
+
+                    <div class="hint-box" id="hint-box" hidden>
+                        <span>Hint</span>
+                        <p id="hint-text"></p>
+                    </div>
+
+                    <div class="round-controls">
+                        <button class="button-quiet" id="hint-button" type="button">Use a hint</button>
+                        <button class="button-primary-game" id="guess-button" type="button" disabled>Lock in guess</button>
+                    </div>
+
+                    <div class="round-result" id="round-result" hidden>
+                        <div>
+                            <p class="panel-label">Actual location</p>
+                            <h3 id="answer-title"></h3>
+                            <p id="answer-detail"></p>
+                        </div>
+                        <div class="result-score">
+                            <strong id="round-score">0</strong>
+                            <span>points</span>
+                        </div>
+                        <button class="button-primary-game" id="next-button" type="button">Next round</button>
+                    </div>
+                </section>
+            </div>
+        </section>
+    </main>
+
+    <script src="mapillary-config.js"></script>
+    <script src="game.js"></script>
+    <script src="../site-play.js"></script>
+</body>
+</html>

@@ -11336,7 +11336,7 @@ function Jm(c, r, d) {
     c.save(), c.globalAlpha = S.life / S.maxLife, c.fillStyle = S.color, we(c, S.x - S.size / 2, S.y - S.size / 2, S.size, S.size, 5), c.fill(), c.restore();
   }), r.mode !== "playing") {
     const S = r.mode === "lost" && r.movesLeft <= 0;
-    c.fillStyle = "rgba(7,12,18,0.74)", we(c, 120, 384, Ze - 240, 292, 32), c.fill(), fu(c, Ze / 2 - 102, 426, 204, 38, "rgba(255,255,255,0.12)", r.mode === "title" ? "Fresh Shuffle" : r.mode === "won" ? "Perfect Sort" : S ? "Out of Moves" : "Dead End", "#f4fff8"), c.fillStyle = "#fff4c8", c.textAlign = "center", c.font = "800 44px Trebuchet MS, sans-serif", c.fillText(r.mode === "title" ? "Word Sort Solitaire" : r.mode === "won" ? "Round Complete" : S ? "Out of Moves" : "No Legal Moves", Ze / 2, 510), c.fillStyle = "#eef9f4", c.font = "600 22px Trebuchet MS, sans-serif", c.fillText(r.mode === "title" ? "Clue cards are buried in the deal. Uncover them, claim crowns, and sort the matching words." : r.message, Ze / 2, 566), c.font = "600 18px Trebuchet MS, sans-serif", c.fillStyle = "rgba(239,249,244,0.82)", c.fillText(r.mode === "won" ? "Tap to deal the next board." : "Tap anywhere on the board to play.", Ze / 2, 604), fu(c, Ze / 2 - 126, 620, 252, 56, "#ffd47b", r.mode === "won" ? "Tap For Next Deal" : "Tap To Start");
+    c.fillStyle = "rgba(7,12,18,0.74)", we(c, 120, 404, Ze - 240, 252, 32), c.fill(), fu(c, Ze / 2 - 102, 436, 204, 38, "rgba(255,255,255,0.12)", r.mode === "title" ? "Fresh Shuffle" : r.mode === "won" ? "Perfect Sort" : S ? "Out of Moves" : "Dead End", "#f4fff8"), c.fillStyle = "#fff4c8", c.textAlign = "center", c.font = "800 44px Trebuchet MS, sans-serif", c.fillText(r.mode === "title" ? "Word Sort Solitaire" : r.mode === "won" ? "Round Complete" : S ? "Out of Moves" : "No Legal Moves", Ze / 2, 520), c.fillStyle = "#eef9f4", c.font = "600 22px Trebuchet MS, sans-serif", c.fillText(r.mode === "title" ? "Uncover clues, claim crowns, and sort the matching words." : r.message, Ze / 2, 572), c.font = "600 18px Trebuchet MS, sans-serif", c.fillStyle = "rgba(239,249,244,0.82)", c.fillText(r.mode === "won" ? "Tap to deal the next board." : "Tap anywhere to play.", Ze / 2, 608), fu(c, Ze / 2 - 126, 620, 252, 56, "#ffd47b", r.mode === "won" ? "Tap For Next Deal" : "Tap To Start");
   }
 }
 function L0(c, r) {
@@ -11719,7 +11719,7 @@ function km({ presentation: c = "app" }) {
       document.removeEventListener("fullscreenchange", D), document.removeEventListener("webkitfullscreenchange", D), window.removeEventListener("keydown", V);
     };
   }, []);
-  const le = oe === "immersive", ee = !S.fullscreen && C.width < 560, pe = S.fullscreen && C.width < 820, ve = S.fullscreen && (C.width < 1140 || C.height < 760), de = S.fullscreen || ee, Tn = S.fullscreen ? pe ? "calc(env(safe-area-inset-top, 0px) + 8px) calc(env(safe-area-inset-right, 0px) + 8px) calc(env(safe-area-inset-bottom, 0px) + 12px) calc(env(safe-area-inset-left, 0px) + 8px)" : ve ? "10px 10px 14px" : "14px 14px 16px" : r ? ee ? "8px 8px 10px" : 16 : ee ? "12px 10px 14px" : 20, ra = S.fullscreen ? pe ? Math.min(430, Math.max(300, C.width - 18)) : Math.min(ve ? 720 : 860, Math.max(320, C.width - (ve ? 28 : 48))) : ee ? Math.min(420, Math.max(320, C.width - 28)) : 760, hu = de ? pe ? "Mobile fullscreen layout with safe-area spacing and touch-first controls." : r ? "Public browser build with touch-first controls and quick fullscreen access." : "Buried clue cards, five live crowns, and a tighter layout." : r ? "A streamlined public build focused on fast play, touch controls, and cleaner fullscreen handoff." : "A clue-card word sorter where the crown cards are buried in the deal, just like the rest of the deck.", nt = S.fullscreen ? pe ? 78 : ve ? 92 : 104 : ee ? 72 : 108, Pt = S.fullscreen ? pe ? 96 : ve ? 120 : 136 : ee ? 108 : 160, sl = de ? r ? "8px 11px" : "9px 12px" : r ? "10px 14px" : "11px 16px", zl = de ? 12 : r ? 13 : 14, yu = pe ? 8 : ve ? 10 : ee ? 8 : r ? 12 : 16, An = pe || r && de, sa = !r && !S.fullscreen && !ee, da = !r && (ee || pe), Qc = S.fullscreen ? "Exit Fullscreen" : pe || cl() ? "Go Fullscreen" : "Fullscreen", Zc = (w, j) => {
+  const le = oe === "immersive", ee = !S.fullscreen && C.width < 560, pe = S.fullscreen && C.width < 820, ve = S.fullscreen && (C.width < 1140 || C.height < 760), de = S.fullscreen || ee, Tn = S.fullscreen ? pe ? "calc(env(safe-area-inset-top, 0px) + 8px) calc(env(safe-area-inset-right, 0px) + 8px) calc(env(safe-area-inset-bottom, 0px) + 12px) calc(env(safe-area-inset-left, 0px) + 8px)" : ve ? "10px 10px 14px" : "14px 14px 16px" : r ? ee ? "8px 8px 10px" : 16 : ee ? "12px 10px 14px" : 20, ra = S.fullscreen ? pe ? Math.min(430, Math.max(300, C.width - 18)) : Math.min(ve ? 720 : 860, Math.max(320, C.width - (ve ? 28 : 48))) : ee ? Math.min(400, Math.max(300, C.width - 42)) : 760, hu = de ? pe ? "Touch-first fullscreen play." : r ? "Find clues, claim crowns, and sort the matching words." : "Buried clue cards, five live crowns, and a tighter layout." : r ? "Find clues, claim crowns, and sort the matching words." : "A clue-card word sorter where the crown cards are buried in the deal, just like the rest of the deck.", nt = S.fullscreen ? pe ? 78 : ve ? 92 : 104 : ee ? 72 : 108, Pt = S.fullscreen ? pe ? 96 : ve ? 120 : 136 : ee ? 108 : 160, sl = de ? r ? "8px 11px" : "9px 12px" : r ? "10px 14px" : "11px 16px", zl = de ? 12 : r ? 13 : 14, yu = pe ? 8 : ve ? 10 : ee ? 8 : r ? 12 : 16, An = pe || r && de, sa = !r && !S.fullscreen && !ee, da = !r && (ee || pe), Qc = S.fullscreen ? "Exit Fullscreen" : pe || cl() ? "Go Fullscreen" : "Fullscreen", Zc = (w, j) => {
     const D = It($, w);
     return D ? de ? `${D.clueIcon} ${bn(D.clueTitle, ee ? 8 : 10)}` : `${D.clueIcon} ${D.clueTitle}` : `Empty ${j + 1}`;
   }, fl = /* @__PURE__ */ X.jsxs("div", { style: { display: "grid", gridTemplateColumns: `repeat(auto-fit, minmax(${nt}px, 1fr))`, gap: S.fullscreen ? 10 : 12 }, children: [
@@ -11805,7 +11805,6 @@ function km({ presentation: c = "app" }) {
       ] }),
       /* @__PURE__ */ X.jsxs("div", { style: { display: "flex", gap: 8, flexWrap: "wrap", minWidth: 0, justifyContent: de ? "flex-start" : "flex-end" }, children: [
         /* @__PURE__ */ X.jsx("button", { id: "wordsort-start", onClick: () => Ie(), style: { ...kl(!0), padding: sl, fontSize: zl }, children: S.mode === "playing" ? "New Round" : "Start Round" }),
-        /* @__PURE__ */ X.jsx("button", { id: "wordsort-next", onClick: ge, style: { ...kl(!1), padding: sl, fontSize: zl }, children: "Next Level" }),
         /* @__PURE__ */ X.jsx("button", { id: "wordsort-hint", onClick: ml, style: { ...kl(!1), padding: sl, fontSize: zl }, children: "Hint" }),
         /* @__PURE__ */ X.jsx("button", { id: "wordsort-draw", onClick: El, style: { ...kl(!1), padding: sl, fontSize: zl }, children: "Draw" }),
         /* @__PURE__ */ X.jsx("button", { id: "wordsort-fullscreen", onClick: () => {
@@ -11813,11 +11812,11 @@ function km({ presentation: c = "app" }) {
         }, style: { ...kl(!1), padding: sl, fontSize: zl }, children: Qc })
       ] })
     ] }),
-    An ? mu : fl,
-    An ? fl : mu,
-    gu,
-    vu,
-    En
+    mu,
+    /* @__PURE__ */ X.jsxs("details", { style: { borderRadius: 18, background: "rgba(255,255,255,0.06)", padding: "10px 12px" }, children: [
+      /* @__PURE__ */ X.jsx("summary", { style: { cursor: "pointer", fontWeight: 800 }, children: "More controls" }),
+      /* @__PURE__ */ X.jsx("div", { style: { marginTop: 10 }, children: gu })
+    ] })
   ] }) });
 }
 const K0 = document.getElementById("word-sort-root");

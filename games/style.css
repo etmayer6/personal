@@ -45,7 +45,117 @@
     display: grid;
     grid-template-columns: minmax(0, 1.22fr) minmax(330px, 0.78fr);
     gap: 16px;
+    margin-top: 16px;
+}
+
+.game-geo {
+    min-height: 340px;
+    display: grid;
+    grid-template-columns: minmax(0, 0.85fr) minmax(440px, 1.15fr);
     margin-top: 30px;
+    color: #f8f1e6;
+    background: #174957;
+}
+
+.game-geo .game-copy {
+    padding: 38px;
+}
+
+.game-geo .game-meta {
+    color: #efbd72;
+}
+
+.game-geo h2 {
+    margin-top: 46px;
+    color: #f8f1e6;
+    font-size: clamp(48px, 6vw, 72px);
+}
+
+.game-geo p {
+    color: rgba(255, 255, 255, 0.74);
+}
+
+.game-geo a {
+    color: #fff;
+}
+
+.geo-poster {
+    position: relative;
+    min-height: 300px;
+    margin: 24px 24px 24px 0;
+    overflow: hidden;
+    background: #bcdadd;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.26);
+}
+
+.geo-grid {
+    position: absolute;
+    inset: 0;
+    background:
+        linear-gradient(90deg, rgba(25, 79, 97, 0.13) 1px, transparent 1px),
+        linear-gradient(rgba(25, 79, 97, 0.13) 1px, transparent 1px);
+    background-size: 56px 56px;
+}
+
+.geo-land {
+    position: absolute;
+    background: #d8c99e;
+    box-shadow: inset 0 0 0 2px rgba(80, 67, 41, 0.23);
+}
+
+.land-one {
+    top: 19%;
+    left: 7%;
+    width: 31%;
+    height: 43%;
+    clip-path: polygon(0 18%, 26% 0, 76% 9%, 100% 36%, 72% 50%, 59% 100%, 37% 72%, 12% 66%);
+}
+
+.land-two {
+    top: 18%;
+    left: 45%;
+    width: 45%;
+    height: 44%;
+    clip-path: polygon(0 24%, 22% 2%, 48% 14%, 67% 0, 100% 30%, 81% 58%, 62% 51%, 50% 100%, 28% 72%, 11% 82%);
+}
+
+.land-three {
+    right: 8%;
+    bottom: 9%;
+    width: 18%;
+    height: 22%;
+    clip-path: polygon(14% 0, 88% 18%, 100% 72%, 38% 100%, 0 52%);
+}
+
+.geo-route {
+    position: absolute;
+    top: 47%;
+    left: 29%;
+    width: 47%;
+    border-top: 3px dashed rgba(16, 43, 54, 0.58);
+    transform: rotate(-8deg);
+}
+
+.geo-pin {
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    border: 3px solid #fffdf8;
+    border-radius: 50% 50% 50% 0;
+    background: #c55a32;
+    box-shadow: 0 7px 14px rgba(16, 43, 54, 0.25);
+    transform: rotate(-45deg);
+}
+
+.pin-one {
+    top: 45%;
+    left: 27%;
+}
+
+.pin-two {
+    top: 32%;
+    right: 22%;
+    background: #e4ad46;
 }
 
 .games-side {
@@ -271,6 +381,15 @@
 }
 
 @media (max-width: 900px) {
+    .game-geo {
+        grid-template-columns: 1fr;
+    }
+
+    .geo-poster {
+        min-height: 300px;
+        margin: 0 24px 24px;
+    }
+
     .games-grid {
         grid-template-columns: 1fr;
     }
@@ -313,8 +432,18 @@
     }
 
     .game-flight .game-copy,
+    .game-geo .game-copy,
     .game-copy {
         padding: 24px;
+    }
+
+    .game-geo h2 {
+        margin-top: 30px;
+    }
+
+    .geo-poster {
+        min-width: 0;
+        min-height: 240px;
     }
 
     .flight-poster {

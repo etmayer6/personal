@@ -11373,7 +11373,7 @@ function lv() {
     time: 0,
     score: 0,
     nextRing: 0,
-    message: "X-Plane C172-inspired 3D pass: high-wing trainer proportions, strut-braced wings, and a more believable fixed-gear silhouette.",
+    message: "Three gates. One runway. Keep the approach smooth.",
     stall: !1,
     wind: s(0, 0, 0),
     camera: {
@@ -12384,31 +12384,25 @@ function k9() {
     return document.addEventListener("keydown", J), document.addEventListener("keyup", TA), () => {
       document.removeEventListener("keydown", J), document.removeEventListener("keyup", TA);
     };
-  }, []), /* @__PURE__ */ C.jsxs("div", { className: "workHub", style: { marginTop: 12 }, children: [
+  }, []), /* @__PURE__ */ C.jsxs("div", { className: "workHub", children: [
     /* @__PURE__ */ C.jsxs("div", { className: "workHubHeader", children: [
       /* @__PURE__ */ C.jsxs("div", { children: [
-        /* @__PURE__ */ C.jsx("div", { className: "workHubTitle", children: "Flight Sim" }),
-        /* @__PURE__ */ C.jsx("div", { className: "workHubSubtitle", children: "Fly the gate sequence, keep the landing smooth, and reveal the extra controls only when you want them." })
-      ] }),
-      /* @__PURE__ */ C.jsxs("div", { style: { display: "flex", gap: 8, flexWrap: "wrap" }, children: [
-        /* @__PURE__ */ C.jsx("button", { id: "flight-start", onClick: on, children: i.mode === "flying" ? "Restart Flight" : "Start Flight" }),
-        /* @__PURE__ */ C.jsx("button", { onClick: Ae, children: "Switch Camera" }),
-        /* @__PURE__ */ C.jsx("button", { onClick: () => PA((J) => !J), children: F ? "Hide Advanced Flight Deck" : "Show Advanced Flight Deck" }),
-        /* @__PURE__ */ C.jsx("button", { onClick: () => Vl("title"), children: "Back To Title" })
+        /* @__PURE__ */ C.jsx("div", { className: "workHubTitle", children: "Gremlin Approach" }),
+        /* @__PURE__ */ C.jsx("div", { className: "workHubSubtitle", children: "Fly three gates, settle onto the runway, and keep the approach smooth." })
       ] })
     ] }),
     /* @__PURE__ */ C.jsxs("div", { className: "workHubGrid", style: { marginTop: 12, alignItems: "start" }, children: [
       /* @__PURE__ */ C.jsxs("section", { ref: a, className: "panel", style: He, children: [
         /* @__PURE__ */ C.jsxs("div", { className: "panelHeader", children: [
           /* @__PURE__ */ C.jsxs("div", { children: [
-            /* @__PURE__ */ C.jsx("div", { className: "panelTitle", children: "3D World" }),
-            /* @__PURE__ */ C.jsx("div", { style: { fontSize: 12, opacity: 0.78 }, children: "A cleaner flying view by default, with advanced instruments available on demand." })
+            /* @__PURE__ */ C.jsx("div", { className: "panelTitle", children: "Flight deck" })
           ] }),
           /* @__PURE__ */ C.jsxs("div", { style: { display: "flex", gap: 8, flexWrap: "wrap" }, children: [
-            /* @__PURE__ */ C.jsx("button", { onClick: Ae, children: i.cameraMode === "cockpit" ? "Chase Camera" : "Cockpit Camera" }),
-            /* @__PURE__ */ C.jsx("button", { onClick: () => K((J) => !J), children: aA ? "Hide Controls" : "Show Controls" }),
-            /* @__PURE__ */ C.jsx("button", { onClick: () => PA((J) => !J), children: F ? "Hide Instruments" : "Show Instruments" }),
-            /* @__PURE__ */ C.jsx("button", { onClick: on, children: i.mode === "flying" ? "Restart" : "Start" }),
+            /* @__PURE__ */ C.jsx("button", { id: "flight-start", onClick: on, children: i.mode === "flying" ? "Restart" : "Start" }),
+            /* @__PURE__ */ C.jsx("button", { onClick: Ae, children: i.cameraMode === "cockpit" ? "Chase view" : "Cockpit view" }),
+            /* @__PURE__ */ C.jsx("button", { onClick: () => {
+              K(!aA), PA(!aA);
+            }, children: aA ? "Hide flight deck" : "Show flight deck" }),
             /* @__PURE__ */ C.jsx("button", { onClick: () => {
               gu();
             }, children: N ? "Exit Fullscreen" : "Fullscreen" })
@@ -12772,7 +12766,7 @@ function k9() {
                 /* @__PURE__ */ C.jsx("div", { style: { fontSize: 12, letterSpacing: 1.8, textTransform: "uppercase", opacity: 0.76 }, children: i.mode === "title" ? "Flight Deck Ready" : i.mode === "landed" ? "Runway Complete" : "Flight Lost" }),
                 /* @__PURE__ */ C.jsx("div", { style: { marginTop: 10, fontSize: N ? 34 : 30, fontWeight: 800 }, children: i.mode === "title" ? "Gremlin Approach" : i.mode === "landed" ? "Touchdown Logged" : "Reset The Pattern" }),
                 /* @__PURE__ */ C.jsx("div", { style: { marginTop: 12, fontSize: N ? 15 : 14, lineHeight: 1.6, opacity: 0.9 }, children: i.message }),
-                /* @__PURE__ */ C.jsxs("div", { style: { marginTop: 18, display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: 10, textAlign: "left" }, children: [
+                false ? /* @__PURE__ */ C.jsxs("div", { style: { marginTop: 18, display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: 10, textAlign: "left" }, children: [
                   /* @__PURE__ */ C.jsxs("div", { style: { padding: "10px 12px", borderRadius: 16, background: "rgba(255,255,255,0.08)" }, children: [
                     /* @__PURE__ */ C.jsx("div", { style: { fontSize: 11, letterSpacing: 1.3, textTransform: "uppercase", opacity: 0.72 }, children: "Mission" }),
                     /* @__PURE__ */ C.jsx("div", { style: { marginTop: 6, fontSize: 13, fontWeight: 700 }, children: "Three gates, one runway" })
@@ -12785,13 +12779,12 @@ function k9() {
                     /* @__PURE__ */ C.jsx("div", { style: { fontSize: 11, letterSpacing: 1.3, textTransform: "uppercase", opacity: 0.72 }, children: "Shortcuts" }),
                     /* @__PURE__ */ C.jsx("div", { style: { marginTop: 6, fontSize: 13, fontWeight: 700 }, children: "F fullscreen, C camera, Z/X flaps" })
                   ] })
-                ] }),
+                ] }) : null,
                 /* @__PURE__ */ C.jsxs("div", { style: { marginTop: 18, display: "flex", justifyContent: "center", gap: 10, flexWrap: "wrap", pointerEvents: "auto" }, children: [
-                  /* @__PURE__ */ C.jsx("button", { id: "flight-overlay-start", onClick: on, children: i.mode === "title" ? "Launch Sortie" : "Fly Again" }),
-                  /* @__PURE__ */ C.jsx("button", { onClick: Ae, children: i.cameraMode === "cockpit" ? "Use Chase Cam" : "Use Cockpit Cam" })
+                  /* @__PURE__ */ C.jsx("button", { id: "flight-overlay-start", onClick: on, children: i.mode === "title" ? "Launch Sortie" : "Fly Again" })
                 ] })
               ] }) }) : null,
-              /* @__PURE__ */ C.jsx("div", { style: { position: "absolute", left: 18, right: 18, bottom: 18, padding: N ? "12px 16px" : "10px 14px", borderRadius: 14, background: "rgba(7,12,20,0.62)", backdropFilter: "blur(10px)", border: "1px solid rgba(255,255,255,0.1)", fontSize: BA }, children: i.message })
+              i.mode === "flying" ? /* @__PURE__ */ C.jsx("div", { style: { position: "absolute", left: 18, right: 18, bottom: 18, padding: N ? "12px 16px" : "10px 14px", borderRadius: 14, background: "rgba(7,12,20,0.62)", backdropFilter: "blur(10px)", border: "1px solid rgba(255,255,255,0.1)", fontSize: BA }, children: i.message }) : null
             ] })
           ] }) }),
           $t ? /* @__PURE__ */ C.jsxs("div", { style: { display: "grid", gridTemplateColumns: G ? "1fr" : N ? "1.1fr 1fr 1fr" : "repeat(3, minmax(0, 1fr))", gap: 10 }, children: [
@@ -12861,7 +12854,7 @@ function k9() {
                 " for flaps."
               ] })
             ] })
-          ] }) : /* @__PURE__ */ C.jsxs("div", { style: { padding: "12px 14px", borderRadius: 18, background: "rgba(10,16,27,0.72)", border: "1px solid rgba(255,255,255,0.08)", display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12, flexWrap: "wrap" }, children: [
+          ] }) : false ? /* @__PURE__ */ C.jsxs("div", { style: { padding: "12px 14px", borderRadius: 18, background: "rgba(10,16,27,0.72)", border: "1px solid rgba(255,255,255,0.08)", display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12, flexWrap: "wrap" }, children: [
             /* @__PURE__ */ C.jsxs("div", { style: { display: "grid", gap: 4 }, children: [
               /* @__PURE__ */ C.jsx("div", { style: { fontSize: 11, letterSpacing: 1.4, textTransform: "uppercase", opacity: 0.68 }, children: "Quick Controls" }),
               /* @__PURE__ */ C.jsxs("div", { style: { fontSize: 13, lineHeight: 1.55, opacity: 0.82 }, children: [
@@ -12873,7 +12866,7 @@ function k9() {
               ] })
             ] }),
             /* @__PURE__ */ C.jsx("button", { onClick: () => K(!0), children: "Show On-Screen Controls" })
-          ] })
+          ] }) : null
         ] })
       ] }),
       /* @__PURE__ */ C.jsxs("section", { className: "panel", children: [

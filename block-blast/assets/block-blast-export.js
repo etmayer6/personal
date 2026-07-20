@@ -10814,7 +10814,7 @@ function w0(f, v, h) {
     combo: 0,
     clears: 0,
     placements: 0,
-    message: f === "title" ? "Tap Start Run for a fresh piece lineup each time." : "Fill whole rows and columns to blast them.",
+    message: "Clear full rows or columns.",
     rng: z,
     time: 0,
     flash: 0,
@@ -10957,7 +10957,7 @@ function K0(f, v) {
   f.save(), f.textAlign = "center", f.fillStyle = "rgba(231,243,255,0.92)", f.font = '700 26px "Trebuchet MS", sans-serif', f.fillText(`${v.movesAvailable} playable`, zl / 2, h.trayY - 22), f.restore();
   for (const z of v.particles)
     f.save(), f.globalAlpha = z.life / z.maxLife, f.fillStyle = z.color, Jl(f, z.x - z.size / 2, z.y - z.size / 2, z.size, z.size, z.size / 3), f.fill(), f.restore();
-  v.mode === "title" && (f.save(), Jl(f, 116, 392, zl - 232, 232, 34), f.fillStyle = "rgba(6,14,38,0.76)", f.fill(), f.textAlign = "center", f.fillStyle = "rgba(255,255,255,0.98)", f.font = '700 52px "Trebuchet MS", sans-serif', f.fillText("Stack. Blast. Repeat.", zl / 2, 470), f.font = '600 24px "Trebuchet MS", sans-serif', f.fillStyle = "rgba(223,238,255,0.92)", f.fillText("Drag from the tray or tap a piece, then tap the board.", zl / 2, 520), f.fillText("The piece lineup mirrors the mobile app more closely now.", zl / 2, 560), f.restore()), v.mode === "gameover" && (f.save(), Jl(f, 146, 368, zl - 292, 260, 38), f.fillStyle = "rgba(7,12,32,0.82)", f.fill(), f.textAlign = "center", f.fillStyle = "rgba(255,255,255,0.98)", f.font = '700 54px "Trebuchet MS", sans-serif', f.fillText("No Moves Left", zl / 2, 460), f.font = '700 28px "Trebuchet MS", sans-serif', f.fillStyle = "rgba(231,243,255,0.9)", f.fillText(`Final score ${v.score}`, zl / 2, 510), f.font = '600 22px "Trebuchet MS", sans-serif', f.fillText("Start a new run to reload the tray.", zl / 2, 554), f.restore());
+  v.mode === "title" && (f.save(), Jl(f, 116, 412, zl - 232, 180, 34), f.fillStyle = "rgba(6,14,38,0.76)", f.fill(), f.textAlign = "center", f.fillStyle = "rgba(255,255,255,0.98)", f.font = '700 52px "Trebuchet MS", sans-serif', f.fillText("Stack. Blast. Repeat.", zl / 2, 480), f.font = '600 24px "Trebuchet MS", sans-serif', f.fillStyle = "rgba(223,238,255,0.92)", f.fillText("Pick a piece, then place it on the board.", zl / 2, 532), f.restore()), v.mode === "gameover" && (f.save(), Jl(f, 146, 368, zl - 292, 260, 38), f.fillStyle = "rgba(7,12,32,0.82)", f.fill(), f.textAlign = "center", f.fillStyle = "rgba(255,255,255,0.98)", f.font = '700 54px "Trebuchet MS", sans-serif', f.fillText("No Moves Left", zl / 2, 460), f.font = '700 28px "Trebuchet MS", sans-serif', f.fillStyle = "rgba(231,243,255,0.9)", f.fillText(`Final score ${v.score}`, zl / 2, 510), f.font = '600 22px "Trebuchet MS", sans-serif', f.fillText("Start a new run to reload the tray.", zl / 2, 554), f.restore());
 }
 function Ec(f) {
   return {
@@ -11146,7 +11146,7 @@ function Fh() {
     };
     return window.addEventListener("keydown", T), () => window.removeEventListener("keydown", T);
   }, []);
-  const gt = zl / mt, ut = H === "immersive", Q = H === "off" && C.width <= 560, K = H !== "off" && C.width <= 820, St = Q && x.mode === "playing", Rt = !Q || !St, nt = Math.max(Q ? 280 : 320, C.width - (H === "off" ? Q ? 8 : 40 : K ? 12 : 48)), M = H !== "off" ? Math.max(420, C.height - (K ? 184 : 270)) : Q ? Math.max(360, C.height - 168) : 980, N = Math.min(H !== "off" ? 920 : Q ? 404 : 760, nt, M * gt), V = H !== "off" ? K ? "Tap or drag from the tray, then place pieces directly onto the board. Rows and columns still clear exactly the same." : "Drag from the tray or tap 1, 2, 3 to select a piece. Fill rows and columns to blast them away." : Q ? "Tap a tray piece, then tap the board. Clear rows and columns to keep the run alive." : "Classic endless board-clearing mode with a closer Block Blast piece set and a fullscreen-friendly stage.", fl = x.mode === "gameover" ? "Run over. Start a new one from the top bar." : Q ? "Tap a tray piece, then tap the board. Use Fullscreen for more room." : H !== "off" && K ? "Fullscreen now uses safe-area spacing and a mobile overlay fallback when the browser blocks native fullscreen." : "Tip: tap 1, 2, or 3 to grab a tray slot instantly.", d = {
+  const gt = zl / mt, ut = H === "immersive", Q = H === "off" && C.width <= 560, K = H !== "off" && C.width <= 820, St = Q && x.mode === "playing", Rt = !Q || !St, nt = Math.max(Q ? 280 : 320, C.width - (H === "off" ? Q ? 8 : 40 : K ? 12 : 48)), M = H !== "off" ? Math.max(420, C.height - (K ? 184 : 270)) : Q ? Math.max(360, C.height - 168) : 980, N = Math.min(H !== "off" ? 920 : Q ? 404 : 760, nt, M * gt), V = H !== "off" ? K ? "Pick a piece, then place it on the board." : "Drag a piece onto the board. Clear rows and columns." : Q ? "Place pieces. Clear rows and columns." : "Place pieces and clear rows or columns.", fl = x.mode === "gameover" ? "Run over. Start a new one from the top bar." : Q ? "Tap a tray piece, then tap the board. Use Fullscreen for more room." : H !== "off" && K ? "Fullscreen now uses safe-area spacing and a mobile overlay fallback when the browser blocks native fullscreen." : "Tip: tap 1, 2, or 3 to grab a tray slot instantly.", d = {
     width: "100%",
     maxWidth: H !== "off" ? "100vw" : 1040,
     minHeight: H !== "off" ? "100dvh" : void 0,
@@ -11203,7 +11203,6 @@ function Fh() {
               ] }),
               /* @__PURE__ */ w.jsxs("div", { style: { display: "flex", gap: K || Q ? 8 : 10, flexWrap: "wrap" }, children: [
                 /* @__PURE__ */ w.jsx("button", { onClick: Ut, style: { ...Ec(!0), padding: K || Q ? "10px 13px" : void 0, fontSize: K || Q ? 13 : void 0 }, children: x.mode === "playing" ? "New Run" : "Start Run" }),
-                St ? null : /* @__PURE__ */ w.jsx("button", { onClick: () => wl("title"), style: { ...Ec(!1), padding: K || Q ? "10px 13px" : void 0, fontSize: K || Q ? 13 : void 0 }, children: "Title" }),
                 /* @__PURE__ */ w.jsx("button", { onClick: () => {
                   ql();
                 }, style: { ...Ec(!1), padding: K || Q ? "10px 13px" : void 0, fontSize: K || Q ? 13 : void 0 }, children: x.fullscreen ? "Exit Fullscreen" : "Fullscreen" })
@@ -11221,10 +11220,6 @@ function Fh() {
             /* @__PURE__ */ w.jsx("div", { style: { fontSize: K || Q ? 20 : 26, fontWeight: 800 }, children: x.bestScore })
           ] }),
           St ? null : /* @__PURE__ */ w.jsxs(w.Fragment, { children: [
-            /* @__PURE__ */ w.jsxs("div", { style: D, children: [
-              /* @__PURE__ */ w.jsx("div", { style: { fontSize: 11, letterSpacing: 0.8, textTransform: "uppercase", opacity: 0.72 }, children: "Combo" }),
-              /* @__PURE__ */ w.jsx("div", { style: { fontSize: K || Q ? 20 : 26, fontWeight: 800 }, children: x.combo })
-            ] }),
             /* @__PURE__ */ w.jsxs("div", { style: D, children: [
               /* @__PURE__ */ w.jsx("div", { style: { fontSize: 11, letterSpacing: 0.8, textTransform: "uppercase", opacity: 0.72 }, children: "Playable" }),
               /* @__PURE__ */ w.jsx("div", { style: { fontSize: K || Q ? 20 : 26, fontWeight: 800 }, children: x.movesAvailable })
@@ -11305,12 +11300,12 @@ function Fh() {
               fontSize: Q ? 12 : 14
             },
             children: [
-              /* @__PURE__ */ w.jsx("div", { children: St ? "Fullscreen gives the tray more room if you want it." : fl }),
+              null,
               /* @__PURE__ */ w.jsx("div", { children: `Placements ${x.placements} • Clears ${x.clears}` })
             ]
           }
         ),
-        x.fullscreen ? null : Q && x.mode !== "playing" ? /* @__PURE__ */ w.jsxs(
+        true ? null : Q && x.mode !== "playing" ? /* @__PURE__ */ w.jsxs(
           "div",
           {
             style: {
