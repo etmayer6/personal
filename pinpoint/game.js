@@ -1,6 +1,8 @@
 const ROUND_COUNT = 5;
 const MAX_ROUND_SCORE = 5000;
-const MAPILLARY_TIMEOUT_MS = 8000;
+const MAPILLARY_TIMEOUT_MS = 5000;
+const MAPILLARY_SEARCH_ATTEMPTS = 6;
+const MAPILLARY_CELL_SIZE = 0.003;
 
 const localLocations = [
     {
@@ -90,52 +92,45 @@ const localLocations = [
 ];
 
 const worldRegions = [
-    { label: "Pacific Northwest, USA", country: "the United States", continent: "North America", bbox: [-123.4, 45.2, -121.7, 47.9] },
-    { label: "Southern California, USA", country: "the United States", continent: "North America", bbox: [-118.8, 32.7, -116.8, 34.4] },
-    { label: "Northeastern USA", country: "the United States", continent: "North America", bbox: [-75.2, 39.7, -71.0, 42.8] },
-    { label: "Central Mexico", country: "Mexico", continent: "North America", bbox: [-100.4, 18.7, -97.8, 20.7] },
-    { label: "Costa Rica", country: "Costa Rica", continent: "North America", bbox: [-85.9, 9.2, -83.4, 10.8] },
-    { label: "Guatemala", country: "Guatemala", continent: "North America", bbox: [-91.6, 14.2, -89.7, 15.5] },
-    { label: "Colombian Andes", country: "Colombia", continent: "South America", bbox: [-75.9, 3.7, -73.2, 6.9] },
-    { label: "Ecuador", country: "Ecuador", continent: "South America", bbox: [-79.5, -2.8, -77.5, 0.2] },
-    { label: "Peruvian Andes", country: "Peru", continent: "South America", bbox: [-77.4, -13.8, -70.5, -9.4] },
-    { label: "Central Chile", country: "Chile", continent: "South America", bbox: [-72.0, -35.3, -70.0, -32.4] },
-    { label: "Buenos Aires region, Argentina", country: "Argentina", continent: "South America", bbox: [-59.6, -35.4, -57.4, -33.6] },
-    { label: "Southeastern Brazil", country: "Brazil", continent: "South America", bbox: [-47.2, -24.2, -42.8, -21.7] },
-    { label: "Iceland", country: "Iceland", continent: "Europe", bbox: [-22.8, 63.7, -19.0, 65.4] },
-    { label: "Ireland", country: "Ireland", continent: "Europe", bbox: [-9.7, 51.5, -6.0, 54.5] },
-    { label: "Portugal", country: "Portugal", continent: "Europe", bbox: [-9.5, 37.0, -7.5, 41.5] },
-    { label: "Northern Spain", country: "Spain", continent: "Europe", bbox: [-8.8, 41.5, 2.8, 43.6] },
-    { label: "France", country: "France", continent: "Europe", bbox: [-1.8, 43.3, 6.9, 49.6] },
-    { label: "Great Britain", country: "the United Kingdom", continent: "Europe", bbox: [-4.8, 50.3, 1.5, 56.0] },
-    { label: "Benelux", country: "Belgium or the Netherlands", continent: "Europe", bbox: [2.6, 49.5, 7.2, 53.6] },
-    { label: "Southern Norway", country: "Norway", continent: "Europe", bbox: [7.0, 58.2, 10.8, 61.0] },
-    { label: "Central Sweden", country: "Sweden", continent: "Europe", bbox: [14.0, 56.2, 17.8, 60.8] },
-    { label: "Southern Finland", country: "Finland", continent: "Europe", bbox: [22.0, 60.0, 26.5, 63.0] },
-    { label: "Switzerland", country: "Switzerland", continent: "Europe", bbox: [6.2, 46.0, 9.8, 47.8] },
-    { label: "Central Italy", country: "Italy", continent: "Europe", bbox: [9.0, 41.5, 13.5, 44.8] },
-    { label: "The Balkans", country: "Croatia or Slovenia", continent: "Europe", bbox: [13.4, 44.0, 19.5, 46.9] },
-    { label: "Greece", country: "Greece", continent: "Europe", bbox: [20.0, 37.0, 24.7, 41.2] },
-    { label: "Morocco", country: "Morocco", continent: "Africa", bbox: [-9.8, 30.0, -3.0, 35.8] },
-    { label: "Tunisia", country: "Tunisia", continent: "Africa", bbox: [8.0, 33.0, 11.4, 37.0] },
-    { label: "Ghana", country: "Ghana", continent: "Africa", bbox: [-2.0, 5.0, 0.5, 7.7] },
-    { label: "Central Kenya", country: "Kenya", continent: "Africa", bbox: [36.0, -2.2, 38.0, 0.5] },
-    { label: "Uganda", country: "Uganda", continent: "Africa", bbox: [30.4, -0.8, 33.8, 2.0] },
-    { label: "South Africa", country: "South Africa", continent: "Africa", bbox: [18.0, -34.8, 31.4, -25.0] },
-    { label: "Jordan", country: "Jordan", continent: "Asia", bbox: [35.0, 29.3, 36.9, 32.6] },
-    { label: "United Arab Emirates", country: "the United Arab Emirates", continent: "Asia", bbox: [54.7, 24.0, 56.2, 25.8] },
-    { label: "Delhi region, India", country: "India", continent: "Asia", bbox: [76.7, 28.2, 77.8, 29.2] },
-    { label: "Central Nepal", country: "Nepal", continent: "Asia", bbox: [83.0, 27.0, 86.0, 29.0] },
-    { label: "Central Thailand", country: "Thailand", continent: "Asia", bbox: [99.9, 13.2, 101.1, 14.4] },
-    { label: "Western Malaysia", country: "Malaysia", continent: "Asia", bbox: [101.2, 2.5, 102.2, 3.5] },
-    { label: "Java, Indonesia", country: "Indonesia", continent: "Asia", bbox: [105.0, -8.8, 114.8, -5.8] },
-    { label: "The Philippines", country: "the Philippines", continent: "Asia", bbox: [120.0, 7.0, 124.5, 18.5] },
-    { label: "Taiwan", country: "Taiwan", continent: "Asia", bbox: [120.0, 21.8, 122.0, 25.4] },
-    { label: "Japan", country: "Japan", continent: "Asia", bbox: [130.0, 31.0, 141.8, 41.0] },
-    { label: "South Korea", country: "South Korea", continent: "Asia", bbox: [126.0, 34.0, 129.6, 38.0] },
-    { label: "Southeastern Australia", country: "Australia", continent: "Oceania", bbox: [144.0, -38.8, 153.7, -27.0] },
-    { label: "Southwestern Australia", country: "Australia", continent: "Oceania", bbox: [114.8, -35.2, 117.3, -31.0] },
-    { label: "New Zealand", country: "New Zealand", continent: "Oceania", bbox: [166.0, -47.2, 178.5, -34.0] }
+    { label: "Seattle, USA", country: "the United States", continent: "North America", bbox: [-122.38, 47.58, -122.28, 47.66] },
+    { label: "San Francisco, USA", country: "the United States", continent: "North America", bbox: [-122.46, 37.74, -122.38, 37.82] },
+    { label: "New York City, USA", country: "the United States", continent: "North America", bbox: [-74.02, 40.70, -73.94, 40.78] },
+    { label: "Mexico City, Mexico", country: "Mexico", continent: "North America", bbox: [-99.18, 19.39, -99.10, 19.47] },
+    { label: "Montreal, Canada", country: "Canada", continent: "North America", bbox: [-73.62, 45.48, -73.54, 45.56] },
+    { label: "Bogota, Colombia", country: "Colombia", continent: "South America", bbox: [-74.10, 4.61, -74.02, 4.69] },
+    { label: "Quito, Ecuador", country: "Ecuador", continent: "South America", bbox: [-78.54, -0.24, -78.46, -0.16] },
+    { label: "Lima, Peru", country: "Peru", continent: "South America", bbox: [-77.08, -12.09, -77.00, -12.01] },
+    { label: "Santiago, Chile", country: "Chile", continent: "South America", bbox: [-70.69, -33.48, -70.61, -33.40] },
+    { label: "Buenos Aires, Argentina", country: "Argentina", continent: "South America", bbox: [-58.42, -34.64, -58.34, -34.56] },
+    { label: "Sao Paulo, Brazil", country: "Brazil", continent: "South America", bbox: [-46.68, -23.59, -46.60, -23.51] },
+    { label: "London, United Kingdom", country: "the United Kingdom", continent: "Europe", bbox: [-0.17, 51.49, -0.09, 51.57] },
+    { label: "Paris, France", country: "France", continent: "Europe", bbox: [2.31, 48.83, 2.39, 48.91] },
+    { label: "Lisbon, Portugal", country: "Portugal", continent: "Europe", bbox: [-9.18, 38.70, -9.10, 38.78] },
+    { label: "Madrid, Spain", country: "Spain", continent: "Europe", bbox: [-3.74, 40.38, -3.66, 40.46] },
+    { label: "Amsterdam, Netherlands", country: "the Netherlands", continent: "Europe", bbox: [4.86, 52.34, 4.94, 52.42] },
+    { label: "Rome, Italy", country: "Italy", continent: "Europe", bbox: [12.46, 41.87, 12.54, 41.95] },
+    { label: "Oslo, Norway", country: "Norway", continent: "Europe", bbox: [10.70, 59.89, 10.78, 59.97] },
+    { label: "Athens, Greece", country: "Greece", continent: "Europe", bbox: [23.69, 37.95, 23.77, 38.03] },
+    { label: "Cape Town, South Africa", country: "South Africa", continent: "Africa", bbox: [18.39, -33.96, 18.47, -33.88] },
+    { label: "Nairobi, Kenya", country: "Kenya", continent: "Africa", bbox: [36.78, -1.32, 36.86, -1.24] },
+    { label: "Accra, Ghana", country: "Ghana", continent: "Africa", bbox: [-0.24, 5.52, -0.16, 5.60] },
+    { label: "Tunis, Tunisia", country: "Tunisia", continent: "Africa", bbox: [10.14, 36.78, 10.22, 36.86] },
+    { label: "Marrakech, Morocco", country: "Morocco", continent: "Africa", bbox: [-8.02, 31.59, -7.94, 31.67] },
+    { label: "Kampala, Uganda", country: "Uganda", continent: "Africa", bbox: [32.54, 0.28, 32.62, 0.36] },
+    { label: "Tokyo, Japan", country: "Japan", continent: "Asia", bbox: [139.72, 35.65, 139.80, 35.73] },
+    { label: "Seoul, South Korea", country: "South Korea", continent: "Asia", bbox: [126.94, 37.53, 127.02, 37.61] },
+    { label: "Taipei, Taiwan", country: "Taiwan", continent: "Asia", bbox: [121.50, 25.01, 121.58, 25.09] },
+    { label: "Bangkok, Thailand", country: "Thailand", continent: "Asia", bbox: [100.48, 13.72, 100.56, 13.80] },
+    { label: "Singapore", country: "Singapore", continent: "Asia", bbox: [103.81, 1.27, 103.89, 1.35] },
+    { label: "Manila, Philippines", country: "the Philippines", continent: "Asia", bbox: [120.96, 14.56, 121.04, 14.64] },
+    { label: "Delhi, India", country: "India", continent: "Asia", bbox: [77.18, 28.58, 77.26, 28.66] },
+    { label: "Dubai, United Arab Emirates", country: "the United Arab Emirates", continent: "Asia", bbox: [55.24, 25.18, 55.32, 25.26] },
+    { label: "Sydney, Australia", country: "Australia", continent: "Oceania", bbox: [151.17, -33.90, 151.25, -33.82] },
+    { label: "Melbourne, Australia", country: "Australia", continent: "Oceania", bbox: [144.92, -37.85, 145.00, -37.77] },
+    { label: "Brisbane, Australia", country: "Australia", continent: "Oceania", bbox: [153.00, -27.50, 153.08, -27.42] },
+    { label: "Auckland, New Zealand", country: "New Zealand", continent: "Oceania", bbox: [174.72, -36.89, 174.80, -36.81] },
+    { label: "Wellington, New Zealand", country: "New Zealand", continent: "Oceania", bbox: [174.74, -41.32, 174.82, -41.24] },
+    { label: "Perth, Australia", country: "Australia", continent: "Oceania", bbox: [115.82, -31.99, 115.90, -31.91] }
 ];
 
 const mapillaryToken = String(window.PINPOINT_MAPILLARY_TOKEN || "").trim();
@@ -233,44 +228,60 @@ function regionHints(region, lat) {
 }
 
 async function fetchMapillaryRound(region) {
-    const endpoint = new URL("https://graph.mapillary.com/images");
-    endpoint.searchParams.set("access_token", mapillaryToken);
-    endpoint.searchParams.set("bbox", region.bbox.join(","));
-    endpoint.searchParams.set("fields", "id,geometry,computed_geometry,thumb_1024_url,thumb_2048_url,captured_at,compass_angle,is_pano,width,height,quality_score");
-    endpoint.searchParams.set("limit", "100");
+    const [minLon, minLat, maxLon, maxLat] = region.bbox;
 
-    const controller = new AbortController();
-    const timeout = window.setTimeout(() => controller.abort(), MAPILLARY_TIMEOUT_MS);
-    let payload;
-    try {
-        const response = await fetch(endpoint, { mode: "cors", signal: controller.signal });
-        if (!response.ok) throw new Error(`Mapillary request failed with ${response.status}`);
-        payload = await response.json();
-    } finally {
-        window.clearTimeout(timeout);
-    }
-    const candidates = (payload.data || []).filter((image) => {
+    for (let attempt = 0; attempt < MAPILLARY_SEARCH_ATTEMPTS; attempt += 1) {
+        const width = Math.min(MAPILLARY_CELL_SIZE, maxLon - minLon);
+        const height = Math.min(MAPILLARY_CELL_SIZE, maxLat - minLat);
+        const west = minLon + Math.random() * Math.max(0, maxLon - minLon - width);
+        const south = minLat + Math.random() * Math.max(0, maxLat - minLat - height);
+        const endpoint = new URL("https://graph.mapillary.com/images");
+        endpoint.searchParams.set("access_token", mapillaryToken);
+        endpoint.searchParams.set("bbox", [west, south, west + width, south + height].join(","));
+        endpoint.searchParams.set("fields", "id,geometry,computed_geometry,thumb_1024_url,thumb_2048_url,captured_at,compass_angle,is_pano,width,height,quality_score");
+        endpoint.searchParams.set("limit", "24");
+
+        const controller = new AbortController();
+        const timeout = window.setTimeout(() => controller.abort(), MAPILLARY_TIMEOUT_MS);
+        let payload;
+        try {
+            const response = await fetch(endpoint, { mode: "cors", signal: controller.signal });
+            if (!response.ok) continue;
+            payload = await response.json();
+        } catch (error) {
+            if (error.name === "AbortError") continue;
+            throw error;
+        } finally {
+            window.clearTimeout(timeout);
+        }
+
+        const candidates = (payload.data || []).filter((image) => {
+            const geometry = image.computed_geometry || image.geometry;
+            return image.thumb_1024_url && geometry && Array.isArray(geometry.coordinates);
+        });
+        if (!candidates.length) continue;
+
+        const standardImages = candidates.filter((image) => !image.is_pano);
+        const perspectivePool = standardImages.length ? standardImages : candidates;
+        const landscape = perspectivePool.filter((image) => !image.width || !image.height || image.width >= image.height * 1.1);
+        const qualityPool = landscape.filter((image) => image.quality_score == null || image.quality_score >= 0.35);
+        const pool = qualityPool.length ? qualityPool : landscape.length ? landscape : perspectivePool;
+        const image = pool[Math.floor(Math.random() * pool.length)];
         const geometry = image.computed_geometry || image.geometry;
-        return image.thumb_1024_url && geometry && Array.isArray(geometry.coordinates);
-    });
-    if (!candidates.length) throw new Error("Mapillary returned no images for this region");
+        const [lon, lat] = geometry.coordinates;
+        return {
+            image: image.thumb_2048_url || image.thumb_1024_url,
+            imageSmall: image.thumb_1024_url,
+            imageId: image.id,
+            answer: region.label,
+            lat,
+            lon,
+            hints: regionHints(region, lat),
+            source: "mapillary"
+        };
+    }
 
-    const landscape = candidates.filter((image) => !image.width || !image.height || image.width >= image.height * 1.1);
-    const qualityPool = landscape.filter((image) => image.quality_score == null || image.quality_score >= 0.35);
-    const pool = qualityPool.length ? qualityPool : landscape.length ? landscape : candidates;
-    const image = pool[Math.floor(Math.random() * pool.length)];
-    const geometry = image.computed_geometry || image.geometry;
-    const [lon, lat] = geometry.coordinates;
-    return {
-        image: image.thumb_2048_url || image.thumb_1024_url,
-        imageSmall: image.thumb_1024_url,
-        imageId: image.id,
-        answer: region.label,
-        lat,
-        lon,
-        hints: regionHints(region, lat),
-        source: "mapillary"
-    };
+    throw new Error("Mapillary returned no images after six local searches");
 }
 
 async function buildWorldwideSequence() {
