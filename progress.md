@@ -66,6 +66,13 @@ Original prompt: Remove clutter from the games on the website. Right now they do
 - Live imagery, attribution, answer links, hints, scoring, five-round progression, and final result state all passed with no console or page errors.
 - The required game interaction client was rerun after the final image-quality filter, and desktop screenshots were visually inspected.
 
+## Games navigation pass
+
+- Added Games to every primary site navigation bar between Projects and Photos.
+- The games hub, Pinpoint, Flight Sim, Block Blast, Word Sort, and Gremlin Dex now identify Games as their active section instead of Projects.
+- Structural checks passed for all 14 primary navigation bars, including link order and active-state ownership.
+- Desktop, 390px, and 320px browser screenshots were inspected; navigation has no clipping, overflow, console errors, or page errors.
+
 ## Pinpoint polish pass
 
 - Enforced continent-diverse worldwide games instead of allowing one region to dominate all five rounds.
