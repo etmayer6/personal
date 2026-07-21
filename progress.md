@@ -165,3 +165,10 @@ Original prompt: Remove clutter from the games on the website. Right now they do
 - JavaScript syntax and diff checks pass, and the required Playwright game client loads the updated world map and synchronized camera state.
 - Deterministic browser QA passes zoom buttons, pointer-anchored wheel zoom, drag panning, precise tap placement, keyboard zoom, result reset, and synthetic touch pinch without accidental guesses.
 - Zoomed desktop, desktop result, and 390px mobile screenshots were visually inspected with no browser errors or horizontal overflow.
+
+## Gremlin icon refresh
+
+- Replaced the scavenger hunt's letter `G` with a reusable inline SVG gremlin face while preserving the existing button hitbox and accessible clue label.
+- Reused the same icon for all four animated Mayhem-mode swarm items so normal and released states share one visual identity.
+- Browser QA confirms no leftover `G` text markers, four SVG swarm icons, a mobile hit target of at least 42px, and no console errors or horizontal overflow.
+- Normal token, full-page Mayhem, and mobile screenshots were visually inspected at their rendered sizes.

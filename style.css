@@ -807,12 +807,35 @@ body.apartment-body :is(
     border-radius: 50%;
     background: #102b36;
     box-shadow: 5px 5px 0 rgba(197, 90, 50, 0.8);
-    font-family: Georgia, "Palatino Linotype", serif;
-    font-size: 20px;
-    font-weight: 800;
     cursor: pointer;
     transform: rotate(-8deg);
     transition: transform 160ms ease, box-shadow 160ms ease;
+}
+
+.gremlin-icon {
+    display: block;
+    width: 26px;
+    height: 26px;
+    overflow: visible;
+}
+
+.gremlin-icon-face {
+    fill: currentColor;
+}
+
+.gremlin-icon-detail {
+    fill: var(--gremlin-icon-detail, #102b36);
+}
+
+.gremlin-icon-eye,
+.gremlin-icon-tooth {
+    fill: #fffdf8;
+}
+
+.scavenger-token .gremlin-icon {
+    width: 30px;
+    height: 30px;
+    margin: auto;
 }
 
 .scavenger-token:hover,
@@ -1003,9 +1026,13 @@ body.gremlin-mode :is(.work-card, .focus-grid article, .feature-card, .archive-c
     color: #fffbd5;
     border: 2px solid #173d2c;
     background: #ef6b35;
-    font-family: Georgia, "Palatino Linotype", serif;
-    font-weight: 800;
+    --gremlin-icon-detail: #173d2c;
     animation: gremlin-prowl 9s linear infinite;
+}
+
+.gremlin-swarm .gremlin-icon {
+    width: 25px;
+    height: 25px;
 }
 
 .gremlin-swarm span:nth-child(1) { top: 18%; left: -40px; }

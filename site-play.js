@@ -190,6 +190,22 @@
         return button;
     }
 
+    function createGremlinIcon() {
+        const icon = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+        icon.setAttribute("class", "gremlin-icon");
+        icon.setAttribute("viewBox", "0 0 64 64");
+        icon.setAttribute("aria-hidden", "true");
+        icon.innerHTML = `
+            <path class="gremlin-icon-face" d="M22 19 5 8l6 24 7 2c-1 3-1 7 0 10 2 8 8 13 14 13s12-5 14-13c1-3 1-7 0-10l7-2 6-24-17 11c-3-2-7-3-10-3s-7 1-10 3Z"/>
+            <path class="gremlin-icon-detail" d="m10 13 12 9-8 5-4-14Zm44 0-12 9 8 5 4-14ZM20 31l10-4-3 9-7-5Zm24 0-10-4 3 9 7-5Z"/>
+            <path class="gremlin-icon-detail" d="M25 42c4 3 10 3 14 0-1 7-13 7-14 0Z"/>
+            <path class="gremlin-icon-tooth" d="m28 43 2 4 2-4 2 4 2-4c-2 1-6 1-8 0Z"/>
+            <circle class="gremlin-icon-eye" cx="25" cy="32" r="1.8"/>
+            <circle class="gremlin-icon-eye" cx="39" cy="32" r="1.8"/>
+        `;
+        return icon;
+    }
+
     function createSwarm() {
         if (document.querySelector(".gremlin-swarm")) return;
         const swarm = document.createElement("div");
@@ -197,7 +213,7 @@
         swarm.setAttribute("aria-hidden", "true");
         for (let index = 0; index < 4; index += 1) {
             const gremlin = document.createElement("span");
-            gremlin.textContent = "G";
+            gremlin.appendChild(createGremlinIcon());
             swarm.appendChild(gremlin);
         }
         document.body.appendChild(swarm);
@@ -261,7 +277,7 @@
         const token = document.createElement("button");
         token.type = "button";
         token.className = "scavenger-token";
-        token.textContent = "G";
+        token.appendChild(createGremlinIcon());
         token.title = "This was not here before.";
         token.setAttribute("aria-label", "Open scavenger hunt clue " + (progress + 1));
         token.addEventListener("click", function () {
