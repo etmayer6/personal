@@ -172,3 +172,34 @@ Original prompt: Remove clutter from the games on the website. Right now they do
 - Reused the same icon for all four animated Mayhem-mode swarm items so normal and released states share one visual identity.
 - Browser QA confirms no leftover `G` text markers, four SVG swarm icons, a mobile hit target of at least 42px, and no console errors or horizontal overflow.
 - Normal token, full-page Mayhem, and mobile screenshots were visually inspected at their rendered sizes.
+
+## Pinpoint photo zoom
+
+- New request: make the challenge image zoomable with interaction parity to the world map.
+- Added bounded 1x-8x photo zoom, pointer-focused wheel zoom, pinch zoom, drag panning, visible controls, and photo-focused keyboard controls.
+- Photo framing now resets at the start of every round, while captions, loading state, and attribution remain fixed above the moving image.
+- Added resize and fullscreen bounding so transformed photos cannot expose empty edges after the layout changes size.
+
+## Pinpoint photo zoom verification
+
+- Desktop browser QA passed zoom buttons, cursor-focused wheel zoom, bounded drag panning, reset, photo-focused keyboard zoom, and independent photo/map controls.
+- Synthetic two-pointer QA reached 2.03x without changing the map camera, and advancing to the next round reset the photo to 1x with centered offsets.
+- Desktop and 390px mobile screenshots were visually inspected; mobile has no horizontal overflow or overlap between photo instructions and zoom controls.
+- Browser QA recorded no console or page errors.
+
+## CourseFlow static demo
+
+- New request: replace CourseFlow's external-only project link with a usable static portfolio demo backed by placeholder data.
+- Added a dependency-free CourseFlow route with a fictional Software Engineering curriculum, three sample plan states, local browser persistence, catalog search and filters, and an accessible course inspector.
+- Added semester planning through catalog add buttons, drag-and-drop, and move/remove controls, plus automatic prerequisite, course-availability, duplicate, and credit-load checks.
+- Added live degree-map progress and requirement coverage, while retaining the original capstone website as a clearly secondary project link.
+- Updated the homepage and Projects page to lead with the new interactive demo.
+- Browser QA identified undersized mobile course controls; catalog add buttons and semester move/remove targets were enlarged before final responsive verification.
+
+## CourseFlow demo verification
+
+- JavaScript syntax and diff checks pass for the new static route and portfolio link updates.
+- Browser QA passes all three sample scenarios, catalog filtering, course inspection, add/remove controls, drag-and-drop term moves, term creation, reset behavior, and local-storage restoration after reload.
+- Validation QA passes prerequisite sequencing, missing prerequisites, sample term availability, and overloaded credit checks; resolving or removing a conflict updates the plan immediately.
+- Desktop, conflict, tablet, and 390px mobile states were visually inspected, including the lower semester board and catalog rather than only the page header.
+- CourseFlow, Home, and Projects have no horizontal overflow at tested breakpoints, and browser QA recorded no console or page errors.

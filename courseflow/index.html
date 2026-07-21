@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="An interactive static demo of CourseFlow, a visual degree-planning capstone project by Ethan Mayer.">
+    <title>CourseFlow Demo | Ethan Mayer</title>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="courseflow-body">
+    <header class="courseflow-site-header">
+        <nav aria-label="Primary navigation">
+            <a class="nav-name" href="../index.html">Ethan Mayer</a>
+            <ul>
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="../resume/">Resume</a></li>
+                <li><a aria-current="page" href="../projects/">Projects</a></li>
+                <li><a href="../games/">Games</a></li>
+                <li><a href="../photos/">Photos</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="courseflow-shell">
+        <section class="courseflow-intro" aria-labelledby="courseflow-title">
+            <div class="courseflow-intro-copy">
+                <a class="courseflow-back" href="../projects/"><span aria-hidden="true">&larr;</span> Project index</a>
+                <p class="courseflow-kicker">Capstone / Interactive case study</p>
+                <h1 id="courseflow-title">CourseFlow</h1>
+                <p class="courseflow-summary">Turn prerequisites, degree requirements, and semester decisions into one plan you can understand and adjust.</p>
+            </div>
+            <div class="courseflow-intro-side">
+                <span class="demo-badge"><span aria-hidden="true"></span> Static demo</span>
+                <p>Everything below runs in your browser using fictional data. No account or backend is required.</p>
+                <a href="https://sdmay26-19.sd.ece.iastate.edu/" target="_blank" rel="noopener noreferrer">View original capstone <span aria-hidden="true">&nearr;</span></a>
+            </div>
+        </section>
+
+        <section class="courseflow-demo" aria-label="Interactive CourseFlow demo">
+            <header class="demo-toolbar">
+                <div class="demo-brand">
+                    <span class="demo-mark" aria-hidden="true">CF</span>
+                    <div>
+                        <strong>Degree planner</strong>
+                        <span id="program-label">Sample program</span>
+                    </div>
+                </div>
+
+                <div class="demo-toolbar-actions">
+                    <label class="toolbar-field" for="scenario-select">
+                        <span>Sample plan</span>
+                        <select id="scenario-select"></select>
+                    </label>
+                    <button class="toolbar-button" id="reset-plan" type="button">Reset demo</button>
+                </div>
+            </header>
+
+            <div class="demo-disclaimer">
+                <span>Sample data</span>
+                <p id="program-note">This curriculum is fictional and is not advising guidance.</p>
+                <strong id="save-status">Saved locally</strong>
+            </div>
+
+            <section class="plan-overview" aria-label="Degree plan summary">
+                <div class="overview-progress">
+                    <div class="overview-progress-copy">
+                        <span>Degree map</span>
+                        <strong id="mapped-percent">0%</strong>
+                    </div>
+                    <div class="progress-track" aria-hidden="true">
+                        <span class="progress-complete" id="completed-progress"></span>
+                        <span class="progress-planned" id="planned-progress"></span>
+                    </div>
+                    <p id="credit-summary">0 of 45 credits mapped</p>
+                </div>
+                <dl class="overview-stats">
+                    <div><dt>Completed</dt><dd id="completed-credits">0</dd><span>credits</span></div>
+                    <div><dt>Planned</dt><dd id="planned-credits">0</dd><span>credits</span></div>
+                    <div><dt>Requirements</dt><dd id="requirement-count">0/0</dd><span>mapped</span></div>
+                    <div class="health-stat"><dt>Plan checks</dt><dd id="issue-count">0</dd><span id="issue-label">all clear</span></div>
+                </dl>
+            </section>
+
+            <div class="planner-workspace">
+                <aside class="catalog-panel" aria-labelledby="catalog-title">
+                    <div class="panel-heading">
+                        <div>
+                            <p>Explore</p>
+                            <h2 id="catalog-title">Course catalog</h2>
+                        </div>
+                        <span id="catalog-count">0 courses</span>
+                    </div>
+
+                    <label class="catalog-search" for="course-search">
+                        <span class="sr-only">Search courses</span>
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6"></circle><path d="m16 16 4 4"></path></svg>
+                        <input id="course-search" type="search" placeholder="Search code or title" autocomplete="off">
+                    </label>
+
+                    <div class="catalog-filters" id="catalog-filters" aria-label="Filter courses">
+                        <button class="is-active" type="button" data-filter="all" aria-pressed="true">All</button>
+                        <button type="button" data-filter="core" aria-pressed="false">Core</button>
+                        <button type="button" data-filter="quality" aria-pressed="false">Quality</button>
+                        <button type="button" data-filter="elective" aria-pressed="false">Electives</button>
+                    </div>
+
+                    <label class="add-target" for="target-term">
+                        <span>Add courses to</span>
+                        <select id="target-term"></select>
+                    </label>
+
+                    <div class="catalog-list" id="catalog-list"></div>
+                </aside>
+
+                <section class="plan-panel" aria-labelledby="plan-title">
+                    <div class="panel-heading plan-heading">
+                        <div>
+                            <p>Your pathway</p>
+                            <h2 id="plan-title">Semester plan</h2>
+                        </div>
+                        <button class="add-term-button" id="add-term" type="button"><span aria-hidden="true">+</span> Add term</button>
+                    </div>
+
+                    <div class="plan-health is-clear" id="plan-health" role="status">
+                        <span class="health-icon" aria-hidden="true"></span>
+                        <div><strong>Plan is ready</strong><p>Every prerequisite is scheduled before the course that needs it.</p></div>
+                    </div>
+
+                    <div class="semester-board" id="semester-board" aria-label="Semester course plan"></div>
+                </section>
+
+                <aside class="insights-panel" aria-label="Plan details and requirements">
+                    <section class="course-inspector" aria-labelledby="inspector-title">
+                        <div class="panel-heading compact-heading">
+                            <div><p>Selected course</p><h2 id="inspector-title">Course details</h2></div>
+                        </div>
+                        <div id="course-inspector-content" class="inspector-empty">
+                            <span aria-hidden="true">i</span>
+                            <p>Select a course to inspect its prerequisites and availability.</p>
+                        </div>
+                    </section>
+
+                    <section class="requirements-panel" aria-labelledby="requirements-title">
+                        <div class="panel-heading compact-heading">
+                            <div><p>Degree audit</p><h2 id="requirements-title">Requirements</h2></div>
+                            <span id="requirements-summary">0 mapped</span>
+                        </div>
+                        <div class="requirements-list" id="requirements-list"></div>
+                    </section>
+
+                    <section class="checks-panel" aria-labelledby="checks-title">
+                        <div class="panel-heading compact-heading">
+                            <div><p>Validation</p><h2 id="checks-title">Planning checks</h2></div>
+                        </div>
+                        <div id="checks-list"></div>
+                    </section>
+                </aside>
+            </div>
+        </section>
+
+        <section class="courseflow-context" aria-labelledby="context-title">
+            <div>
+                <p class="courseflow-kicker">What this demonstrates</p>
+                <h2 id="context-title">The planning loop, without the production backend.</h2>
+            </div>
+            <ol>
+                <li><span>01</span><strong>Explore</strong><p>Search a sample catalog and inspect prerequisites.</p></li>
+                <li><span>02</span><strong>Arrange</strong><p>Add or drag courses into a semester-by-semester plan.</p></li>
+                <li><span>03</span><strong>Validate</strong><p>See requirement progress and sequencing conflicts immediately.</p></li>
+            </ol>
+        </section>
+    </main>
+
+    <div class="courseflow-toast" id="courseflow-toast" role="status" aria-live="polite"></div>
+
+    <footer class="courseflow-footer">
+        <p>&copy; 2026 Ethan Mayer</p>
+        <a href="../projects/">Back to projects</a>
+    </footer>
+
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+    <script src="../site-play.js"></script>
+</body>
+</html>

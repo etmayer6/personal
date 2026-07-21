@@ -44,8 +44,14 @@
             </div>
 
             <div class="challenge-layout">
-                <figure class="photo-stage">
+                <figure class="photo-stage" id="photo-stage" tabindex="0" aria-label="Location challenge photo. Use the controls, mouse wheel, or pinch gesture to zoom, and drag to pan.">
                     <img id="location-image" src="" alt="Location challenge photo" decoding="async">
+                    <div class="map-zoom photo-zoom" aria-label="Photo zoom controls">
+                        <button id="photo-zoom-out" type="button" aria-label="Zoom photo out">-</button>
+                        <button class="map-zoom-level" id="photo-zoom-reset" type="button" aria-label="Reset photo zoom"><span id="photo-zoom-value">1x</span><small>Reset</small></button>
+                        <button id="photo-zoom-in" type="button" aria-label="Zoom photo in">+</button>
+                    </div>
+                    <div class="image-instruction">Scroll or pinch to zoom | Drag to pan</div>
                     <figcaption>
                         <span id="photo-label">Round 1</span>
                         <span class="photo-guidance">Look for climate, language, roads, and architecture.</span>

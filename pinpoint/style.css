@@ -188,6 +188,21 @@ button:disabled {
     margin: 0;
     overflow: hidden;
     background: #19343d;
+    cursor: zoom-in;
+    touch-action: none;
+    outline: none;
+}
+
+.photo-stage:focus-visible {
+    box-shadow: inset 0 0 0 3px var(--pin-gold);
+}
+
+.photo-stage.is-zoomed {
+    cursor: grab;
+}
+
+.photo-stage.is-panning {
+    cursor: grabbing;
 }
 
 .photo-stage img {
@@ -197,13 +212,17 @@ button:disabled {
     display: block;
     object-fit: cover;
     opacity: 0;
-    transform: scale(1.015);
-    transition: opacity 380ms ease, transform 900ms ease;
+    pointer-events: none;
+    transform: translate3d(0, 0, 0) scale(1);
+    transform-origin: 0 0;
+    transition: opacity 380ms ease;
+    user-select: none;
+    -webkit-user-drag: none;
+    will-change: transform;
 }
 
 .photo-stage img.loaded {
     opacity: 1;
-    transform: scale(1);
 }
 
 .photo-stage::after {
@@ -305,6 +324,25 @@ button:disabled {
     touch-action: none;
 }
 
+.photo-zoom {
+    z-index: 4;
+}
+
+.image-instruction {
+    position: absolute;
+    z-index: 3;
+    top: 14px;
+    left: 14px;
+    padding: 7px 11px;
+    border-radius: 999px;
+    color: #fff;
+    background: rgba(7, 22, 27, 0.76);
+    font-size: 10px;
+    font-weight: 800;
+    pointer-events: none;
+    white-space: nowrap;
+}
+
 #world-map.is-panning {
     cursor: grabbing;
 }
@@ -386,6 +424,14 @@ button:disabled {
 
     .map-zoom button {
         min-height: 34px;
+    }
+
+    .image-instruction {
+        top: 10px;
+        left: 10px;
+        max-width: calc(100% - 142px);
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 
     .map-instruction {

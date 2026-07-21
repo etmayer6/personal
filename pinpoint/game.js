@@ -6,6 +6,9 @@ const MAPILLARY_CELL_SIZE = 0.003;
 const MIN_MAP_ZOOM = 1;
 const MAX_MAP_ZOOM = 8;
 const MAP_ZOOM_FACTOR = 1.5;
+const MIN_PHOTO_ZOOM = 1;
+const MAX_PHOTO_ZOOM = 8;
+const PHOTO_ZOOM_FACTOR = 1.5;
 
 const localLocations = [
     {
@@ -147,6 +150,7 @@ const worldMap = {
 const gameEl = document.getElementById("pinpoint-game");
 const canvas = document.getElementById("world-map");
 const ctx = canvas.getContext("2d");
+const photoStageEl = document.getElementById("photo-stage");
 const imageEl = document.getElementById("location-image");
 const loadingEl = document.getElementById("image-loading");
 const roundValueEl = document.getElementById("round-value");
@@ -162,6 +166,10 @@ const zoomOutButton = document.getElementById("map-zoom-out");
 const zoomResetButton = document.getElementById("map-zoom-reset");
 const zoomInButton = document.getElementById("map-zoom-in");
 const zoomValueEl = document.getElementById("map-zoom-value");
+const photoZoomOutButton = document.getElementById("photo-zoom-out");
+const photoZoomResetButton = document.getElementById("photo-zoom-reset");
+const photoZoomInButton = document.getElementById("photo-zoom-in");
+const photoZoomValueEl = document.getElementById("photo-zoom-value");
 const hintBoxEl = document.getElementById("hint-box");
 const hintTextEl = document.getElementById("hint-text");
 const hintButton = document.getElementById("hint-button");
@@ -194,6 +202,18 @@ const mapView = {
 };
 
 const mapGesture = {
+    pointers: new Map(),
+    moved: false,
+    pinched: false
+};
+
+const photoView = {
+    zoom: MIN_PHOTO_ZOOM,
+    offsetX: 0,
+    offsetY: 0
+};
+
+const photoGesture = {
     pointers: new Map(),
     moved: false,
     pinched: false
@@ -387,6 +407,52 @@ function resetMapView(redraw = true) {
     mapView.centerLat = 0;
     updateZoomControls();
     if (redraw) drawMap();
+}
+
+function constrainPhotoView() {
+    photoView.zoom = Math.max(MIN_PHOTO_ZOOM, Math.min(MAX_PHOTO_ZOOM, photoView.zoom));
+    const width = photoStageEl.clientWidth;
+    const height = photoStageEl.clientHeight;
+    photoView.offsetX = Math.max(width * (1 - photoView.zoom), Math.min(0, photoView.offsetX));
+    photoView.offsetY = Math.max(height * (1 - photoView.zoom), Math.min(0, photoView.offsetY));
+}
+
+function renderPhotoView() {
+    constrainPhotoView();
+    imageEl.style.transform = `translate3d(${photoView.offsetX}px, ${photoView.offsetY}px, 0) scale(${photoView.zoom})`;
+    photoZoomValueEl.textContent = `${Number(photoView.zoom.toFixed(1))}x`;
+    photoZoomOutButton.disabled = photoView.zoom <= MIN_PHOTO_ZOOM;
+    photoZoomInButton.disabled = photoView.zoom >= MAX_PHOTO_ZOOM;
+    photoStageEl.classList.toggle("is-zoomed", photoView.zoom > MIN_PHOTO_ZOOM);
+}
+
+function setPhotoZoom(nextZoom, anchorX = photoStageEl.clientWidth / 2, anchorY = photoStageEl.clientHeight / 2) {
+    const previousZoom = photoView.zoom;
+    photoView.zoom = nextZoom;
+    constrainPhotoView();
+    const ratio = photoView.zoom / previousZoom;
+    photoView.offsetX = anchorX - (anchorX - photoView.offsetX) * ratio;
+    photoView.offsetY = anchorY - (anchorY - photoView.offsetY) * ratio;
+    renderPhotoView();
+}
+
+function panPhoto(deltaX, deltaY) {
+    if (photoView.zoom <= MIN_PHOTO_ZOOM) return;
+    photoView.offsetX += deltaX;
+    photoView.offsetY += deltaY;
+    renderPhotoView();
+}
+
+function resetPhotoView() {
+    photoView.zoom = MIN_PHOTO_ZOOM;
+    photoView.offsetX = 0;
+    photoView.offsetY = 0;
+    renderPhotoView();
+}
+
+function photoPoint(clientX, clientY) {
+    const rect = photoStageEl.getBoundingClientRect();
+    return { x: clientX - rect.left, y: clientY - rect.top };
 }
 
 function canvasPoint(clientX, clientY) {
@@ -650,6 +716,7 @@ function preloadNextRound() {
 function loadRound() {
     const location = currentLocation();
     resetMapView(false);
+    resetPhotoView();
     state.mode = "guessing";
     state.source = location.source || "local";
     state.hintCount = 0;
@@ -935,6 +1002,85 @@ canvas.addEventListener("wheel", (event) => {
     setMapZoom(mapView.zoom * factor, anchor.x, anchor.y);
 }, { passive: false });
 
+photoStageEl.addEventListener("pointerdown", (event) => {
+    if (state.mode === "loading" || event.target.closest("button, a")) return;
+    event.preventDefault();
+    photoStageEl.setPointerCapture?.(event.pointerId);
+    photoGesture.pointers.set(event.pointerId, {
+        x: event.clientX,
+        y: event.clientY,
+        startX: event.clientX,
+        startY: event.clientY
+    });
+    if (photoGesture.pointers.size === 1) {
+        photoGesture.moved = false;
+        photoGesture.pinched = false;
+    } else {
+        photoGesture.moved = true;
+        photoGesture.pinched = true;
+    }
+    photoStageEl.focus();
+});
+
+photoStageEl.addEventListener("pointermove", (event) => {
+    const tracked = photoGesture.pointers.get(event.pointerId);
+    if (!tracked) return;
+    event.preventDefault();
+    const previousPointers = new Map([...photoGesture.pointers].map(([id, point]) => [id, { ...point }]));
+    tracked.x = event.clientX;
+    tracked.y = event.clientY;
+
+    if (photoGesture.pointers.size === 1) {
+        const previous = previousPointers.get(event.pointerId);
+        if (Math.hypot(tracked.x - tracked.startX, tracked.y - tracked.startY) > 4) {
+            photoGesture.moved = true;
+            photoStageEl.classList.add("is-panning");
+        }
+        if (photoGesture.moved) panPhoto(tracked.x - previous.x, tracked.y - previous.y);
+        return;
+    }
+
+    const current = [...photoGesture.pointers.values()].slice(0, 2);
+    const previous = [...previousPointers.values()].slice(0, 2);
+    const currentMidpoint = {
+        x: (current[0].x + current[1].x) / 2,
+        y: (current[0].y + current[1].y) / 2
+    };
+    const previousMidpoint = {
+        x: (previous[0].x + previous[1].x) / 2,
+        y: (previous[0].y + previous[1].y) / 2
+    };
+    const currentDistance = Math.hypot(current[0].x - current[1].x, current[0].y - current[1].y);
+    const previousDistance = Math.hypot(previous[0].x - previous[1].x, previous[0].y - previous[1].y);
+    panPhoto(currentMidpoint.x - previousMidpoint.x, currentMidpoint.y - previousMidpoint.y);
+    const anchor = photoPoint(currentMidpoint.x, currentMidpoint.y);
+    setPhotoZoom(photoView.zoom * currentDistance / Math.max(1, previousDistance), anchor.x, anchor.y);
+});
+
+function finishPhotoPointer(event) {
+    if (!photoGesture.pointers.has(event.pointerId)) return;
+    photoGesture.pointers.delete(event.pointerId);
+    photoStageEl.releasePointerCapture?.(event.pointerId);
+    if (photoGesture.pointers.size === 0) {
+        photoGesture.moved = false;
+        photoGesture.pinched = false;
+        photoStageEl.classList.remove("is-panning");
+    } else {
+        photoGesture.moved = true;
+    }
+}
+
+photoStageEl.addEventListener("pointerup", finishPhotoPointer);
+photoStageEl.addEventListener("pointercancel", finishPhotoPointer);
+
+photoStageEl.addEventListener("wheel", (event) => {
+    if (state.mode === "loading") return;
+    event.preventDefault();
+    const anchor = photoPoint(event.clientX, event.clientY);
+    const factor = event.deltaY < 0 ? PHOTO_ZOOM_FACTOR : 1 / PHOTO_ZOOM_FACTOR;
+    setPhotoZoom(photoView.zoom * factor, anchor.x, anchor.y);
+}, { passive: false });
+
 imageEl.addEventListener("load", () => {
     loadingEl.hidden = true;
     imageEl.classList.add("loaded");
@@ -958,29 +1104,39 @@ nextButton.addEventListener("click", nextRound);
 zoomOutButton.addEventListener("click", () => setMapZoom(mapView.zoom / MAP_ZOOM_FACTOR));
 zoomInButton.addEventListener("click", () => setMapZoom(mapView.zoom * MAP_ZOOM_FACTOR));
 zoomResetButton.addEventListener("click", () => resetMapView());
+photoZoomOutButton.addEventListener("click", () => setPhotoZoom(photoView.zoom / PHOTO_ZOOM_FACTOR));
+photoZoomInButton.addEventListener("click", () => setPhotoZoom(photoView.zoom * PHOTO_ZOOM_FACTOR));
+photoZoomResetButton.addEventListener("click", resetPhotoView);
 document.getElementById("new-game-button").addEventListener("click", startGame);
 fullscreenButton.addEventListener("click", toggleFullscreen);
 
 document.addEventListener("fullscreenchange", () => {
     fullscreenButton.textContent = document.fullscreenElement === gameEl ? "Exit fullscreen" : "Fullscreen";
-    window.setTimeout(resizeCanvas, 50);
+    window.setTimeout(() => {
+        resizeCanvas();
+        renderPhotoView();
+    }, 50);
 });
 
 window.addEventListener("keydown", (event) => {
     const key = event.key.toLowerCase();
+    const photoFocused = photoStageEl.contains(document.activeElement);
     if (key === "+" || key === "=") {
         event.preventDefault();
-        setMapZoom(mapView.zoom * MAP_ZOOM_FACTOR);
+        if (photoFocused) setPhotoZoom(photoView.zoom * PHOTO_ZOOM_FACTOR);
+        else setMapZoom(mapView.zoom * MAP_ZOOM_FACTOR);
         return;
     }
     if (key === "-" || key === "_") {
         event.preventDefault();
-        setMapZoom(mapView.zoom / MAP_ZOOM_FACTOR);
+        if (photoFocused) setPhotoZoom(photoView.zoom / PHOTO_ZOOM_FACTOR);
+        else setMapZoom(mapView.zoom / MAP_ZOOM_FACTOR);
         return;
     }
     if (key === "0") {
         event.preventDefault();
-        resetMapView();
+        if (photoFocused) resetPhotoView();
+        else resetMapView();
         return;
     }
     if (key === "f") {
@@ -1012,13 +1168,21 @@ window.addEventListener("keydown", (event) => {
     placeGuess(guess.lat, guess.lon);
 });
 
-window.addEventListener("resize", resizeCanvas);
+window.addEventListener("resize", () => {
+    resizeCanvas();
+    renderPhotoView();
+});
 window.render_game_to_text = () => JSON.stringify({
     coordinateSystem: { map: "equirectangular", longitude: "-180 west to 180 east", latitude: "-90 south to 90 north" },
     mapView: {
         zoom: Number(mapView.zoom.toFixed(2)),
         centerLon: Number(mapView.centerLon.toFixed(2)),
         centerLat: Number(mapView.centerLat.toFixed(2))
+    },
+    photoView: {
+        zoom: Number(photoView.zoom.toFixed(2)),
+        offsetX: Math.round(photoView.offsetX),
+        offsetY: Math.round(photoView.offsetY)
     },
     mode: state.mode,
     imageSource: state.source,
