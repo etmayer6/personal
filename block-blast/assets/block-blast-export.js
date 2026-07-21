@@ -10514,13 +10514,13 @@ function Uh() {
   return f(), mc.exports = Dh(), mc.exports;
 }
 var Rh = Uh(), tt = Mc();
-const bl = 8, zl = 960, mt = 1240, J0 = "clawd_ui_block_blast_best", zc = [
-  { fill: "#ff845c", shade: "#a53a1f", glow: "rgba(255,132,92,0.36)", stroke: "#fff4ea" },
-  { fill: "#63d0ff", shade: "#1e7191", glow: "rgba(99,208,255,0.34)", stroke: "#effcff" },
-  { fill: "#ffd56d", shade: "#a47d1d", glow: "rgba(255,213,109,0.32)", stroke: "#fff8df" },
-  { fill: "#7fe48d", shade: "#2f7f44", glow: "rgba(127,228,141,0.32)", stroke: "#effff2" },
-  { fill: "#c591ff", shade: "#7142a8", glow: "rgba(197,145,255,0.3)", stroke: "#faf4ff" },
-  { fill: "#ff95bb", shade: "#9a4561", glow: "rgba(255,149,187,0.3)", stroke: "#fff4f7" }
+const bl = 8, zl = 960, mt = 1060, J0 = "clawd_ui_block_blast_best", zc = [
+  { fill: "#ff7a3d", shade: "#d5481d", glow: "rgba(255,122,61,0.34)", stroke: "#ffb38c" },
+  { fill: "#3bb8ee", shade: "#1479bd", glow: "rgba(59,184,238,0.32)", stroke: "#9ce5ff" },
+  { fill: "#ffc83d", shade: "#d99312", glow: "rgba(255,200,61,0.32)", stroke: "#ffe397" },
+  { fill: "#6bd875", shade: "#309447", glow: "rgba(107,216,117,0.3)", stroke: "#b9f4be" },
+  { fill: "#9f72ed", shade: "#6740b6", glow: "rgba(159,114,237,0.3)", stroke: "#d7c3ff" },
+  { fill: "#ef648e", shade: "#bd315d", glow: "rgba(239,100,142,0.3)", stroke: "#ffb4cb" }
 ], Wn = [
   { id: "single", label: "Single", weight: 8, cells: [{ x: 0, y: 0 }] },
   { id: "domino-h", label: "Domino H", weight: 7, cells: [{ x: 0, y: 0 }, { x: 1, y: 0 }] },
@@ -10545,6 +10545,19 @@ const bl = 8, zl = 960, mt = 1240, J0 = "clawd_ui_block_blast_best", zc = [
     weight: 3,
     cells: [{ x: 0, y: 0 }, { x: 1, y: 0 }, { x: 0, y: 1 }, { x: 1, y: 1 }, { x: 0, y: 2 }, { x: 1, y: 2 }]
   },
+  {
+    id: "rect3x2",
+    label: "Rect 3x2",
+    weight: 3,
+    cells: [{ x: 0, y: 0 }, { x: 1, y: 0 }, { x: 2, y: 0 }, { x: 0, y: 1 }, { x: 1, y: 1 }, { x: 2, y: 1 }]
+  },
+  {
+    id: "square3",
+    label: "Square 3",
+    weight: 2,
+    cells: [{ x: 0, y: 0 }, { x: 1, y: 0 }, { x: 2, y: 0 }, { x: 0, y: 1 }, { x: 1, y: 1 }, { x: 2, y: 1 }, { x: 0, y: 2 }, { x: 1, y: 2 }, { x: 2, y: 2 }]
+  },
+  { id: "corner5", label: "Big L", weight: 3, cells: [{ x: 0, y: 0 }, { x: 0, y: 1 }, { x: 0, y: 2 }, { x: 1, y: 2 }, { x: 2, y: 2 }] },
   { id: "t5", label: "T 5", weight: 2, cells: [{ x: 0, y: 0 }, { x: 1, y: 0 }, { x: 2, y: 0 }, { x: 1, y: 1 }, { x: 1, y: 2 }] }
 ];
 let X0 = null;
@@ -10617,7 +10630,7 @@ function jh() {
   return Array.from({ length: bl * bl }, () => null);
 }
 function Na(f, v = !1) {
-  const h = v && !f, o = f ? 620 : h ? 476 : 560, z = o / bl, _ = (zl - o) / 2, x = f ? 150 : h ? 92 : 188, G = f ? 820 : h ? 636 : 860, C = f ? 254 : h ? 208 : 240, E = f ? 184 : h ? 148 : 214, H = h ? 12 : 20, q = (zl - C * 3 - H * 2) / 2;
+  const h = v && !f, o = f ? 700 : h ? 760 : 700, z = o / bl, _ = (zl - o) / 2, x = f ? 58 : h ? 52 : 68, G = f ? 820 : h ? 850 : 820, C = f ? 254 : h ? 210 : 250, E = f ? 220 : h ? 174 : 210, H = h ? 12 : 20, q = (zl - C * 3 - H * 2) / 2;
   return {
     boardX: _,
     boardY: x,
@@ -10719,8 +10732,9 @@ function F0(f) {
 }
 function Kh(f, v, h, o) {
   const z = f.cells.map((C) => ({ row: v + C.y, col: h + C.x }));
-  if (!_c(o, f, v, h))
-    return null;
+  const _ = _c(o, f, v, h);
+  if (!_)
+    return { pieceId: f.id, row: v, col: h, cells: z, canPlace: !1, rows: [], cols: [] };
   const x = [...o];
   for (const C of f.cells)
     x[ae(v + C.y, h + C.x)] = f.color;
@@ -10733,6 +10747,14 @@ function Tc(f, v, h, o, z) {
     return null;
   const G = G0(Math.round((h - f.boardX) / f.cell - v.width / 2), 0, bl - v.width), C = G0(Math.round((o - f.boardY) / f.cell - v.height / 2), 0, bl - v.height);
   return Kh(v, C, G, z);
+}
+function Pc(f, v, h, o, z = "mouse") {
+  const x = z === "touch" || z === "pen", G = f.cell * (x ? 1.3 + v.height * 0.5 : 0.62);
+  return { x: h, y: o - G };
+}
+function Ic(f, v, h, o, z, _ = "mouse") {
+  const x = Pc(f, v, h, o, _);
+  return Tc(f, v, x.x, x.y, z);
 }
 function Ac(f, v) {
   if (f.length > 0)
@@ -10750,24 +10772,24 @@ function Jl(f, v, h, o, z, _) {
   f.beginPath(), f.moveTo(v + x, h), f.arcTo(v + o, h, v + o, h + z, x), f.arcTo(v + o, h + z, v, h + z, x), f.arcTo(v, h + z, v, h, x), f.arcTo(v, h, v + o, h, x), f.closePath();
 }
 function $n(f, v, h, o, z, _) {
-  const x = _?.alpha ?? 1, G = Math.max(3, o * 0.08);
-  _?.glow && (f.save(), f.globalAlpha = x * 0.7, f.shadowColor = z.glow, f.shadowBlur = 22, Jl(f, v, h, o, o, o * 0.24), f.fillStyle = z.fill, f.fill(), f.restore()), f.save(), f.globalAlpha = x, Jl(f, v, h, o, o, o * 0.24);
-  const C = f.createLinearGradient(v, h, v, h + o);
-  C.addColorStop(0, "#ffffff"), C.addColorStop(0.08, z.stroke), C.addColorStop(0.18, z.fill), C.addColorStop(0.72, z.fill), C.addColorStop(1, z.shade), f.fillStyle = C, f.fill(), Jl(f, v + G, h + G, o - G * 2, o * 0.34, o * 0.16);
-  const E = f.createLinearGradient(v, h, v, h + o * 0.4);
-  E.addColorStop(0, "rgba(255,255,255,0.8)"), E.addColorStop(1, "rgba(255,255,255,0)"), f.fillStyle = E, f.fill(), f.lineWidth = Math.max(2, o * 0.06), f.strokeStyle = _?.outline ?? "rgba(255,255,255,0.55)", Jl(f, v + 1, h + 1, o - 2, o - 2, o * 0.22), f.stroke(), f.restore();
+  const x = _?.alpha ?? 1, G = Math.max(3, o * 0.075), C = o * 0.18;
+  _?.glow && (f.save(), f.globalAlpha = x * 0.58, f.shadowColor = z.glow, f.shadowBlur = 20, Jl(f, v, h, o, o, C), f.fillStyle = z.fill, f.fill(), f.restore()), f.save(), f.globalAlpha = x, Jl(f, v, h, o, o, C);
+  const E = f.createLinearGradient(v, h, v, h + o);
+  E.addColorStop(0, z.stroke), E.addColorStop(0.16, z.fill), E.addColorStop(0.76, z.fill), E.addColorStop(1, z.shade), f.fillStyle = E, f.fill(), Jl(f, v + G, h + G, o - G * 2, o * 0.24, o * 0.1);
+  const H = f.createLinearGradient(v, h, v, h + o * 0.34);
+  H.addColorStop(0, "rgba(255,255,255,0.48)"), H.addColorStop(1, "rgba(255,255,255,0)"), f.fillStyle = H, f.fill(), f.lineWidth = Math.max(1.5, o * 0.035), f.strokeStyle = _?.outline ?? "rgba(255,255,255,0.2)", Jl(f, v + 1, h + 1, o - 2, o - 2, C), f.stroke(), f.restore();
 }
 function Jh(f, v) {
   const h = f.createLinearGradient(0, 0, 0, mt);
-  h.addColorStop(0, "#14285c"), h.addColorStop(0.44, "#223e81"), h.addColorStop(1, "#0f1838"), f.fillStyle = h, f.fillRect(0, 0, zl, mt);
+  h.addColorStop(0, "#1269bf"), h.addColorStop(0.52, "#084890"), h.addColorStop(1, "#052d68"), f.fillStyle = h, f.fillRect(0, 0, zl, mt);
   const o = f.createRadialGradient(zl * 0.18, mt * 0.12, 0, zl * 0.18, mt * 0.12, 260);
-  o.addColorStop(0, "rgba(144,217,255,0.34)"), o.addColorStop(1, "rgba(144,217,255,0)"), f.fillStyle = o, f.fillRect(0, 0, zl, mt);
+  o.addColorStop(0, "rgba(151,226,255,0.34)"), o.addColorStop(1, "rgba(151,226,255,0)"), f.fillStyle = o, f.fillRect(0, 0, zl, mt);
   const z = f.createRadialGradient(zl * 0.82, mt * 0.18, 0, zl * 0.82, mt * 0.18, 280);
-  z.addColorStop(0, "rgba(255,202,96,0.2)"), z.addColorStop(1, "rgba(255,202,96,0)"), f.fillStyle = z, f.fillRect(0, 0, zl, mt), f.save(), f.globalAlpha = v ? 0.22 : 0.14;
-  for (let _ = 0; _ < 16; _ += 1)
-    for (let x = 0; x < 12; x += 1) {
-      const G = x * 88 + _ % 2 * 14, C = _ * 82;
-      f.fillStyle = _ % 2 === 0 ? "rgba(255,255,255,0.08)" : "rgba(255,255,255,0.04)", Jl(f, G, C, 52, 52, 14), f.fill();
+  z.addColorStop(0, "rgba(255,213,105,0.18)"), z.addColorStop(1, "rgba(255,213,105,0)"), f.fillStyle = z, f.fillRect(0, 0, zl, mt), f.save(), f.globalAlpha = v ? 0.16 : 0.1;
+  for (let _ = 0; _ < 13; _ += 1)
+    for (let x = 0; x < 11; x += 1) {
+      const G = x * 96 + _ % 2 * 18, C = _ * 90;
+      f.fillStyle = "rgba(255,255,255,0.08)", Jl(f, G, C, 46, 46, 13), f.fill();
     }
   f.restore();
 }
@@ -10814,7 +10836,7 @@ function w0(f, v, h) {
     combo: 0,
     clears: 0,
     placements: 0,
-    message: "Clear full rows or columns.",
+    message: "Drag a piece onto the board. Complete a row or column to clear it.",
     rng: z,
     time: 0,
     flash: 0,
@@ -10852,7 +10874,8 @@ function $h(f) {
     `moves=${f.movesAvailable}`,
     `selected=${v ? v.templateId : "none"}`,
     `fullscreen=${f.fullscreen}`,
-    `tray=${f.tray.map((o) => o.templateId).join(",") || "empty"}`,
+    `tray=${f.tray.map((o, z) => `${z + 1}:${o.templateId}[${o.cells.map((_) => `${_.x}:${_.y}`).join("|")}]`).join(",") || "empty"}`,
+    `drag=${f.drag ? `${f.drag.pointerType}@${Math.round(f.drag.x)},${Math.round(f.drag.y)}` : "none"}`,
     `preview=${h}`,
     `message=${f.message}`,
     "board:",
@@ -10886,18 +10909,18 @@ function L0(f, v) {
   if (z.rows.length + z.cols.length > 0) {
     f.combo += 1;
     const H = z.rows.length + z.cols.length, q = f.combo > 1 ? (f.combo - 1) * 30 : 0;
-    G += H * 120 + q, f.clears += H, f.flash = 1, f.flashRows = z.rows, f.flashCols = z.cols, Wh(f, _), f.message = f.combo > 1 ? `Combo x${f.combo}` : `Cleared ${H} line${H === 1 ? "" : "s"}`;
+    G += H * 120 + q, f.clears += H, f.flash = 1, f.flashRows = z.rows, f.flashCols = z.cols, Wh(f, _), f.message = f.combo > 1 ? `Combo x${f.combo}! Keep it going.` : `${H} line${H === 1 ? "" : "s"} cleared!`;
   } else
-    f.combo = 0, f.flash = 0, f.flashRows = [], f.flashCols = [], f.message = o.cells.length >= 5 ? "Strong placement." : "Keep building.";
+    f.combo = 0, f.flash = 0, f.flashRows = [], f.flashCols = [], f.message = o.cells.length >= 5 ? "Big piece placed. Keep space open." : "Good fit. Build toward a full line.";
   f.score += G, f.score > f.bestScore && (f.bestScore = f.score, qh(f.bestScore)), f.tray.splice(h, 1), f.placements += 1, f.selectedPieceId = null, f.preview = null, f.drag = null;
   let C = f.tray, E = f.rng;
-  [C, E] = Ac(C, E), f.tray = C, f.rng = E, f.movesAvailable = $0(f.board, f.tray), f.movesAvailable === 0 && (f.mode = "gameover", f.message = "No moves left. Start a new run.");
+  [C, E] = Ac(C, E), f.tray = C, f.rng = E, f.movesAvailable = $0(f.board, f.tray), f.movesAvailable === 0 && (f.mode = "gameover", f.message = "No space remains for any piece.");
 }
 function K0(f, v) {
   const h = Na(v.fullscreen, v.compact);
-  f.clearRect(0, 0, zl, mt), Jh(f, v.fullscreen), f.save(), f.fillStyle = "rgba(255,255,255,0.96)", f.font = v.fullscreen ? '700 42px "Trebuchet MS", sans-serif' : '700 38px "Trebuchet MS", sans-serif', f.textAlign = "left", f.fillText("Block Blast", 58, 70), f.font = '600 20px "Trebuchet MS", sans-serif', f.fillStyle = "rgba(230,241,255,0.86)", f.fillText(v.fullscreen ? "Classic mode" : "Classic endless mode", 58, 100), f.restore(), f.save(), Jl(f, h.boardX - 24, h.boardY - 24, h.boardSize + 48, h.boardSize + 48, 34), f.fillStyle = "rgba(8,20,56,0.5)", f.shadowColor = "rgba(0,0,0,0.24)", f.shadowBlur = 24, f.fill(), f.restore(), Jl(f, h.boardX - 8, h.boardY - 8, h.boardSize + 16, h.boardSize + 16, 30);
+  f.clearRect(0, 0, zl, mt), Jh(f, v.fullscreen), f.save(), Jl(f, h.boardX - 20, h.boardY - 20, h.boardSize + 40, h.boardSize + 40, 32), f.fillStyle = "rgba(3,28,72,0.44)", f.shadowColor = "rgba(2,18,49,0.34)", f.shadowBlur = 28, f.shadowOffsetY = 12, f.fill(), f.restore(), Jl(f, h.boardX - 8, h.boardY - 8, h.boardSize + 16, h.boardSize + 16, 24);
   const o = f.createLinearGradient(h.boardX, h.boardY, h.boardX, h.boardY + h.boardSize);
-  if (o.addColorStop(0, "rgba(18,35,78,0.98)"), o.addColorStop(1, "rgba(10,22,56,0.98)"), f.fillStyle = o, f.fill(), v.flash > 0) {
+  if (o.addColorStop(0, "rgba(5,48,112,0.98)"), o.addColorStop(1, "rgba(3,35,85,0.98)"), f.fillStyle = o, f.fill(), v.flash > 0) {
     f.save(), f.globalAlpha = v.flash * 0.42, f.fillStyle = "rgba(255,243,179,0.8)";
     for (const z of v.flashRows)
       Jl(f, h.boardX, h.boardY + z * h.cell, h.boardSize, h.cell, 12), f.fill();
@@ -10908,20 +10931,8 @@ function K0(f, v) {
   for (let z = 0; z < bl; z += 1)
     for (let _ = 0; _ < bl; _ += 1) {
       const x = h.boardX + _ * h.cell + 3, G = h.boardY + z * h.cell + 3;
-      Jl(f, x, G, h.cell - 6, h.cell - 6, 16), f.fillStyle = (z + _) % 2 === 0 ? "rgba(255,255,255,0.08)" : "rgba(255,255,255,0.05)", f.fill();
+      Jl(f, x, G, h.cell - 6, h.cell - 6, Math.max(8, h.cell * 0.17)), f.fillStyle = "rgba(4,25,65,0.58)", f.fill(), f.strokeStyle = "rgba(113,179,237,0.12)", f.lineWidth = 1, f.stroke();
     }
-  if (v.preview) {
-    const z = v.tray.find((_) => _.id === v.preview?.pieceId) ?? null;
-    if (z)
-      for (const _ of v.preview.cells) {
-        const x = h.boardX + _.col * h.cell + 5, G = h.boardY + _.row * h.cell + 5;
-        $n(f, x, G, h.cell - 10, z.color, {
-          alpha: v.preview.canPlace ? 0.6 : 0.22,
-          outline: v.preview.canPlace ? "rgba(255,255,255,0.85)" : "rgba(255,116,116,0.9)",
-          glow: v.preview.canPlace
-        });
-      }
-  }
   for (let z = 0; z < bl; z += 1)
     for (let _ = 0; _ < bl; _ += 1) {
       const x = v.board[ae(z, _)];
@@ -10929,35 +10940,57 @@ function K0(f, v) {
         glow: !1
       });
     }
+  if (v.preview) {
+    const z = v.tray.find((_) => _.id === v.preview?.pieceId) ?? null;
+    if (z) {
+      if (v.preview.canPlace && (v.preview.rows.length || v.preview.cols.length)) {
+        f.save(), f.fillStyle = "rgba(255,232,127,0.14)";
+        for (const _ of v.preview.rows)
+          f.fillRect(h.boardX, h.boardY + _ * h.cell, h.boardSize, h.cell);
+        for (const _ of v.preview.cols)
+          f.fillRect(h.boardX + _ * h.cell, h.boardY, h.cell, h.boardSize);
+        f.restore();
+      }
+      for (const _ of v.preview.cells) {
+        const x = h.boardX + _.col * h.cell + 5, G = h.boardY + _.row * h.cell + 5;
+        $n(f, x, G, h.cell - 10, z.color, {
+          alpha: v.preview.canPlace ? 0.62 : 0.42,
+          outline: v.preview.canPlace ? "rgba(255,255,255,0.9)" : "rgba(255,112,112,0.95)",
+          glow: v.preview.canPlace
+        });
+        if (!v.preview.canPlace) {
+          const C = h.cell - 10, E = C * 0.26;
+          f.save(), f.globalAlpha = 0.94, Jl(f, x + 1, G + 1, C - 2, C - 2, C * 0.18), f.fillStyle = "rgba(190,31,57,0.72)", f.fill(), f.lineCap = "round", f.lineWidth = Math.max(4, C * 0.065), f.strokeStyle = "#ff6b78", f.stroke(), f.beginPath(), f.strokeStyle = "rgba(255,255,255,0.96)", f.moveTo(x + E, G + E), f.lineTo(x + C - E, G + C - E), f.moveTo(x + C - E, G + E), f.lineTo(x + E, G + C - E), f.stroke(), f.restore();
+        }
+      }
+    }
+  }
   for (let z = 0; z < 3; z += 1) {
     const _ = h.slots[z], x = v.tray[z], G = x && v.selectedPieceId === x.id;
-    Jl(f, _.x, _.y, _.w, _.h, 26);
-    const C = f.createLinearGradient(_.x, _.y, _.x, _.y + _.h);
-    if (C.addColorStop(0, G ? "rgba(255,255,255,0.24)" : "rgba(255,255,255,0.14)"), C.addColorStop(1, G ? "rgba(54,135,255,0.3)" : "rgba(17,34,78,0.74)"), f.fillStyle = C, f.fill(), f.lineWidth = G ? 4 : 2, f.strokeStyle = G ? "rgba(178,220,255,0.95)" : "rgba(255,255,255,0.18)", f.stroke(), !x) {
-      f.save(), f.globalAlpha = 0.26, Jl(f, _.x + _.w / 2 - 36, _.y + _.h / 2 - 36, 72, 72, 18), f.fillStyle = "rgba(255,255,255,0.1)", f.fill(), f.restore();
-      continue;
-    }
-    const E = Math.min(44, (_.w - 42) / Math.max(x.width + 0.25, 2), (_.h - 44) / Math.max(x.height + 0.25, 2)), H = x.width * E, q = x.height * E, W = _.x + (_.w - H) / 2, pl = _.y + (_.h - q) / 2;
+    if (!x) continue;
+    G && (f.save(), f.shadowColor = x.color.glow, f.shadowBlur = 26, f.fillStyle = "rgba(255,255,255,0.12)", Jl(f, _.x + 16, _.y + 12, _.w - 32, _.h - 24, 34), f.fill(), f.restore());
+    const C = Math.min(58, (_.w - 30) / Math.max(x.width + 0.2, 2), (_.h - 24) / Math.max(x.height + 0.2, 2)), E = x.width * C, H = x.height * C, q = _.x + (_.w - E) / 2, W = _.y + (_.h - H) / 2, pl = v.drag?.pieceId === x.id;
     for (const Tl of x.cells)
-      $n(f, W + Tl.x * E, pl + Tl.y * E, E - 3, x.color, {
-        glow: G
+      $n(f, q + Tl.x * C, W + Tl.y * C, C - 4, x.color, {
+        alpha: pl ? 0.12 : 1,
+        glow: G && !pl
       });
   }
   if (v.drag) {
     const z = v.tray.find((_) => _.id === v.drag?.pieceId) ?? null;
     if (z) {
-      const _ = Math.min(46, h.cell * 0.88), x = v.drag.x - z.width * _ / 2, G = v.drag.y - z.height * _ / 2;
+      const _ = h.cell * 0.94, x = Pc(h, z, v.drag.x, v.drag.y, v.drag.pointerType), G = x.x - z.width * _ / 2, E = x.y - z.height * _ / 2;
       for (const C of z.cells)
-        $n(f, x + C.x * _, G + C.y * _, _ - 4, z.color, {
-          alpha: 0.88,
+        $n(f, G + C.x * _, E + C.y * _, _ - 5, z.color, {
+          alpha: 0.94,
           glow: !0
         });
     }
   }
-  f.save(), f.textAlign = "center", f.fillStyle = "rgba(231,243,255,0.92)", f.font = '700 26px "Trebuchet MS", sans-serif', f.fillText(`${v.movesAvailable} playable`, zl / 2, h.trayY - 22), f.restore();
+  f.save(), f.textAlign = "center", f.fillStyle = v.preview && !v.preview.canPlace ? "#ffbdc4" : "rgba(239,248,255,0.86)", f.font = '800 18px "Trebuchet MS", sans-serif', f.fillText(v.preview && !v.preview.canPlace ? "BLOCKED - TRY ANOTHER SPOT" : v.drag ? "RELEASE ON THE GLOWING CELLS" : v.selectedPieceId ? "TAP THE BOARD OR DRAG" : "CHOOSE A PIECE", zl / 2, h.trayY - 22), f.restore();
   for (const z of v.particles)
     f.save(), f.globalAlpha = z.life / z.maxLife, f.fillStyle = z.color, Jl(f, z.x - z.size / 2, z.y - z.size / 2, z.size, z.size, z.size / 3), f.fill(), f.restore();
-  v.mode === "title" && (f.save(), Jl(f, 116, 412, zl - 232, 180, 34), f.fillStyle = "rgba(6,14,38,0.76)", f.fill(), f.textAlign = "center", f.fillStyle = "rgba(255,255,255,0.98)", f.font = '700 52px "Trebuchet MS", sans-serif', f.fillText("Stack. Blast. Repeat.", zl / 2, 480), f.font = '600 24px "Trebuchet MS", sans-serif', f.fillStyle = "rgba(223,238,255,0.92)", f.fillText("Pick a piece, then place it on the board.", zl / 2, 532), f.restore()), v.mode === "gameover" && (f.save(), Jl(f, 146, 368, zl - 292, 260, 38), f.fillStyle = "rgba(7,12,32,0.82)", f.fill(), f.textAlign = "center", f.fillStyle = "rgba(255,255,255,0.98)", f.font = '700 54px "Trebuchet MS", sans-serif', f.fillText("No Moves Left", zl / 2, 460), f.font = '700 28px "Trebuchet MS", sans-serif', f.fillStyle = "rgba(231,243,255,0.9)", f.fillText(`Final score ${v.score}`, zl / 2, 510), f.font = '600 22px "Trebuchet MS", sans-serif', f.fillText("Start a new run to reload the tray.", zl / 2, 554), f.restore());
+  v.mode === "title" && (f.save(), Jl(f, 136, 342, zl - 272, 226, 34), f.fillStyle = "rgba(3,22,61,0.92)", f.fill(), f.textAlign = "center", f.fillStyle = "#ffd264", f.font = '800 16px "Trebuchet MS", sans-serif', f.fillText("READY TO PLAY?", zl / 2, 384), f.fillStyle = "rgba(255,255,255,0.98)", f.font = '800 48px "Trebuchet MS", sans-serif', f.fillText("Make room. Score big.", zl / 2, 442), f.font = '700 21px "Trebuchet MS", sans-serif', f.fillStyle = "rgba(235,246,255,0.92)", f.fillText("Drag blocks to complete full rows or columns.", zl / 2, 492), f.font = '600 17px "Trebuchet MS", sans-serif', f.fillStyle = "rgba(220,239,255,0.76)", f.fillText("Choose Start Game below when you are ready.", zl / 2, 530), f.restore()), v.mode === "gameover" && (f.save(), Jl(f, 146, 330, zl - 292, 250, 38), f.fillStyle = "rgba(3,20,55,0.92)", f.fill(), f.textAlign = "center", f.fillStyle = "#ffd264", f.font = '800 15px "Trebuchet MS", sans-serif', f.fillText("RUN COMPLETE", zl / 2, 372), f.fillStyle = "rgba(255,255,255,0.98)", f.font = '800 50px "Trebuchet MS", sans-serif', f.fillText("No space left", zl / 2, 444), f.font = '800 27px "Trebuchet MS", sans-serif', f.fillStyle = "rgba(235,246,255,0.94)", f.fillText(`Score ${v.score}`, zl / 2, 496), f.font = '600 18px "Trebuchet MS", sans-serif', f.fillStyle = "rgba(220,239,255,0.72)", f.fillText("Start a new game and keep more open space.", zl / 2, 542), f.restore());
 }
 function Ec(f) {
   return {
@@ -11095,8 +11128,18 @@ function Fh() {
         Z0(o.current, B), R -= B;
       }
       W();
-    }, T.__drainVirtualTimePending = () => 0, () => {
-      delete T.render_game_to_text, delete T.advanceTime, delete T.__drainVirtualTimePending;
+    }, T.__drainVirtualTimePending = () => 0, T.__blockblast_debug_line_clear = () => {
+      const S = w0("playing", o.current.fullscreen, o.current.compact), R = Wn.find((L) => L.id === "single");
+      if (!R) return;
+      for (let L = 0; L < bl - 1; L += 1)
+        S.board[ae(0, L)] = zc[L % zc.length];
+      S.tray = [Gh(R, zc[2], "debug-single")], S.movesAvailable = 1, S.message = "Place the single block to finish the glowing row.", o.current = S, W();
+    }, T.__blockblast_debug_gameover = () => {
+      const S = w0("playing", o.current.fullscreen, o.current.compact), R = Wn.find((L) => L.id === "square3");
+      if (!R) return;
+      S.board = Array.from({ length: bl * bl }, (L, cl) => zc[cl % zc.length]), S.tray = [Gh(R, zc[4], "debug-square")], S.movesAvailable = 0, S.mode = "gameover", S.message = "No space remains for any piece.", o.current = S, W();
+    }, () => {
+      delete T.render_game_to_text, delete T.advanceTime, delete T.__drainVirtualTimePending, delete T.__blockblast_debug_line_clear, delete T.__blockblast_debug_gameover;
     };
   }, []), tt.useEffect(() => {
     const T = () => {
@@ -11171,6 +11214,101 @@ function Fh() {
     background: "rgba(255,255,255,0.11)",
     boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.08)"
   };
+  const Tu = H !== "off" ? { color: "#eff6ff", background: "rgba(255,255,255,0.1)", boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.16)" } : { color: "#194f61", background: "rgba(25,79,97,0.08)", boxShadow: "inset 0 0 0 1px rgba(25,79,97,0.16)" }, Ru = /* @__PURE__ */ w.jsx(
+    "canvas",
+    {
+      id: "blockblast-canvas",
+      ref: h,
+      width: zl,
+      height: mt,
+      tabIndex: 0,
+      role: "application",
+      "aria-label": "Block Blast play area. Drag one of three pieces onto empty board cells and complete rows or columns.",
+      style: {
+        width: "100%",
+        height: "100%",
+        display: "block",
+        borderRadius: x.fullscreen ? 22 : Q ? 20 : 24,
+        touchAction: "none",
+        boxShadow: "0 22px 44px rgba(3, 27, 72, 0.26)",
+        cursor: o.current.drag ? "grabbing" : "pointer"
+      },
+      onPointerDown: (T) => {
+        const S = o.current;
+        if (S.mode !== "playing") return;
+        const R = k(T);
+        if (!R) return;
+        const B = Yl(R.x, R.y);
+        B && (S.selectedPieceId = B.id, S.drag = { pieceId: B.id, startX: R.x, startY: R.y, x: R.x, y: R.y, pointerType: T.pointerType || "mouse" }, S.preview = null, S.message = "Drag onto the board.", h.current?.setPointerCapture?.(T.pointerId), W());
+      },
+      onPointerMove: (T) => {
+        const S = o.current, R = k(T);
+        if (!R) return;
+        if (!S.drag) {
+          const B = S.selectedPieceId ? S.tray.find((L) => L.id === S.selectedPieceId) ?? null : null;
+          B && T.pointerType === "mouse" && (S.preview = Tc(Na(S.fullscreen, S.compact), B, R.x, R.y, S.board));
+          return;
+        }
+        S.drag.x = R.x, S.drag.y = R.y;
+        const B = S.tray.find((L) => L.id === S.drag?.pieceId) ?? null;
+        S.preview = B ? Ic(Na(S.fullscreen, S.compact), B, R.x, R.y, S.board, S.drag.pointerType) : null;
+      },
+      onPointerUp: (T) => {
+        const S = o.current, R = k(T);
+        if (!R) return;
+        if (S.drag) {
+          const B = S.tray.find((L) => L.id === S.drag?.pieceId) ?? null, nl = Math.hypot(R.x - S.drag.startX, R.y - S.drag.startY) > 14, Ue = B ? Ic(Na(S.fullscreen, S.compact), B, R.x, R.y, S.board, S.drag.pointerType) : null;
+          Ue?.canPlace ? L0(S, Ue) : (S.drag = null, S.preview = Ue, !nl && B ? (S.selectedPieceId = B.id, S.message = `${B.label} selected. Tap the board or drag it.`) : S.message = Ue ? "That space is blocked. Try another spot." : "Bring the piece closer to the board."), h.current?.releasePointerCapture?.(T.pointerId), W();
+          return;
+        }
+        if (S.mode !== "playing") return;
+        const B = Yl(R.x, R.y);
+        if (B) {
+          S.selectedPieceId = B.id, S.preview = null, S.message = `${B.label} selected. Tap the board or drag it.`, W();
+          return;
+        }
+        const L = S.selectedPieceId ? S.tray.find((nl) => nl.id === S.selectedPieceId) ?? null : null;
+        if (!L) return;
+        const cl = Tc(Na(S.fullscreen, S.compact), L, R.x, R.y, S.board);
+        cl?.canPlace ? L0(S, cl) : (S.message = "That placement does not fit.", S.preview = cl), W();
+      },
+      onPointerCancel: () => {
+        const T = o.current;
+        T.drag = null, T.preview = null, T.message = "Piece returned to the tray.", W();
+      }
+    }
+  );
+  return /* @__PURE__ */ w.jsx("div", { style: { minHeight: ut ? "100dvh" : "100%", display: "flex", justifyContent: "center", padding: H !== "off" ? 0 : Q ? "4px 0 10px" : "8px 0 18px", background: H !== "off" ? "#073978" : "transparent", position: ut ? "fixed" : "relative", inset: ut ? 0 : void 0, zIndex: ut ? 9999 : void 0, overflow: ut ? "hidden" : "visible" }, children: /* @__PURE__ */ w.jsxs("section", { ref: v, style: { width: "100%", maxWidth: H !== "off" ? "100vw" : 1080, minHeight: H !== "off" ? "100dvh" : void 0, height: ut ? "100dvh" : void 0, boxSizing: "border-box", borderRadius: H !== "off" ? 0 : Q ? 22 : 26, padding: H !== "off" ? `calc(env(safe-area-inset-top, 0px) + ${K ? 8 : 14}px) calc(env(safe-area-inset-right, 0px) + ${K ? 8 : 18}px) calc(env(safe-area-inset-bottom, 0px) + ${K ? 12 : 18}px) calc(env(safe-area-inset-left, 0px) + ${K ? 8 : 18}px)` : Q ? "10px" : "18px", background: H !== "off" ? "linear-gradient(180deg, #0c56a7 0%, #063576 100%)" : "linear-gradient(145deg, #fffdf8 0%, #f1e9dc 100%)", boxShadow: H !== "off" ? "none" : "0 22px 54px rgba(16,43,54,0.15)", color: H !== "off" ? "#eff6ff" : "#102b36", display: "flex", flexDirection: "column", gap: K ? 10 : Q ? 9 : 14, overflowX: "hidden", overflowY: H !== "off" ? "auto" : "hidden", WebkitOverflowScrolling: "touch", overscrollBehavior: H !== "off" ? "contain" : "auto" }, children: [
+    /* @__PURE__ */ w.jsxs("header", { style: { display: "grid", gridTemplateColumns: Q || K ? "1fr" : "minmax(0, 1fr) auto", gap: Q ? 12 : 20, alignItems: "end" }, children: [
+      /* @__PURE__ */ w.jsxs("div", { style: { minWidth: 0 }, children: [
+        /* @__PURE__ */ w.jsx("div", { style: { color: H !== "off" ? "#ffd264" : "#9a462a", fontSize: 11, fontWeight: 800, letterSpacing: "0.14em", textTransform: "uppercase", marginBottom: 5 }, children: "Endless block puzzle" }),
+        /* @__PURE__ */ w.jsx("h1", { style: { margin: 0, fontFamily: 'Georgia, "Palatino Linotype", serif', fontSize: H !== "off" ? K ? 27 : 34 : Q ? 30 : 42, lineHeight: 1, letterSpacing: "-0.035em", color: "inherit" }, children: "Block Blast" }),
+        /* @__PURE__ */ w.jsx("p", { style: { margin: "9px 0 0", maxWidth: 680, color: H !== "off" ? "rgba(239,246,255,0.8)" : "#4c636a", fontSize: Q ? 12 : 14, lineHeight: 1.5 }, children: "Drag one of three pieces onto the 8 x 8 board. Complete a full row or column to clear it, score points, and keep space open for bigger pieces." })
+      ] }),
+      /* @__PURE__ */ w.jsxs("div", { style: { display: "grid", gridTemplateColumns: "repeat(3, minmax(72px, 1fr))", gap: 7, minWidth: Q ? 0 : 286 }, children: [["Score", x.score], ["Best", x.bestScore], ["Lines", x.clears]].map(([T, S]) => /* @__PURE__ */ w.jsxs("div", { style: { padding: Q ? "8px 9px" : "10px 12px", borderRadius: 14, background: H !== "off" ? "rgba(255,255,255,0.1)" : "rgba(16,79,97,0.07)", border: H !== "off" ? "1px solid rgba(255,255,255,0.12)" : "1px solid rgba(16,43,54,0.1)" }, children: [
+        /* @__PURE__ */ w.jsx("div", { style: { fontSize: 9, fontWeight: 800, letterSpacing: "0.1em", textTransform: "uppercase", opacity: 0.62 }, children: T }),
+        /* @__PURE__ */ w.jsx("div", { style: { marginTop: 2, fontSize: Q ? 18 : 22, fontWeight: 800 }, children: S })
+      ] }, T)) })
+    ] }),
+    H === "off" && /* @__PURE__ */ w.jsx("div", { style: { display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: Q ? 6 : 8 }, children: [["1", "Choose a piece"], ["2", "Drag and release"], ["3", "Complete a line"]].map(([T, S]) => /* @__PURE__ */ w.jsxs("div", { style: { display: "flex", alignItems: "center", justifyContent: Q ? "center" : "flex-start", gap: 7, minWidth: 0, padding: Q ? "8px 5px" : "9px 12px", borderRadius: 13, background: "rgba(197,90,50,0.07)", color: "#65473b", fontSize: Q ? 10 : 12, fontWeight: 800, textAlign: Q ? "center" : "left" }, children: [
+      /* @__PURE__ */ w.jsx("span", { style: { flex: "0 0 auto", display: "grid", placeItems: "center", width: 20, height: 20, borderRadius: 999, background: "#c55a32", color: "#fff", fontSize: 10 }, children: T }),
+      /* @__PURE__ */ w.jsx("span", { children: S })
+    ] }, T)) }),
+    /* @__PURE__ */ w.jsx("div", { style: { width: Math.min(H !== "off" ? 900 : Q ? 420 : 820, nt, M * gt), maxWidth: "100%", alignSelf: "center", aspectRatio: `${zl} / ${mt}` }, children: Ru }),
+    /* @__PURE__ */ w.jsxs("div", { style: { display: "grid", gap: 9, width: Math.min(H !== "off" ? 900 : Q ? 420 : 820, nt, M * gt), maxWidth: "100%", alignSelf: "center" }, children: [
+      /* @__PURE__ */ w.jsxs("div", { role: "status", "aria-live": "polite", style: { display: "flex", alignItems: "center", gap: 9, minHeight: 40, padding: "9px 12px", borderRadius: 13, background: H !== "off" ? "rgba(255,255,255,0.1)" : "rgba(25,79,97,0.07)", color: H !== "off" ? "#eff6ff" : "#284a55", fontSize: Q ? 12 : 13, fontWeight: 700 }, children: [
+        /* @__PURE__ */ w.jsx("span", { "aria-hidden": "true", style: { color: x.combo > 1 ? "#ffc83d" : "#c55a32", fontSize: 16 }, children: "\u25CF" }),
+        /* @__PURE__ */ w.jsx("span", { children: x.selectedPiece ? `${x.selectedPiece} ready. ${x.message}` : x.message })
+      ] }),
+      /* @__PURE__ */ w.jsxs("div", { style: { display: "grid", gridTemplateColumns: Q ? "2fr 1fr" : "minmax(180px, 1fr) 130px", gap: 7 }, children: [
+        /* @__PURE__ */ w.jsx("button", { id: "blockblast-start", onClick: Ut, style: { ...Ec(!0), padding: Q || K ? "10px 13px" : "11px 16px", fontSize: Q || K ? 13 : 14 }, children: x.mode === "playing" ? "New Game" : x.mode === "gameover" ? "Play Again" : "Start Game" }),
+        /* @__PURE__ */ w.jsx("button", { id: "blockblast-fullscreen", onClick: () => {
+          ql();
+        }, style: { ...Ec(!1), ...Tu, padding: Q || K ? "10px 13px" : "11px 16px", fontSize: Q || K ? 13 : 14 }, children: x.fullscreen ? "Exit Fullscreen" : Q || Hl() ? "Go Fullscreen" : "Fullscreen" })
+      ] }),
+      /* @__PURE__ */ w.jsx("p", { style: { margin: 0, textAlign: "center", color: H !== "off" ? "rgba(239,246,255,0.65)" : "#687b80", fontSize: Q ? 10 : 11, lineHeight: 1.4 }, children: "Drag for the best control, or tap a piece and then tap the board. Press F for fullscreen." })
+    ] })
+  ] }) });
   return /* @__PURE__ */ w.jsx(
     "div",
     {
@@ -11251,23 +11389,27 @@ function Fh() {
               const R = k(T);
               if (!R) return;
               const B = Yl(R.x, R.y);
-              B && (S.selectedPieceId = B.id, S.drag = { pieceId: B.id, startX: R.x, startY: R.y, x: R.x, y: R.y }, S.preview = null, h.current?.setPointerCapture?.(T.pointerId), W());
+              B && (S.selectedPieceId = B.id, S.drag = { pieceId: B.id, startX: R.x, startY: R.y, x: R.x, y: R.y, pointerType: T.pointerType || "mouse" }, S.preview = null, S.message = "Drag onto the board.", h.current?.setPointerCapture?.(T.pointerId), W());
             },
             onPointerMove: (T) => {
               const S = o.current;
-              if (!S.drag) return;
               const R = k(T);
               if (!R) return;
+              if (!S.drag) {
+                const B = S.selectedPieceId ? S.tray.find((L) => L.id === S.selectedPieceId) ?? null : null;
+                B && T.pointerType === "mouse" && (S.preview = Tc(Na(S.fullscreen, S.compact), B, R.x, R.y, S.board));
+                return;
+              }
               S.drag.x = R.x, S.drag.y = R.y;
               const B = S.tray.find((L) => L.id === S.drag?.pieceId) ?? null;
-              S.preview = B ? Tc(Na(S.fullscreen, S.compact), B, R.x, R.y, S.board) : null;
+              S.preview = B ? Ic(Na(S.fullscreen, S.compact), B, R.x, R.y, S.board, S.drag.pointerType) : null;
             },
             onPointerUp: (T) => {
               const S = o.current, R = k(T);
               if (!R) return;
               if (S.drag) {
-                const nl = S.tray.find((Ba) => Ba.id === S.drag?.pieceId) ?? null, Ue = Math.hypot(R.x - S.drag.startX, R.y - S.drag.startY) > 14, Re = nl ? Tc(Na(S.fullscreen, S.compact), nl, R.x, R.y, S.board) : null;
-                Re?.canPlace ? L0(S, Re) : (S.drag = null, S.preview = null, !Ue && nl ? (S.selectedPieceId = nl.id, S.message = `Selected ${nl.label}`) : S.message = "Drop a piece onto the board."), h.current?.releasePointerCapture?.(T.pointerId), W();
+                const nl = S.tray.find((Ba) => Ba.id === S.drag?.pieceId) ?? null, Ue = Math.hypot(R.x - S.drag.startX, R.y - S.drag.startY) > 14, Re = nl ? Ic(Na(S.fullscreen, S.compact), nl, R.x, R.y, S.board, S.drag.pointerType) : null;
+                Re?.canPlace ? L0(S, Re) : (S.drag = null, S.preview = Re, !Ue && nl ? (S.selectedPieceId = nl.id, S.message = `${nl.label} selected. Tap the board or drag it.`) : S.message = Re ? "That space is blocked. Try another spot." : "Bring the piece closer to the board."), h.current?.releasePointerCapture?.(T.pointerId), W();
                 return;
               }
               if (S.mode !== "playing") return;
@@ -11283,7 +11425,7 @@ function Fh() {
             },
             onPointerCancel: () => {
               const T = o.current;
-              T.drag = null, T.preview = null, W();
+              T.drag = null, T.preview = null, T.message = "Piece returned to the tray.", W();
             }
           }
         ) }),
@@ -11386,6 +11528,6 @@ const k0 = document.getElementById("block-blast-root");
 if (!k0)
   throw new Error("Block Blast export root element was not found.");
 document.title = "Block Blast | Ethan Mayer";
-document.documentElement.style.colorScheme = "dark";
+document.documentElement.style.colorScheme = "light";
 document.body.classList.add("block-blast-export-body");
 Rh.createRoot(k0).render(/* @__PURE__ */ w.jsx(Fh, {}));
