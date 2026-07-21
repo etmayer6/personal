@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" fill="none">
+  <defs>
+    <linearGradient id="reviews-bg" x1="92" y1="38" x2="700" y2="348" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F5F3FF"/>
+      <stop offset="1" stop-color="#FCE7F3"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="400" rx="32" fill="url(#reviews-bg)"/>
+  <rect x="58" y="54" width="684" height="292" rx="28" fill="#FFFDFF" stroke="#D8B4FE" stroke-width="2"/>
+  <rect x="96" y="88" width="608" height="40" rx="20" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="2"/>
+  <rect x="120" y="101" width="176" height="14" rx="7" fill="#E9D5FF"/>
+  <rect x="96" y="152" width="188" height="114" rx="20" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="2"/>
+  <rect x="306" y="152" width="188" height="114" rx="20" fill="#FFF7FD" stroke="#F5D0FE" stroke-width="2"/>
+  <rect x="516" y="152" width="188" height="114" rx="20" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="2"/>
+  <circle cx="136" cy="188" r="16" fill="#8B5CF6"/>
+  <circle cx="346" cy="188" r="16" fill="#EC4899"/>
+  <circle cx="556" cy="188" r="16" fill="#F59E0B"/>
+  <path d="M168 184H254" stroke="#CBD5E1" stroke-width="8" stroke-linecap="round"/>
+  <path d="M378 184H464" stroke="#F9A8D4" stroke-width="8" stroke-linecap="round"/>
+  <path d="M588 184H674" stroke="#CBD5E1" stroke-width="8" stroke-linecap="round"/>
+  <g fill="#F59E0B">
+    <path d="M132 217L136 226L146 227L139 234L141 244L132 239L123 244L125 234L118 227L128 226L132 217Z"/>
+    <path d="M153 217L157 226L167 227L160 234L162 244L153 239L144 244L146 234L139 227L149 226L153 217Z"/>
+    <path d="M174 217L178 226L188 227L181 234L183 244L174 239L165 244L167 234L160 227L170 226L174 217Z"/>
+    <path d="M342 217L346 226L356 227L349 234L351 244L342 239L333 244L335 234L328 227L338 226L342 217Z"/>
+    <path d="M363 217L367 226L377 227L370 234L372 244L363 239L354 244L356 234L349 227L359 226L363 217Z"/>
+    <path d="M384 217L388 226L398 227L391 234L393 244L384 239L375 244L377 234L370 227L380 226L384 217Z"/>
+    <path d="M552 217L556 226L566 227L559 234L561 244L552 239L543 244L545 234L538 227L548 226L552 217Z"/>
+    <path d="M573 217L577 226L587 227L580 234L582 244L573 239L564 244L566 234L559 227L569 226L573 217Z"/>
+    <path d="M594 217L598 226L608 227L601 234L603 244L594 239L585 244L587 234L580 227L590 226L594 217Z"/>
+  </g>
+  <rect x="96" y="286" width="608" height="28" rx="14" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="2"/>
+  <rect x="118" y="296" width="204" height="8" rx="4" fill="#8B5CF6"/>
+  <rect x="334" y="296" width="152" height="8" rx="4" fill="#EC4899"/>
+  <rect x="498" y="296" width="112" height="8" rx="4" fill="#F59E0B"/>
+</svg>

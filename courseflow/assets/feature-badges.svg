@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" fill="none">
+  <defs>
+    <linearGradient id="badges-bg" x1="96" y1="40" x2="700" y2="344" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFF7D6"/>
+      <stop offset="1" stop-color="#FFE6C6"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="400" rx="32" fill="url(#badges-bg)"/>
+  <circle cx="400" cy="194" r="76" fill="#FFF7ED" stroke="#F59E0B" stroke-width="8"/>
+  <circle cx="400" cy="194" r="52" fill="#F59E0B"/>
+  <g fill="#FFF7ED">
+    <path d="M400 158L410 182L436 184L416 200L422 226L400 212L378 226L384 200L364 184L390 182L400 158Z"/>
+  </g>
+  <circle cx="244" cy="134" r="40" fill="#FFFFFF" stroke="#F3D2A6" stroke-width="2"/>
+  <circle cx="556" cy="134" r="40" fill="#FFFFFF" stroke="#F3D2A6" stroke-width="2"/>
+  <circle cx="244" cy="274" r="40" fill="#FFFFFF" stroke="#F3D2A6" stroke-width="2"/>
+  <circle cx="556" cy="274" r="40" fill="#FFFFFF" stroke="#F3D2A6" stroke-width="2"/>
+  <circle cx="176" cy="202" r="28" fill="#FFFFFF" stroke="#F3D2A6" stroke-width="2"/>
+  <circle cx="624" cy="202" r="28" fill="#FFFFFF" stroke="#F3D2A6" stroke-width="2"/>
+  <path d="M244 118L249 129L261 130L252 138L255 150L244 144L233 150L236 138L227 130L239 129L244 118Z" fill="#8B5CF6"/>
+  <path d="M556 118L561 129L573 130L564 138L567 150L556 144L545 150L548 138L539 130L551 129L556 118Z" fill="#10B981"/>
+  <path d="M244 258L249 269L261 270L252 278L255 290L244 284L233 290L236 278L227 270L239 269L244 258Z" fill="#EC4899"/>
+  <path d="M556 258L561 269L573 270L564 278L567 290L556 284L545 290L548 278L539 270L551 269L556 258Z" fill="#3B82F6"/>
+  <rect x="170" y="324" width="460" height="18" rx="9" fill="#FFFFFF" opacity=".72"/>
+  <rect x="170" y="324" width="286" height="18" rx="9" fill="#F59E0B"/>
+</svg>

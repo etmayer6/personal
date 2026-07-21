@@ -1,742 +1,631 @@
 (function () {
     "use strict";
 
-    const data = window.COURSEFLOW_DEMO_DATA;
-    if (!data) return;
-
-    const STORAGE_KEY = "ethan-courseflow-static-demo-v1";
-    const MAX_RECOMMENDED_CREDITS = 15;
-    const categoryColors = {
-        foundations: "#378e91",
-        communication: "#bf812f",
-        core: "#194f61",
-        quality: "#c55a32",
-        elective: "#3d7863",
-        capstone: "#803d4a"
+    const DATA = window.COURSEFLOW_DATA;
+    const STORAGE_KEY = "courseflow-faithful-demo-v1";
+    const ROUTES = new Set(["home", "flowchart", "catalog", "majors", "current", "course-reviews", "professors", "badges", "games", "dining", "profile", "settings"]);
+    const ICONS = {
+        home: "&#8962;", flowchart: "&#8644;", catalog: "&#9638;", majors: "&#9776;", current: "&#128197;",
+        "course-reviews": "&#128172;", professors: "&#9733;", badges: "&#11088;", games: "&#9201;", dining: "&#9749;", profile: "&#9786;"
     };
-    const categoryLabels = {
-        foundations: "Foundation",
-        communication: "Communication",
-        core: "Software core",
-        quality: "Quality and safety",
-        elective: "Technical elective",
-        capstone: "Capstone"
+    const NAV_GROUPS = [
+        { title: "Overview", routes: ["home"] },
+        { title: "Plan", routes: ["flowchart", "catalog", "majors"] },
+        { title: "Current Semester", routes: ["current"] },
+        { title: "Explore", routes: ["course-reviews", "professors", "badges"] },
+        { title: "More", routes: ["games", "dining", "profile"] }
+    ];
+    const ROUTE_LABELS = {
+        home: "Home", flowchart: "Flowchart Dashboard", catalog: "Course Catalog", majors: "Majors Browse",
+        current: "Current Classes", "course-reviews": "Course Reviews", professors: "Professor Reviews",
+        badges: "Course Badges", games: "Games", dining: "Dining Halls", profile: "Profile", settings: "Settings"
     };
+    const DEPT_COLORS = { SE: "#dc2626", COMS: "#2563eb", CPRE: "#7c3aed", MATH: "#0891b2", ENGL: "#d97706", SPCM: "#ea580c", STAT: "#059669", CYBE: "#475569" };
 
-    const coursesById = new Map(data.courses.map(function (course) {
-        return [course.id, course];
-    }));
-    const scenariosById = new Map(data.scenarios.map(function (scenario) {
-        return [scenario.id, scenario];
-    }));
-
-    const elements = {
-        programLabel: document.getElementById("program-label"),
-        programNote: document.getElementById("program-note"),
-        scenarioSelect: document.getElementById("scenario-select"),
-        resetButton: document.getElementById("reset-plan"),
-        saveStatus: document.getElementById("save-status"),
-        mappedPercent: document.getElementById("mapped-percent"),
-        completedProgress: document.getElementById("completed-progress"),
-        plannedProgress: document.getElementById("planned-progress"),
-        creditSummary: document.getElementById("credit-summary"),
-        completedCredits: document.getElementById("completed-credits"),
-        plannedCredits: document.getElementById("planned-credits"),
-        requirementCount: document.getElementById("requirement-count"),
-        issueCount: document.getElementById("issue-count"),
-        issueLabel: document.getElementById("issue-label"),
-        catalogCount: document.getElementById("catalog-count"),
-        searchInput: document.getElementById("course-search"),
-        filters: document.getElementById("catalog-filters"),
-        targetTerm: document.getElementById("target-term"),
-        catalogList: document.getElementById("catalog-list"),
-        planHealth: document.getElementById("plan-health"),
-        semesterBoard: document.getElementById("semester-board"),
-        addTermButton: document.getElementById("add-term"),
-        inspector: document.getElementById("course-inspector-content"),
-        requirementsSummary: document.getElementById("requirements-summary"),
-        requirementsList: document.getElementById("requirements-list"),
-        checksList: document.getElementById("checks-list"),
-        toast: document.getElementById("courseflow-toast")
+    const defaults = {
+        terms: clone(DATA.terms),
+        settings: { theme: "default", compact: false, notifications: true },
+        customCourseReviews: [],
+        customProfessorReviews: [],
+        puzzleSolved: false
+    };
+    const saved = loadState();
+    const state = {
+        route: routeFromHash(),
+        terms: saved.terms || defaults.terms,
+        settings: Object.assign({}, defaults.settings, saved.settings || {}),
+        customCourseReviews: saved.customCourseReviews || [],
+        customProfessorReviews: saved.customProfessorReviews || [],
+        puzzleSolved: Boolean(saved.puzzleSolved),
+        flowPanel: "",
+        showInsights: false,
+        selectedCourse: null,
+        catalog: { search: "", department: "", level: "" },
+        selectedReviewCourse: DATA.courseReviews[0].course,
+        selectedProfessor: DATA.professors[0].id
     };
 
-    let state = loadState() || createScenarioState("balanced");
-    let catalogFilter = "all";
-    let searchQuery = "";
-    let targetTermId = firstPlannedTermId();
-    let toastTimeout = 0;
-    let saveTimeout = 0;
+    const main = document.getElementById("app-main");
+    const nav = document.getElementById("primary-nav");
+    const sidebar = document.getElementById("app-sidebar");
+    const scrim = document.getElementById("sidebar-scrim");
+    const toast = document.getElementById("toast");
+    const dialog = document.getElementById("app-dialog");
+    const commandDialog = document.getElementById("command-dialog");
+    let toastTimer = null;
 
-    function cloneTerms(terms) {
-        return terms.map(function (term) {
-            return {
-                id: term.id,
-                label: term.label,
-                status: term.status,
-                courseIds: term.courseIds.slice()
-            };
-        });
-    }
-
-    function createScenarioState(scenarioId) {
-        const scenario = scenariosById.get(scenarioId) || data.scenarios[0];
-        return {
-            version: 1,
-            scenarioId: scenario.id,
-            baseScenarioId: scenario.id,
-            selectedCourseId: null,
-            terms: cloneTerms(scenario.terms)
-        };
+    function clone(value) {
+        return JSON.parse(JSON.stringify(value));
     }
 
     function loadState() {
         try {
-            const raw = window.localStorage.getItem(STORAGE_KEY);
-            if (!raw) return null;
-            const parsed = JSON.parse(raw);
-            if (!parsed || !Array.isArray(parsed.terms) || parsed.version !== 1) return null;
-
-            const usedTermIds = new Set();
-            const terms = parsed.terms.map(function (term, index) {
-                const id = String(term.id || "term-" + index);
-                if (usedTermIds.has(id)) return null;
-                usedTermIds.add(id);
-                return {
-                    id: id,
-                    label: String(term.label || "Term " + (index + 1)),
-                    status: term.status === "completed" ? "completed" : "planned",
-                    courseIds: Array.isArray(term.courseIds)
-                        ? term.courseIds.filter(function (courseId) { return coursesById.has(courseId); })
-                        : []
-                };
-            }).filter(Boolean);
-
-            if (!terms.length || !terms.some(function (term) { return term.status === "planned"; })) return null;
-            return {
-                version: 1,
-                scenarioId: parsed.scenarioId === "custom" || scenariosById.has(parsed.scenarioId) ? parsed.scenarioId : "custom",
-                baseScenarioId: scenariosById.has(parsed.baseScenarioId) ? parsed.baseScenarioId : "balanced",
-                selectedCourseId: coursesById.has(parsed.selectedCourseId) ? parsed.selectedCourseId : null,
-                terms: terms
-            };
+            return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
         } catch (error) {
-            return null;
+            return {};
         }
     }
 
     function saveState() {
-        elements.saveStatus.textContent = "Saving...";
-        try {
-            window.localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-            window.clearTimeout(saveTimeout);
-            saveTimeout = window.setTimeout(function () {
-                elements.saveStatus.textContent = "Saved locally";
-            }, 280);
-        } catch (error) {
-            elements.saveStatus.textContent = "Session only";
-        }
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({
+            terms: state.terms,
+            settings: state.settings,
+            customCourseReviews: state.customCourseReviews,
+            customProfessorReviews: state.customProfessorReviews,
+            puzzleSolved: state.puzzleSolved
+        }));
     }
 
-    function firstPlannedTermId() {
-        const term = state.terms.find(function (item) { return item.status === "planned"; });
-        return term ? term.id : "";
+    function routeFromHash() {
+        const route = location.hash.replace(/^#\/?/, "").split("?")[0];
+        return ROUTES.has(route) ? route : "home";
     }
 
     function escapeHtml(value) {
-        return String(value)
-            .replace(/&/g, "&amp;")
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;")
-            .replace(/"/g, "&quot;")
-            .replace(/'/g, "&#039;");
+        return String(value ?? "").replace(/[&<>'"]/g, function (char) {
+            return { "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", "\"": "&quot;" }[char];
+        });
     }
 
-    function courseColor(course) {
-        return categoryColors[course.category] || categoryColors.core;
+    function courseById(id) {
+        return DATA.courses.find(function (course) { return course.id === id; });
     }
 
-    function courseCredits(courseIds) {
-        return courseIds.reduce(function (total, courseId) {
-            const course = coursesById.get(courseId);
-            return total + (course ? course.credits : 0);
+    function displayCode(id) {
+        return String(id).replace("_", " ");
+    }
+
+    function deptColor(course) {
+        return DEPT_COLORS[course.department] || "#64748b";
+    }
+
+    function creditsFor(ids) {
+        return ids.reduce(function (sum, id) {
+            const course = courseById(id);
+            return sum + (course ? course.credits : 0);
         }, 0);
     }
 
-    function getLocations() {
-        const locations = new Map();
-        state.terms.forEach(function (term, termIndex) {
-            term.courseIds.forEach(function (courseId) {
-                if (!locations.has(courseId)) locations.set(courseId, []);
-                locations.get(courseId).push({ term: term, termIndex: termIndex });
-            });
-        });
-        return locations;
-    }
-
-    function getUniquePlannedIds() {
-        const ids = new Set();
+    function planMetrics() {
+        let completed = DATA.student.priorCredits;
+        let inProgress = 0;
+        let planned = 0;
         state.terms.forEach(function (term) {
-            term.courseIds.forEach(function (courseId) { ids.add(courseId); });
+            const credits = creditsFor(term.courses);
+            if (term.status === "COMPLETED") completed += credits;
+            if (term.status === "IN PROGRESS") inProgress += credits;
+            if (term.status === "PLANNED") planned += credits;
         });
-        return ids;
+        const applied = Math.min(DATA.student.targetCredits, completed + inProgress);
+        return { completed: completed, inProgress: inProgress, planned: planned, applied: applied, percent: Math.round(applied / DATA.student.targetCredits * 100) };
     }
 
-    function analyzePlan() {
-        const locations = getLocations();
+    function coursePlacement(id) {
+        return state.terms.find(function (term) { return term.courses.includes(id); }) || null;
+    }
+
+    function validatePlan() {
         const issues = [];
-        const issuesByCourse = new Map();
-
-        function addIssue(issue) {
-            issues.push(issue);
-            if (issue.courseId) {
-                if (!issuesByCourse.has(issue.courseId)) issuesByCourse.set(issue.courseId, []);
-                issuesByCourse.get(issue.courseId).push(issue);
-            }
-        }
-
-        locations.forEach(function (courseLocations, courseId) {
-            if (courseLocations.length > 1) {
-                const course = coursesById.get(courseId);
-                addIssue({
-                    type: "duplicate",
-                    courseId: courseId,
-                    title: course ? course.code : courseId,
-                    message: "This course appears in more than one term."
-                });
-            }
+        const termIndex = new Map();
+        state.terms.forEach(function (term, index) {
+            term.courses.forEach(function (id) { termIndex.set(id, index); });
         });
-
-        state.terms.forEach(function (term, termIndex) {
-            const credits = courseCredits(term.courseIds);
-            if (term.status === "planned" && credits > MAX_RECOMMENDED_CREDITS) {
-                addIssue({
-                    type: "load",
-                    termId: term.id,
-                    title: term.label,
-                    message: credits + " credits exceeds the recommended " + MAX_RECOMMENDED_CREDITS + "-credit load."
-                });
-            }
-
-            term.courseIds.forEach(function (courseId) {
-                const course = coursesById.get(courseId);
-                if (!course || term.status === "completed") return;
-
-                course.prerequisites.forEach(function (prerequisiteId) {
-                    const prerequisite = coursesById.get(prerequisiteId);
-                    const prerequisiteLocations = locations.get(prerequisiteId) || [];
-                    const occursEarlier = prerequisiteLocations.some(function (location) {
-                        return location.term.status === "completed" || location.termIndex < termIndex;
-                    });
-                    if (!occursEarlier) {
-                        addIssue({
-                            type: prerequisiteLocations.length ? "sequence" : "missing",
-                            courseId: courseId,
-                            title: course.code,
-                            message: (prerequisite ? prerequisite.code : prerequisiteId) + " must be completed in an earlier term."
-                        });
+        state.terms.forEach(function (term, index) {
+            term.courses.forEach(function (id) {
+                const course = courseById(id);
+                if (!course) return;
+                course.prerequisites.forEach(function (prerequisite) {
+                    const prereqIndex = termIndex.get(prerequisite);
+                    if (prereqIndex === undefined) {
+                        issues.push(displayCode(id) + " is missing " + displayCode(prerequisite));
+                    } else if (prereqIndex >= index) {
+                        issues.push(displayCode(prerequisite) + " must come before " + displayCode(id));
                     }
                 });
-
-                const termSeason = term.label.split(" ")[0];
-                if ((termSeason === "Fall" || termSeason === "Spring") && course.terms.indexOf(termSeason) === -1) {
-                    addIssue({
-                        type: "availability",
-                        courseId: courseId,
-                        title: course.code,
-                        message: "Sample data lists this course for " + course.terms.join(" or ") + " only."
-                    });
-                }
             });
         });
-
-        return { issues: issues, issuesByCourse: issuesByCourse, locations: locations };
+        return issues;
     }
 
-    function requirementProgress() {
-        const plannedIds = getUniquePlannedIds();
-        const completedIds = new Set();
-        state.terms.filter(function (term) { return term.status === "completed"; }).forEach(function (term) {
-            term.courseIds.forEach(function (courseId) { completedIds.add(courseId); });
-        });
-
-        return data.requirements.map(function (requirement) {
-            const mapped = requirement.courseIds.filter(function (courseId) { return plannedIds.has(courseId); }).length;
-            const completed = requirement.courseIds.filter(function (courseId) { return completedIds.has(courseId); }).length;
-            return {
-                requirement: requirement,
-                mapped: Math.min(mapped, requirement.minimum),
-                completed: Math.min(completed, requirement.minimum),
-                isMapped: mapped >= requirement.minimum,
-                isCompleted: completed >= requirement.minimum
-            };
-        });
+    function applyPreferences() {
+        document.documentElement.classList.remove("theme-ocean", "theme-forest", "compact-mode");
+        if (state.settings.theme === "ocean") document.documentElement.classList.add("theme-ocean");
+        if (state.settings.theme === "forest") document.documentElement.classList.add("theme-forest");
+        if (state.settings.compact) document.documentElement.classList.add("compact-mode");
     }
 
-    function planSnapshot() {
-        const uniqueIds = getUniquePlannedIds();
-        const completedIds = new Set();
-        state.terms.filter(function (term) { return term.status === "completed"; }).forEach(function (term) {
-            term.courseIds.forEach(function (courseId) { completedIds.add(courseId); });
-        });
-        const mappedCredits = courseCredits(Array.from(uniqueIds));
-        const completedCredits = courseCredits(Array.from(completedIds));
-        const requirements = requirementProgress();
-        const analysis = analyzePlan();
-        return {
-            mappedCredits: mappedCredits,
-            completedCredits: completedCredits,
-            plannedCredits: Math.max(0, mappedCredits - completedCredits),
-            mappedPercent: Math.min(100, Math.round(mappedCredits / data.program.targetCredits * 100)),
-            requirements: requirements,
-            mappedRequirements: requirements.filter(function (item) { return item.isMapped; }).length,
-            analysis: analysis
+    function navigate(route) {
+        const next = ROUTES.has(route) ? route : "home";
+        if (location.hash !== "#" + next) {
+            location.hash = next;
+            return;
+        }
+        state.route = next;
+        render();
+    }
+
+    function renderNav() {
+        nav.innerHTML = NAV_GROUPS.map(function (group) {
+            const items = group.routes.map(function (route) {
+                return "<button class=\"nav-item " + (state.route === route ? "is-active" : "") + "\" type=\"button\" data-route=\"" + route + "\">" +
+                    "<span class=\"nav-icon\" aria-hidden=\"true\">" + ICONS[route] + "</span><span>" + ROUTE_LABELS[route] + "</span></button>";
+            }).join("");
+            return "<section class=\"nav-section\"><p class=\"nav-section-title\">" + group.title + "</p>" + items + "</section>";
+        }).join("");
+    }
+
+    function pageHeading(kicker, title, description, actions) {
+        return "<header class=\"page-heading\"><div><p class=\"eyebrow\">" + kicker + "</p><h1>" + title + "</h1><p>" + description + "</p></div>" +
+            (actions ? "<div class=\"heading-actions\">" + actions + "</div>" : "") + "</header>";
+    }
+
+    function render() {
+        renderNav();
+        applyPreferences();
+        const renderers = {
+            home: renderHome, flowchart: renderFlowchart, catalog: renderCatalog, majors: renderMajors, current: renderCurrent,
+            "course-reviews": renderCourseReviews, professors: renderProfessors, badges: renderBadges, games: renderGames,
+            dining: renderDining, profile: renderProfile, settings: renderSettings
         };
+        main.innerHTML = renderers[state.route]();
+        main.focus({ preventScroll: true });
+        closeSidebar();
     }
 
-    function renderScenarioSelect() {
-        elements.scenarioSelect.innerHTML = data.scenarios.map(function (scenario) {
-            return "<option value=\"" + escapeHtml(scenario.id) + "\">" + escapeHtml(scenario.name) + "</option>";
-        }).join("") + "<option value=\"custom\" disabled>Custom plan</option>";
-        elements.scenarioSelect.value = state.scenarioId;
-    }
-
-    function renderTargetTerms() {
-        const plannedTerms = state.terms.filter(function (term) { return term.status === "planned"; });
-        if (!plannedTerms.some(function (term) { return term.id === targetTermId; })) {
-            targetTermId = plannedTerms.length ? plannedTerms[0].id : "";
-        }
-        elements.targetTerm.innerHTML = plannedTerms.map(function (term) {
-            return "<option value=\"" + escapeHtml(term.id) + "\">" + escapeHtml(term.label) + "</option>";
+    function renderHome() {
+        const metrics = planMetrics();
+        const grouped = ["PLAN", "CURRENT SEMESTER", "EXPLORE", "PROFILE & SOCIAL", "MORE"];
+        const today = new Date();
+        const dateLabel = today.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" });
+        const modules = grouped.map(function (group) {
+            const groupModules = DATA.modules.filter(function (module) { return module.group === group; });
+            if (!groupModules.length) return "";
+            const description = {
+                PLAN: "Build and adjust your degree path.", "CURRENT SEMESTER": "Keep track of what is happening now.",
+                EXPLORE: "Research courses and instructors.", "PROFILE & SOCIAL": "Your progress and CourseFlow identity.", MORE: "Helpful campus tools."
+            }[group];
+            return "<section class=\"module-section\"><div class=\"section-heading\"><div><h2>" + titleCase(group) + "</h2><p>" + description + "</p></div></div>" +
+                "<div class=\"module-grid\">" + groupModules.map(moduleCard).join("") + "</div></section>";
         }).join("");
-        elements.targetTerm.value = targetTermId;
+        const quickRoutes = ["home", "flowchart", "catalog", "current", "course-reviews", "professors", "badges", "profile"];
+        return "<div class=\"page home-grid\"><section class=\"home-surface\"><div class=\"hero-copy\"><h1>Welcome back, Avery.</h1><p>Here's your schedule and planning tools for today.</p>" +
+            "<section class=\"timeline-shell\"><div class=\"timeline-header\"><div><h2>Today's timeline</h2><p>" + dateLabel + "</p></div><span class=\"pill green\">3 classes scheduled</span></div>" + renderTimeline() + "</section></div>" + modules + "</section>" +
+            "<aside class=\"card quick-panel\"><h2>Quick actions</h2><div class=\"quick-list\">" + quickRoutes.map(function (route) {
+                return "<button class=\"quick-item " + (route === "home" ? "is-active" : "") + "\" type=\"button\" data-route=\"" + route + "\"><span aria-hidden=\"true\">" + ICONS[route] + "</span><span>" + ROUTE_LABELS[route] + "</span></button>";
+            }).join("") + "</div><div class=\"progress-mini\"><header><strong>Degree progress</strong><span>" + metrics.percent + "%</span></header><div class=\"progress-bar\"><span style=\"width:" + metrics.percent + "%\"></span></div><p>" + metrics.applied + " of " + DATA.student.targetCredits + " credits applied</p></div></aside></div>";
     }
 
-    function renderOverview(snapshot) {
-        const target = data.program.targetCredits;
-        const completedWidth = Math.min(100, snapshot.completedCredits / target * 100);
-        const plannedWidth = Math.min(100 - completedWidth, snapshot.plannedCredits / target * 100);
-        elements.mappedPercent.textContent = snapshot.mappedPercent + "%";
-        elements.completedProgress.style.width = completedWidth + "%";
-        elements.plannedProgress.style.width = plannedWidth + "%";
-        elements.creditSummary.textContent = Math.min(snapshot.mappedCredits, target) + " of " + target + " credits mapped";
-        elements.completedCredits.textContent = snapshot.completedCredits;
-        elements.plannedCredits.textContent = snapshot.plannedCredits;
-        elements.requirementCount.textContent = snapshot.mappedRequirements + "/" + data.requirements.length;
-        elements.issueCount.textContent = snapshot.analysis.issues.length;
-        elements.issueLabel.textContent = snapshot.analysis.issues.length === 0
-            ? "all clear"
-            : snapshot.analysis.issues.length === 1 ? "check to review" : "checks to review";
-        elements.issueCount.parentElement.classList.toggle("has-issues", snapshot.analysis.issues.length > 0);
+    function titleCase(value) {
+        return value.toLowerCase().replace(/(^|\s|&)\w/g, function (char) { return char.toUpperCase(); });
     }
 
-    function renderCatalog(snapshot) {
-        const plannedIds = getUniquePlannedIds();
-        const completedIds = new Set();
-        state.terms.filter(function (term) { return term.status === "completed"; }).forEach(function (term) {
-            term.courseIds.forEach(function (courseId) { completedIds.add(courseId); });
-        });
+    function moduleCard(module) {
+        return "<button class=\"module-card " + (module.featured ? "featured" : "") + "\" type=\"button\" data-route=\"" + module.id + "\">" +
+            "<span class=\"module-arrow\" aria-hidden=\"true\">&#8599;</span><img src=\"" + module.image + "\" alt=\"\" loading=\"lazy\"><h3>" + module.title + "</h3><p>" + module.description + "</p></button>";
+    }
 
-        const visibleCourses = data.courses.filter(function (course) {
-            const matchesFilter = catalogFilter === "all" || course.category === catalogFilter;
-            const haystack = (course.code + " " + course.title + " " + course.description).toLowerCase();
-            return matchesFilter && haystack.indexOf(searchQuery) !== -1;
-        });
+    function renderTimeline() {
+        return "<div class=\"timeline-board\"><div class=\"timeline-track\">" + DATA.today.map(function (entry) {
+            const left = Math.max(0, (entry.start - 8) / 9 * 100);
+            const width = Math.max(14, (entry.end - entry.start) / 9 * 100);
+            return "<button class=\"timeline-event\" type=\"button\" data-course=\"" + entry.course + "\" style=\"left:" + left + "%;width:" + width + "%\"><strong>" + displayCode(entry.course) + "</strong><span>" + entry.time + "</span><span>" + entry.location + "</span></button>";
+        }).join("") + "</div><div class=\"timeline-hours\"><span>8 AM</span><span>10 AM</span><span>12 PM</span><span>2 PM</span><span>4 PM</span><span>5 PM</span></div></div>";
+    }
 
-        elements.catalogCount.textContent = visibleCourses.length + (visibleCourses.length === 1 ? " course" : " courses");
-        if (!visibleCourses.length) {
-            elements.catalogList.innerHTML = "<div class=\"catalog-empty\">No sample courses match that search.</div>";
+    function renderFlowchart() {
+        const metrics = planMetrics();
+        const issues = validatePlan();
+        const planningTerms = state.terms.filter(function (term) { return term.status !== "COMPLETED"; });
+        const termOptions = planningTerms.map(function (term, index) { return "<option value=\"" + term.id + "\" " + (index === 0 ? "selected" : "") + ">" + term.label + "</option>"; }).join("");
+        const terms = state.terms.map(function (term) {
+            const statusColor = term.status === "COMPLETED" ? "#059669" : term.status === "IN PROGRESS" ? "#2563eb" : "#94a3b8";
+            return "<section class=\"term-node\" data-term=\"" + term.id + "\"><header class=\"term-node-header\"><h2>" + term.label + "</h2><span>" + creditsFor(term.courses) + " credits &middot; " + term.status + "</span></header>" +
+                "<div class=\"term-courses\">" + term.courses.map(function (id) {
+                    const course = courseById(id);
+                    if (!course) return "";
+                    return "<button class=\"course-node " + (state.selectedCourse === id ? "is-selected" : "") + "\" type=\"button\" draggable=\"true\" data-course=\"" + id + "\" data-drag-course=\"" + id + "\" style=\"--dept:" + deptColor(course) + ";--status:" + statusColor + "\"><em></em><strong>" + displayCode(id) + "</strong><span>" + course.title + "</span></button>";
+                }).join("") + "</div></section>";
+        }).join("");
+        return "<div class=\"page\">" + pageHeading("Flowchart Dashboard", "Your degree plan", "Move courses between semesters, inspect dependencies, and review your progress.", "<button class=\"secondary-button\" type=\"button\" data-route=\"home\">Back to modules</button>") +
+            "<div class=\"dashboard-shell\"><aside class=\"dashboard-controls\"><section class=\"card control-card\"><h2>Panels</h2>" +
+            "<button class=\"secondary-button\" type=\"button\" data-flow-panel=\"scheduler\">Smart Scheduler</button><button class=\"secondary-button\" type=\"button\" data-flow-panel=\"catalog\">Mini Catalog</button><button class=\"secondary-button\" type=\"button\" data-route=\"catalog\">Course Catalog</button></section>" +
+            "<section class=\"card control-card\"><h2>Insights</h2><button class=\"secondary-button\" type=\"button\" data-action=\"toggle-insights\">" + (state.showInsights ? "Hide" : "Show") + " degree progress</button></section>" +
+            "<section class=\"card control-card\"><h2>Quick Edit</h2><label class=\"select-field\">Semester<select id=\"quick-term\">" + termOptions + "</select></label><label class=\"input-field\">Course code<input id=\"quick-course\" placeholder=\"e.g. SE_3390\"></label><button class=\"primary-button\" type=\"button\" data-action=\"quick-add\">Add course</button><button class=\"secondary-button\" type=\"button\" data-action=\"sample-import\">Load sample report</button></section></aside>" +
+            "<section class=\"card flowchart-card\"><header class=\"flowchart-toolbar\"><div><h1>Primary Software Engineering Plan</h1><p>Drag courses to reschedule. Select a card for details.</p></div><div class=\"toolbar-tabs\"><button class=\"is-active\">Primary plan</button><button type=\"button\" data-action=\"alternate-plan\">+ Alternate</button></div></header>" +
+            "<div class=\"flowchart-body\"><div class=\"flowchart-terms\">" + terms + "</div></div>" +
+            renderFlowPanel() +
+            "<section class=\"flowchart-insights " + (state.showInsights ? "is-open" : "") + "\"><div class=\"insight-card\"><span class=\"card-label\">Degree progress</span><strong>" + metrics.percent + "%</strong><div class=\"major-progress\"><span style=\"width:" + metrics.percent + "%\"></span></div><p>" + metrics.applied + " / " + DATA.student.targetCredits + " applied credits</p></div>" +
+            "<div class=\"insight-card\"><span class=\"card-label\">Completed</span><strong>" + metrics.completed + "</strong><p>credits finished</p></div><div class=\"insight-card\"><span class=\"card-label\">In progress</span><strong>" + metrics.inProgress + "</strong><p>credits this term</p></div><div class=\"insight-card\"><span class=\"card-label\">Plan checks</span><strong>" + issues.length + "</strong><p>" + (issues[0] || "No prerequisite conflicts") + "</p></div></section></section></div></div>";
+    }
+
+    function renderFlowPanel() {
+        if (!state.flowPanel) return "<div class=\"panel-drawer\"></div>";
+        if (state.flowPanel === "catalog") {
+            const available = DATA.courses.filter(function (course) { return !coursePlacement(course.id); }).slice(0, 6);
+            return "<section class=\"panel-drawer is-open\"><div class=\"section-heading\"><div><h2>Mini Course Catalog</h2><p>Add an unscheduled course without leaving your flowchart.</p></div><button class=\"icon-button\" type=\"button\" data-flow-panel=\"\">&times;</button></div><div class=\"mini-catalog-grid\">" + available.map(function (course) {
+                return "<article class=\"mini-course\"><strong>" + displayCode(course.id) + " &middot; " + course.credits + " cr</strong><p>" + course.title + "</p><button class=\"secondary-button\" type=\"button\" data-add-course=\"" + course.id + "\">Add to flowchart</button></article>";
+            }).join("") + "</div></section>";
+        }
+        const suggestions = DATA.courses.filter(function (course) {
+            return !coursePlacement(course.id) && course.prerequisites.every(function (id) { return Boolean(coursePlacement(id)); });
+        }).slice(0, 4);
+        return "<section class=\"panel-drawer is-open\"><div class=\"section-heading\"><div><h2>Smart Scheduler</h2><p>Suggested next courses based on completed and planned prerequisites.</p></div><button class=\"icon-button\" type=\"button\" data-flow-panel=\"\">&times;</button></div><div class=\"mini-catalog-grid\">" + suggestions.map(function (course) {
+            return "<article class=\"mini-course\"><span class=\"pill green\">Prerequisites covered</span><p><strong>" + displayCode(course.id) + "</strong><br>" + course.title + "</p><button class=\"primary-button\" type=\"button\" data-add-course=\"" + course.id + "\">Schedule</button></article>";
+        }).join("") + "</div></section>";
+    }
+
+    function filteredCourses() {
+        const query = state.catalog.search.trim().toLowerCase();
+        return DATA.courses.filter(function (course) {
+            const matchesSearch = !query || (course.id + " " + course.title + " " + course.description + " " + course.genEd).toLowerCase().includes(query);
+            const matchesDepartment = !state.catalog.department || course.department === state.catalog.department;
+            const matchesLevel = !state.catalog.level || course.level === state.catalog.level;
+            return matchesSearch && matchesDepartment && matchesLevel;
+        });
+    }
+
+    function renderCatalog() {
+        const courses = filteredCourses();
+        const departments = Array.from(new Set(DATA.courses.map(function (course) { return course.department; }))).sort();
+        return "<div class=\"page\">" + pageHeading("Course Catalog", "Browse courses", "Search by code, title, keyword, department, or level, then add a course directly to your flowchart.", "<button class=\"secondary-button\" type=\"button\" data-route=\"flowchart\">Back to Dashboard</button>") +
+            "<div class=\"catalog-layout\"><aside class=\"card filter-panel\"><h2>Filter courses</h2><label class=\"filter-control\">Department<select id=\"catalog-department\"><option value=\"\">All departments</option>" + departments.map(function (dept) { return "<option value=\"" + dept + "\" " + (state.catalog.department === dept ? "selected" : "") + ">" + dept + "</option>"; }).join("") + "</select></label>" +
+            "<div class=\"filter-control\"><span>Course level</span><div class=\"level-buttons\"><button class=\"" + (!state.catalog.level ? "is-active" : "") + "\" type=\"button\" data-level=\"\">All</button>" + ["1000", "2000", "3000", "4000"].map(function (level) { return "<button class=\"" + (state.catalog.level === level ? "is-active" : "") + "\" type=\"button\" data-level=\"" + level + "\">" + level.charAt(0) + "000</button>"; }).join("") + "</div></div>" +
+            "<button class=\"secondary-button\" type=\"button\" data-action=\"clear-catalog\">Clear filters</button></aside>" +
+            "<section class=\"catalog-main\"><div class=\"card catalog-hero\"><span class=\"card-label\">Course Catalog</span><label class=\"catalog-search\"><span aria-hidden=\"true\">&#8981;</span><input id=\"catalog-search\" type=\"search\" value=\"" + escapeHtml(state.catalog.search) + "\" placeholder=\"Search by course code, title, keyword, or gen ed\"></label><div class=\"result-bar\"><div><strong id=\"catalog-result-count\">" + courses.length + " courses found</strong><br><span>Showing all matching placeholder catalog records.</span></div><span id=\"catalog-active-filter\" class=\"pill red\" " + (state.catalog.search || state.catalog.department || state.catalog.level ? "" : "hidden") + ">Filters active</span></div></div>" +
+            "<div class=\"course-list\">" + (courses.length ? courses.map(courseRow).join("") : "<div class=\"empty-state\">No courses match those filters.</div>") + "</div></section></div></div>";
+    }
+
+    function refreshCatalogResults() {
+        const courses = filteredCourses();
+        const list = document.querySelector(".course-list");
+        const count = document.getElementById("catalog-result-count");
+        const activeFilter = document.getElementById("catalog-active-filter");
+        if (list) list.innerHTML = courses.length ? courses.map(courseRow).join("") : "<div class=\"empty-state\">No courses match those filters.</div>";
+        if (count) count.textContent = courses.length + " courses found";
+        if (activeFilter) activeFilter.hidden = !(state.catalog.search || state.catalog.department || state.catalog.level);
+    }
+
+    function courseRow(course) {
+        const placement = coursePlacement(course.id);
+        return "<article class=\"card course-row\"><div class=\"course-code\" style=\"--dept:" + deptColor(course) + "\">" + displayCode(course.id) + "</div><div class=\"course-info\"><h3>" + course.title + "</h3><p>" + course.description + "</p><div class=\"course-meta\"><span class=\"pill\">" + course.credits + " credits</span><span class=\"pill\">" + course.terms.join(" / ") + "</span>" + (course.prerequisites.length ? "<span class=\"pill\">Prereq: " + course.prerequisites.map(displayCode).join(", ") + "</span>" : "<span class=\"pill green\">No prerequisites</span>") + "</div></div><div class=\"course-actions\"><button class=\"secondary-button\" type=\"button\" data-course=\"" + course.id + "\">Details</button>" + (placement ? "<span class=\"pill green\">" + placement.label + "</span>" : "<button class=\"primary-button\" type=\"button\" data-add-course=\"" + course.id + "\">Add to plan</button>") + "</div></article>";
+    }
+
+    function renderCurrent() {
+        const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+        const todayIndex = Math.max(0, Math.min(4, new Date().getDay() - 1));
+        return "<div class=\"page\">" + pageHeading("Current Semester", "Current classes", "Your imported class schedule and personal events in one weekly view.", "<button class=\"primary-button\" type=\"button\" data-action=\"add-event\">+ Add personal event</button>") +
+            "<div class=\"stats-grid\"><article class=\"card stat-card\"><span class=\"card-label\">Active courses</span><strong>4</strong><p>12 credits in progress</p></article><article class=\"card stat-card\"><span class=\"card-label\">Next class</span><strong>11:00</strong><p>SE 3290 in Atanasoff</p></article><article class=\"card stat-card\"><span class=\"card-label\">Events today</span><strong>3</strong><p>Ends at 3:00 PM</p></article><article class=\"card stat-card\"><span class=\"card-label\">Open time</span><strong>2h 55m</strong><p>Between scheduled classes</p></article></div>" +
+            "<div class=\"schedule-grid\"><section class=\"card week-card\"><div class=\"section-heading\"><div><h2>Weekly schedule</h2><p>Spring 2026</p></div><span class=\"pill green\">Schedule imported</span></div><div class=\"week-days\">" + days.map(function (day, index) {
+                const entries = index === 1 || index === 3 ? DATA.today.slice(0, 2) : index === 0 || index === 2 ? DATA.today : [];
+                return "<section class=\"day-column " + (index === todayIndex ? "is-today" : "") + "\"><h3>" + day + (index === todayIndex ? " &middot; Today" : "") + "</h3>" + entries.map(function (entry) { return "<button class=\"class-block\" type=\"button\" data-course=\"" + entry.course + "\"><strong>" + displayCode(entry.course) + "</strong><span>" + entry.time + "</span><span>" + entry.location + "</span></button>"; }).join("") + "</section>";
+            }).join("") + "</div></section><aside class=\"card today-list\"><h2>Today's agenda</h2>" + DATA.today.map(function (entry) { return "<button class=\"today-entry\" type=\"button\" data-course=\"" + entry.course + "\"><time>" + entry.time.split(" - ")[0] + "</time><span><strong>" + displayCode(entry.course) + "</strong><span>" + entry.title + "</span><span>" + entry.location + "</span></span></button>"; }).join("") + "</aside></div></div>";
+    }
+
+    function renderMajors() {
+        return "<div class=\"page\">" + pageHeading("Plan", "Majors Browse", "Compare placeholder Iowa State programs and inspect how your current courses overlap.", "<button class=\"secondary-button\" data-route=\"flowchart\">Open your flowchart</button>") +
+            "<div class=\"major-grid\">" + DATA.majors.map(function (major, index) { return "<article class=\"card major-card\"><span class=\"pill " + (index === 0 ? "red" : "") + "\">" + (index === 0 ? "Current major" : major.college) + "</span><h2 style=\"margin-top:13px\">" + major.name + "</h2><p>" + major.description + "</p><div class=\"major-progress\"><span style=\"width:" + major.progress + "%\"></span></div><p><strong>" + major.progress + "% overlap</strong> &middot; " + major.credits + " credits</p><button class=\"secondary-button\" type=\"button\" data-major=\"" + index + "\">View requirements</button></article>"; }).join("") + "</div></div>";
+    }
+
+    function courseReviewWithCustom(base) {
+        const custom = state.customCourseReviews.filter(function (review) { return review.course === base.course; });
+        if (!custom.length) return base;
+        const rating = (base.rating * base.count + custom.reduce(function (sum, review) { return sum + review.rating; }, 0)) / (base.count + custom.length);
+        return Object.assign({}, base, { rating: Number(rating.toFixed(1)), count: base.count + custom.length, quote: custom[custom.length - 1].text });
+    }
+
+    function renderCourseReviews() {
+        const reviews = DATA.courseReviews.map(courseReviewWithCustom);
+        const selected = reviews.find(function (review) { return review.course === state.selectedReviewCourse; }) || reviews[0];
+        const course = courseById(selected.course);
+        return "<div class=\"page\">" + pageHeading("Explore", "Course Reviews", "Search courses and read student feedback about workload, difficulty, and outcomes.", "") +
+            "<div class=\"split-layout\"><aside class=\"card list-panel\"><div class=\"list-panel-header\"><strong>Browse reviewed courses</strong><input id=\"review-search\" placeholder=\"Search courses\"></div><div class=\"select-list\" id=\"review-course-list\">" + reviews.map(function (review) { const item = courseById(review.course); return "<button class=\"select-row " + (review.course === selected.course ? "is-active" : "") + "\" type=\"button\" data-review-course=\"" + review.course + "\"><span><strong>" + displayCode(review.course) + "</strong><small>" + item.title + "</small></span><span class=\"rating\">&#9733; " + review.rating + "</span></button>"; }).join("") + "</div></aside>" +
+            renderCourseReviewDetail(selected, course) + "</div></div>";
+    }
+
+    function renderCourseReviewDetail(review, course) {
+        return "<section class=\"card detail-panel\"><div class=\"detail-hero\"><div><span class=\"pill red\">" + displayCode(course.id) + "</span><h2 style=\"margin-top:10px\">" + course.title + "</h2><p>" + course.credits + " credits &middot; " + course.terms.join(" and ") + "</p></div><div class=\"rating-large\"><strong>" + review.rating + "</strong><span>&#9733; &#9733; &#9733; &#9733; &#9734;</span><p>" + review.count + " reviews</p></div></div>" +
+            "<div class=\"rating-metrics\"><div><span>Overall</span><strong>" + review.rating + "/5</strong></div><div><span>Difficulty</span><strong>" + review.difficulty + "/5</strong></div><div><span>Workload</span><strong>" + review.workload + "/5</strong></div></div><blockquote class=\"review-quote\">&ldquo;" + escapeHtml(review.quote) + "&rdquo;</blockquote>" +
+            "<form class=\"review-form\" id=\"course-review-form\"><h3>Share your experience</h3><input type=\"hidden\" name=\"course\" value=\"" + course.id + "\"><div class=\"review-form-grid\"><label>Overall rating<input name=\"rating\" type=\"number\" min=\"1\" max=\"5\" value=\"5\" required></label><label>Difficulty<input name=\"difficulty\" type=\"number\" min=\"1\" max=\"5\" value=\"3\" required></label><label>Workload<input name=\"workload\" type=\"number\" min=\"1\" max=\"5\" value=\"3\" required></label></div><label>Review<textarea name=\"text\" required placeholder=\"What should another student know?\"></textarea></label><div><button class=\"primary-button\" type=\"submit\">Submit review</button></div></form></section>";
+    }
+
+    function professorWithCustom(base) {
+        const custom = state.customProfessorReviews.filter(function (review) { return review.professor === base.id; });
+        if (!custom.length) return base;
+        const rating = (base.rating * base.count + custom.reduce(function (sum, review) { return sum + review.rating; }, 0)) / (base.count + custom.length);
+        return Object.assign({}, base, { rating: Number(rating.toFixed(1)), count: base.count + custom.length, quote: custom[custom.length - 1].text });
+    }
+
+    function renderProfessors() {
+        const professors = DATA.professors.map(professorWithCustom);
+        const selected = professors.find(function (professor) { return professor.id === state.selectedProfessor; }) || professors[0];
+        return "<div class=\"page\">" + pageHeading("Explore", "Professor Reviews", "Browse instructors and compare clarity, workload, and student feedback.", "") +
+            "<div class=\"split-layout\"><aside class=\"card list-panel\"><div class=\"list-panel-header\"><strong>Search Professors</strong><input id=\"professor-search\" placeholder=\"Name or department\"></div><div class=\"select-list\" id=\"professor-list\">" + professors.map(function (professor) { return "<button class=\"select-row " + (professor.id === selected.id ? "is-active" : "") + "\" type=\"button\" data-professor=\"" + professor.id + "\"><span><strong>" + professor.name + "</strong><small>" + professor.department + "</small></span><span class=\"rating\">&#9733; " + professor.rating + "</span></button>"; }).join("") + "</div></aside>" + renderProfessorDetail(selected) + "</div></div>";
+    }
+
+    function renderProfessorDetail(professor) {
+        return "<section class=\"card detail-panel\"><div class=\"detail-hero\"><div><span class=\"pill red\">" + professor.department + "</span><h2 style=\"margin-top:10px\">" + professor.name + "</h2><p>Teaches " + professor.courses.join(", ") + "</p></div><div class=\"rating-large\"><strong>" + professor.rating + "</strong><span>&#9733; &#9733; &#9733; &#9733; &#9734;</span><p>" + professor.count + " reviews</p></div></div><div class=\"rating-metrics\"><div><span>Overall</span><strong>" + professor.rating + "/5</strong></div><div><span>Clarity</span><strong>" + professor.clarity + "/5</strong></div><div><span>Workload</span><strong>" + professor.workload + "/5</strong></div></div><blockquote class=\"review-quote\">&ldquo;" + escapeHtml(professor.quote) + "&rdquo;</blockquote>" +
+            "<form class=\"review-form\" id=\"professor-review-form\"><h3>Review this professor</h3><input type=\"hidden\" name=\"professor\" value=\"" + professor.id + "\"><div class=\"review-form-grid\"><label>Overall rating<input name=\"rating\" type=\"number\" min=\"1\" max=\"5\" value=\"5\" required></label><label>Clarity<input name=\"clarity\" type=\"number\" min=\"1\" max=\"5\" value=\"5\" required></label><label>Workload<input name=\"workload\" type=\"number\" min=\"1\" max=\"5\" value=\"3\" required></label></div><label>Review<textarea name=\"text\" required placeholder=\"Describe the class experience\"></textarea></label><div><button class=\"primary-button\" type=\"submit\">Submit review</button></div></form></section>";
+    }
+
+    function renderBadges() {
+        const earned = DATA.badges.filter(function (badge) { return badge.earned; });
+        const xp = earned.reduce(function (sum, badge) { return sum + badge.xp; }, 0);
+        const spotlight = earned[earned.length - 1];
+        return "<div class=\"page\">" + pageHeading("Profile & Social", "Badge Vault", "Complete courses to collect department-themed badges and build your CourseFlow profile.", "<span class=\"pill red\">" + earned.length + " of " + DATA.badges.length + " unlocked</span>") +
+            "<div class=\"badge-hero\"><section class=\"card xp-card\"><span class=\"card-label\">Total experience</span><strong>" + xp + " XP</strong><p>Earned from completed courses in this placeholder progress report.</p><div class=\"progress-bar\"><span style=\"width:65%\"></span></div></section><section class=\"card spotlight-card\"><div class=\"badge-medal\" style=\"--badge:" + spotlight.color + "\">UI</div><div><span class=\"pill red\">Latest unlock &middot; " + spotlight.rarity + "</span><h2>" + spotlight.name + "</h2><p>Earned by completing " + displayCode(spotlight.course) + ". +" + spotlight.xp + " XP</p></div></section></div>" +
+            "<div class=\"badge-grid\">" + DATA.badges.map(function (badge) { return "<article class=\"card badge-card " + (badge.earned ? "" : "is-locked") + "\"><div class=\"badge-medal\" style=\"--badge:" + badge.color + "\">" + badge.course.split("_")[0] + "</div><span class=\"pill\">" + badge.rarity + "</span><h3>" + badge.name + "</h3><p>" + displayCode(badge.course) + " &middot; +" + badge.xp + " XP</p>" + (!badge.earned ? "<div class=\"major-progress\"><span style=\"width:" + badge.progress + "%\"></span></div><p>" + badge.progress + "% progress</p>" : "<p class=\"pill green\" style=\"display:inline-flex\">Unlocked</p>") + "</article>"; }).join("") + "</div></div>";
+    }
+
+    function renderDining() {
+        return "<div class=\"page\">" + pageHeading("More", "Dining Halls", "Compare today's placeholder campus menus before lunch or dinner.", "<span class=\"pill green\">3 locations open</span>") + "<div class=\"dining-grid\">" + DATA.dining.map(function (hall) { return "<article class=\"card dining-card\"><span class=\"pill green\">" + hall.status + "</span><h2 style=\"margin-top:13px\">" + hall.name + "</h2><p>Estimated line: <strong>" + hall.wait + "</strong></p><ul class=\"menu-list\">" + hall.items.map(function (item) { return "<li>" + item + "</li>"; }).join("") + "</ul><button class=\"secondary-button\" type=\"button\" data-action=\"menu-toast\">View full menu</button></article>"; }).join("") + "</div></div>";
+    }
+
+    function renderGames() {
+        const letters = state.puzzleSolved ? ["C", "O", "M", "S"] : ["C", "?", "M", "?"];
+        return "<div class=\"page\">" + pageHeading("More", "Daily Course Puzzle", "Use the clues to identify today's mystery course and continue your streak.", "<span class=\"pill amber\">&#128293; 6 day streak</span>") + "<section class=\"card game-card\"><span class=\"card-label\">Puzzle #184</span><h2>Which department matches these clues?</h2><p>Algorithms &middot; Data structures &middot; Programming</p><div class=\"course-puzzle\">" + letters.map(function (letter) { return "<span class=\"" + (letter !== "?" ? "revealed" : "") + "\">" + letter + "</span>"; }).join("") + "</div>" + (state.puzzleSolved ? "<p class=\"pill green\">Solved! COMS was correct.</p>" : "<div class=\"choice-grid\"><button data-puzzle=\"CPRE\">CPRE</button><button data-puzzle=\"COMS\">COMS</button><button data-puzzle=\"SE\">SE</button><button data-puzzle=\"STAT\">STAT</button></div>") + "</section></div>";
+    }
+
+    function renderProfile() {
+        const metrics = planMetrics();
+        return "<div class=\"page\">" + pageHeading("Profile & Social", "Your profile", "The sample student identity used throughout this static CourseFlow demo.", "<button class=\"secondary-button\" data-route=\"settings\">Edit preferences</button>") + "<div class=\"profile-grid\"><section class=\"card profile-card\"><div class=\"profile-avatar\">" + DATA.student.initials + "</div><h2>" + DATA.student.name + "</h2><p>" + DATA.student.email + "</p><span class=\"pill red\">" + DATA.student.role + "</span><div class=\"major-progress\"><span style=\"width:" + metrics.percent + "%\"></span></div><p>" + metrics.percent + "% degree progress</p></section><section class=\"card profile-details\">" +
+            profileDetail("Major", DATA.student.major) + profileDetail("Catalog year", DATA.student.catalog) + profileDetail("Target graduation", DATA.student.graduation) + profileDetail("Applied credits", metrics.applied + " of " + DATA.student.targetCredits) + profileDetail("Badges earned", DATA.badges.filter(function (badge) { return badge.earned; }).length) + profileDetail("Plan status", validatePlan().length ? "Needs review" : "On track") + "</section></div></div>";
+    }
+
+    function profileDetail(label, value) {
+        return "<div class=\"profile-detail\"><span>" + label + "</span><strong>" + value + "</strong></div>";
+    }
+
+    function renderSettings() {
+        return "<div class=\"page\">" + pageHeading("Profile & Social", "Settings", "Adjust this local demo without changing anything outside your browser.", "") + "<div class=\"settings-list\"><section class=\"card setting-row\"><div><h2>Theme accent</h2><p>Matches the appearance controls in the original CourseFlow app.</p></div><select id=\"theme-select\"><option value=\"default\" " + (state.settings.theme === "default" ? "selected" : "") + ">CourseFlow red</option><option value=\"ocean\" " + (state.settings.theme === "ocean" ? "selected" : "") + ">Ocean</option><option value=\"forest\" " + (state.settings.theme === "forest" ? "selected" : "") + ">Forest</option></select></section>" +
+            settingToggle("Compact module cards", "Reduce spacing on the module home and app pages.", "compact", state.settings.compact) + settingToggle("Planning notifications", "Show reminders about schedule and prerequisite changes.", "notifications", state.settings.notifications) +
+            "<section class=\"card setting-row\"><div><h2>Reset local demo</h2><p>Restore the original placeholder flowchart, reviews, badges, and preferences.</p></div><button class=\"danger-button\" type=\"button\" data-action=\"confirm-reset\">Reset everything</button></section></div></div>";
+    }
+
+    function settingToggle(title, description, setting, value) {
+        return "<section class=\"card setting-row\"><div><h2>" + title + "</h2><p>" + description + "</p></div><button class=\"toggle " + (value ? "is-on" : "") + "\" type=\"button\" data-setting=\"" + setting + "\" role=\"switch\" aria-checked=\"" + value + "\"></button></section>";
+    }
+
+    function openCourseDialog(id) {
+        const course = courseById(id);
+        if (!course) return;
+        state.selectedCourse = id;
+        const placement = coursePlacement(id);
+        openDialog("Course details", displayCode(id) + " &middot; " + course.title,
+            "<div class=\"course-detail-grid\"><section class=\"detail-block\"><h3>About this course</h3><p>" + course.description + "</p></section><section class=\"detail-block\"><h3>Planning details</h3><p><strong>Credits:</strong> " + course.credits + "<br><strong>Offered:</strong> " + course.terms.join(", ") + "<br><strong>Prerequisites:</strong> " + (course.prerequisites.length ? course.prerequisites.map(displayCode).join(", ") : "None") + "<br><strong>Scheduled:</strong> " + (placement ? placement.label : "Not yet") + "</p></section></div><div class=\"dialog-actions\"><button class=\"secondary-button\" type=\"button\" data-route-dialog=\"course-reviews\" data-select-review=\"" + id + "\">View reviews</button>" + (!placement ? "<button class=\"primary-button\" type=\"button\" data-add-course=\"" + id + "\">Add to flowchart</button>" : "") + "</div>");
+    }
+
+    function openAddCourseDialog(id) {
+        const course = courseById(id);
+        if (!course) return;
+        if (coursePlacement(id)) {
+            showToast(displayCode(id) + " is already on your flowchart.");
             return;
         }
-
-        elements.catalogList.innerHTML = visibleCourses.map(function (course) {
-            const isCompleted = completedIds.has(course.id);
-            const isPlanned = plannedIds.has(course.id);
-            const status = isCompleted ? "Completed" : isPlanned ? "In plan" : "Available";
-            const selectedClass = state.selectedCourseId === course.id ? " is-selected" : "";
-            const plannedClass = isPlanned ? " is-planned" : "";
-            return "<article class=\"catalog-course" + selectedClass + plannedClass + "\" " +
-                "style=\"--course-color:" + courseColor(course) + "\" data-course-id=\"" + escapeHtml(course.id) + "\" " +
-                (isPlanned ? "" : "draggable=\"true\"") + ">" +
-                "<span class=\"catalog-course-accent\" aria-hidden=\"true\"></span>" +
-                "<button class=\"catalog-course-main\" type=\"button\" data-action=\"select-course\" data-course-id=\"" + escapeHtml(course.id) + "\">" +
-                    "<span class=\"catalog-course-code-row\"><span class=\"catalog-course-code\">" + escapeHtml(course.code) + "</span>" +
-                    "<span class=\"catalog-course-credits\">" + course.credits + " CR</span></span>" +
-                    "<span class=\"catalog-course-title\">" + escapeHtml(course.title) + "</span>" +
-                    "<span class=\"catalog-course-status\">" + status + "</span>" +
-                "</button>" +
-                "<button class=\"catalog-add\" type=\"button\" data-action=\"add-course\" data-course-id=\"" + escapeHtml(course.id) + "\" " +
-                    (isPlanned ? "disabled aria-label=\"Course is already in the plan\"" : "aria-label=\"Add " + escapeHtml(course.code) + " to selected term\"") + ">" +
-                    (isPlanned ? "&#10003;" : "+") +
-                "</button>" +
-            "</article>";
-        }).join("");
+        openDialog("Add to CourseFlow", displayCode(id) + " &middot; " + course.title,
+            "<p style=\"margin-top:0;color:var(--slate-600);font-size:11px\">Choose the semester where you want to place this course.</p><div class=\"term-options\">" + state.terms.filter(function (term) { return term.status !== "COMPLETED"; }).map(function (term) { return "<button class=\"term-option\" type=\"button\" data-place-course=\"" + id + "\" data-place-term=\"" + term.id + "\"><strong>" + term.label + "</strong><span>" + creditsFor(term.courses) + " credits currently</span></button>"; }).join("") + "</div>");
     }
 
-    function renderPlannedCourse(courseId, term, termIndex, snapshot) {
-        const course = coursesById.get(courseId);
-        if (!course) return "";
-        const isCompleted = term.status === "completed";
-        const courseIssues = snapshot.analysis.issuesByCourse.get(courseId) || [];
-        const selectedClass = state.selectedCourseId === courseId ? " is-selected" : "";
-        const conflictClass = courseIssues.length ? " has-conflict" : "";
-        const draggable = isCompleted ? "" : " draggable=\"true\"";
-        const conflictBadge = courseIssues.length
-            ? "<span class=\"conflict-dot\" title=\"Planning check\">!</span>"
-            : "";
-
-        const trailing = isCompleted
-            ? "<span class=\"completed-tag\">Done</span>"
-            : "<div class=\"planned-course-actions\">" +
-                "<button type=\"button\" data-action=\"move-earlier\" data-course-id=\"" + escapeHtml(courseId) + "\" data-term-id=\"" + escapeHtml(term.id) + "\" " +
-                    (termIndex <= 1 ? "disabled" : "") + " aria-label=\"Move " + escapeHtml(course.code) + " earlier\">&larr;</button>" +
-                "<button type=\"button\" data-action=\"move-later\" data-course-id=\"" + escapeHtml(courseId) + "\" data-term-id=\"" + escapeHtml(term.id) + "\" " +
-                    (termIndex >= state.terms.length - 1 ? "disabled" : "") + " aria-label=\"Move " + escapeHtml(course.code) + " later\">&rarr;</button>" +
-                "<button type=\"button\" data-action=\"remove-course\" data-course-id=\"" + escapeHtml(courseId) + "\" data-term-id=\"" + escapeHtml(term.id) + "\" aria-label=\"Remove " + escapeHtml(course.code) + " from plan\">Remove</button>" +
-              "</div>";
-
-        return "<article class=\"planned-course" + selectedClass + conflictClass + "\" style=\"--course-color:" + courseColor(course) + "\" " +
-            "data-course-id=\"" + escapeHtml(courseId) + "\" data-term-id=\"" + escapeHtml(term.id) + "\"" + draggable + ">" +
-            "<span class=\"planned-course-accent\" aria-hidden=\"true\"></span>" +
-            "<button class=\"planned-course-main\" type=\"button\" data-action=\"select-course\" data-course-id=\"" + escapeHtml(courseId) + "\">" +
-                "<span class=\"planned-course-code\">" + escapeHtml(course.code) + conflictBadge + "</span>" +
-                "<span class=\"planned-course-title\">" + escapeHtml(course.title) + "</span>" +
-            "</button>" + trailing +
-        "</article>";
+    function openDialog(kicker, title, content) {
+        document.getElementById("dialog-kicker").textContent = kicker;
+        document.getElementById("dialog-title").innerHTML = title;
+        document.getElementById("dialog-content").innerHTML = content;
+        dialog.showModal();
     }
 
-    function renderSemesters(snapshot) {
-        elements.semesterBoard.innerHTML = state.terms.map(function (term, termIndex) {
-            const credits = courseCredits(term.courseIds);
-            const completedClass = term.status === "completed" ? " is-completed" : "";
-            const heavyClass = credits > MAX_RECOMMENDED_CREDITS ? " is-heavy" : "";
-            const helper = term.status === "completed" ? "Locked history" : term.courseIds.length + (term.courseIds.length === 1 ? " course" : " courses");
-            const courseMarkup = term.courseIds.length
-                ? term.courseIds.map(function (courseId) { return renderPlannedCourse(courseId, term, termIndex, snapshot); }).join("")
-                : "<div class=\"semester-empty\">Drop a course here or use Add from the catalog.</div>";
-
-            return "<section class=\"semester" + completedClass + "\" data-term-id=\"" + escapeHtml(term.id) + "\" data-term-status=\"" + term.status + "\">" +
-                "<header class=\"semester-header\"><div><h3>" + escapeHtml(term.label) + "</h3><p>" + helper + "</p></div>" +
-                "<span class=\"semester-credit" + heavyClass + "\">" + credits + " CR</span></header>" +
-                "<div class=\"semester-courses\">" + courseMarkup + "</div>" +
-            "</section>";
-        }).join("");
+    function placeCourse(courseId, termId) {
+        state.terms.forEach(function (term) {
+            term.courses = term.courses.filter(function (id) { return id !== courseId; });
+        });
+        const target = state.terms.find(function (term) { return term.id === termId; });
+        if (!target) return;
+        target.courses.push(courseId);
+        saveState();
+        if (dialog.open) dialog.close();
+        showToast(displayCode(courseId) + " added to " + target.label + ".");
+        render();
     }
 
-    function renderPlanHealth(snapshot) {
-        const count = snapshot.analysis.issues.length;
-        elements.planHealth.classList.toggle("has-issues", count > 0);
-        elements.planHealth.classList.toggle("is-clear", count === 0);
-        if (count === 0) {
-            elements.planHealth.innerHTML = "<span class=\"health-icon\" aria-hidden=\"true\"></span>" +
-                "<div><strong>Plan is ready</strong><p>Every prerequisite is scheduled before the course that needs it.</p></div>";
+    function showToast(message) {
+        toast.textContent = message;
+        toast.classList.add("is-visible");
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(function () { toast.classList.remove("is-visible"); }, 2800);
+    }
+
+    function closeSidebar() {
+        sidebar.classList.remove("is-open");
+        scrim.classList.remove("is-open");
+        document.getElementById("mobile-menu").setAttribute("aria-expanded", "false");
+    }
+
+    function openCommandPalette() {
+        commandDialog.showModal();
+        const input = document.getElementById("command-search");
+        input.value = "";
+        renderCommandResults("");
+        requestAnimationFrame(function () { input.focus(); });
+    }
+
+    function renderCommandResults(query) {
+        const normalized = query.trim().toLowerCase();
+        const pages = Array.from(ROUTES).filter(function (route) { return ROUTE_LABELS[route].toLowerCase().includes(normalized); }).slice(0, 7).map(function (route) { return { type: "Page", label: ROUTE_LABELS[route], route: route }; });
+        const courses = DATA.courses.filter(function (course) { return (course.id + " " + course.title).toLowerCase().includes(normalized); }).slice(0, 6).map(function (course) { return { type: "Course", label: displayCode(course.id) + " &middot; " + course.title, course: course.id }; });
+        document.getElementById("command-results").innerHTML = pages.concat(courses).map(function (result) { return "<button class=\"command-result\" type=\"button\" " + (result.route ? "data-command-route=\"" + result.route + "\"" : "data-command-course=\"" + result.course + "\"") + "><strong>" + result.label + "</strong><span>" + result.type + "</span></button>"; }).join("");
+    }
+
+    document.addEventListener("click", function (event) {
+        const target = event.target.closest("button, a");
+        if (!target) return;
+        if (target.dataset.route) { event.preventDefault(); navigate(target.dataset.route); return; }
+        if (target.dataset.course) { openCourseDialog(target.dataset.course); return; }
+        if (target.dataset.addCourse) { openAddCourseDialog(target.dataset.addCourse); return; }
+        if (target.dataset.placeCourse) { placeCourse(target.dataset.placeCourse, target.dataset.placeTerm); return; }
+        if (target.dataset.flowPanel !== undefined) { state.flowPanel = target.dataset.flowPanel; render(); return; }
+        if (target.dataset.level !== undefined) { state.catalog.level = target.dataset.level; render(); return; }
+        if (target.dataset.reviewCourse) { state.selectedReviewCourse = target.dataset.reviewCourse; render(); return; }
+        if (target.dataset.professor) { state.selectedProfessor = target.dataset.professor; render(); return; }
+        if (target.dataset.major !== undefined) { showMajorDialog(Number(target.dataset.major)); return; }
+        if (target.dataset.puzzle) { handlePuzzle(target.dataset.puzzle); return; }
+        if (target.dataset.setting) { state.settings[target.dataset.setting] = !state.settings[target.dataset.setting]; saveState(); render(); return; }
+        if (target.dataset.commandRoute) { commandDialog.close(); navigate(target.dataset.commandRoute); return; }
+        if (target.dataset.commandCourse) { commandDialog.close(); openCourseDialog(target.dataset.commandCourse); return; }
+        if (target.dataset.routeDialog) {
+            dialog.close();
+            if (target.dataset.selectReview && DATA.courseReviews.some(function (review) { return review.course === target.dataset.selectReview; })) state.selectedReviewCourse = target.dataset.selectReview;
+            navigate(target.dataset.routeDialog);
+            return;
+        }
+        handleAction(target.dataset.action);
+    });
+
+    function handleAction(action) {
+        if (!action) return;
+        if (action === "toggle-insights") { state.showInsights = !state.showInsights; render(); }
+        if (action === "clear-catalog") { state.catalog = { search: "", department: "", level: "" }; render(); }
+        if (action === "quick-add") {
+            const id = document.getElementById("quick-course").value.trim().toUpperCase().replace(/\s+/, "_");
+            const term = document.getElementById("quick-term").value;
+            if (!courseById(id)) { showToast("That course is not in the sample catalog."); return; }
+            placeCourse(id, term);
+        }
+        if (action === "sample-import") { state.terms = clone(DATA.terms); saveState(); showToast("Sample progress report imported."); render(); }
+        if (action === "alternate-plan") { showToast("Alternate plan created. This demo keeps the primary plan active."); }
+        if (action === "add-event") { openEventDialog(); }
+        if (action === "save-event") { showToast("Personal event added to your local schedule."); dialog.close(); }
+        if (action === "menu-toast") { showToast("The full live menu requires the production CourseFlow API."); }
+        if (action === "confirm-reset") { openResetDialog(); }
+        if (action === "close-dialog") { dialog.close(); }
+        if (action === "reset-now") { resetDemo(); }
+    }
+
+    function showMajorDialog(index) {
+        const major = DATA.majors[index];
+        const relevant = DATA.requirements.slice(0, index === 0 ? 6 : 4);
+        openDialog("Major requirements", major.name,
+            "<p style=\"margin-top:0;color:var(--slate-600);font-size:11px\">" + major.description + "</p><div class=\"term-options\">" + relevant.map(function (requirement) { const percent = Math.round(requirement.complete / requirement.total * 100); return "<div class=\"term-option\"><span><strong>" + requirement.name + "</strong><span>" + requirement.complete + " / " + requirement.total + " credits covered</span></span><span class=\"pill " + (percent === 100 ? "green" : "") + "\">" + percent + "%</span></div>"; }).join("") + "</div>");
+    }
+
+    function openEventDialog() {
+        openDialog("Current Semester", "Add a personal event", "<div class=\"review-form\"><label>Event name<input value=\"Study group\"></label><div class=\"review-form-grid\"><label>Day<select><option>Tuesday</option><option>Wednesday</option><option>Thursday</option></select></label><label>Start time<input type=\"time\" value=\"16:00\"></label><label>End time<input type=\"time\" value=\"17:00\"></label></div><label>Location<input value=\"Parks Library\"></label><div class=\"dialog-actions\"><button class=\"primary-button\" type=\"button\" data-action=\"save-event\">Add event</button></div></div>");
+    }
+
+    function openResetDialog() {
+        openDialog("Local demo", "Reset all placeholder data?", "<p style=\"margin-top:0;color:var(--slate-600);font-size:11px\">This restores the original sample flowchart and removes locally submitted reviews and preferences.</p><div class=\"dialog-actions\"><button class=\"secondary-button\" type=\"button\" data-action=\"close-dialog\">Keep changes</button><button class=\"danger-button\" type=\"button\" data-action=\"reset-now\">Reset demo</button></div>");
+    }
+
+    function resetDemo() {
+        state.terms = clone(defaults.terms);
+        state.settings = clone(defaults.settings);
+        state.customCourseReviews = [];
+        state.customProfessorReviews = [];
+        state.puzzleSolved = false;
+        localStorage.removeItem(STORAGE_KEY);
+        if (dialog.open) dialog.close();
+        showToast("CourseFlow demo restored.");
+        render();
+    }
+
+    function handlePuzzle(answer) {
+        if (answer === "COMS") {
+            state.puzzleSolved = true;
+            saveState();
+            showToast("Correct! Your CourseFlow streak is now 6 days.");
+            render();
         } else {
-            elements.planHealth.innerHTML = "<span class=\"health-icon\" aria-hidden=\"true\"></span>" +
-                "<div><strong>" + count + (count === 1 ? " check needs" : " checks need") + " attention</strong>" +
-                "<p>Move or add courses to resolve sequencing and availability conflicts.</p></div>";
+            showToast(answer + " is not today's department. Try another clue.");
         }
     }
 
-    function renderInspector(snapshot) {
-        const course = coursesById.get(state.selectedCourseId);
-        if (!course) {
-            elements.inspector.className = "inspector-empty";
-            elements.inspector.innerHTML = "<span aria-hidden=\"true\">i</span><p>Select a course to inspect its prerequisites and availability.</p>";
-            return;
+    document.addEventListener("input", function (event) {
+        if (event.target.id === "catalog-search") { state.catalog.search = event.target.value; refreshCatalogResults(); }
+        if (event.target.id === "review-search") filterRows("#review-course-list .select-row", event.target.value);
+        if (event.target.id === "professor-search") filterRows("#professor-list .select-row", event.target.value);
+        if (event.target.id === "command-search") renderCommandResults(event.target.value);
+    });
+
+    document.addEventListener("change", function (event) {
+        if (event.target.id === "catalog-department") { state.catalog.department = event.target.value; render(); }
+        if (event.target.id === "theme-select") { state.settings.theme = event.target.value; saveState(); render(); }
+    });
+
+    function filterRows(selector, value) {
+        const query = value.trim().toLowerCase();
+        document.querySelectorAll(selector).forEach(function (row) { row.hidden = !row.textContent.toLowerCase().includes(query); });
+    }
+
+    document.addEventListener("submit", function (event) {
+        if (event.target.id === "course-review-form") {
+            event.preventDefault();
+            const form = new FormData(event.target);
+            state.customCourseReviews.push({ course: form.get("course"), rating: Number(form.get("rating")), difficulty: Number(form.get("difficulty")), workload: Number(form.get("workload")), text: String(form.get("text")) });
+            saveState(); showToast("Your course review was saved locally."); render();
         }
-
-        const courseLocations = snapshot.analysis.locations.get(course.id) || [];
-        const locationText = courseLocations.length
-            ? courseLocations.map(function (location) { return location.term.label; }).join(", ")
-            : "Not yet planned";
-        const prerequisiteText = course.prerequisites.length
-            ? course.prerequisites.map(function (courseId) {
-                const prerequisite = coursesById.get(courseId);
-                return prerequisite ? prerequisite.code : courseId;
-            }).join(", ")
-            : "None";
-
-        elements.inspector.className = "inspector-course";
-        elements.inspector.style.setProperty("--course-color", courseColor(course));
-        elements.inspector.innerHTML = "<div class=\"inspector-course-header\"><div>" +
-            "<span class=\"inspector-course-code\">" + escapeHtml(course.code) + "</span>" +
-            "<h3>" + escapeHtml(course.title) + "</h3></div>" +
-            "<span class=\"inspector-credit\">" + course.credits + " credits</span></div>" +
-            "<p class=\"inspector-description\">" + escapeHtml(course.description) + "</p>" +
-            "<dl class=\"inspector-meta\">" +
-                "<div><dt>Requirement</dt><dd>" + escapeHtml(categoryLabels[course.category] || course.category) + "</dd></div>" +
-                "<div><dt>Prerequisites</dt><dd>" + escapeHtml(prerequisiteText) + "</dd></div>" +
-                "<div><dt>Sample terms</dt><dd>" + escapeHtml(course.terms.join(" / ")) + "</dd></div>" +
-                "<div><dt>Current plan</dt><dd>" + escapeHtml(locationText) + "</dd></div>" +
-            "</dl>";
-    }
-
-    function renderRequirements(snapshot) {
-        elements.requirementsSummary.textContent = snapshot.mappedRequirements + " mapped";
-        elements.requirementsList.innerHTML = snapshot.requirements.map(function (item) {
-            const requirement = item.requirement;
-            const mappedClass = item.isMapped ? " is-mapped" : "";
-            const status = item.isCompleted ? "Complete" : item.isMapped ? "Planned" : "In progress";
-            return "<article class=\"requirement" + mappedClass + "\" title=\"" + escapeHtml(requirement.description) + "\">" +
-                "<span class=\"requirement-icon\" aria-hidden=\"true\">" + (item.isMapped ? "&#10003;" : item.mapped) + "</span>" +
-                "<div class=\"requirement-copy\"><strong>" + escapeHtml(requirement.name) + "</strong><span>" + status + "</span></div>" +
-                "<span class=\"requirement-count\">" + item.mapped + "/" + requirement.minimum + "</span>" +
-            "</article>";
-        }).join("");
-    }
-
-    function renderChecks(snapshot) {
-        if (!snapshot.analysis.issues.length) {
-            elements.checksList.innerHTML = "<p class=\"checks-empty\">No conflicts found</p>";
-            return;
+        if (event.target.id === "professor-review-form") {
+            event.preventDefault();
+            const form = new FormData(event.target);
+            state.customProfessorReviews.push({ professor: form.get("professor"), rating: Number(form.get("rating")), clarity: Number(form.get("clarity")), workload: Number(form.get("workload")), text: String(form.get("text")) });
+            saveState(); showToast("Your professor review was saved locally."); render();
         }
-
-        const shownIssues = snapshot.analysis.issues.slice(0, 6);
-        elements.checksList.innerHTML = "<ul class=\"check-list\">" + shownIssues.map(function (issue) {
-            return "<li class=\"check-item\"><strong>" + escapeHtml(issue.title) + "</strong>" + escapeHtml(issue.message) + "</li>";
-        }).join("") + (snapshot.analysis.issues.length > shownIssues.length
-            ? "<li class=\"check-item\"><strong>More checks</strong>" + (snapshot.analysis.issues.length - shownIssues.length) + " additional items are shown on their course cards.</li>"
-            : "") + "</ul>";
-    }
-
-    function renderAll() {
-        const snapshot = planSnapshot();
-        renderScenarioSelect();
-        renderTargetTerms();
-        renderOverview(snapshot);
-        renderCatalog(snapshot);
-        renderPlanHealth(snapshot);
-        renderSemesters(snapshot);
-        renderInspector(snapshot);
-        renderRequirements(snapshot);
-        renderChecks(snapshot);
-    }
-
-    function markCustom() {
-        state.scenarioId = "custom";
-    }
-
-    function commit(message) {
-        markCustom();
-        saveState();
-        renderAll();
-        announce(message);
-    }
-
-    function announce(message) {
-        elements.toast.textContent = message;
-        elements.toast.classList.add("is-visible");
-        window.clearTimeout(toastTimeout);
-        toastTimeout = window.setTimeout(function () {
-            elements.toast.classList.remove("is-visible");
-        }, 2800);
-    }
-
-    function selectCourse(courseId) {
-        if (!coursesById.has(courseId)) return;
-        state.selectedCourseId = courseId;
-        saveState();
-        renderCatalog(planSnapshot());
-        renderSemesters(planSnapshot());
-        renderInspector(planSnapshot());
-    }
-
-    function addCourse(courseId, termId) {
-        const course = coursesById.get(courseId);
-        const term = state.terms.find(function (item) { return item.id === termId; });
-        if (!course || !term || term.status === "completed") return;
-        if (getUniquePlannedIds().has(courseId)) {
-            announce(course.code + " is already in the plan.");
-            return;
-        }
-        term.courseIds.push(courseId);
-        state.selectedCourseId = courseId;
-        commit(course.code + " added to " + term.label + ".");
-    }
-
-    function removeCourse(courseId, termId) {
-        const course = coursesById.get(courseId);
-        const term = state.terms.find(function (item) { return item.id === termId; });
-        if (!course || !term || term.status === "completed") return;
-        term.courseIds = term.courseIds.filter(function (id) { return id !== courseId; });
-        commit(course.code + " removed from " + term.label + ".");
-    }
-
-    function moveCourse(courseId, fromTermId, toTermId) {
-        const course = coursesById.get(courseId);
-        const fromTerm = state.terms.find(function (term) { return term.id === fromTermId; });
-        const toTerm = state.terms.find(function (term) { return term.id === toTermId; });
-        if (!course || !toTerm || toTerm.status === "completed") return;
-        if (fromTerm && fromTerm.id === toTerm.id) return;
-
-        if (fromTerm) {
-            fromTerm.courseIds = fromTerm.courseIds.filter(function (id) { return id !== courseId; });
-        } else if (getUniquePlannedIds().has(courseId)) {
-            return;
-        }
-        toTerm.courseIds.push(courseId);
-        state.selectedCourseId = courseId;
-        commit(course.code + " moved to " + toTerm.label + ".");
-    }
-
-    function moveCourseByOffset(courseId, termId, offset) {
-        const fromIndex = state.terms.findIndex(function (term) { return term.id === termId; });
-        const toIndex = fromIndex + offset;
-        if (fromIndex < 0 || toIndex < 0 || toIndex >= state.terms.length) return;
-        moveCourse(courseId, termId, state.terms[toIndex].id);
-    }
-
-    function loadScenario(scenarioId, shouldAnnounce) {
-        const scenario = scenariosById.get(scenarioId);
-        if (!scenario) return;
-        state = createScenarioState(scenario.id);
-        targetTermId = firstPlannedTermId();
-        saveState();
-        renderAll();
-        if (shouldAnnounce) announce(scenario.name + " loaded.");
-    }
-
-    function addTerm() {
-        const plannedTerms = state.terms.filter(function (term) { return term.status === "planned"; });
-        const lastTerm = plannedTerms[plannedTerms.length - 1];
-        const match = lastTerm ? /^(Fall|Spring)\s+(\d{4})$/.exec(lastTerm.label) : null;
-        let season = "Fall";
-        let year = new Date().getFullYear();
-        if (match) {
-            season = match[1] === "Fall" ? "Spring" : "Fall";
-            year = Number(match[2]) + (match[1] === "Fall" ? 1 : 0);
-        }
-        const id = season.toLowerCase() + "-" + year + "-" + Date.now();
-        const term = { id: id, label: season + " " + year, status: "planned", courseIds: [] };
-        state.terms.push(term);
-        targetTermId = id;
-        commit(term.label + " added to the plan.");
-    }
-
-    elements.programLabel.textContent = data.program.school + " / " + data.program.name;
-    elements.programNote.textContent = data.program.note;
-
-    elements.scenarioSelect.addEventListener("change", function () {
-        loadScenario(elements.scenarioSelect.value, true);
-    });
-
-    elements.resetButton.addEventListener("click", function () {
-        loadScenario(state.baseScenarioId || "balanced", true);
-    });
-
-    elements.addTermButton.addEventListener("click", addTerm);
-
-    elements.searchInput.addEventListener("input", function () {
-        searchQuery = elements.searchInput.value.trim().toLowerCase();
-        renderCatalog(planSnapshot());
-    });
-
-    elements.targetTerm.addEventListener("change", function () {
-        targetTermId = elements.targetTerm.value;
-    });
-
-    elements.filters.addEventListener("click", function (event) {
-        const button = event.target.closest("button[data-filter]");
-        if (!button) return;
-        catalogFilter = button.dataset.filter;
-        elements.filters.querySelectorAll("button").forEach(function (item) {
-            const isActive = item === button;
-            item.classList.toggle("is-active", isActive);
-            item.setAttribute("aria-pressed", String(isActive));
-        });
-        renderCatalog(planSnapshot());
-    });
-
-    elements.catalogList.addEventListener("click", function (event) {
-        const actionButton = event.target.closest("button[data-action]");
-        if (!actionButton) return;
-        const courseId = actionButton.dataset.courseId;
-        if (actionButton.dataset.action === "select-course") selectCourse(courseId);
-        if (actionButton.dataset.action === "add-course") addCourse(courseId, targetTermId);
-    });
-
-    elements.semesterBoard.addEventListener("click", function (event) {
-        const actionButton = event.target.closest("button[data-action]");
-        if (!actionButton) return;
-        const action = actionButton.dataset.action;
-        const courseId = actionButton.dataset.courseId;
-        const termId = actionButton.dataset.termId;
-        if (action === "select-course") selectCourse(courseId);
-        if (action === "move-earlier") moveCourseByOffset(courseId, termId, -1);
-        if (action === "move-later") moveCourseByOffset(courseId, termId, 1);
-        if (action === "remove-course") removeCourse(courseId, termId);
     });
 
     document.addEventListener("dragstart", function (event) {
-        const card = event.target.closest("[draggable=\"true\"][data-course-id]");
-        if (!card || !event.dataTransfer) return;
+        const node = event.target.closest("[data-drag-course]");
+        if (!node) return;
+        event.dataTransfer.setData("text/courseflow-course", node.dataset.dragCourse);
         event.dataTransfer.effectAllowed = "move";
-        event.dataTransfer.setData("text/courseflow-course", card.dataset.courseId);
-        event.dataTransfer.setData("text/courseflow-term", card.dataset.termId || "");
-        window.setTimeout(function () { card.classList.add("is-dragging"); }, 0);
     });
-
-    document.addEventListener("dragend", function (event) {
-        const card = event.target.closest("[data-course-id]");
-        if (card) card.classList.remove("is-dragging");
-        document.querySelectorAll(".semester.is-drag-over").forEach(function (semester) {
-            semester.classList.remove("is-drag-over");
-        });
-    });
-
-    elements.semesterBoard.addEventListener("dragover", function (event) {
-        const semester = event.target.closest(".semester[data-term-status=\"planned\"]");
-        if (!semester) return;
+    document.addEventListener("dragover", function (event) {
+        const term = event.target.closest("[data-term]");
+        if (!term) return;
         event.preventDefault();
-        if (event.dataTransfer) event.dataTransfer.dropEffect = "move";
-        elements.semesterBoard.querySelectorAll(".semester").forEach(function (item) {
-            item.classList.toggle("is-drag-over", item === semester);
-        });
+        term.classList.add("drop-target");
     });
-
-    elements.semesterBoard.addEventListener("dragleave", function (event) {
-        const semester = event.target.closest(".semester");
-        if (semester && !semester.contains(event.relatedTarget)) semester.classList.remove("is-drag-over");
+    document.addEventListener("dragleave", function (event) {
+        const term = event.target.closest("[data-term]");
+        if (term && !term.contains(event.relatedTarget)) term.classList.remove("drop-target");
     });
-
-    elements.semesterBoard.addEventListener("drop", function (event) {
-        const semester = event.target.closest(".semester[data-term-status=\"planned\"]");
-        if (!semester || !event.dataTransfer) return;
+    document.addEventListener("drop", function (event) {
+        const term = event.target.closest("[data-term]");
+        if (!term) return;
         event.preventDefault();
-        const courseId = event.dataTransfer.getData("text/courseflow-course");
-        const fromTermId = event.dataTransfer.getData("text/courseflow-term");
-        semester.classList.remove("is-drag-over");
-        if (fromTermId) moveCourse(courseId, fromTermId, semester.dataset.termId);
-        else addCourse(courseId, semester.dataset.termId);
+        const course = event.dataTransfer.getData("text/courseflow-course");
+        placeCourse(course, term.dataset.term);
     });
 
-    window.render_courseflow_to_text = function () {
-        const snapshot = planSnapshot();
-        return JSON.stringify({
-            scenario: state.scenarioId,
-            baseScenario: state.baseScenarioId,
-            program: data.program.name,
-            targetCredits: data.program.targetCredits,
-            completedCredits: snapshot.completedCredits,
-            plannedCredits: snapshot.plannedCredits,
-            mappedPercent: snapshot.mappedPercent,
-            mappedRequirements: snapshot.mappedRequirements,
-            requirementCount: data.requirements.length,
-            issues: snapshot.analysis.issues.map(function (issue) {
-                return { type: issue.type, title: issue.title, message: issue.message };
-            }),
-            selectedCourse: state.selectedCourseId,
-            terms: state.terms.map(function (term) {
-                return { id: term.id, label: term.label, status: term.status, courseIds: term.courseIds.slice() };
-            })
-        });
-    };
+    document.getElementById("mobile-menu").addEventListener("click", function () {
+        const open = sidebar.classList.toggle("is-open");
+        scrim.classList.toggle("is-open", open);
+        this.setAttribute("aria-expanded", String(open));
+    });
+    scrim.addEventListener("click", closeSidebar);
+    document.getElementById("command-button").addEventListener("click", openCommandPalette);
+    document.getElementById("notification-button").addEventListener("click", function () { showToast("Your sample plan has no new conflicts."); });
+    document.getElementById("reset-demo").addEventListener("click", openResetDialog);
+    window.addEventListener("hashchange", function () { state.route = routeFromHash(); render(); });
+    window.addEventListener("keydown", function (event) {
+        if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "k") { event.preventDefault(); openCommandPalette(); }
+    });
 
-    window.__courseflow_demo = {
-        loadScenario: function (scenarioId) { loadScenario(scenarioId, false); },
-        addCourse: addCourse,
-        moveCourse: moveCourse,
-        reset: function () { loadScenario("balanced", false); }
-    };
-
-    renderAll();
-})();
+    applyPreferences();
+    render();
+}());

@@ -203,3 +203,17 @@ Original prompt: Remove clutter from the games on the website. Right now they do
 - Validation QA passes prerequisite sequencing, missing prerequisites, sample term availability, and overloaded credit checks; resolving or removing a conflict updates the plan immediately.
 - Desktop, conflict, tablet, and 390px mobile states were visually inspected, including the lower semester board and catalog rather than only the page header.
 - CourseFlow, Home, and Projects have no horizontal overflow at tested breakpoints, and browser QA recorded no console or page errors.
+
+## CourseFlow faithful rebuild
+
+- Replaced the first generic planning demo with a static single-page version modeled directly on the original CourseFlow React application in `Senior_Design`.
+- Recreated the original fixed header, CourseFlow branding, grouped navigation, module dashboard, daily timeline, flowchart workspace, catalog, current classes, majors, reviews, badges, games, dining, profile, and settings views.
+- Added shared browser-local placeholder state so catalog scheduling, flowchart drag-and-drop, quick edits, degree insights, reviews, preferences, the daily puzzle, command search, and demo reset work together without a backend.
+- Reused the original CourseFlow logo and feature artwork while clearly labeling the experience as a portfolio demo with fictional data.
+
+## CourseFlow rebuild verification
+
+- JavaScript syntax checks and `git diff --check` pass, and every core page asset returns HTTP 200 from the static server.
+- Browser QA passes semester placement and restoration, live multi-word catalog filtering with retained input focus, local review submission, both reset-dialog paths, and mobile navigation.
+- Desktop and 390px layouts were visually inspected; the phone layout keeps the planning controls readable and contains the wide flowchart within its own scrolling canvas.
+- Browser QA recorded no console errors.
