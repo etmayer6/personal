@@ -102,3 +102,10 @@ Original prompt: Remove clutter from the games on the website. Right now they do
 - Desktop and 390px mobile title/gameplay screenshots plus drag, blocked, clear, and game-over states were visually inspected with no horizontal overflow.
 - The touch test caught and verified a pointer-type argument fix so touch pieces now use the intended finger-safe lift rather than the mouse offset.
 - No Block Blast TODOs remain for this overhaul.
+
+## Website game synchronization
+
+- Applied the verified Word Sort and Block Blast export bundles and page styles to the `main` website worktree.
+- Updated both game-page headers so Games, rather than Projects, is marked as the current section.
+- The required Playwright game client starts both website routes and returns synchronized gameplay state with no console-error artifacts.
+- Desktop canvas captures and 390px full-page checks were inspected; both routes remain within the viewport with no horizontal overflow.
