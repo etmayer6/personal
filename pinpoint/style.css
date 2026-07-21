@@ -305,6 +305,63 @@ button:disabled {
     touch-action: none;
 }
 
+#world-map.is-panning {
+    cursor: grabbing;
+}
+
+.map-zoom {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    display: grid;
+    grid-template-columns: 36px 48px 36px;
+    overflow: hidden;
+    border: 1px solid rgba(16, 43, 54, 0.22);
+    border-radius: 12px;
+    background: rgba(255, 253, 248, 0.94);
+    box-shadow: 0 8px 22px rgba(16, 43, 54, 0.18);
+}
+
+.map-zoom button {
+    min-height: 38px;
+    padding: 0;
+    border: 0;
+    border-right: 1px solid rgba(16, 43, 54, 0.14);
+    color: var(--pin-ink);
+    background: transparent;
+    font: 900 18px/1 Trebuchet MS, sans-serif;
+    cursor: pointer;
+}
+
+.map-zoom button:last-child {
+    border-right: 0;
+}
+
+.map-zoom button:hover:not(:disabled),
+.map-zoom button:focus-visible {
+    background: #f5e5ce;
+}
+
+.map-zoom button:disabled {
+    color: rgba(16, 43, 54, 0.32);
+    cursor: not-allowed;
+}
+
+.map-zoom .map-zoom-level {
+    display: grid;
+    place-content: center;
+    gap: 1px;
+    font-size: 12px;
+}
+
+.map-zoom-level small {
+    color: var(--pin-muted);
+    font-size: 7px;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
 .map-instruction {
     position: absolute;
     bottom: 10px;
@@ -318,6 +375,24 @@ button:disabled {
     pointer-events: none;
     transform: translateX(-50%);
     white-space: nowrap;
+}
+
+@media (max-width: 520px) {
+    .map-zoom {
+        top: 8px;
+        right: 8px;
+        grid-template-columns: 34px 44px 34px;
+    }
+
+    .map-zoom button {
+        min-height: 34px;
+    }
+
+    .map-instruction {
+        max-width: calc(100% - 18px);
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
 }
 
 .hint-box {

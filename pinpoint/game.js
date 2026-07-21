@@ -3,6 +3,9 @@ const MAX_ROUND_SCORE = 5000;
 const MAPILLARY_TIMEOUT_MS = 5000;
 const MAPILLARY_SEARCH_ATTEMPTS = 6;
 const MAPILLARY_CELL_SIZE = 0.003;
+const MIN_MAP_ZOOM = 1;
+const MAX_MAP_ZOOM = 8;
+const MAP_ZOOM_FACTOR = 1.5;
 
 const localLocations = [
     {
@@ -155,6 +158,10 @@ const photoCreditEl = document.getElementById("photo-credit");
 const sourcePillEl = document.getElementById("source-pill");
 const coordinateEl = document.getElementById("coordinate-readout");
 const mapInstructionEl = document.getElementById("map-instruction");
+const zoomOutButton = document.getElementById("map-zoom-out");
+const zoomResetButton = document.getElementById("map-zoom-reset");
+const zoomInButton = document.getElementById("map-zoom-in");
+const zoomValueEl = document.getElementById("map-zoom-value");
 const hintBoxEl = document.getElementById("hint-box");
 const hintTextEl = document.getElementById("hint-text");
 const hintButton = document.getElementById("hint-button");
@@ -178,6 +185,18 @@ const state = {
     source: "local",
     generation: 0,
     mapillaryFailures: 0
+};
+
+const mapView = {
+    zoom: MIN_MAP_ZOOM,
+    centerLon: 0,
+    centerLat: 0
+};
+
+const mapGesture = {
+    pointers: new Map(),
+    moved: false,
+    pinched: false
 };
 
 function shuffledLocations() {
@@ -305,17 +324,76 @@ function currentLocation() {
     return state.sequence[state.roundIndex];
 }
 
-function project(lon, lat, width, height) {
+function normalizeLongitude(lon) {
+    let normalized = lon;
+    while (normalized < -180) normalized += 360;
+    while (normalized > 180) normalized -= 360;
+    return normalized;
+}
+
+function constrainMapView() {
+    mapView.zoom = Math.max(MIN_MAP_ZOOM, Math.min(MAX_MAP_ZOOM, mapView.zoom));
+    mapView.centerLon = normalizeLongitude(mapView.centerLon);
+    const latitudeLimit = 90 - 90 / mapView.zoom;
+    mapView.centerLat = Math.max(-latitudeLimit, Math.min(latitudeLimit, mapView.centerLat));
+}
+
+function project(lon, lat, width, height, wrapToView = true) {
+    const displayLon = wrapToView
+        ? mapView.centerLon + normalizeLongitude(lon - mapView.centerLon)
+        : lon;
     return {
-        x: (lon + 180) / 360 * width,
-        y: (90 - lat) / 180 * height
+        x: width / 2 + (displayLon - mapView.centerLon) / 360 * width * mapView.zoom,
+        y: height / 2 + (mapView.centerLat - lat) / 180 * height * mapView.zoom
     };
 }
 
 function unproject(x, y, width, height) {
     return {
-        lon: x / width * 360 - 180,
-        lat: 90 - y / height * 180
+        lon: normalizeLongitude(mapView.centerLon + (x - width / 2) / width * 360 / mapView.zoom),
+        lat: Math.max(-90, Math.min(90, mapView.centerLat - (y - height / 2) / height * 180 / mapView.zoom))
+    };
+}
+
+function updateZoomControls() {
+    zoomValueEl.textContent = `${Number(mapView.zoom.toFixed(1))}x`;
+    zoomOutButton.disabled = mapView.zoom <= MIN_MAP_ZOOM;
+    zoomInButton.disabled = mapView.zoom >= MAX_MAP_ZOOM;
+}
+
+function setMapZoom(nextZoom, anchorX = canvas.width / 2, anchorY = canvas.height / 2) {
+    const before = unproject(anchorX, anchorY, canvas.width, canvas.height);
+    mapView.zoom = nextZoom;
+    constrainMapView();
+    const after = unproject(anchorX, anchorY, canvas.width, canvas.height);
+    mapView.centerLon = normalizeLongitude(mapView.centerLon + normalizeLongitude(before.lon - after.lon));
+    mapView.centerLat += before.lat - after.lat;
+    constrainMapView();
+    updateZoomControls();
+    drawMap();
+}
+
+function panMap(deltaX, deltaY, redraw = true) {
+    if (mapView.zoom <= MIN_MAP_ZOOM) return;
+    mapView.centerLon = normalizeLongitude(mapView.centerLon - deltaX / canvas.width * 360 / mapView.zoom);
+    mapView.centerLat += deltaY / canvas.height * 180 / mapView.zoom;
+    constrainMapView();
+    if (redraw) drawMap();
+}
+
+function resetMapView(redraw = true) {
+    mapView.zoom = MIN_MAP_ZOOM;
+    mapView.centerLon = 0;
+    mapView.centerLat = 0;
+    updateZoomControls();
+    if (redraw) drawMap();
+}
+
+function canvasPoint(clientX, clientY) {
+    const rect = canvas.getBoundingClientRect();
+    return {
+        x: (clientX - rect.left) / rect.width * canvas.width,
+        y: (clientY - rect.top) / rect.height * canvas.height
     };
 }
 
@@ -400,7 +478,7 @@ function unwrappedRing(ring) {
 function traceRing(ring, width, height, longitudeOffset = 0) {
     const points = unwrappedRing(ring);
     points.forEach(([lon, lat], index) => {
-        const point = project(lon + longitudeOffset, lat, width, height);
+        const point = project(lon + longitudeOffset, lat, width, height, false);
         if (index === 0) ctx.moveTo(point.x, point.y);
         else ctx.lineTo(point.x, point.y);
     });
@@ -413,8 +491,10 @@ function tracePolygon(polygon, width, height) {
     const longitudes = firstRing.map(([lon]) => lon);
     const minLon = Math.min(...longitudes);
     const maxLon = Math.max(...longitudes);
-    for (const offset of [-360, 0, 360]) {
-        if (maxLon + offset < -180 || minLon + offset > 180) continue;
+    for (const offset of [-720, -360, 0, 360, 720]) {
+        const left = project(minLon + offset, 0, width, height, false).x;
+        const right = project(maxLon + offset, 0, width, height, false).x;
+        if (right < 0 || left > width) continue;
         for (const ring of polygon) traceRing(ring, width, height, offset);
     }
 }
@@ -465,6 +545,7 @@ function drawMap() {
     ctx.lineWidth = 1;
     for (let lon = -150; lon <= 150; lon += 30) {
         const x = project(lon, 0, width, height).x;
+        if (x < 0 || x > width) continue;
         ctx.beginPath();
         ctx.moveTo(x, 0);
         ctx.lineTo(x, height);
@@ -472,6 +553,7 @@ function drawMap() {
     }
     for (let lat = -60; lat <= 60; lat += 30) {
         const y = project(0, lat, width, height).y;
+        if (y < 0 || y > height) continue;
         ctx.beginPath();
         ctx.moveTo(0, y);
         ctx.lineTo(width, y);
@@ -496,6 +578,7 @@ function drawMap() {
     ];
     for (const [label, lon, lat] of labels) {
         const point = project(lon, lat, width, height);
+        if (point.x < 0 || point.x > width || point.y < 0 || point.y > height) continue;
         ctx.fillText(label, point.x, point.y);
     }
 
@@ -504,8 +587,9 @@ function drawMap() {
         const location = currentLocation();
         const actualPoint = project(location.lon, location.lat, width, height);
         let actualX = actualPoint.x;
-        if (Math.abs(actualX - guessPoint.x) > width / 2) {
-            actualX += actualX > guessPoint.x ? -width : width;
+        const worldPixelWidth = width * mapView.zoom;
+        if (Math.abs(actualX - guessPoint.x) > worldPixelWidth / 2) {
+            actualX += actualX > guessPoint.x ? -worldPixelWidth : worldPixelWidth;
         }
         ctx.strokeStyle = "rgba(16, 43, 54, 0.72)";
         ctx.lineWidth = 3;
@@ -565,6 +649,7 @@ function preloadNextRound() {
 
 function loadRound() {
     const location = currentLocation();
+    resetMapView(false);
     state.mode = "guessing";
     state.source = location.source || "local";
     state.hintCount = 0;
@@ -595,7 +680,7 @@ function loadRound() {
     guessButton.disabled = true;
     guessButton.hidden = false;
     coordinateEl.textContent = "No pin yet";
-    mapInstructionEl.textContent = "Click anywhere to place your pin";
+    mapInstructionEl.textContent = "Click to pin | Scroll or pinch to zoom | Drag to pan";
     mapInstructionEl.hidden = false;
     statusEl.textContent = state.source === "mapillary"
         ? "Worldwide image loaded. Study it, then place your pin."
@@ -606,6 +691,7 @@ function loadRound() {
 }
 
 function showSequenceLoading() {
+    resetMapView(false);
     state.mode = "loading";
     state.sequence = [];
     state.roundIndex = 0;
@@ -661,7 +747,7 @@ function placeGuess(lat, lon) {
         lat: Math.max(-89.5, Math.min(89.5, lat)),
         lon: Math.max(-180, Math.min(180, lon))
     };
-    coordinateEl.textContent = `${Math.abs(state.guess.lat).toFixed(1)}°${state.guess.lat >= 0 ? "N" : "S"}, ${Math.abs(state.guess.lon).toFixed(1)}°${state.guess.lon >= 0 ? "E" : "W"}`;
+    coordinateEl.textContent = `${Math.abs(state.guess.lat).toFixed(2)}°${state.guess.lat >= 0 ? "N" : "S"}, ${Math.abs(state.guess.lon).toFixed(2)}°${state.guess.lon >= 0 ? "E" : "W"}`;
     guessButton.disabled = false;
     mapInstructionEl.hidden = true;
     statusEl.textContent = "Pin placed. Lock it in when you are ready.";
@@ -687,6 +773,7 @@ function submitGuess() {
     state.roundScore = Math.max(0, baseScore - state.hintCount * 250);
     state.totalScore += state.roundScore;
     state.mode = "result";
+    resetMapView(false);
     answerTitleEl.textContent = location.answer;
     answerDetailEl.textContent = `${formatDistance(state.distanceKm)} · ${state.hintCount ? `${state.hintCount * 250} point hint penalty` : "No hint penalty"}`;
     roundScoreEl.textContent = state.roundScore.toLocaleString();
@@ -748,14 +835,105 @@ function toggleFullscreen() {
 }
 
 canvas.addEventListener("pointerdown", (event) => {
-    if (state.mode !== "guessing") return;
-    const rect = canvas.getBoundingClientRect();
-    const x = (event.clientX - rect.left) / rect.width * canvas.width;
-    const y = (event.clientY - rect.top) / rect.height * canvas.height;
-    const point = unproject(x, y, canvas.width, canvas.height);
-    placeGuess(point.lat, point.lon);
+    if (state.mode === "loading") return;
+    event.preventDefault();
+    canvas.setPointerCapture?.(event.pointerId);
+    mapGesture.pointers.set(event.pointerId, {
+        x: event.clientX,
+        y: event.clientY,
+        startX: event.clientX,
+        startY: event.clientY
+    });
+    if (mapGesture.pointers.size === 1) {
+        mapGesture.moved = false;
+        mapGesture.pinched = false;
+    } else {
+        mapGesture.moved = true;
+        mapGesture.pinched = true;
+    }
     canvas.focus();
 });
+
+canvas.addEventListener("pointermove", (event) => {
+    const tracked = mapGesture.pointers.get(event.pointerId);
+    if (!tracked) return;
+    event.preventDefault();
+    const previousPointers = new Map([...mapGesture.pointers].map(([id, point]) => [id, { ...point }]));
+    tracked.x = event.clientX;
+    tracked.y = event.clientY;
+
+    if (mapGesture.pointers.size === 1) {
+        const previous = previousPointers.get(event.pointerId);
+        if (Math.hypot(tracked.x - tracked.startX, tracked.y - tracked.startY) > 4) {
+            mapGesture.moved = true;
+            canvas.classList.add("is-panning");
+        }
+        if (mapGesture.moved && mapView.zoom > MIN_MAP_ZOOM) {
+            const rect = canvas.getBoundingClientRect();
+            panMap(
+                (tracked.x - previous.x) / rect.width * canvas.width,
+                (tracked.y - previous.y) / rect.height * canvas.height
+            );
+        }
+        return;
+    }
+
+    const current = [...mapGesture.pointers.values()].slice(0, 2);
+    const previous = [...previousPointers.values()].slice(0, 2);
+    const currentMidpoint = {
+        x: (current[0].x + current[1].x) / 2,
+        y: (current[0].y + current[1].y) / 2
+    };
+    const previousMidpoint = {
+        x: (previous[0].x + previous[1].x) / 2,
+        y: (previous[0].y + previous[1].y) / 2
+    };
+    const currentDistance = Math.hypot(current[0].x - current[1].x, current[0].y - current[1].y);
+    const previousDistance = Math.hypot(previous[0].x - previous[1].x, previous[0].y - previous[1].y);
+    const rect = canvas.getBoundingClientRect();
+    panMap(
+        (currentMidpoint.x - previousMidpoint.x) / rect.width * canvas.width,
+        (currentMidpoint.y - previousMidpoint.y) / rect.height * canvas.height,
+        false
+    );
+    const anchor = canvasPoint(currentMidpoint.x, currentMidpoint.y);
+    setMapZoom(mapView.zoom * currentDistance / Math.max(1, previousDistance), anchor.x, anchor.y);
+});
+
+function finishMapPointer(event, cancelled = false) {
+    const tracked = mapGesture.pointers.get(event.pointerId);
+    if (!tracked) return;
+    const shouldPlace = !cancelled
+        && mapGesture.pointers.size === 1
+        && !mapGesture.moved
+        && !mapGesture.pinched
+        && state.mode === "guessing";
+    mapGesture.pointers.delete(event.pointerId);
+    canvas.releasePointerCapture?.(event.pointerId);
+    if (shouldPlace) {
+        const point = canvasPoint(event.clientX, event.clientY);
+        const coordinates = unproject(point.x, point.y, canvas.width, canvas.height);
+        placeGuess(coordinates.lat, coordinates.lon);
+    }
+    if (mapGesture.pointers.size === 0) {
+        mapGesture.moved = false;
+        mapGesture.pinched = false;
+        canvas.classList.remove("is-panning");
+    } else {
+        mapGesture.moved = true;
+    }
+}
+
+canvas.addEventListener("pointerup", (event) => finishMapPointer(event));
+canvas.addEventListener("pointercancel", (event) => finishMapPointer(event, true));
+
+canvas.addEventListener("wheel", (event) => {
+    if (state.mode === "loading") return;
+    event.preventDefault();
+    const anchor = canvasPoint(event.clientX, event.clientY);
+    const factor = event.deltaY < 0 ? MAP_ZOOM_FACTOR : 1 / MAP_ZOOM_FACTOR;
+    setMapZoom(mapView.zoom * factor, anchor.x, anchor.y);
+}, { passive: false });
 
 imageEl.addEventListener("load", () => {
     loadingEl.hidden = true;
@@ -777,6 +955,9 @@ imageEl.addEventListener("error", () => {
 hintButton.addEventListener("click", useHint);
 guessButton.addEventListener("click", submitGuess);
 nextButton.addEventListener("click", nextRound);
+zoomOutButton.addEventListener("click", () => setMapZoom(mapView.zoom / MAP_ZOOM_FACTOR));
+zoomInButton.addEventListener("click", () => setMapZoom(mapView.zoom * MAP_ZOOM_FACTOR));
+zoomResetButton.addEventListener("click", () => resetMapView());
 document.getElementById("new-game-button").addEventListener("click", startGame);
 fullscreenButton.addEventListener("click", toggleFullscreen);
 
@@ -787,6 +968,21 @@ document.addEventListener("fullscreenchange", () => {
 
 window.addEventListener("keydown", (event) => {
     const key = event.key.toLowerCase();
+    if (key === "+" || key === "=") {
+        event.preventDefault();
+        setMapZoom(mapView.zoom * MAP_ZOOM_FACTOR);
+        return;
+    }
+    if (key === "-" || key === "_") {
+        event.preventDefault();
+        setMapZoom(mapView.zoom / MAP_ZOOM_FACTOR);
+        return;
+    }
+    if (key === "0") {
+        event.preventDefault();
+        resetMapView();
+        return;
+    }
     if (key === "f") {
         event.preventDefault();
         toggleFullscreen();
@@ -806,7 +1002,7 @@ window.addEventListener("keydown", (event) => {
     if (!["arrowleft", "arrowright", "arrowup", "arrowdown"].includes(key) || state.mode !== "guessing") return;
     event.preventDefault();
     const guess = state.guess || { lat: 0, lon: 0 };
-    const step = event.shiftKey ? 10 : 2;
+    const step = (event.shiftKey ? 10 : 2) / mapView.zoom;
     if (key === "arrowleft") guess.lon -= step;
     if (key === "arrowright") guess.lon += step;
     if (key === "arrowup") guess.lat += step;
@@ -819,6 +1015,11 @@ window.addEventListener("keydown", (event) => {
 window.addEventListener("resize", resizeCanvas);
 window.render_game_to_text = () => JSON.stringify({
     coordinateSystem: { map: "equirectangular", longitude: "-180 west to 180 east", latitude: "-90 south to 90 north" },
+    mapView: {
+        zoom: Number(mapView.zoom.toFixed(2)),
+        centerLon: Number(mapView.centerLon.toFixed(2)),
+        centerLat: Number(mapView.centerLat.toFixed(2))
+    },
     mode: state.mode,
     imageSource: state.source,
     worldMapReady: worldMap.ready,
@@ -843,6 +1044,7 @@ window.__pinpoint_debug_guess = (lat, lon) => placeGuess(Number(lat), Number(lon
 window.__pinpoint_debug_sample_regions = () => balancedRegions().map(({ continent, label }) => ({ continent, label }));
 
 async function initializeGame() {
+    resetMapView(false);
     sourcePillEl.textContent = "Loading world map";
     statusEl.textContent = "Loading accurate world boundaries...";
     await loadWorldMap();

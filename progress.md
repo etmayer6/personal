@@ -152,3 +152,16 @@ Original prompt: Remove clutter from the games on the website. Right now they do
 - Updated both game-page headers so Games, rather than Projects, is marked as the current section.
 - The required Playwright game client starts both website routes and returns synchronized gameplay state with no console-error artifacts.
 - Desktop canvas captures and 390px full-page checks were inspected; both routes remain within the viewport with no horizontal overflow.
+
+## Pinpoint map zoom
+
+- Added a bounded 1x-8x camera with visible zoom controls, pointer-focused mouse-wheel zoom, touch pinch zoom, and drag-to-pan behavior.
+- Preserved tap-to-place input by separating taps from drag and pinch gestures, and increased the coordinate readout to two-decimal precision.
+- Added keyboard `+`, `-`, and `0` zoom controls; arrow-key guess adjustments now become finer as the map zoom increases.
+- Reset the camera for each round and before answer reveal so the full guess-to-answer result remains visible.
+
+## Pinpoint zoom verification
+
+- JavaScript syntax and diff checks pass, and the required Playwright game client loads the updated world map and synchronized camera state.
+- Deterministic browser QA passes zoom buttons, pointer-anchored wheel zoom, drag panning, precise tap placement, keyboard zoom, result reset, and synthetic touch pinch without accidental guesses.
+- Zoomed desktop, desktop result, and 390px mobile screenshots were visually inspected with no browser errors or horizontal overflow.

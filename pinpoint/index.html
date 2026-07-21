@@ -58,14 +58,19 @@
                     <div class="map-heading-row">
                         <div>
                             <p class="panel-label">Your guess</p>
-                            <h2 id="map-heading">Drop a pin on the world.</h2>
+                            <h2 id="map-heading">Zoom in. Drop your pin.</h2>
                         </div>
                         <span class="coordinate-readout" id="coordinate-readout">No pin yet</span>
                     </div>
 
                     <div class="map-frame">
-                        <canvas id="world-map" width="1200" height="600" tabindex="0" role="img" aria-label="Accurate interactive world map with country boundaries. Click or use arrow keys to place a location guess."></canvas>
-                        <div class="map-instruction" id="map-instruction">Click anywhere to place your pin</div>
+                        <canvas id="world-map" width="1200" height="600" tabindex="0" role="img" aria-label="Accurate interactive world map with country boundaries. Click to place a guess, drag to pan, and use the controls, mouse wheel, or pinch gesture to zoom."></canvas>
+                        <div class="map-zoom" aria-label="Map zoom controls">
+                            <button id="map-zoom-out" type="button" aria-label="Zoom out">-</button>
+                            <button class="map-zoom-level" id="map-zoom-reset" type="button" aria-label="Reset map zoom"><span id="map-zoom-value">1x</span><small>Reset</small></button>
+                            <button id="map-zoom-in" type="button" aria-label="Zoom in">+</button>
+                        </div>
+                        <div class="map-instruction" id="map-instruction">Click to pin | Scroll or pinch to zoom | Drag to pan</div>
                     </div>
 
                     <div class="hint-box" id="hint-box" hidden>
