@@ -139,18 +139,12 @@ const worldRegions = [
 ];
 
 const mapillaryToken = String(window.PINPOINT_MAPILLARY_TOKEN || "").trim();
-
-const continents = [
-    [[-168, 71], [-150, 60], [-135, 58], [-126, 50], [-124, 40], [-117, 32], [-105, 25], [-97, 18], [-87, 20], [-82, 25], [-81, 31], [-75, 36], [-67, 45], [-58, 51], [-62, 60], [-78, 64], [-96, 71], [-120, 73], [-145, 70]],
-    [[-73, 83], [-25, 82], [-18, 70], [-30, 60], [-46, 59], [-60, 66]],
-    [[-81, 12], [-72, 8], [-63, 10], [-53, 4], [-47, -8], [-39, -22], [-52, -38], [-67, -55], [-74, -40], [-78, -18]],
-    [[-10, 36], [0, 43], [18, 39], [32, 31], [43, 12], [51, 10], [43, -12], [33, -28], [18, -35], [5, -30], [-5, -5], [-17, 15]],
-    [[-10, 36], [-8, 51], [3, 58], [17, 68], [35, 70], [55, 62], [76, 72], [105, 77], [142, 70], [171, 61], [160, 50], [142, 47], [132, 34], [119, 23], [105, 7], [95, 5], [81, 21], [69, 23], [55, 18], [44, 30], [29, 41], [14, 44], [3, 42]],
-    [[113, -11], [132, -12], [151, -25], [153, -39], [137, -44], [116, -34]],
-    [[47, -13], [51, -17], [49, -27], [44, -25]],
-    [[-8, 58], [-2, 59], [1, 51], [-6, 50]],
-    [[130, 33], [142, 45], [145, 42], [139, 31]]
-];
+const WORLD_MAP_URL = "world-110m.json";
+const worldMap = {
+    land: [],
+    countries: [],
+    ready: false
+};
 
 const gameEl = document.getElementById("pinpoint-game");
 const canvas = document.getElementById("world-map");
@@ -178,7 +172,7 @@ const nextButton = document.getElementById("next-button");
 const fullscreenButton = document.getElementById("fullscreen-button");
 
 const state = {
-    mode: "guessing",
+    mode: "loading",
     sequence: [],
     roundIndex: 0,
     totalScore: 0,
@@ -314,16 +308,113 @@ function unproject(x, y, width, height) {
     };
 }
 
-function drawPolygon(points, width, height) {
-    ctx.beginPath();
+function decodeWorldTopology(topology) {
+    const transform = topology.transform;
+    const arcCache = new Map();
+
+    function decodeArc(index) {
+        const arcIndex = index < 0 ? ~index : index;
+        if (!arcCache.has(arcIndex)) {
+            let x = 0;
+            let y = 0;
+            const points = topology.arcs[arcIndex].map(([deltaX, deltaY]) => {
+                if (!transform) return [deltaX, deltaY];
+                x += deltaX;
+                y += deltaY;
+                return [
+                    x * transform.scale[0] + transform.translate[0],
+                    y * transform.scale[1] + transform.translate[1]
+                ];
+            });
+            arcCache.set(arcIndex, points);
+        }
+        const points = arcCache.get(arcIndex);
+        return index < 0 ? [...points].reverse() : points;
+    }
+
+    function stitchRing(arcIndexes) {
+        const ring = [];
+        arcIndexes.forEach((arcIndex, index) => {
+            const arc = decodeArc(arcIndex);
+            ring.push(...(index === 0 ? arc : arc.slice(1)));
+        });
+        return ring;
+    }
+
+    function polygonsFromGeometry(geometry) {
+        if (geometry.type === "Polygon") {
+            return [geometry.arcs.map(stitchRing)];
+        }
+        if (geometry.type === "MultiPolygon") {
+            return geometry.arcs.map((polygon) => polygon.map(stitchRing));
+        }
+        if (geometry.type === "GeometryCollection") {
+            return geometry.geometries.flatMap(polygonsFromGeometry);
+        }
+        return [];
+    }
+
+    return {
+        land: polygonsFromGeometry(topology.objects.land),
+        countries: polygonsFromGeometry(topology.objects.countries)
+    };
+}
+
+async function loadWorldMap() {
+    try {
+        const response = await fetch(WORLD_MAP_URL);
+        if (!response.ok) throw new Error(`World map request failed with ${response.status}`);
+        const geometry = decodeWorldTopology(await response.json());
+        worldMap.land = geometry.land;
+        worldMap.countries = geometry.countries;
+        worldMap.ready = true;
+    } catch (error) {
+        console.warn("Pinpoint could not load its world boundary data:", error.message);
+    }
+}
+
+function unwrappedRing(ring) {
+    if (!ring.length) return ring;
+    const points = [[ring[0][0], ring[0][1]]];
+    for (let index = 1; index < ring.length; index += 1) {
+        let lon = ring[index][0];
+        const previousLon = points[index - 1][0];
+        while (lon - previousLon > 180) lon -= 360;
+        while (lon - previousLon < -180) lon += 360;
+        points.push([lon, ring[index][1]]);
+    }
+    return points;
+}
+
+function traceRing(ring, width, height, longitudeOffset = 0) {
+    const points = unwrappedRing(ring);
     points.forEach(([lon, lat], index) => {
-        const point = project(lon, lat, width, height);
+        const point = project(lon + longitudeOffset, lat, width, height);
         if (index === 0) ctx.moveTo(point.x, point.y);
         else ctx.lineTo(point.x, point.y);
     });
     ctx.closePath();
-    ctx.fill();
-    ctx.stroke();
+}
+
+function tracePolygon(polygon, width, height) {
+    const firstRing = unwrappedRing(polygon[0] || []);
+    if (!firstRing.length) return;
+    const longitudes = firstRing.map(([lon]) => lon);
+    const minLon = Math.min(...longitudes);
+    const maxLon = Math.max(...longitudes);
+    for (const offset of [-360, 0, 360]) {
+        if (maxLon + offset < -180 || minLon + offset > 180) continue;
+        for (const ring of polygon) traceRing(ring, width, height, offset);
+    }
+}
+
+function drawGeography(polygons, width, height, fill) {
+    for (const polygon of polygons) {
+        ctx.beginPath();
+        tracePolygon(polygon, width, height);
+        if (fill) ctx.fill("evenodd");
+        ctx.stroke();
+    }
 }
 
 function drawPin(point, color, label) {
@@ -379,14 +470,18 @@ function drawMap() {
     ctx.fillStyle = "#d9cda9";
     ctx.strokeStyle = "#806f52";
     ctx.lineWidth = 1.5;
-    for (const polygon of continents) drawPolygon(polygon, width, height);
+    drawGeography(worldMap.land, width, height, true);
+
+    ctx.strokeStyle = "rgba(128, 111, 82, 0.45)";
+    ctx.lineWidth = 0.65;
+    drawGeography(worldMap.countries, width, height, false);
 
     ctx.fillStyle = "rgba(255, 253, 248, 0.72)";
     ctx.font = "800 10px Trebuchet MS, sans-serif";
     ctx.textAlign = "center";
     const labels = [
-        ["NORTH AMERICA", -108, 47], ["SOUTH AMERICA", -60, -18],
-        ["EUROPE", 17, 52], ["AFRICA", 19, 5], ["ASIA", 88, 47], ["AUSTRALIA", 134, -27]
+        ["NORTH AMERICA", -105, 46], ["SOUTH AMERICA", -60, -20],
+        ["EUROPE", 17, 53], ["AFRICA", 19, 4], ["ASIA", 88, 47], ["AUSTRALIA", 134, -25]
     ];
     for (const [label, lon, lat] of labels) {
         const point = project(lon, lat, width, height);
@@ -715,6 +810,7 @@ window.render_game_to_text = () => JSON.stringify({
     coordinateSystem: { map: "equirectangular", longitude: "-180 west to 180 east", latitude: "-90 south to 90 north" },
     mode: state.mode,
     imageSource: state.source,
+    worldMapReady: worldMap.ready,
     mapillaryConfigured: Boolean(mapillaryToken),
     mapillaryFallbacks: state.mapillaryFailures,
     round: state.roundIndex + 1,
@@ -735,5 +831,12 @@ window.advanceTime = () => drawMap();
 window.__pinpoint_debug_guess = (lat, lon) => placeGuess(Number(lat), Number(lon));
 window.__pinpoint_debug_sample_regions = () => balancedRegions().map(({ continent, label }) => ({ continent, label }));
 
-startGame();
-requestAnimationFrame(resizeCanvas);
+async function initializeGame() {
+    sourcePillEl.textContent = "Loading world map";
+    statusEl.textContent = "Loading accurate world boundaries...";
+    await loadWorldMap();
+    await startGame();
+    requestAnimationFrame(resizeCanvas);
+}
+
+initializeGame();

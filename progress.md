@@ -70,6 +70,33 @@ Original prompt: Remove clutter from the games on the website. Right now they do
 - Home, Games, Block Blast, Flight Sim, and Word Sort returned HTTP 200 with no horizontal overflow.
 - Desktop and 390px screenshots were inspected for Pinpoint and the Games hub.
 - All changed game scripts pass `node --check`; browser QA recorded no console or page errors.
+## Accurate Pinpoint map pass
+
+- Replaced the hand-drawn continent silhouettes with bundled Natural Earth 1:110m topology, including accurate coastlines, islands, Antarctica, and country boundaries.
+- Kept the existing equirectangular projection so map clicks, keyboard movement, scoring, and result lines retain exact longitude/latitude behavior.
+- Added antimeridian-aware polygon and result-line rendering so geography and guesses wrap correctly at 180 degrees.
+
+## Accurate map verification
+
+- The required Playwright game client completed a click-and-submit round with `worldMapReady: true` and no runtime failure.
+- Focused browser QA verified center projection, keyboard movement, dateline result wrapping, fullscreen toggling, and zero mobile horizontal overflow.
+- Desktop, result, canvas-only, and 390px mobile screenshots were visually inspected with no console or page errors.
+- No map-specific TODOs remain.
+
+## Travel photo map pass
+
+- Added a generated location record for every one of the 97 photos in the site gallery.
+- Preserved 35 valid embedded EXIF coordinates and marked 62 camera-untagged photos as inferred from their contiguous trip sequence and visible landmarks.
+- Kept the existing visited-place data separate from the new photo layer so overlapping gallery images can be grouped without adding marker clutter.
+- Added photo/place layer controls, searchable photo cards, optimized thumbnail previews, and location popups.
+
+## Travel photo map verification
+
+- The data builder confirms one-to-one coverage for 97 gallery entries and checks that every optimized thumbnail exists.
+- Browser QA verified nine grouped markers, all 97 photo cards, the 176-place legacy layer, layer toggling, filtering, popup previews, and country/region totals.
+- Desktop, filtered-popup, and 390px mobile screenshots were visually inspected; mobile has no horizontal overflow.
+- No browser console or page errors were recorded.
+
 ## Word Sort overhaul
 
 - New request: substantially improve Word Sort's look, objective clarity, and overall play experience while removing clutter.

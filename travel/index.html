@@ -21,6 +21,7 @@
                 <li><a href="../index.html">Home</a></li>
                 <li><a href="../resume/">Resume</a></li>
                 <li><a aria-current="page" href="../projects/">Projects</a></li>
+                <li><a href="../games/">Games</a></li>
                 <li><a href="../photos/">Photos</a></li>
             </ul>
         </nav>
@@ -31,7 +32,7 @@
             <p class="eyebrow">Travel Map</p>
             <h1>Places I Have Been</h1>
             <p class="travel-summary">
-                Visited places mapped automatically from photo GPS data.
+                Browse every photo in the site gallery by location, alongside the full list of visited places.
             </p>
         </section>
 
@@ -41,6 +42,10 @@
                 <strong id="places-count">0</strong>
             </div>
             <div class="travel-stat-card">
+                <span>Photos</span>
+                <strong id="photos-count">0</strong>
+            </div>
+            <div class="travel-stat-card">
                 <span>Countries</span>
                 <strong id="countries-count">0</strong>
             </div>
@@ -48,28 +53,28 @@
                 <span>Regions</span>
                 <strong id="regions-count">0</strong>
             </div>
-            <div class="travel-stat-card">
-                <span>Updated</span>
-                <strong id="updated-at">Waiting</strong>
-            </div>
         </section>
 
         <section class="travel-layout">
             <div class="travel-map-panel">
                 <div class="travel-panel-header">
                     <h2>Map</h2>
+                    <div class="travel-view-toggle" role="group" aria-label="Map layer">
+                        <button type="button" data-view="photos" aria-pressed="true">Photos</button>
+                        <button type="button" data-view="places" aria-pressed="false">Places</button>
+                    </div>
                 </div>
-                <div id="travel-map" class="travel-map"></div>
+                <div id="travel-map" class="travel-map" aria-label="Interactive map of gallery photos and visited places"></div>
             </div>
 
             <aside class="travel-list-panel">
                 <div class="travel-panel-header">
-                    <h2>Visited Places</h2>
+                    <h2 id="list-title">Gallery Photos</h2>
                     <p id="travel-status">Loading travel data...</p>
                 </div>
                 <label class="travel-search">
                     Search
-                    <input id="search-input" type="search" placeholder="Search places">
+                    <input id="search-input" type="search" placeholder="Search photos or locations">
                 </label>
                 <div id="places-list" class="places-list"></div>
             </aside>
