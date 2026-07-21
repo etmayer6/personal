@@ -97,3 +97,36 @@ Original prompt: Remove clutter from the games on the website. Right now they do
 - Browser QA verified nine grouped markers, all 97 photo cards, the 176-place legacy layer, layer toggling, filtering, popup previews, and country/region totals.
 - Desktop, filtered-popup, and 390px mobile screenshots were visually inspected; mobile has no horizontal overflow.
 - No browser console or page errors were recorded.
+
+## Word Sort overhaul
+
+- New request: substantially improve Word Sort's look, objective clarity, and overall play experience while removing clutter.
+- Shortened and reorganized the canvas around three clear zones: draw pile, category crowns, and play columns.
+- Replaced the six-item canvas footer with moves, completed sets, score, and one concise live status.
+- Rebuilt the page shell around a three-step objective, compact progress, and a single action bar; duplicate source, crown, booster, mobile-note, and keyboard-reference panels are no longer presented.
+- Preserved the existing deal generation, move rules, deterministic time hook, text-state output, and fullscreen behavior.
+
+## Word Sort verification
+
+- Syntax checks and two required Playwright game-client passes succeed after the presentation changes.
+- Desktop and 390px title/gameplay screenshots were inspected with no console errors or horizontal overflow.
+- Full interaction QA passes for start, hint, draw, undo, shuffle, clue placement, valid and invalid matches, loss, win, next deal, and mobile fullscreen enter/exit.
+- Stable gameplay and win-state canvas captures were visually inspected after animations settled.
+- No Word Sort TODOs remain for this overhaul.
+
+## Block Blast overhaul
+
+- New request: substantially improve Block Blast's visual quality, objective clarity, piece authenticity, and drag mechanics while removing clutter.
+- Baseline review confirmed that pieces currently sit under the pointer during drag, invalid previews disappear, and the oversized tray cards compete with the board.
+- Rebuilt the game around a denser board-first layout, expanded classic shape pool, bright beveled blocks, and a floating three-piece tray without oversized cards.
+- Reorganized the page into one concise objective, three visible steps, score/best/lines stats, one live status, and only New Game and Fullscreen controls.
+- Added snapped landing previews, line-completion highlights, persistent blocked feedback, and larger touch-specific lift so pieces and target cells stay visible above the finger.
+- Preserved tap-to-select placement, keyboard tray shortcuts, scoring, line clears, combos, best score, deterministic time hooks, and fullscreen behavior.
+
+## Block Blast verification
+
+- JavaScript syntax checks, `git diff --check`, and the required Playwright game client pass on the final build.
+- Focused QA passes mouse drag/release, blocked placement, touch drag/release, line clear, game over, and mobile fullscreen enter/exit with zero console or page errors.
+- Desktop and 390px mobile title/gameplay screenshots plus drag, blocked, clear, and game-over states were visually inspected with no horizontal overflow.
+- The touch test caught and verified a pointer-type argument fix so touch pieces now use the intended finger-safe lift rather than the mouse offset.
+- No Block Blast TODOs remain for this overhaul.

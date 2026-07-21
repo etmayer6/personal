@@ -10514,7 +10514,7 @@ function ym() {
   return c(), uo.exports = hm(), uo.exports;
 }
 var mm = ym(), yl = ho();
-const Ze = 960, Ct = 1240, q0 = "clawd_ui_word_solitaire_best", Bc = 5, yo = 132, Y0 = 92, gm = 30, vm = 22, Sm = 10, bm = 8, O0 = 116, pm = 132, Tm = 30, oa = [
+const Ze = 960, Ct = 920, q0 = "clawd_ui_word_solitaire_best", Bc = 5, yo = 132, Y0 = 92, gm = 30, vm = 22, Sm = 10, bm = 8, O0 = 116, pm = 132, Tm = 30, oa = [
   {
     id: "weekend",
     name: "Association Deal",
@@ -10872,7 +10872,7 @@ function uu(c, r, d = 0) {
     score: d,
     streak: 0,
     bestScore: wm(),
-    message: "Uncover clue cards from the deal, claim crowns, and stack matching words by association.",
+    message: "Start by moving a gold clue card into any open crown.",
     fullscreen: r,
     particles: [],
     motionCards: [],
@@ -10926,7 +10926,7 @@ function So(c, r = Wl(c.levelIndex)) {
 function Dc(c) {
   const r = Wl(c.levelIndex);
   if (r.categories.every((g) => c.foundations[g.id].length === g.words.length)) {
-    c.mode = "won", c.message = "All category stacks cleared. Clean round.", c.score > c.bestScore && (c.bestScore = c.score, Dm(c.score));
+    c.mode = "won", c.message = "All categories cleared!", c.score > c.bestScore && (c.bestScore = c.score, Dm(c.score));
     return;
   }
   if (c.movesLeft <= 0) {
@@ -10991,11 +10991,11 @@ function Ot(c, r, d) {
 function qe(c) {
   const s = Ze - 502 - 28, g = Math.max(72, Math.min(84, Math.floor((s - 8 * Math.max(0, Bc - 1)) / Bc))), E = c.columnHeights.length >= 6 ? 116 : 136, o = c.columnHeights.length >= 6 ? 18 : 20, G = c.columnHeights.length * E + Math.max(0, c.columnHeights.length - 1) * o, O = Math.round((Ze - G) / 2);
   return {
-    reserve: { x: 92, y: 168, w: 102, h: 142 },
-    waste: { x: 224, y: 168, w: 114, h: 150 },
-    clue: { x: 360, y: 152, w: 124, h: 170 },
-    foundations: Array.from({ length: Bc }, (T, S) => ({ x: 502 + S * (g + 8), y: 112, w: g, h: 214 })),
-    columns: c.columnHeights.map((T, S) => ({ x: O + S * (E + o), y: 360, w: E, h: 638 }))
+    reserve: { x: 92, y: 126, w: 102, h: 142 },
+    waste: { x: 224, y: 126, w: 114, h: 150 },
+    clue: { x: 360, y: 110, w: 124, h: 170 },
+    foundations: Array.from({ length: Bc }, (T, S) => ({ x: 502 + S * (g + 8), y: 72, w: g, h: 214 })),
+    columns: c.columnHeights.map((T, S) => ({ x: O + S * (E + o), y: 320, w: E, h: 570 }))
   };
 }
 function Rc(c, r, d) {
@@ -11252,17 +11252,17 @@ function Jm(c, r, d) {
   const s = Wl(r.levelIndex), g = qe(s);
   c.clearRect(0, 0, Ze, Ct);
   const E = c.createLinearGradient(0, 0, 0, Ct);
-  E.addColorStop(0, "#246a61"), E.addColorStop(0.48, "#154642"), E.addColorStop(1, "#092225"), c.fillStyle = E, c.fillRect(0, 0, Ze, Ct);
+  E.addColorStop(0, "#1f5b58"), E.addColorStop(0.5, "#123f40"), E.addColorStop(1, "#09272d"), c.fillStyle = E, c.fillRect(0, 0, Ze, Ct);
   const o = c.createLinearGradient(0, 0, Ze, Ct);
   o.addColorStop(0, "rgba(255,255,255,0.025)"), o.addColorStop(1, "rgba(255,255,255,0)"), c.fillStyle = o;
-  for (let S = 0; S < 7; S += 1)
+  for (let S = 0; S < 6; S += 1)
     for (let B = 0; B < 5; B += 1)
       we(c, 18 + B * 188, 18 + S * 168, 120, 72, 24), c.fill();
   c.save();
   const G = c.createRadialGradient(128, 112, 10, 128, 112, 420);
   G.addColorStop(0, "rgba(211, 255, 231, 0.24)"), G.addColorStop(1, "rgba(211, 255, 231, 0)"), c.fillStyle = G, c.fillRect(0, 0, Ze, Ct);
   const O = c.createRadialGradient(834, 120, 10, 834, 120, 240);
-  if (O.addColorStop(0, "rgba(255, 226, 164, 0.2)"), O.addColorStop(1, "rgba(255, 226, 164, 0)"), c.fillStyle = O, c.fillRect(0, 0, Ze, Ct), c.restore(), c.fillStyle = "#f7fff9", c.textAlign = "left", c.font = "800 28px Trebuchet MS, sans-serif", c.fillText(s.name, 76, 58), c.font = "600 15px Trebuchet MS, sans-serif", c.fillStyle = "rgba(247,255,249,0.76)", c.fillText(s.tagline, 76, 84), we(c, 78, 108, 286, 228, 32), c.fillStyle = "rgba(4,16,20,0.3)", c.fill(), fu(c, 102, 124, 110, 34, "rgba(255,255,255,0.12)", "Reserve", "#eff8f3"), fu(c, 240, 124, 92, 34, "rgba(255,255,255,0.12)", "Waste", "#eff8f3"), r.reserve.length ? (ou(c, g.reserve.x, g.reserve.y + 10, g.reserve.w, g.reserve.h), ou(c, g.reserve.x + 6, g.reserve.y + 4, g.reserve.w, g.reserve.h), ou(c, g.reserve.x + 12, g.reserve.y - 2, g.reserve.w, g.reserve.h), fu(c, g.reserve.x + 24, g.reserve.y + 92, 74, 34, "#ffe59f", String(r.reserve.length))) : (c.strokeStyle = "rgba(255,255,255,0.18)", c.lineWidth = 2, c.setLineDash([8, 8]), we(c, g.reserve.x + 12, g.reserve.y, g.reserve.w, g.reserve.h, 20), c.stroke(), c.setLineDash([])), r.waste.length) {
+  if (O.addColorStop(0, "rgba(255, 226, 164, 0.2)"), O.addColorStop(1, "rgba(255, 226, 164, 0)"), c.fillStyle = O, c.fillRect(0, 0, Ze, Ct), c.restore(), c.fillStyle = "rgba(247,255,249,0.64)", c.textAlign = "left", c.font = "800 12px Trebuchet MS, sans-serif", c.fillText("DRAW", 78, 48), c.fillText("CATEGORY STACKS", 502, 48), c.fillText("PLAY AREA", 76, 306), we(c, 78, 66, 286, 222, 30), c.fillStyle = "rgba(4,16,20,0.28)", c.fill(), fu(c, 102, 82, 110, 32, "rgba(255,255,255,0.12)", "Draw pile", "#eff8f3"), fu(c, 240, 82, 92, 32, "rgba(255,255,255,0.12)", "Last card", "#eff8f3"), r.reserve.length ? (ou(c, g.reserve.x, g.reserve.y + 10, g.reserve.w, g.reserve.h), ou(c, g.reserve.x + 6, g.reserve.y + 4, g.reserve.w, g.reserve.h), ou(c, g.reserve.x + 12, g.reserve.y - 2, g.reserve.w, g.reserve.h), fu(c, g.reserve.x + 24, g.reserve.y + 92, 74, 34, "#ffe59f", String(r.reserve.length))) : (c.strokeStyle = "rgba(255,255,255,0.18)", c.lineWidth = 2, c.setLineDash([8, 8]), we(c, g.reserve.x + 12, g.reserve.y, g.reserve.w, g.reserve.h, 20), c.stroke(), c.setLineDash([])), r.waste.length) {
     const S = je(r.waste);
     (r.waste.length > 1 || d?.source.kind === "waste" && d.moved) && ou(c, g.waste.x + 6, g.waste.y + 4, g.reserve.w, g.reserve.h), d?.source.kind === "waste" && d.moved || ru(c, g.waste.x, g.waste.y, g.waste.w, g.waste.h, S, r.selectedSource?.kind === "waste");
   } else
@@ -11273,14 +11273,14 @@ function Jm(c, r, d) {
       const $ = ze.life / ze.maxLife;
       c.save(), c.globalAlpha = 0.22 * $, c.fillStyle = "#ffe59b", we(c, C.x - 8, C.y - 8, C.w + 16, C.h + 16, 30), c.fill(), c.restore();
     }
-    if (c.fillStyle = W ? "rgba(255, 238, 182, 0.16)" : "rgba(255,255,255,0.08)", we(c, C.x, C.y, C.w, C.h, 24), c.fill(), W && (c.strokeStyle = "#ffe59b", c.lineWidth = 3, we(c, C.x, C.y, C.w, C.h, 24), c.stroke()), P ? Km(c, C.x + 10, C.y + 10, C.w - 20, 104, P) : (c.strokeStyle = "rgba(255,255,255,0.18)", c.lineWidth = 2, c.setLineDash([6, 8]), we(c, C.x + 12, C.y + 12, C.w - 24, 102, 18), c.stroke(), c.setLineDash([]), c.font = "700 12px Trebuchet MS, sans-serif", c.fillStyle = "rgba(239,249,243,0.7)", c.textAlign = "center", c.fillText("Empty Crown", C.x + C.w / 2, C.y + 56), c.fillText("Drop Clue", C.x + C.w / 2, C.y + 76)), P && oe.length) {
+    if (c.fillStyle = W ? "rgba(255, 238, 182, 0.2)" : P ? "rgba(255,255,255,0.1)" : "rgba(255,255,255,0.06)", we(c, C.x, C.y, C.w, C.h, 22), c.fill(), W && (c.strokeStyle = "#ffe59b", c.lineWidth = 3, we(c, C.x, C.y, C.w, C.h, 22), c.stroke()), P ? Km(c, C.x + 10, C.y + 10, C.w - 20, 104, P) : (c.strokeStyle = "rgba(255,229,159,0.48)", c.lineWidth = 2, c.setLineDash([6, 7]), we(c, C.x + 12, C.y + 12, C.w - 24, 102, 18), c.stroke(), c.setLineDash([]), c.font = "800 24px Trebuchet MS, sans-serif", c.fillStyle = "#ffe59f", c.textAlign = "center", c.fillText("+", C.x + C.w / 2, C.y + 52), c.font = "800 10px Trebuchet MS, sans-serif", c.fillText("PLACE CLUE", C.x + C.w / 2, C.y + 78)), P && oe.length) {
       const $ = oe.slice(-3);
       $.forEach((Ve, Te) => {
         ru(c, C.x + 14 + Te * 3, C.y + 126 + ($.length - Te - 1) * 5, C.w - 28, 54, Ve, !1, !0);
       });
     } else
-      c.strokeStyle = "rgba(255,255,255,0.18)", c.setLineDash([6, 8]), c.lineWidth = 2, we(c, C.x + 16, C.y + 126, C.w - 32, 70, 16), c.stroke(), c.setLineDash([]), c.font = "700 12px Trebuchet MS, sans-serif", c.fillStyle = "rgba(239,249,243,0.68)", c.textAlign = "center", c.fillText(P ? "Build Here" : "Need Clue", C.x + C.w / 2, C.y + 168);
-    c.fillStyle = "#eff9f3", c.font = "600 14px Trebuchet MS, sans-serif", c.textAlign = "center", c.fillText(P ? `${oe.length}/${P.words.length}` : "0/6", C.x + C.w / 2, C.y + C.h - 26), c.fillStyle = "rgba(255,255,255,0.9)", c.fillRect(C.x + 16, C.y + C.h - 16, P ? (C.w - 32) * oe.length / P.words.length : 0, 8), c.strokeStyle = "rgba(255,255,255,0.18)", c.strokeRect(C.x + 16, C.y + C.h - 16, C.w - 32, 8);
+      c.strokeStyle = "rgba(255,255,255,0.16)", c.setLineDash([6, 8]), c.lineWidth = 2, we(c, C.x + 16, C.y + 126, C.w - 32, 70, 16), c.stroke(), c.setLineDash([]), P && (c.font = "700 11px Trebuchet MS, sans-serif", c.fillStyle = "rgba(239,249,243,0.68)", c.textAlign = "center", c.fillText("MATCH WORDS", C.x + C.w / 2, C.y + 168));
+    c.fillStyle = "#eff9f3", c.font = "700 13px Trebuchet MS, sans-serif", c.textAlign = "center", c.fillText(P ? `${oe.length} of ${P.words.length}` : "READY", C.x + C.w / 2, C.y + C.h - 26), c.fillStyle = "rgba(255,229,159,0.9)", c.fillRect(C.x + 16, C.y + C.h - 16, P ? (C.w - 32) * oe.length / P.words.length : 0, 8), c.strokeStyle = "rgba(255,255,255,0.18)", c.strokeRect(C.x + 16, C.y + C.h - 16, C.w - 32, 8);
   }), r.columns.forEach((S, B) => {
     const C = g.columns[B], P = Xc(s, r, B), oe = d?.dropTarget?.kind === "column" && d.dropTarget.index === B;
     c.fillStyle = oe ? "rgba(255, 226, 155, 0.18)" : "rgba(255,255,255,0.08)", we(c, C.x, C.y, C.w, C.h, 28), c.fill(), oe && (c.strokeStyle = "#ffe59b", c.lineWidth = 3, we(c, C.x, C.y, C.w, C.h, 28), c.stroke()), S.length || (c.strokeStyle = "rgba(255,255,255,0.18)", c.lineWidth = 2, c.setLineDash([8, 8]), we(c, C.x + 10, C.y + 24, C.w - 20, yo, 20), c.stroke(), c.setLineDash([]), c.fillStyle = "rgba(239,249,243,0.74)", c.font = "700 13px Trebuchet MS, sans-serif", c.textAlign = "center", c.fillText("Drop Here", C.x + C.w / 2, C.y + 98));
@@ -11322,21 +11322,11 @@ function Jm(c, r, d) {
   }), r.feedbackTexts.forEach((S) => {
     const B = 1 - S.life / S.maxLife, C = 1 - B, P = S.y - B * 36, oe = 0.92 + S.scale * x0(B);
     c.save(), c.globalAlpha = C, c.translate(S.x, P), c.scale(oe, oe), c.textAlign = "center", c.font = "800 28px Trebuchet MS, sans-serif", c.strokeStyle = "rgba(7,18,18,0.34)", c.lineWidth = 8, c.strokeText(S.text, 0, 0), c.fillStyle = S.color, c.fillText(S.text, 0, 0), c.restore();
-  }), c.fillStyle = "rgba(5,16,18,0.58)", we(c, 70, 1030, Ze - 140, 136, 30), c.fill(), [
-    { label: "Moves", value: String(r.movesLeft), color: "#fff5cc" },
-    { label: "Streak", value: String(r.streak), color: "#d5fff1" },
-    { label: "Score", value: String(r.score), color: "#d6ecff" },
-    { label: "Undo", value: String(r.boosters.undo), color: "#ffe7c1" },
-    { label: "Joker", value: String(r.boosters.joker), color: "#ffdcd5" },
-    { label: "Shuffle", value: String(r.boosters.shuffle), color: "#e0d9ff" }
-  ].forEach((S, B) => {
-    const C = 96 + B * 142;
-    we(c, C, 1048, 122, 60, 20), c.fillStyle = "rgba(255,255,255,0.08)", c.fill(), c.fillStyle = S.color, c.font = "700 13px Trebuchet MS, sans-serif", c.textAlign = "left", c.fillText(S.label, C + 14, 1070), c.fillStyle = "#f4fff8", c.font = "800 22px Trebuchet MS, sans-serif", c.fillText(S.value, C + 14, 1094);
-  }), c.fillStyle = "#eef9f4", c.font = "700 16px Trebuchet MS, sans-serif", c.textAlign = "left", c.fillText(r.message, 96, 1140), r.particles.forEach((S) => {
+  }), r.particles.forEach((S) => {
     c.save(), c.globalAlpha = S.life / S.maxLife, c.fillStyle = S.color, we(c, S.x - S.size / 2, S.y - S.size / 2, S.size, S.size, 5), c.fill(), c.restore();
   }), r.mode !== "playing") {
     const S = r.mode === "lost" && r.movesLeft <= 0;
-    c.fillStyle = "rgba(7,12,18,0.74)", we(c, 120, 404, Ze - 240, 252, 32), c.fill(), fu(c, Ze / 2 - 102, 436, 204, 38, "rgba(255,255,255,0.12)", r.mode === "title" ? "Fresh Shuffle" : r.mode === "won" ? "Perfect Sort" : S ? "Out of Moves" : "Dead End", "#f4fff8"), c.fillStyle = "#fff4c8", c.textAlign = "center", c.font = "800 44px Trebuchet MS, sans-serif", c.fillText(r.mode === "title" ? "Word Sort Solitaire" : r.mode === "won" ? "Round Complete" : S ? "Out of Moves" : "No Legal Moves", Ze / 2, 520), c.fillStyle = "#eef9f4", c.font = "600 22px Trebuchet MS, sans-serif", c.fillText(r.mode === "title" ? "Uncover clues, claim crowns, and sort the matching words." : r.message, Ze / 2, 572), c.font = "600 18px Trebuchet MS, sans-serif", c.fillStyle = "rgba(239,249,244,0.82)", c.fillText(r.mode === "won" ? "Tap to deal the next board." : "Tap anywhere to play.", Ze / 2, 608), fu(c, Ze / 2 - 126, 620, 252, 56, "#ffd47b", r.mode === "won" ? "Tap For Next Deal" : "Tap To Start");
+    c.fillStyle = "rgba(5,18,23,0.9)", we(c, 104, 360, Ze - 208, 286, 34), c.fill(), fu(c, Ze / 2 - 94, 388, 188, 34, "rgba(255,255,255,0.1)", r.mode === "title" ? "HOW TO PLAY" : r.mode === "won" ? "ROUND CLEAR" : S ? "OUT OF MOVES" : "DEAD END", "#f4fff8"), c.fillStyle = "#fff4c8", c.textAlign = "center", c.font = "800 42px Trebuchet MS, sans-serif", c.fillText(r.mode === "title" ? "Sort by association" : r.mode === "won" ? "Every set cleared" : S ? "No moves left" : "No legal moves", Ze / 2, 474), c.fillStyle = "#eef9f4", c.font = "700 18px Trebuchet MS, sans-serif", c.fillText(r.mode === "title" ? "1  Find a gold clue" : r.message, Ze / 2, 522), r.mode === "title" && (c.fillText("2  Place it in an open crown", Ze / 2, 554), c.fillText("3  Add all six matching words", Ze / 2, 586)), c.font = "600 15px Trebuchet MS, sans-serif", c.fillStyle = "rgba(239,249,244,0.74)", c.fillText(r.mode === "won" ? "Tap anywhere or choose Next Deal below." : r.mode === "title" ? "Tap anywhere to begin. Tap a card, then where it belongs." : "Tap anywhere to retry, or use a hint on the next deal.", Ze / 2, 620);
   }
 }
 function L0(c, r) {
@@ -11689,8 +11679,13 @@ function km({ presentation: c = "app" }) {
       if (!K) return;
       const J = uu(o.current.levelIndex, o.current.fullscreen, 0);
       J.mode = "playing", J.foundationOrder[0] = K.id, J.foundations[K.id] = [], J.columns[0] = K.words.slice(0, 3).map((He) => Q0(K, He)), J.hiddenCounts[0] = 0, J.movesLeft = Math.max(J.movesLeft, 12), J.message = "Debug: foundation stack primed.", o.current = J, V();
+    }, D.__wordsort_debug_complete_round = () => {
+      const K = Wl(o.current.levelIndex), J = uu(o.current.levelIndex, o.current.fullscreen, o.current.score);
+      J.mode = "playing", K.categories.forEach((He) => {
+        J.foundations[He.id] = He.words.map((at) => Q0(He, at));
+      }), J.score = Math.max(o.current.score, 1e3), Dc(J), o.current = J, V();
     }, V(), E.current = window.requestAnimationFrame(Q), () => {
-      E.current != null && window.cancelAnimationFrame(E.current), delete D.render_game_to_text, delete D.advanceTime, delete D.__drainVirtualTimePending, delete D.__wordsort_debug_set_moves, delete D.__wordsort_debug_set_level, delete D.__wordsort_debug_prime_foundation_stack;
+      E.current != null && window.cancelAnimationFrame(E.current), delete D.render_game_to_text, delete D.advanceTime, delete D.__drainVirtualTimePending, delete D.__wordsort_debug_set_moves, delete D.__wordsort_debug_set_level, delete D.__wordsort_debug_prime_foundation_stack, delete D.__wordsort_debug_complete_round;
     };
   }, []), yl.useEffect(() => {
     const w = () => P(Sn());
@@ -11719,7 +11714,7 @@ function km({ presentation: c = "app" }) {
       document.removeEventListener("fullscreenchange", D), document.removeEventListener("webkitfullscreenchange", D), window.removeEventListener("keydown", V);
     };
   }, []);
-  const le = oe === "immersive", ee = !S.fullscreen && C.width < 560, pe = S.fullscreen && C.width < 820, ve = S.fullscreen && (C.width < 1140 || C.height < 760), de = S.fullscreen || ee, Tn = S.fullscreen ? pe ? "calc(env(safe-area-inset-top, 0px) + 8px) calc(env(safe-area-inset-right, 0px) + 8px) calc(env(safe-area-inset-bottom, 0px) + 12px) calc(env(safe-area-inset-left, 0px) + 8px)" : ve ? "10px 10px 14px" : "14px 14px 16px" : r ? ee ? "8px 8px 10px" : 16 : ee ? "12px 10px 14px" : 20, ra = S.fullscreen ? pe ? Math.min(430, Math.max(300, C.width - 18)) : Math.min(ve ? 720 : 860, Math.max(320, C.width - (ve ? 28 : 48))) : ee ? Math.min(400, Math.max(300, C.width - 42)) : 760, hu = de ? pe ? "Touch-first fullscreen play." : r ? "Find clues, claim crowns, and sort the matching words." : "Buried clue cards, five live crowns, and a tighter layout." : r ? "Find clues, claim crowns, and sort the matching words." : "A clue-card word sorter where the crown cards are buried in the deal, just like the rest of the deck.", nt = S.fullscreen ? pe ? 78 : ve ? 92 : 104 : ee ? 72 : 108, Pt = S.fullscreen ? pe ? 96 : ve ? 120 : 136 : ee ? 108 : 160, sl = de ? r ? "8px 11px" : "9px 12px" : r ? "10px 14px" : "11px 16px", zl = de ? 12 : r ? 13 : 14, yu = pe ? 8 : ve ? 10 : ee ? 8 : r ? 12 : 16, An = pe || r && de, sa = !r && !S.fullscreen && !ee, da = !r && (ee || pe), Qc = S.fullscreen ? "Exit Fullscreen" : pe || cl() ? "Go Fullscreen" : "Fullscreen", Zc = (w, j) => {
+  const le = oe === "immersive", ee = !S.fullscreen && C.width < 560, pe = S.fullscreen && C.width < 820, ve = S.fullscreen && (C.width < 1140 || C.height < 760), de = S.fullscreen || ee, Tn = S.fullscreen ? pe ? "calc(env(safe-area-inset-top, 0px) + 8px) calc(env(safe-area-inset-right, 0px) + 8px) calc(env(safe-area-inset-bottom, 0px) + 12px) calc(env(safe-area-inset-left, 0px) + 8px)" : ve ? "10px 10px 14px" : "14px 14px 16px" : r ? ee ? "10px" : "18px" : ee ? "12px 10px 14px" : 20, ra = S.fullscreen ? pe ? Math.min(430, Math.max(300, C.width - 18)) : Math.min(ve ? 760 : 860, Math.max(320, C.width - (ve ? 28 : 48))) : ee ? Math.min(420, Math.max(300, C.width - 28)) : 820, hu = "Find a gold clue, give it an open crown, then add all six words that belong with it. Clear every category before your moves run out.", nt = S.fullscreen ? pe ? 78 : ve ? 92 : 104 : ee ? 72 : 108, Pt = S.fullscreen ? pe ? 96 : ve ? 120 : 136 : ee ? 108 : 160, sl = de ? r ? "9px 12px" : "9px 12px" : r ? "10px 14px" : "11px 16px", zl = de ? 12 : r ? 13 : 14, yu = pe ? 8 : ve ? 10 : ee ? 8 : r ? 12 : 16, An = pe || r && de, sa = !r && !S.fullscreen && !ee, da = !r && (ee || pe), Qc = S.fullscreen ? "Exit Fullscreen" : pe || cl() ? "Go Fullscreen" : "Fullscreen", Zc = (w, j) => {
     const D = It($, w);
     return D ? de ? `${D.clueIcon} ${bn(D.clueTitle, ee ? 8 : 10)}` : `${D.clueIcon} ${D.clueTitle}` : `Empty ${j + 1}`;
   }, fl = /* @__PURE__ */ X.jsxs("div", { style: { display: "grid", gridTemplateColumns: `repeat(auto-fit, minmax(${nt}px, 1fr))`, gap: S.fullscreen ? 10 : 12 }, children: [
@@ -11746,7 +11741,7 @@ function km({ presentation: c = "app" }) {
       /* @__PURE__ */ X.jsx("div", { style: { fontSize: 11, letterSpacing: 0.8, textTransform: "uppercase", opacity: 0.72 }, children: "Status" }),
       /* @__PURE__ */ X.jsx("div", { style: { fontSize: de ? 13 : 15, fontWeight: 700, minHeight: 24, wordBreak: "break-word" }, children: S.message })
     ] })
-  ] }), mu = /* @__PURE__ */ X.jsx("div", { style: { width: ra, maxWidth: "100%", alignSelf: "center", aspectRatio: `${Ze} / ${Ct}` }, children: /* @__PURE__ */ X.jsx("canvas", { ref: g, width: Ze, height: Ct, style: { width: "100%", height: "100%", display: "block", borderRadius: S.fullscreen ? 26 : 28, boxShadow: "0 22px 40px rgba(3,10,28,0.42)", background: "#102623", cursor: G.current ? "grabbing" : "pointer", touchAction: "none" }, onPointerDown: U, onPointerMove: L, onPointerUp: Y, onPointerCancel: te }) }), gu = /* @__PURE__ */ X.jsxs("div", { style: { display: "grid", gap: 10 }, children: [
+  ] }), mu = /* @__PURE__ */ X.jsx("div", { style: { width: ra, maxWidth: "100%", alignSelf: "center", aspectRatio: `${Ze} / ${Ct}` }, children: /* @__PURE__ */ X.jsx("canvas", { ref: g, width: Ze, height: Ct, tabIndex: 0, role: "application", "aria-label": "Word Sort play area. Select or drag cards to matching columns and category crowns.", style: { width: "100%", height: "100%", display: "block", borderRadius: S.fullscreen ? 22 : 24, boxShadow: "0 22px 44px rgba(3,20,27,0.26)", background: "#123f40", cursor: G.current ? "grabbing" : "pointer", touchAction: "none" }, onPointerDown: U, onPointerMove: L, onPointerUp: Y, onPointerCancel: te }) }), gu = /* @__PURE__ */ X.jsxs("div", { style: { display: "grid", gap: 10 }, children: [
     /* @__PURE__ */ X.jsxs("div", { style: { display: "grid", gridTemplateColumns: `repeat(auto-fit, minmax(${Pt}px, 1fr))`, gap: 10 }, children: [
       S.columns.map((w, j) => /* @__PURE__ */ X.jsx("button", { id: `wordsort-source-col-${j + 1}`, onClick: () => S.selectedSource ? Bl(j) : il({ kind: "column", index: j }), style: { ...kl(tt(S.selectedSource) === `column-${j}`), fontSize: zl, padding: sl }, children: tt(S.selectedSource) === `column-${j}` ? `Selected: ${bn(je(w)?.label ?? "Empty", de ? 12 : 18)}` : `${ee ? "C" : "Column"} ${j + 1}: ${bn(je(w)?.label ?? "Empty", de ? 12 : 18)}` }, j)),
       /* @__PURE__ */ X.jsx("button", { id: "wordsort-source-waste", onClick: () => S.selectedSource ? il({ kind: "waste" }) : il({ kind: "waste" }), style: { ...kl(tt(S.selectedSource) === "waste"), fontSize: zl, padding: sl }, children: tt(S.selectedSource) === "waste" ? `Selected: ${bn(je(S.waste)?.label ?? "Empty", de ? 12 : 18)}` : `${ee ? "Waste" : "Waste:"} ${bn(je(S.waste)?.label ?? "Empty", de ? 12 : 18)}` })
@@ -11797,25 +11792,43 @@ function km({ presentation: c = "app" }) {
     /* @__PURE__ */ X.jsx("div", { style: { fontWeight: 800, marginBottom: 4, fontSize: 13 }, children: pe ? "Mobile Fullscreen" : "Mobile Notes" }),
     /* @__PURE__ */ X.jsx("div", { style: { fontSize: 12, lineHeight: 1.45, color: "rgba(235,244,255,0.82)" }, children: pe ? "Word Sort now prefers native fullscreen on supported mobile browsers and falls back to the immersive overlay only when the browser will not grant a fullscreen request." : "Tap a column or waste card to select it, then tap a crown or column to move it. Buried clue cards have to be uncovered before a crown can claim them." })
   ] }) : null;
-  return /* @__PURE__ */ X.jsx("div", { style: { minHeight: le ? "100dvh" : "100%", display: "flex", justifyContent: "center", padding: S.fullscreen ? 0 : r ? ee ? "6px 0 10px" : "8px 0 18px" : "24px 12px 48px", background: S.fullscreen ? "#091614" : "transparent", position: le ? "fixed" : "relative", inset: le ? 0 : void 0, zIndex: le ? 9999 : void 0, overflow: le ? "hidden" : "visible" }, children: /* @__PURE__ */ X.jsxs("section", { ref: s, style: { width: "100%", maxWidth: S.fullscreen ? "100vw" : r ? 1e3 : 1040, minHeight: S.fullscreen ? le ? "100dvh" : "100vh" : void 0, height: le ? "100dvh" : void 0, boxSizing: "border-box", borderRadius: S.fullscreen ? 0 : r ? 28 : 32, padding: Tn, background: "radial-gradient(circle at top left, rgba(179, 240, 209, 0.16), transparent 30%), linear-gradient(180deg, #163c37 0%, #0b1f1c 100%)", boxShadow: S.fullscreen ? "none" : r ? "0 18px 46px rgba(4,14,39,0.28)" : "0 24px 60px rgba(4,14,39,0.35)", display: "flex", flexDirection: "column", gap: pe ? 10 : S.fullscreen || r ? 12 : 14, color: "#eff9f4", overflowX: "hidden", overflowY: S.fullscreen ? "auto" : "hidden", WebkitOverflowScrolling: "touch", overscrollBehavior: S.fullscreen ? "contain" : "auto" }, children: [
-    /* @__PURE__ */ X.jsxs("div", { style: { display: "flex", justifyContent: "space-between", alignItems: de ? "flex-start" : "center", gap: yu, flexWrap: "wrap" }, children: [
-      /* @__PURE__ */ X.jsxs("div", { style: { display: "grid", gap: 4, minWidth: 0, flex: "1 1 320px" }, children: [
-        /* @__PURE__ */ X.jsx("div", { style: { fontSize: S.fullscreen ? pe ? 21 : ve ? 24 : 28 : ee ? 22 : r ? 28 : 30, fontWeight: 800 }, children: "Word Sort Solitaire" }),
-        /* @__PURE__ */ X.jsx("div", { style: { fontSize: de || r ? 13 : 14, lineHeight: 1.45, color: "rgba(235,244,255,0.82)", maxWidth: de ? 560 : 620 }, children: hu })
+  const Jc = S.mode === "playing", Wu = S.history.length > 0 && S.boosters.undo > 0, bu = Jc && S.reserve.length > 0, eu = Jc && S.boosters.shuffle > 0 && S.reserve.length + S.waste.length > 0, Du = $.categories.length ? Math.round(Ve / $.categories.length * 100) : 0, Vo = { color: S.fullscreen ? "#eff9f4" : "#194f61", background: S.fullscreen ? "rgba(255,255,255,0.1)" : "rgba(25,79,97,0.08)", boxShadow: S.fullscreen ? "inset 0 0 0 1px rgba(255,255,255,0.14)" : "inset 0 0 0 1px rgba(25,79,97,0.16)" }, zo = (w) => ({ ...kl(!1), ...Vo, padding: sl, fontSize: zl, opacity: w ? 1 : 0.42, cursor: w ? "pointer" : "not-allowed" });
+  return /* @__PURE__ */ X.jsx("div", { style: { minHeight: le ? "100dvh" : "100%", display: "flex", justifyContent: "center", padding: S.fullscreen ? 0 : r ? ee ? "4px 0 10px" : "8px 0 18px" : "24px 12px 48px", background: S.fullscreen ? "#08262d" : "transparent", position: le ? "fixed" : "relative", inset: le ? 0 : void 0, zIndex: le ? 9999 : void 0, overflow: le ? "hidden" : "visible" }, children: /* @__PURE__ */ X.jsxs("section", { ref: s, style: { width: "100%", maxWidth: S.fullscreen ? "100vw" : r ? 1080 : 1080, minHeight: S.fullscreen ? le ? "100dvh" : "100vh" : void 0, height: le ? "100dvh" : void 0, boxSizing: "border-box", borderRadius: S.fullscreen ? 0 : r ? 24 : 28, padding: Tn, background: S.fullscreen ? "#0b3036" : "linear-gradient(145deg, #fffdf8 0%, #f1e9dc 100%)", boxShadow: S.fullscreen ? "none" : "0 22px 54px rgba(16,43,54,0.15)", display: "flex", flexDirection: "column", gap: pe ? 10 : S.fullscreen || r ? 14 : 16, color: S.fullscreen ? "#eff9f4" : "#102b36", overflowX: "hidden", overflowY: S.fullscreen ? "auto" : "hidden", WebkitOverflowScrolling: "touch", overscrollBehavior: S.fullscreen ? "contain" : "auto" }, children: [
+    /* @__PURE__ */ X.jsxs("header", { style: { display: "grid", gridTemplateColumns: ee || pe ? "1fr" : "minmax(0, 1fr) auto", gap: ee ? 12 : 20, alignItems: "end" }, children: [
+      /* @__PURE__ */ X.jsxs("div", { style: { minWidth: 0 }, children: [
+        /* @__PURE__ */ X.jsx("div", { style: { color: S.fullscreen ? "#f6cb72" : "#9a462a", fontSize: 11, fontWeight: 800, letterSpacing: "0.14em", textTransform: "uppercase", marginBottom: 5 }, children: "Association solitaire" }),
+        /* @__PURE__ */ X.jsx("h1", { style: { margin: 0, fontFamily: 'Georgia, "Palatino Linotype", serif', fontSize: S.fullscreen ? pe ? 26 : 32 : ee ? 30 : 42, lineHeight: 1, letterSpacing: "-0.035em", color: "inherit" }, children: "Word Sort" }),
+        /* @__PURE__ */ X.jsx("p", { style: { margin: "9px 0 0", maxWidth: 670, color: S.fullscreen ? "rgba(239,249,244,0.78)" : "#4c636a", fontSize: ee ? 12 : 14, lineHeight: 1.5 }, children: hu })
       ] }),
-      /* @__PURE__ */ X.jsxs("div", { style: { display: "flex", gap: 8, flexWrap: "wrap", minWidth: 0, justifyContent: de ? "flex-start" : "flex-end" }, children: [
-        /* @__PURE__ */ X.jsx("button", { id: "wordsort-start", onClick: () => Ie(), style: { ...kl(!0), padding: sl, fontSize: zl }, children: S.mode === "playing" ? "New Round" : "Start Round" }),
-        /* @__PURE__ */ X.jsx("button", { id: "wordsort-hint", onClick: ml, style: { ...kl(!1), padding: sl, fontSize: zl }, children: "Hint" }),
-        /* @__PURE__ */ X.jsx("button", { id: "wordsort-draw", onClick: El, style: { ...kl(!1), padding: sl, fontSize: zl }, children: "Draw" }),
-        /* @__PURE__ */ X.jsx("button", { id: "wordsort-fullscreen", onClick: () => {
-          be();
-        }, style: { ...kl(!1), padding: sl, fontSize: zl }, children: Qc })
+      /* @__PURE__ */ X.jsxs("div", { style: { display: "grid", gridTemplateColumns: "repeat(3, minmax(68px, 1fr))", gap: 7, minWidth: ee ? 0 : 270 }, children: [
+        [["Moves", S.movesLeft], ["Sets", `${Ve}/${$.categories.length}`], ["Score", S.score]].map(([w, j]) => /* @__PURE__ */ X.jsxs("div", { style: { padding: ee ? "8px 9px" : "10px 12px", borderRadius: 14, background: S.fullscreen ? "rgba(255,255,255,0.09)" : "rgba(16,79,97,0.07)", border: S.fullscreen ? "1px solid rgba(255,255,255,0.1)" : "1px solid rgba(16,43,54,0.1)" }, children: [
+          /* @__PURE__ */ X.jsx("div", { style: { fontSize: 9, fontWeight: 800, letterSpacing: "0.1em", textTransform: "uppercase", opacity: 0.62 }, children: w }),
+          /* @__PURE__ */ X.jsx("div", { style: { marginTop: 2, fontSize: ee ? 18 : 22, fontWeight: 800, color: w === "Moves" && S.movesLeft <= 10 ? "#c65332" : "inherit" }, children: j })
+        ] }, w)),
+        /* @__PURE__ */ X.jsx("div", { style: { gridColumn: "1 / -1", height: 5, overflow: "hidden", borderRadius: 999, background: S.fullscreen ? "rgba(255,255,255,0.1)" : "rgba(16,43,54,0.1)" }, children: /* @__PURE__ */ X.jsx("div", { style: { width: `${Du}%`, height: "100%", borderRadius: 999, background: "linear-gradient(90deg, #c55a32, #e7ae61)", transition: "width 240ms ease" } }) })
       ] })
     ] }),
+    !S.fullscreen && /* @__PURE__ */ X.jsxs("div", { style: { display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: ee ? 6 : 8 }, children: [["1", "Find a gold clue"], ["2", "Claim an open crown"], ["3", "Match all six words"]].map(([w, j]) => /* @__PURE__ */ X.jsxs("div", { style: { display: "flex", alignItems: "center", justifyContent: ee ? "center" : "flex-start", gap: 7, minWidth: 0, padding: ee ? "8px 5px" : "9px 12px", borderRadius: 13, background: "rgba(197,90,50,0.07)", color: "#65473b", fontSize: ee ? 10 : 12, fontWeight: 800, textAlign: ee ? "center" : "left" }, children: [
+      /* @__PURE__ */ X.jsx("span", { style: { flex: "0 0 auto", display: "grid", placeItems: "center", width: 20, height: 20, borderRadius: 999, background: "#c55a32", color: "#fff", fontSize: 10 }, children: w }),
+      /* @__PURE__ */ X.jsx("span", { children: j })
+    ] }, w)) }),
     mu,
-    /* @__PURE__ */ X.jsxs("details", { style: { borderRadius: 18, background: "rgba(255,255,255,0.06)", padding: "10px 12px" }, children: [
-      /* @__PURE__ */ X.jsx("summary", { style: { cursor: "pointer", fontWeight: 800 }, children: "More controls" }),
-      /* @__PURE__ */ X.jsx("div", { style: { marginTop: 10 }, children: gu })
+    /* @__PURE__ */ X.jsxs("div", { style: { display: "grid", gap: 10, width: ra, maxWidth: "100%", alignSelf: "center" }, children: [
+      /* @__PURE__ */ X.jsxs("div", { role: "status", "aria-live": "polite", style: { display: "flex", alignItems: "center", gap: 9, minHeight: 40, padding: "9px 12px", borderRadius: 13, background: S.fullscreen ? "rgba(255,255,255,0.08)" : "rgba(25,79,97,0.07)", color: S.fullscreen ? "#eff9f4" : "#284a55", fontSize: ee ? 12 : 13, fontWeight: 700 }, children: [
+        /* @__PURE__ */ X.jsx("span", { "aria-hidden": "true", style: { color: "#c55a32", fontSize: 16 }, children: "\u25CF" }),
+        /* @__PURE__ */ X.jsx("span", { children: S.message })
+      ] }),
+      /* @__PURE__ */ X.jsxs("div", { style: { display: "grid", gridTemplateColumns: Jc ? ee ? "repeat(3, 1fr)" : "minmax(128px, 1.35fr) repeat(5, minmax(88px, 1fr))" : ee ? "2fr 1fr" : "minmax(180px, 1fr) 120px", gap: 7 }, children: [
+        S.mode !== "playing" ? /* @__PURE__ */ X.jsx("button", { id: "wordsort-start", onClick: () => S.mode === "won" ? ge() : Ie(), style: { ...kl(!0), padding: sl, fontSize: zl }, children: S.mode === "won" ? "Next Deal" : "Start Sorting" }) : /* @__PURE__ */ X.jsx("button", { id: "wordsort-draw", onClick: El, disabled: !bu, style: { ...kl(!0), padding: sl, fontSize: zl, opacity: bu ? 1 : 0.45, cursor: bu ? "pointer" : "not-allowed", gridColumn: ee ? "span 2" : void 0 }, children: S.reserve.length ? `Draw (${S.reserve.length})` : "Pile Empty" }),
+        /* @__PURE__ */ X.jsx("button", { id: "wordsort-hint", onClick: ml, disabled: !Jc, style: { ...zo(Jc), display: Jc ? "block" : "none" }, children: "Hint" }),
+        /* @__PURE__ */ X.jsx("button", { id: "wordsort-undo", onClick: _, disabled: !Wu, style: { ...zo(Wu), display: Jc ? "block" : "none" }, children: `Undo ${S.boosters.undo}` }),
+        /* @__PURE__ */ X.jsx("button", { id: "wordsort-shuffle", onClick: F, disabled: !eu, style: { ...zo(eu), display: Jc ? "block" : "none" }, children: `Shuffle ${S.boosters.shuffle}` }),
+        /* @__PURE__ */ X.jsx("button", { id: "wordsort-new", onClick: () => Ie(), style: { ...kl(!1), ...Vo, padding: sl, fontSize: zl, display: Jc ? "block" : "none" }, children: "New Deal" }),
+        /* @__PURE__ */ X.jsx("button", { id: "wordsort-fullscreen", onClick: () => {
+          be();
+        }, style: { ...kl(!1), ...Vo, padding: sl, fontSize: zl, gridColumn: Jc && ee ? "1 / -1" : void 0 }, children: Qc })
+      ] }),
+      /* @__PURE__ */ X.jsx("p", { style: { margin: 0, textAlign: "center", color: S.fullscreen ? "rgba(239,249,244,0.62)" : "#687b80", fontSize: ee ? 10 : 11, lineHeight: 1.4 }, children: "Tap a card, then tap its destination. Drag and drop works too. Press F for fullscreen." })
     ] })
   ] }) });
 }
@@ -11823,6 +11836,6 @@ const K0 = document.getElementById("word-sort-root");
 if (!K0)
   throw new Error("Word Sort export root element was not found.");
 document.title = "Word Sort Solitaire | Ethan Mayer";
-document.documentElement.style.colorScheme = "dark";
+document.documentElement.style.colorScheme = "light";
 document.body.classList.add("word-sort-export-body");
 mm.createRoot(K0).render(/* @__PURE__ */ X.jsx(km, { presentation: "export" }));
