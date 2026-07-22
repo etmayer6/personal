@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="An interactive, privacy-safe Garage Diagnostic Bay demo adapted from Gremlin Hub with fictional vehicle data.">
+    <meta name="theme-color" content="#111c20">
+    <title>Garage Diagnostic Bay | Ethan Mayer</title>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="style.css?v=1">
+</head>
+<body class="garage-body">
+    <header class="garage-site-header">
+        <nav aria-label="Primary navigation">
+            <a class="nav-name" href="../index.html">Ethan Mayer</a>
+            <ul>
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="../resume/">Resume</a></li>
+                <li><a aria-current="page" href="../projects/">Projects</a></li>
+                <li><a href="../games/">Games</a></li>
+                <li><a href="../photos/">Photos</a></li>
+                <li><a href="../blog/">Blog</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="garage-page-shell">
+        <section class="project-intro" aria-labelledby="project-title">
+            <div>
+                <a class="back-link" href="../projects/"><span aria-hidden="true">&larr;</span> Project index</a>
+                <p class="eyebrow">Gremlin Hub / Static product demo</p>
+                <h1 id="project-title">Put the whole machine on the lift.</h1>
+            </div>
+            <div class="intro-copy">
+                <p>This public-safe version reimagines Gremlin Hub's vehicle issue tracker as a working diagnostic bay. Inspect a fictional prototype, isolate systems, run a scan, and manage its service log.</p>
+                <div class="intro-tags" aria-label="Project focus areas"><span>Interactive diagnostics</span><span>Local-first state</span><span>Systems UX</span></div>
+            </div>
+        </section>
+
+        <section class="garage-console" aria-label="Interactive Garage Diagnostic Bay demo">
+            <header class="console-header">
+                <div class="console-identity">
+                    <span class="brand-mark" aria-hidden="true">
+                        <svg viewBox="0 0 48 48"><path d="M10 15 5 7l12 4M38 15l5-8-12 4"/><path class="brand-face" d="M9 23c0-9 6-14 15-14s15 5 15 14v5c0 8-6 13-15 13S9 36 9 28z"/><circle cx="18" cy="24" r="2.5"/><circle cx="30" cy="24" r="2.5"/><path d="M18 32c4 3 8 3 12 0"/></svg>
+                    </span>
+                    <span><strong>Gremlin Garage</strong><small>Diagnostic Bay 04</small></span>
+                </div>
+                <div class="vehicle-identity">
+                    <span class="status-lamp" aria-hidden="true"></span>
+                    <span><small>Connected vehicle</small><strong>Apex GT / Prototype 04</strong></span>
+                </div>
+                <div class="console-actions">
+                    <button class="secondary-button" id="export-button" type="button">Export log</button>
+                    <button class="scan-button" id="scan-button" type="button"><span aria-hidden="true"></span>Run full scan</button>
+                </div>
+            </header>
+
+            <div class="telemetry-strip" aria-label="Vehicle telemetry">
+                <div><span>Odometer</span><strong>42,806 <small>mi</small></strong></div>
+                <div><span>System voltage</span><strong>12.6 <small>V</small></strong></div>
+                <div><span>Estimated range</span><strong>318 <small>mi</small></strong></div>
+                <div><span>Next service</span><strong>1,240 <small>mi</small></strong></div>
+                <div class="telemetry-health"><span>Fleet health</span><strong id="health-score">--</strong></div>
+            </div>
+
+            <div class="console-workspace">
+                <section class="vehicle-panel" aria-labelledby="vehicle-panel-title">
+                    <div class="panel-heading">
+                        <div>
+                            <p class="panel-kicker">Live schematic</p>
+                            <h2 id="vehicle-panel-title">Vehicle systems</h2>
+                        </div>
+                        <button class="clear-filter" id="clear-system" type="button" hidden>Show all systems</button>
+                    </div>
+
+                    <div class="vehicle-stage" id="vehicle-stage">
+                        <div class="stage-grid" aria-hidden="true"></div>
+                        <div class="scan-beam" id="scan-beam" aria-hidden="true"></div>
+                        <div class="orientation-mark" aria-hidden="true"><span>Front</span><i></i></div>
+                        <svg class="vehicle-schematic" viewBox="0 0 620 860" role="img" aria-label="Top-down technical schematic of the fictional Apex GT">
+                            <defs>
+                                <linearGradient id="body-sheen" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#d8e0dc"/><stop offset="0.48" stop-color="#809096"/><stop offset="1" stop-color="#3b4d54"/></linearGradient>
+                                <linearGradient id="glass-sheen" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#7093a0"/><stop offset="1" stop-color="#1c3038"/></linearGradient>
+                                <filter id="vehicle-shadow"><feDropShadow dx="0" dy="20" stdDeviation="20" flood-color="#020708" flood-opacity=".8"/></filter>
+                            </defs>
+                            <g filter="url(#vehicle-shadow)">
+                                <path class="car-shadow" d="M173 77c46-36 228-36 274 0l38 122 38 107-6 322-45 143c-39 36-285 36-324 0l-45-143-6-322 38-107z"/>
+                                <path class="car-body" d="M188 67c42-31 202-31 244 0l35 121 46 122-9 298-47 152c-35 29-259 29-294 0l-47-152-9-298 46-122z"/>
+                                <path class="body-center" d="M251 58h118l42 132 33 122-10 296-32 139H218l-32-139-10-296 33-122z"/>
+                                <path class="hood-line" d="M188 196c73 27 171 27 244 0M178 317c88-34 176-34 264 0M186 600c82 35 166 35 248 0M218 747c60-23 124-23 184 0"/>
+                                <path class="windshield" d="m221 315 37-104h104l37 104-23 75H244z"/>
+                                <path class="roof" d="M244 408h132l24 183c-57 24-123 24-180 0z"/>
+                                <path class="rear-glass" d="m224 613 176-1-33 98H253z"/>
+                                <path class="glass-line" d="M310 212v496M246 404h128M230 590h160"/>
+                                <path class="headlight left" d="m153 188 62-74 17 55-62 45z"/>
+                                <path class="headlight right" d="m467 188-62-74-17 55 62 45z"/>
+                                <path class="taillight left" d="m170 710 67 47-58 7-27-54z"/>
+                                <path class="taillight right" d="m450 710-67 47 58 7 27-54z"/>
+                                <g class="wheel"><rect x="78" y="228" width="74" height="150" rx="25"/><rect x="468" y="228" width="74" height="150" rx="25"/><rect x="78" y="560" width="74" height="150" rx="25"/><rect x="468" y="560" width="74" height="150" rx="25"/></g>
+                                <g class="wheel-detail"><path d="M92 251h46M92 273h46M92 295h46M92 317h46M92 339h46M482 251h46M482 273h46M482 295h46M482 317h46M482 339h46M92 583h46M92 605h46M92 627h46M92 649h46M92 671h46M482 583h46M482 605h46M482 627h46M482 649h46M482 671h46"/></g>
+                            </g>
+                        </svg>
+
+                        <button class="system-hotspot hotspot-powertrain" type="button" data-system="powertrain" aria-label="Inspect powertrain"><span></span><strong>Powertrain</strong><small data-system-count="powertrain">0 findings</small></button>
+                        <button class="system-hotspot hotspot-electrical" type="button" data-system="electrical" aria-label="Inspect electrical system"><span></span><strong>Electrical</strong><small data-system-count="electrical">0 findings</small></button>
+                        <button class="system-hotspot hotspot-chassis" type="button" data-system="chassis" aria-label="Inspect chassis"><span></span><strong>Chassis</strong><small data-system-count="chassis">0 findings</small></button>
+                        <button class="system-hotspot hotspot-brakes" type="button" data-system="brakes" aria-label="Inspect brakes"><span></span><strong>Brakes</strong><small data-system-count="brakes">0 findings</small></button>
+                        <button class="system-hotspot hotspot-safety" type="button" data-system="safety" aria-label="Inspect safety systems"><span></span><strong>Safety</strong><small data-system-count="safety">0 findings</small></button>
+
+                        <div class="scan-overlay" id="scan-overlay" aria-live="polite" hidden>
+                            <span class="scan-spinner" aria-hidden="true"></span>
+                            <strong id="scan-title">Initializing scan</strong>
+                            <p id="scan-status">Connecting to vehicle systems...</p>
+                            <div class="scan-progress"><i id="scan-progress"></i></div>
+                        </div>
+                    </div>
+
+                    <div class="schematic-legend" aria-label="Schematic legend">
+                        <span><i class="legend-nominal"></i>Nominal</span>
+                        <span><i class="legend-watch"></i>Watch</span>
+                        <span><i class="legend-critical"></i>Critical</span>
+                        <p>Choose a marker to isolate that system.</p>
+                    </div>
+                </section>
+
+                <aside class="findings-panel" aria-labelledby="findings-title">
+                    <div class="panel-heading findings-heading">
+                        <div>
+                            <p class="panel-kicker">Service queue</p>
+                            <h2 id="findings-title">Findings <span id="open-count">0</span></h2>
+                        </div>
+                        <button class="add-button" id="add-issue-button" type="button"><span aria-hidden="true">+</span>Add finding</button>
+                    </div>
+
+                    <div class="filter-row" aria-label="Finding filters">
+                        <button class="filter-button is-active" type="button" data-severity="all">All</button>
+                        <button class="filter-button" type="button" data-severity="critical">Critical</button>
+                        <button class="filter-button" type="button" data-severity="warn">Watch</button>
+                        <label class="resolved-toggle"><input id="show-resolved" type="checkbox"><span></span>History</label>
+                    </div>
+
+                    <div class="findings-list" id="findings-list" aria-live="polite"></div>
+                </aside>
+            </div>
+
+            <div class="console-lower">
+                <section class="health-panel" aria-labelledby="health-title">
+                    <div class="panel-heading">
+                        <div><p class="panel-kicker">Subsystem health</p><h2 id="health-title">Five buses, one view</h2></div>
+                        <span class="data-note">Simulated readings</span>
+                    </div>
+                    <div class="health-grid" id="health-grid"></div>
+                </section>
+
+                <section class="service-panel" aria-labelledby="service-title">
+                    <div class="panel-heading">
+                        <div><p class="panel-kicker">Maintenance record</p><h2 id="service-title">Recent work</h2></div>
+                        <button class="text-button" id="reset-button" type="button">Reset demo</button>
+                    </div>
+                    <div class="service-timeline">
+                        <article><time>42,120 mi</time><span></span><div><strong>Oil and filter service</strong><p>Inspection complete / no leaks found</p></div></article>
+                        <article><time>39,804 mi</time><span></span><div><strong>Brake inspection</strong><p>Front pads measured at 7 mm</p></div></article>
+                        <article><time>36,200 mi</time><span></span><div><strong>Tire rotation</strong><p>Pressure calibrated to test specification</p></div></article>
+                    </div>
+                </section>
+            </div>
+        </section>
+
+        <section class="build-note" aria-labelledby="build-note-title">
+            <p class="eyebrow">How it works</p>
+            <h2 id="build-note-title">A real workflow, safely staged.</h2>
+            <div>
+                <p>The original Gremlin Hub tool tracks issues for a private vehicle. This version preserves the product thinking while replacing identifying information with a fictional machine and simulated telemetry.</p>
+                <p>All edits stay in <code>localStorage</code>. The schematic, scan sequence, filters, export, and service queue are dependency-free so the demo remains fast on a static site.</p>
+            </div>
+        </section>
+    </main>
+
+    <dialog class="finding-dialog" id="finding-dialog">
+        <form id="finding-form" method="dialog">
+            <div class="dialog-heading">
+                <div><p class="panel-kicker">New service record</p><h2>Add a finding</h2></div>
+                <button class="dialog-close" id="dialog-close" type="button" aria-label="Close dialog">&times;</button>
+            </div>
+            <label>Finding title<input id="finding-title" name="title" maxlength="70" required placeholder="e.g. Steering vibration above 60 mph"></label>
+            <div class="dialog-grid">
+                <label>System<select id="finding-system" name="system"><option value="powertrain">Powertrain</option><option value="electrical">Electrical</option><option value="chassis">Chassis</option><option value="brakes">Brakes</option><option value="safety">Safety</option></select></label>
+                <label>Priority<select id="finding-severity" name="severity"><option value="info">Monitor</option><option value="warn" selected>Watch</option><option value="critical">Critical</option></select></label>
+            </div>
+            <label>Technician notes<textarea id="finding-notes" name="notes" maxlength="180" rows="4" placeholder="Add symptoms, conditions, or next steps"></textarea></label>
+            <p class="dialog-note">Demo records are stored only in this browser.</p>
+            <button class="save-button" type="submit">Add to service queue <span aria-hidden="true">&rarr;</span></button>
+        </form>
+    </dialog>
+
+    <div class="garage-toast" id="garage-toast" role="status" aria-live="polite"></div>
+
+    <footer class="garage-footer">
+        <span>Gremlin Garage / Fictional static demonstration</span>
+        <a href="../projects/">Return to project index</a>
+    </footer>
+
+    <script src="app.js?v=1"></script>
+    <script src="../site-play.js?v=night-shift-3"></script>
+</body>
+</html>

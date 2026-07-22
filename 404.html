@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="The requested page could not be found on Ethan Mayer's personal site.">
+    <meta name="theme-color" content="#0d1b20">
+    <title>404 / Route Missing | Ethan Mayer</title>
+    <style>
+        :root {
+            --ink: #0d1b20;
+            --panel: #13272d;
+            --panel-bright: #19323a;
+            --paper: #f4f0e8;
+            --text: #eef3ed;
+            --muted: #8ea49f;
+            --line: rgba(194, 221, 212, 0.17);
+            --green: #78d39f;
+            --amber: #efb35b;
+            --red: #e66e5d;
+            --blue: #70b7cc;
+        }
+
+        *, *::before, *::after { box-sizing: border-box; }
+
+        html { min-height: 100%; }
+
+        body {
+            min-height: 100vh;
+            margin: 0;
+            color: var(--text);
+            background:
+                radial-gradient(circle at 84% 16%, rgba(112, 183, 204, 0.11), transparent 28%),
+                linear-gradient(90deg, rgba(120, 211, 159, 0.035) 1px, transparent 1px),
+                linear-gradient(rgba(120, 211, 159, 0.035) 1px, transparent 1px),
+                var(--ink);
+            background-size: auto, 44px 44px, 44px 44px, auto;
+            font-family: "Trebuchet MS", "Gill Sans", sans-serif;
+            -webkit-font-smoothing: antialiased;
+            text-rendering: optimizeLegibility;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            z-index: 20;
+            inset: 0;
+            pointer-events: none;
+            opacity: 0.16;
+            background: repeating-linear-gradient(180deg, transparent 0 3px, rgba(255, 255, 255, 0.025) 3px 4px);
+            mix-blend-mode: screen;
+        }
+
+        a, button { color: inherit; }
+
+        a:focus-visible,
+        button:focus-visible {
+            outline: 3px solid var(--amber);
+            outline-offset: 4px;
+        }
+
+        .site-header {
+            position: relative;
+            z-index: 10;
+            width: min(1280px, calc(100% - 40px));
+            min-height: 72px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 24px;
+            margin: 0 auto;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .brand {
+            display: inline-flex;
+            align-items: center;
+            gap: 13px;
+            text-decoration: none;
+        }
+
+        .brand-mark {
+            display: grid;
+            place-items: center;
+            width: 38px;
+            height: 38px;
+            color: var(--green);
+            border: 1px solid rgba(120, 211, 159, 0.36);
+            background: rgba(120, 211, 159, 0.07);
+            font: 800 10px "Lucida Console", Monaco, monospace;
+        }
+
+        .brand-copy { display: grid; gap: 2px; }
+        .brand-copy strong { font: 700 16px Georgia, "Palatino Linotype", serif; }
+        .brand-copy small,
+        .header-status {
+            color: var(--muted);
+            font-size: 8px;
+            font-weight: 800;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+        }
+
+        .header-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 9px;
+        }
+
+        .header-status i {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--red);
+            box-shadow: 0 0 0 5px rgba(230, 110, 93, 0.08), 0 0 16px rgba(230, 110, 93, 0.7);
+            animation: pulse 1.8s ease-in-out infinite;
+        }
+
+        .page-shell {
+            width: min(1280px, calc(100% - 40px));
+            min-height: calc(100vh - 144px);
+            display: grid;
+            grid-template-columns: minmax(0, 0.88fr) minmax(470px, 1.12fr);
+            gap: clamp(54px, 8vw, 118px);
+            align-items: center;
+            margin: 0 auto;
+            padding: 64px 0 72px;
+        }
+
+        .error-copy { min-width: 0; }
+
+        .system-label {
+            margin: 0 0 19px;
+            color: var(--amber);
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+        }
+
+        .error-code {
+            position: relative;
+            width: max-content;
+            margin: 0;
+            color: var(--paper);
+            font: 700 clamp(116px, 17vw, 228px)/0.72 Georgia, "Palatino Linotype", serif;
+            letter-spacing: -0.09em;
+            text-shadow: 8px 8px 0 rgba(112, 183, 204, 0.13);
+        }
+
+        .error-code::before,
+        .error-code::after {
+            content: attr(data-text);
+            position: absolute;
+            inset: 0;
+            overflow: hidden;
+            pointer-events: none;
+            opacity: 0;
+        }
+
+        .error-code::before { color: var(--green); transform: translateX(-3px); }
+        .error-code::after { color: var(--red); transform: translateX(3px); }
+
+        .is-glitching .error-code::before { animation: glitch-one 520ms steps(2, end); }
+        .is-glitching .error-code::after { animation: glitch-two 520ms steps(2, end); }
+
+        h1, h2 { font-family: Georgia, "Palatino Linotype", serif; }
+
+        .error-copy h1 {
+            max-width: 650px;
+            margin: 40px 0 17px;
+            font-size: clamp(38px, 5vw, 68px);
+            line-height: 0.98;
+            letter-spacing: -0.045em;
+        }
+
+        .error-summary {
+            max-width: 590px;
+            margin: 0;
+            color: var(--muted);
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        .route-readout {
+            display: grid;
+            gap: 6px;
+            margin: 28px 0 0;
+            padding: 13px 15px;
+            border-left: 3px solid var(--red);
+            background: rgba(255, 255, 255, 0.035);
+        }
+
+        .route-readout span {
+            color: var(--muted);
+            font-size: 8px;
+            font-weight: 800;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+        }
+
+        .route-readout code {
+            overflow: hidden;
+            color: #c3d3cf;
+            font: 11px "Lucida Console", Monaco, monospace;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .route-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 27px;
+        }
+
+        .route-actions a {
+            min-height: 46px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 13px;
+            padding: 12px 17px;
+            border: 1px solid var(--line);
+            text-decoration: none;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            transition: transform 160ms ease, border-color 160ms ease, background-color 160ms ease;
+        }
+
+        .route-actions .primary-action {
+            color: var(--ink);
+            border-color: var(--green);
+            background: var(--green);
+        }
+
+        .route-actions a:hover,
+        .route-actions a:focus-visible {
+            border-color: var(--green);
+            transform: translateY(-3px);
+        }
+
+        .containment-panel {
+            min-width: 0;
+            border: 1px solid var(--line);
+            background: rgba(19, 39, 45, 0.86);
+            box-shadow: 24px 24px 0 rgba(120, 211, 159, 0.045);
+        }
+
+        .panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            min-height: 76px;
+            padding: 18px 21px;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .panel-header > div { display: grid; gap: 4px; }
+
+        .panel-header span,
+        .progress-label,
+        .arena-corner {
+            color: var(--muted);
+            font-size: 8px;
+            font-weight: 800;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+        }
+
+        .panel-header strong {
+            font: 700 17px Georgia, "Palatino Linotype", serif;
+        }
+
+        .signal-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 8px 10px;
+            color: var(--amber);
+            border: 1px solid rgba(239, 179, 91, 0.26);
+            background: rgba(239, 179, 91, 0.06);
+            font-size: 8px;
+            font-weight: 800;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        .signal-chip i {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: currentColor;
+            box-shadow: 0 0 10px currentColor;
+        }
+
+        .radar-arena {
+            --x: 66;
+            --y: 38;
+            position: relative;
+            height: min(56vw, 550px);
+            min-height: 450px;
+            overflow: hidden;
+            background:
+                radial-gradient(circle at center, rgba(120, 211, 159, 0.08), transparent 52%),
+                linear-gradient(90deg, rgba(112, 183, 204, 0.065) 1px, transparent 1px),
+                linear-gradient(rgba(112, 183, 204, 0.065) 1px, transparent 1px),
+                #09161a;
+            background-size: auto, 38px 38px, 38px 38px, auto;
+        }
+
+        .radar-arena::before,
+        .radar-arena::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+        }
+
+        .radar-arena::before {
+            width: 76%;
+            aspect-ratio: 1;
+            border: 1px solid rgba(120, 211, 159, 0.16);
+            border-radius: 50%;
+            box-shadow:
+                0 0 0 62px rgba(120, 211, 159, 0.025),
+                0 0 0 63px rgba(120, 211, 159, 0.10),
+                0 0 0 128px rgba(120, 211, 159, 0.018),
+                0 0 0 129px rgba(120, 211, 159, 0.08);
+        }
+
+        .radar-arena::after {
+            width: 1px;
+            height: 100%;
+            background: rgba(120, 211, 159, 0.12);
+            box-shadow: 300px 0 rgba(120, 211, 159, 0.03), -300px 0 rgba(120, 211, 159, 0.03);
+        }
+
+        .radar-horizontal {
+            position: absolute;
+            top: 50%;
+            right: 0;
+            left: 0;
+            height: 1px;
+            background: rgba(120, 211, 159, 0.12);
+        }
+
+        .radar-sweep {
+            position: absolute;
+            z-index: 1;
+            top: 50%;
+            left: 50%;
+            width: 42%;
+            height: 42%;
+            opacity: 0.7;
+            background: conic-gradient(from 268deg, rgba(120, 211, 159, 0.4), rgba(120, 211, 159, 0.02) 22deg, transparent 23deg);
+            transform-origin: left top;
+            animation: sweep 4.8s linear infinite;
+        }
+
+        .arena-corner { position: absolute; z-index: 4; }
+        .corner-one { top: 18px; left: 19px; }
+        .corner-two { right: 19px; bottom: 18px; text-align: right; }
+
+        .gremlin-target {
+            position: absolute;
+            z-index: 6;
+            top: calc(var(--y) * 1%);
+            left: calc(var(--x) * 1%);
+            width: 84px;
+            height: 84px;
+            display: grid;
+            place-items: center;
+            padding: 0;
+            color: var(--green);
+            border: 1px solid rgba(120, 211, 159, 0.54);
+            border-radius: 50%;
+            background: rgba(13, 35, 39, 0.93);
+            box-shadow: 0 0 0 8px rgba(120, 211, 159, 0.06), 0 0 28px rgba(120, 211, 159, 0.24);
+            transform: translate(-50%, -50%);
+            transition: top 340ms cubic-bezier(.2, .8, .2, 1), left 340ms cubic-bezier(.2, .8, .2, 1), transform 160ms ease, color 160ms ease;
+            cursor: crosshair;
+        }
+
+        .gremlin-target:hover { transform: translate(-50%, -50%) scale(1.07) rotate(-3deg); }
+
+        .gremlin-target svg {
+            width: 51px;
+            height: 51px;
+            overflow: visible;
+        }
+
+        .gremlin-target .head { fill: currentColor; }
+        .gremlin-target .detail { fill: var(--ink); }
+
+        .gremlin-target::after {
+            content: "TARGET";
+            position: absolute;
+            top: calc(100% + 11px);
+            color: var(--green);
+            font: 800 8px "Lucida Console", Monaco, monospace;
+            letter-spacing: 0.14em;
+        }
+
+        .gremlin-target.is-hit { animation: target-hit 260ms ease; }
+
+        .containment-panel.is-complete .gremlin-target {
+            top: 50%;
+            left: 50%;
+            color: var(--amber);
+            border-color: var(--amber);
+            box-shadow: 0 0 0 12px rgba(239, 179, 91, 0.05), 0 0 36px rgba(239, 179, 91, 0.26);
+            cursor: default;
+        }
+
+        .containment-panel.is-complete .gremlin-target::after { content: "CONTAINED"; color: var(--amber); }
+        .containment-panel.is-complete .radar-sweep { animation-play-state: paused; opacity: 0.18; }
+        .containment-panel.is-complete .signal-chip { color: var(--green); border-color: rgba(120, 211, 159, 0.34); }
+
+        .ping {
+            position: absolute;
+            z-index: 5;
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--amber);
+            border-radius: 50%;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            animation: ping 650ms ease-out forwards;
+        }
+
+        .panel-footer {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 26px;
+            align-items: center;
+            padding: 18px 21px 20px;
+            border-top: 1px solid var(--line);
+        }
+
+        .mission-copy strong {
+            display: block;
+            margin-bottom: 5px;
+            font: 700 15px Georgia, "Palatino Linotype", serif;
+        }
+
+        .mission-copy p {
+            margin: 0;
+            color: var(--muted);
+            font-size: 10px;
+            line-height: 1.5;
+        }
+
+        .transmission-link {
+            width: max-content;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 11px;
+            color: var(--amber);
+            font-size: 8px;
+            font-weight: 800;
+            letter-spacing: 0.12em;
+            text-decoration: none;
+            text-transform: uppercase;
+        }
+
+        .transmission-link[hidden] { display: none; }
+
+        .transmission-link::before {
+            content: "";
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: currentColor;
+            box-shadow: 0 0 10px currentColor;
+        }
+
+        .transmission-link:hover,
+        .transmission-link:focus-visible { color: var(--green); }
+
+        .hit-progress { display: grid; justify-items: end; gap: 8px; }
+
+        .hit-lights { display: flex; gap: 7px; }
+
+        .hit-lights i {
+            width: 11px;
+            height: 11px;
+            border: 1px solid rgba(120, 211, 159, 0.36);
+            border-radius: 50%;
+            background: rgba(120, 211, 159, 0.06);
+            transition: background-color 160ms ease, box-shadow 160ms ease;
+        }
+
+        .hit-lights i.is-on {
+            background: var(--green);
+            box-shadow: 0 0 13px rgba(120, 211, 159, 0.7);
+        }
+
+        .reset-button {
+            display: none;
+            padding: 0;
+            color: var(--blue);
+            border: 0;
+            border-bottom: 1px solid currentColor;
+            background: transparent;
+            font: 800 8px "Trebuchet MS", "Gill Sans", sans-serif;
+            letter-spacing: 0.09em;
+            text-transform: uppercase;
+            cursor: pointer;
+        }
+
+        .containment-panel.is-complete .reset-button { display: block; }
+
+        .page-footer {
+            width: min(1280px, calc(100% - 40px));
+            min-height: 72px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            margin: 0 auto;
+            color: var(--muted);
+            border-top: 1px solid var(--line);
+            font-size: 9px;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .page-footer nav { display: flex; gap: 18px; }
+        .page-footer a { text-decoration: none; }
+        .page-footer a:hover { color: var(--green); }
+
+        @keyframes sweep { to { transform: rotate(360deg); } }
+        @keyframes pulse { 50% { opacity: 0.46; } }
+        @keyframes ping { to { width: 150px; height: 150px; opacity: 0; } }
+        @keyframes target-hit { 50% { transform: translate(-50%, -50%) scale(0.82) rotate(8deg); } }
+        @keyframes glitch-one {
+            0%, 100% { opacity: 0; clip-path: inset(0 0 100% 0); }
+            20% { opacity: 0.76; clip-path: inset(13% 0 61% 0); }
+            52% { opacity: 0.68; clip-path: inset(68% 0 12% 0); }
+            78% { opacity: 0.56; clip-path: inset(42% 0 37% 0); }
+        }
+        @keyframes glitch-two {
+            0%, 100% { opacity: 0; clip-path: inset(100% 0 0 0); }
+            25% { opacity: 0.7; clip-path: inset(54% 0 23% 0); }
+            60% { opacity: 0.62; clip-path: inset(21% 0 64% 0); }
+            84% { opacity: 0.54; clip-path: inset(79% 0 5% 0); }
+        }
+
+        @media (max-width: 980px) {
+            .page-shell {
+                grid-template-columns: 1fr;
+                gap: 58px;
+                padding-top: 74px;
+            }
+            .error-copy { max-width: 760px; }
+            .error-code { font-size: clamp(130px, 28vw, 220px); }
+            .radar-arena { height: 580px; }
+        }
+
+        @media (max-width: 620px) {
+            .site-header,
+            .page-shell,
+            .page-footer { width: min(100% - 24px, 1280px); }
+            .site-header { min-height: 64px; }
+            .header-status { font-size: 7px; }
+            .header-status span { display: none; }
+            .page-shell { min-height: 0; padding: 54px 0 64px; }
+            .error-code { font-size: clamp(112px, 39vw, 170px); }
+            .error-copy h1 { margin-top: 31px; font-size: clamp(39px, 12vw, 58px); }
+            .error-summary { font-size: 15px; }
+            .route-actions { display: grid; grid-template-columns: 1fr 1fr; }
+            .route-actions a { padding-inline: 12px; }
+            .panel-header { align-items: flex-start; }
+            .radar-arena { height: 480px; min-height: 0; }
+            .gremlin-target { width: 72px; height: 72px; }
+            .gremlin-target svg { width: 44px; height: 44px; }
+            .panel-footer { grid-template-columns: 1fr; }
+            .hit-progress { justify-items: start; }
+            .page-footer { flex-direction: column; align-items: flex-start; justify-content: center; padding: 22px 0; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 1ms !important;
+                animation-iteration-count: 1 !important;
+                scroll-behavior: auto !important;
+                transition-duration: 1ms !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="site-header">
+        <a class="brand" data-route="" href="/" aria-label="Return to Ethan Mayer homepage">
+            <span class="brand-mark" aria-hidden="true">EM</span>
+            <span class="brand-copy"><strong>Ethan Mayer</strong><small>Gremlin Systems Network</small></span>
+        </a>
+        <div class="header-status"><i aria-hidden="true"></i><span>Navigation fault</span> / 404</div>
+    </header>
+
+    <main class="page-shell">
+        <section class="error-copy" aria-labelledby="error-title">
+            <p class="system-label">Navigation anomaly // Route not found</p>
+            <p class="error-code" data-text="404" aria-hidden="true">404</p>
+            <h1 id="error-title">This route fell off the map.</h1>
+            <p class="error-summary">The page may have moved, the address may be wrong, or a gremlin may have eaten the routing table. The important systems are still online.</p>
+
+            <div class="route-readout">
+                <span>Failed request</span>
+                <code id="requested-path">Reading route...</code>
+            </div>
+
+            <div class="route-actions">
+                <a class="primary-action" data-route="" href="/">Return home <span aria-hidden="true">&rarr;</span></a>
+                <a data-route="projects/" href="/projects/">Open projects</a>
+            </div>
+        </section>
+
+        <section class="containment-panel" id="containment-panel" aria-labelledby="containment-title">
+            <header class="panel-header">
+                <div><span>Recovery tool / Optional</span><strong id="containment-title">Routing gremlin located</strong></div>
+                <div class="signal-chip"><i aria-hidden="true"></i><span id="signal-chip-text">Signal unstable</span></div>
+            </header>
+
+            <div class="radar-arena" id="radar-arena">
+                <span class="radar-horizontal" aria-hidden="true"></span>
+                <span class="radar-sweep" aria-hidden="true"></span>
+                <span class="arena-corner corner-one" aria-hidden="true">NAV / SECTOR 04</span>
+                <span class="arena-corner corner-two" aria-hidden="true">Click contact to contain</span>
+
+                <button class="gremlin-target" id="gremlin-target" type="button" aria-label="Catch the routing gremlin. Zero of three hits.">
+                    <svg viewBox="0 0 64 64" aria-hidden="true">
+                        <path class="head" d="M22 19 5 8l6 24 7 2c-1 3-1 7 0 10 2 8 8 13 14 13s12-5 14-13c1-3 1-7 0-10l7-2 6-24-17 11c-3-2-7-3-10-3s-7 1-10 3Z"/>
+                        <path class="detail" d="M20 31l10-4-3 9-7-5Zm24 0-10-4 3 9 7-5ZM25 42c4 3 10 3 14 0-1 7-13 7-14 0Z"/>
+                    </svg>
+                </button>
+            </div>
+
+            <footer class="panel-footer">
+                <div class="mission-copy">
+                    <strong id="mission-title">Contain the contact.</strong>
+                    <p id="mission-status" role="status" aria-live="polite">Catch it three times to restore the route signal.</p>
+                    <a class="transmission-link" id="transmission-link" href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="_blank" rel="noopener noreferrer" hidden>Recovered transmission</a>
+                </div>
+                <div class="hit-progress">
+                    <span class="progress-label">Containment <b id="hit-count">0</b> / 3</span>
+                    <span class="hit-lights" aria-hidden="true"><i></i><i></i><i></i></span>
+                    <button class="reset-button" id="reset-button" type="button">Release it again</button>
+                </div>
+            </footer>
+        </section>
+    </main>
+
+    <footer class="page-footer">
+        <span>Error 404 / Local recovery console</span>
+        <nav aria-label="Recovery links"><a data-route="games/" href="/games/">Games</a><a data-route="photos/" href="/photos/">Photos</a><a data-route="blog/" href="/blog/">Blog</a></nav>
+    </footer>
+
+    <script>
+        (function () {
+            "use strict";
+
+            const targetHits = 3;
+            const positions = [[24, 28], [72, 25], [74, 69], [29, 72], [51, 43]];
+            const panel = document.getElementById("containment-panel");
+            const arena = document.getElementById("radar-arena");
+            const target = document.getElementById("gremlin-target");
+            const hitCount = document.getElementById("hit-count");
+            const lights = Array.from(document.querySelectorAll(".hit-lights i"));
+            const missionTitle = document.getElementById("mission-title");
+            const missionStatus = document.getElementById("mission-status");
+            const signalChipText = document.getElementById("signal-chip-text");
+            const resetButton = document.getElementById("reset-button");
+            const transmissionLink = document.getElementById("transmission-link");
+            let hits = 0;
+            let positionIndex = 0;
+            let glitchTimer = 0;
+
+            function siteRoot() {
+                const segments = window.location.pathname.split("/").filter(Boolean);
+                const repositoryIndex = segments.findIndex(function (segment) { return segment.toLowerCase() === "personal"; });
+                if (repositoryIndex === -1) return "/";
+                return "/" + segments.slice(0, repositoryIndex + 1).join("/") + "/";
+            }
+
+            function wireRoutes() {
+                const root = siteRoot();
+                document.querySelectorAll("[data-route]").forEach(function (link) {
+                    link.href = root + link.dataset.route;
+                });
+                const requested = window.location.pathname + window.location.search;
+                document.getElementById("requested-path").textContent = requested || "/unknown-route";
+            }
+
+            function triggerGlitch() {
+                document.body.classList.remove("is-glitching");
+                window.requestAnimationFrame(function () { document.body.classList.add("is-glitching"); });
+                window.clearTimeout(glitchTimer);
+                glitchTimer = window.setTimeout(function () { document.body.classList.remove("is-glitching"); }, 560);
+            }
+
+            function addPing() {
+                const ping = document.createElement("span");
+                ping.className = "ping";
+                ping.style.left = "calc(var(--x) * 1%)";
+                ping.style.top = "calc(var(--y) * 1%)";
+                arena.appendChild(ping);
+                window.setTimeout(function () { ping.remove(); }, 700);
+            }
+
+            function moveTarget() {
+                positionIndex = (positionIndex + 1) % positions.length;
+                arena.style.setProperty("--x", positions[positionIndex][0]);
+                arena.style.setProperty("--y", positions[positionIndex][1]);
+            }
+
+            function render() {
+                hitCount.textContent = String(hits);
+                lights.forEach(function (light, index) { light.classList.toggle("is-on", index < hits); });
+                target.setAttribute("aria-label", hits >= targetHits
+                    ? "Routing gremlin contained. Route signal restored."
+                    : "Catch the routing gremlin. " + hits + " of " + targetHits + " hits.");
+
+                if (hits === 0) {
+                    missionTitle.textContent = "Contain the contact.";
+                    missionStatus.textContent = "Catch it three times to restore the route signal.";
+                } else if (hits === 1) {
+                    missionTitle.textContent = "Contact confirmed.";
+                    missionStatus.textContent = "Good hit. It jumped to another navigation sector.";
+                } else if (hits === 2) {
+                    missionTitle.textContent = "Containment nearly stable.";
+                    missionStatus.textContent = "One more hit before it reroutes again.";
+                } else {
+                    panel.classList.add("is-complete");
+                    missionTitle.textContent = "Route signal restored.";
+                    missionStatus.textContent = "Gremlin contained. Navigation remains questionable but operational.";
+                    signalChipText.textContent = "Signal restored";
+                    target.disabled = true;
+                    transmissionLink.hidden = false;
+                }
+            }
+
+            function catchGremlin() {
+                if (hits >= targetHits) return;
+                addPing();
+                hits += 1;
+                target.classList.remove("is-hit");
+                window.requestAnimationFrame(function () { target.classList.add("is-hit"); });
+                triggerGlitch();
+                if (hits < targetHits) moveTarget();
+                render();
+            }
+
+            function resetGame() {
+                hits = 0;
+                positionIndex = 0;
+                arena.style.setProperty("--x", positions[0][0]);
+                arena.style.setProperty("--y", positions[0][1]);
+                panel.classList.remove("is-complete");
+                signalChipText.textContent = "Signal unstable";
+                target.disabled = false;
+                transmissionLink.hidden = true;
+                render();
+                target.focus();
+            }
+
+            target.addEventListener("click", catchGremlin);
+            resetButton.addEventListener("click", resetGame);
+            wireRoutes();
+            resetGame();
+
+            window.render_404_to_text = function () {
+                return JSON.stringify({
+                    error: 404,
+                    requestedPath: window.location.pathname + window.location.search,
+                    containmentHits: hits,
+                    containmentTarget: targetHits,
+                    gremlinContained: hits >= targetHits,
+                    easterEggUnlocked: !transmissionLink.hidden,
+                    targetPosition: { x: positions[positionIndex][0], y: positions[positionIndex][1] },
+                    recoveryRoutes: Array.from(document.querySelectorAll("[data-route]")).map(function (link) { return link.getAttribute("href"); })
+                });
+            };
+        }());
+    </script>
+</body>
+</html>

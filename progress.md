@@ -276,3 +276,101 @@ Original prompt: Remove clutter from the games on the website. Right now they do
 - Interaction QA passes locked access, wrong-order trips, ordered recovery, certification, replay, terminal commands, global activation, persistence, global exit, hunt reset with retained unlock, and combined Gremlin/Night Shift modes.
 - Desktop gate, hero, tripped panel, completed panel, badge, terminal, homepage, and Projects states plus 390px hero and diagnostic states were visually inspected.
 - Mobile controls remain separated, the sticky-header anchor offset is correct, the canvas scales within the viewport, and browser QA records no console errors.
+
+## Gremlin Garage diagnostic bay
+
+- New request: implement the Garage Diagnostic Bay on the personal site.
+- Reimagined the private Gremlin Hub car issue tracker as a public-safe, dependency-free `garage/` product demo using a fictional Apex GT prototype.
+- Added an original SVG vehicle schematic with five selectable system zones, calculated health scores, severity and history filters, a staged full-system scan, and simulated telemetry.
+- Preserved the useful service workflow with browser-local add, edit, resolve, reopen, delete, reset, and JSON export controls.
+- Linked the demo from the Projects workbench, updated project totals, added Night Shift's Project Pitlane incident, and included Garage Bay in local visit reporting.
+
+## Garage diagnostic bay TODO
+
+- None for the initial Garage Diagnostic Bay pass.
+
+## Garage diagnostic bay verification
+
+- `node --check` passes for the new demo and the updated shared site script; `git diff --check` reports no whitespace errors.
+- Browser QA passes the full scan sequence, hotspot isolation, severity and history filtering, health recalculation, issue resolution, issue creation, and persistence in a fresh tab.
+- The required web-game harness completes a scan against a clean browser profile, returns synchronized `render_game_to_text` state, and records no console errors.
+- Desktop and 390px mobile hero, diagnostic schematic, service queue, and add-finding dialog views were inspected with no horizontal overflow.
+- Projects reports 13 builds and includes the Garage card; the Night Shift incident log includes the new Project Pitlane route.
+
+## Custom 404 recovery page
+
+- New request: implement a fun and cool 404 page.
+- Added a self-contained `404.html` so GitHub Pages can render the design for missing routes without depending on asset paths that may break on nested URLs.
+- Built a Gremlin Systems navigation-failure console with clear Home, Projects, Games, and Photos recovery routes plus a three-hit routing-gremlin containment interaction.
+- Added keyboard-accessible controls, reduced-motion support, requested-path reporting, a replay state, and path-aware links that work at either a custom-domain root or the `/personal/` GitHub Pages project path.
+
+## Custom 404 TODO
+
+- None for the initial custom 404 pass.
+
+## Custom 404 verification
+
+- Inline JavaScript compilation, project-root route cases, and `git diff --check` pass.
+- Browser QA passes all three containment hits, target repositioning, the restored-signal completion state, accessibility-label updates, and replay.
+- Desktop and 390px mobile error, radar, containment, and footer states were visually inspected with no horizontal overflow.
+- Browser logs contain no errors or warnings; recovery links resolve correctly at the site root, and the route helper covers both root-hosted and `/personal/` GitHub Pages paths.
+
+## 404 recovered-transmission easter egg
+
+- Added a hidden Rickroll link to the custom 404 recovery console.
+- The subtle `Recovered transmission` link appears only after all three gremlin containment hits, opens safely in a new tab, and hides again when the challenge is replayed.
+
+## Lightweight field-notes blog
+
+- Replaced the empty Blog placeholder with a compact editorial index and long-form article layout that shares the site's navigation and Night Shift behavior.
+- Added a dependency-free Markdown publishing pipeline in `tools/build-blog.js`, including frontmatter validation, draft support, tags, reading times, archive ordering, and core Markdown formatting.
+- Added `blog/README.md` as a durable Codex authoring brief: Ethan can provide rough updates in ordinary language, while Codex drafts from verified facts, protects private details, publishes the source, and checks the result.
+- Published the short introductory post `Opening the notebook` and linked Blog from the standard site navigation, homepage off-clock section, 404 recovery links, and local visit history.
+
+## Lightweight field-notes blog TODO
+
+- None for the initial lightweight blog pass.
+
+## Lightweight field-notes blog verification
+
+- `node --check` passes for the blog generator and shared site script; `git diff --check` reports no whitespace errors.
+- The generator builds one published Markdown source into the blog index and its nested article page, and safely clears stale generated posts before each build.
+- Browser QA passes archive-to-article navigation, relative stylesheet loading, homepage integration, and the rebuilt output with no console errors or warnings.
+- Desktop and 390px mobile index and article layouts were inspected with no horizontal overflow; all six primary navigation links fit at the mobile breakpoint.
+- Blog navigation is present across all 19 standard pages, and the homepage includes a direct field-notes link.
+
+## Plant-cloning blog post
+
+- Published `Cloning plants, minus the science-fiction lab` as the newest field note.
+- Kept the post intentionally general because no plant species, equipment, techniques, quantities, or outcomes were supplied.
+- The two-post blog index now promotes the plant-cloning note and moves `Opening the notebook` into the earlier-notes archive.
+
+## Plant-cloning blog post verification
+
+- The blog generator builds two published posts.
+- Mobile browser QA confirms the updated index and article render without horizontal overflow and with no console errors or warnings.
+- The generated article contains six paragraphs and the expected Outside work and Experiments tags.
+
+## Basketball blog post
+
+- Published `Playing basketball lately` as a short field note about life away from software work.
+- Kept the note intentionally broad because no location, teammates, schedule, competition, or game results were supplied.
+- Added deterministic same-day post ordering so the newest note remains featured without assigning an inaccurate date.
+
+## Basketball blog post verification
+
+- The blog generator builds three published posts and features the basketball entry first.
+- Mobile and desktop browser checks confirm the article renders without horizontal overflow.
+- The generated article contains six paragraphs and the expected Outside work and Basketball tags.
+
+## Interstate-travel blog post
+
+- Published `A few state lines later` as a general field note about traveling to different states.
+- Avoided inventing states, dates, routes, companions, or activities that were not supplied.
+- Used same-day order 4 so the travel entry appears as the newest featured note.
+
+## Interstate-travel blog post verification
+
+- The blog generator builds four published posts and features the travel entry first.
+- Mobile and desktop browser checks confirm the article renders without horizontal overflow.
+- The generated article contains six paragraphs and the expected Travel and Outside work tags.

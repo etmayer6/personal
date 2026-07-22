@@ -3,37 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Field notes from Ethan Mayer about software, projects, learning, and life outside the editor.">
+    <meta name="theme-color" content="#102b36">
     <title>Blog | Ethan Mayer</title>
-    <link rel="stylesheet" href="../style.css">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../style.css?v=theme-6">
+    <link rel="stylesheet" href="style.css?v=1">
 </head>
 <body class="blog-body">
     <header class="blog-header">
         <nav aria-label="Primary navigation">
             <a class="nav-name" href="../index.html">Ethan Mayer</a>
-            <ul>
-                <li><a href="../index.html">Home</a></li>
-                <li><a href="../resume/">Resume</a></li>
-                <li><a href="../projects/">Projects</a></li>
-                <li><a href="../games/">Games</a></li>
-                <li><a href="../photos/">Photos</a></li>
-            </ul>
+            <ul><li><a href="../index.html">Home</a></li><li><a href="../resume/">Resume</a></li><li><a href="../projects/">Projects</a></li><li><a href="../games/">Games</a></li><li><a href="../photos/">Photos</a></li><li><a aria-current="page" href="../blog/">Blog</a></li></ul>
         </nav>
     </header>
-
     <main class="blog-shell">
-        <section class="blog-hero">
-            <p class="eyebrow">Writing</p>
-            <h1>Notes.</h1>
-            <p class="blog-summary">
-                No published notes yet.
-            </p>
+        <section class="blog-hero" aria-labelledby="blog-title">
+            <div><p class="eyebrow">Field notes / 2026</p><h1 id="blog-title">Things worth writing down.</h1></div>
+            <p>A lightweight record of what I am building, learning, and noticing. No posting schedule, no content strategy, just useful context before it disappears.</p>
         </section>
+        <section class="latest-section" aria-labelledby="latest-title">
+            <div class="section-heading"><p class="eyebrow">Latest entry</p><h2 id="latest-title">Recently noted.</h2></div>
+            <article class="featured-note">
+                <div class="featured-number" aria-hidden="true">01</div>
+                <div class="featured-copy">
+                    <div class="post-meta"><time datetime="2026-07-22">July 22, 2026</time><span>2 min read</span></div>
+                    <h2><a href="posts/traveling-between-states/">A few state lines later</a></h2>
+                    <p>A short field note about traveling to different states and collecting experiences that do not fit neatly into a project update.</p>
+                    <div class="post-tags"><span>Travel</span><span>Outside work</span></div>
+                    <a class="read-link" href="posts/traveling-between-states/">Read the note <span aria-hidden="true">&rarr;</span></a>
+                </div>
+            </article>
+        </section>
+        <section class="notes-archive" aria-labelledby="archive-title">
+            <div class="section-heading"><p class="eyebrow">Earlier entries</p><h2 id="archive-title">From the notebook.</h2></div>
+            <div class="archive-list"><article>
+                    <span class="archive-number">02</span>
+                    <div><div class="post-meta"><time datetime="2026-07-22">July 22, 2026</time><span>2 min read</span></div><h3><a href="posts/playing-basketball/">Playing basketball lately</a></h3><p>A short field note about spending some time on the basketball court and sharing the ordinary things happening away from a screen.</p></div>
+                    <a class="archive-arrow" href="posts/playing-basketball/" aria-label="Read Playing basketball lately">&rarr;</a>
+                </article><article>
+                    <span class="archive-number">03</span>
+                    <div><div class="post-meta"><time datetime="2026-07-22">July 22, 2026</time><span>2 min read</span></div><h3><a href="posts/cloning-plants/">Cloning plants, minus the science-fiction lab</a></h3><p>A quick note about turning pieces of existing plants into new plants and treating the process like a small living experiment.</p></div>
+                    <a class="archive-arrow" href="posts/cloning-plants/" aria-label="Read Cloning plants, minus the science-fiction lab">&rarr;</a>
+                </article><article>
+                    <span class="archive-number">04</span>
+                    <div><div class="post-meta"><time datetime="2026-07-22">July 22, 2026</time><span>1 min read</span></div><h3><a href="posts/opening-the-notebook/">Opening the notebook</a></h3><p>A small place for project updates, lessons learned, and the details that do not belong on a portfolio card.</p></div>
+                    <a class="archive-arrow" href="posts/opening-the-notebook/" aria-label="Read Opening the notebook">&rarr;</a>
+                </article></div>
+        </section>
+        <aside class="topic-rail" aria-label="Likely blog topics"><span>Engineering</span><span>Side projects</span><span>What I learned</span><span>Outside work</span></aside>
     </main>
-
-    <footer class="blog-footer">
-        <p>&copy; 2026 Ethan Mayer</p>
-    </footer>
-    <script src="../site-play.js?v=night-shift-2"></script>
+    <footer class="blog-footer"><span>&copy; 2026 Ethan Mayer</span><a href="../index.html">Back home</a></footer>
+    <script src="../site-play.js?v=night-shift-3"></script>
 </body>
 </html>

@@ -539,6 +539,7 @@
 .tone-berry { --card-accent: #92566d; }
 .tone-orange { --card-accent: #ce733d; }
 .tone-indigo { --card-accent: #59658d; }
+.tone-garage { --card-accent: #327567; }
 
 .projects-footer {
     padding: 80px 20px 36px;

@@ -127,6 +127,7 @@
             projects: "Projects",
             games: "Games",
             photos: "Photos",
+            blog: "Blog",
             "flight-sim": "Flight Sim",
             pinpoint: "Pinpoint",
             "block-blast": "Block Blast",
@@ -137,7 +138,8 @@
             courseflow: "CourseFlow",
             "diet-tracker": "Diet Tracker",
             "meal-planner": "Meal Planner",
-            "childhood-timeline": "Timeline"
+            "childhood-timeline": "Timeline",
+            garage: "Garage Bay"
         };
         const currentUrl = new URL(window.location.href);
         const rootPath = rootUrl.pathname.endsWith("/") ? rootUrl.pathname : rootUrl.pathname + "/";
