@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A privacy-safe interactive demo of an archive parsing and family timeline project using entirely fictional data.">
+    <meta name="theme-color" content="#101a20">
+    <title>Childhood Timeline Demo | Ethan Mayer</title>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="../diet-tracker/style.css?v=2">
+    <link rel="stylesheet" href="style.css?v=1">
+</head>
+<body class="diet-body childhood-body">
+    <header class="diet-site-header">
+        <nav aria-label="Primary navigation">
+            <a class="nav-name" href="../index.html">Ethan Mayer</a>
+            <ul>
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="../resume/">Resume</a></li>
+                <li><a aria-current="page" href="../projects/">Projects</a></li>
+                <li><a href="../games/">Games</a></li>
+                <li><a href="../photos/">Photos</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="diet-page-shell">
+        <section class="project-intro" aria-labelledby="project-title">
+            <div>
+                <a class="back-link" href="../projects/"><span aria-hidden="true">&larr;</span> Project index</a>
+                <p class="eyebrow">Gremlin Hub / Privacy-safe archive demo</p>
+                <h1 id="project-title">A family archive, without publishing the family.</h1>
+            </div>
+            <div class="intro-copy">
+                <p>This public version demonstrates how I turn noisy social exports into a reviewable timeline while withholding the real corpus. Every event below, including its date, source, and excerpt, is fictional.</p>
+                <div class="intro-tags" aria-label="Project focus areas"><span>Archive parsing</span><span>Evidence scoring</span><span>Privacy review</span></div>
+            </div>
+        </section>
+
+        <section class="tracker-frame childhood-frame" aria-label="Interactive childhood timeline demo">
+            <aside class="hub-rail">
+                <div class="hub-brand">
+                    <svg viewBox="0 0 48 48" aria-hidden="true">
+                        <path d="M10 15 5 7l12 4M38 15l5-8-12 4" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M9 23c0-9 6-14 15-14s15 5 15 14v5c0 8-6 13-15 13S9 36 9 28z" fill="currentColor"/>
+                        <circle cx="18" cy="24" r="3" fill="#101a20"/><circle cx="30" cy="24" r="3" fill="#101a20"/>
+                        <path d="M18 32c4 3 8 3 12 0" fill="none" stroke="#101a20" stroke-width="2.5" stroke-linecap="round"/>
+                    </svg>
+                    <span><strong>Gremlin Hub</strong><small>local workspace</small></span>
+                </div>
+                <nav class="hub-nav" aria-label="Timeline sections">
+                    <a class="is-active" href="#archive"><span aria-hidden="true">01</span>Overview</a>
+                    <a href="#timeline"><span aria-hidden="true">02</span>Timeline</a>
+                    <a href="#method"><span aria-hidden="true">03</span>Method</a>
+                </nav>
+                <div class="rail-note"><i></i><span><strong>Public fixture</strong><small>No private records loaded</small></span></div>
+            </aside>
+
+            <div class="tracker-app">
+                <header class="app-topbar">
+                    <div><p>Gremlin Hub / Archive</p><h2>Childhood Timeline</h2></div>
+                    <div class="topbar-actions"><span class="demo-chip">Fictional corpus</span><button class="quiet-button" id="reset-button" type="button">Reset view</button></div>
+                </header>
+
+                <div class="privacy-banner">
+                    <div class="privacy-mark" aria-hidden="true"><span></span></div>
+                    <div><strong>Public-safe fixture is active</strong><p>Real names, dates, places, media, excerpts, and source links are not included in this build.</p></div>
+                    <ul aria-label="Privacy protections"><li>Names replaced</li><li>Dates bucketed</li><li>Links removed</li><li>Events invented</li></ul>
+                </div>
+
+                <div class="app-content childhood-content">
+                    <section id="archive" class="archive-overview" aria-labelledby="archive-title">
+                        <div class="archive-title-row">
+                            <div><p class="section-kicker">Sample archive</p><h3 id="archive-title">A life in fragments, reconstructed carefully.</h3><p>The interface mirrors the private tool, but this corpus was written only for the portfolio demo.</p></div>
+                            <div class="review-state"><span></span><div><strong>8 / 8 reviewed</strong><small>Safe for public display</small></div></div>
+                        </div>
+                        <div class="archive-stats">
+                            <article><span>Source entries</span><strong>240</strong><small>fictional records</small></article>
+                            <article><span>After dedupe</span><strong>214</strong><small>11% removed</small></article>
+                            <article><span>Candidates</span><strong>18</strong><small>theme matched</small></article>
+                            <article><span>Published</span><strong>8</strong><small>human reviewed</small></article>
+                        </div>
+                    </section>
+
+                    <section id="timeline" class="timeline-workspace" aria-labelledby="timeline-title">
+                        <aside class="timeline-filters">
+                            <div class="panel-title-row"><div><p class="section-kicker">Refine</p><h3>Timeline filters</h3></div><button class="text-button" id="clear-filters" type="button">Clear</button></div>
+                            <label class="filter-field">Search<input id="timeline-search" type="search" placeholder="Search fictional moments"></label>
+                            <fieldset class="theme-filter"><legend>Theme</legend><div id="theme-buttons"></div></fieldset>
+                            <label class="filter-field">Source<select id="source-filter"><option value="all">All sample archives</option><option value="Archive A">Archive A</option><option value="Archive B">Archive B</option></select></label>
+                            <label class="filter-field">Evidence type<select id="certainty-filter"><option value="all">Direct + context</option><option value="direct">Direct mention</option><option value="context">Confirmed context</option></select></label>
+                            <label class="score-field"><span>Minimum confidence <strong id="score-output">70</strong></span><input id="score-filter" type="range" min="70" max="95" step="5" value="70"></label>
+                            <div class="filter-result"><strong id="filtered-count">8</strong><span>moments visible</span></div>
+                        </aside>
+
+                        <div class="timeline-panel">
+                            <header class="timeline-header"><div><p class="section-kicker">Relative chronology</p><h3 id="timeline-title">Reviewed moments</h3></div><button class="sort-button" id="sort-button" type="button" data-order="asc">Oldest first <span aria-hidden="true">&darr;</span></button></header>
+                            <div class="timeline-list" id="timeline-list"></div>
+                        </div>
+
+                        <aside class="evidence-panel" id="evidence-panel" aria-live="polite"></aside>
+                    </section>
+
+                    <section id="method" class="method-section" aria-labelledby="method-title">
+                        <div class="method-heading"><div><p class="section-kicker">Behind the interface</p><h3 id="method-title">How the private pipeline works</h3></div><p>The production build operates on private exports; only this generalized process is public.</p></div>
+                        <div class="method-pipeline">
+                            <article><span>01</span><div><strong>Extract</strong><p>Walk nested export payloads and recover candidate post text, timestamps, authors, and canonical identifiers.</p></div></article>
+                            <article><span>02</span><div><strong>Deduplicate</strong><p>Merge repeated captures by stable source key while retaining the strongest text and evidence metadata.</p></div></article>
+                            <article><span>03</span><div><strong>Classify</strong><p>Score subject relevance and themes, then distinguish direct mentions from context-only candidates.</p></div></article>
+                            <article><span>04</span><div><strong>Review</strong><p>Require a person to validate chronology, evidence quality, privacy, and the final public-safe summary.</p></div></article>
+                        </div>
+                        <div class="privacy-audit">
+                            <div><p class="section-kicker">Publication gate</p><h3>Privacy audit</h3><p>Every record must pass all checks before it can appear outside the private workspace.</p></div>
+                            <ul><li><span>&#10003;</span>No real names</li><li><span>&#10003;</span>No exact dates</li><li><span>&#10003;</span>No locations</li><li><span>&#10003;</span>No original media</li><li><span>&#10003;</span>No source links</li><li><span>&#10003;</span>Human reviewed</li></ul>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </section>
+
+        <section class="project-note" aria-labelledby="built-title">
+            <div><p class="eyebrow">Private data, public engineering</p><h2 id="built-title">The system is the project, not the family details.</h2></div>
+            <p>The production timeline indexes private family exports and keeps source evidence available for review. This portfolio version intentionally shows only the parsing strategy, confidence model, timeline UX, and publication safeguards.</p>
+        </section>
+    </main>
+
+    <footer class="diet-footer"><p>&copy; 2026 Ethan Mayer</p></footer>
+
+    <dialog id="record-dialog" class="app-dialog record-dialog">
+        <form method="dialog">
+            <div class="dialog-heading"><div><p class="section-kicker">Public-safe record</p><h2>Structured output</h2></div><button class="dialog-close" value="cancel" aria-label="Close dialog">&times;</button></div>
+            <pre id="record-json"></pre>
+            <div class="dialog-actions"><button class="quiet-button" value="cancel">Close</button></div>
+        </form>
+    </dialog>
+
+    <div class="app-toast" id="app-toast" role="status" aria-live="polite"></div>
+    <script src="app.js?v=1"></script>
+</body>
+</html>

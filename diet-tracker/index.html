@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A lightweight interactive demo of the Gremlin Hub photo-first diet tracker using fictional local data.">
+    <meta name="theme-color" content="#101a20">
+    <title>Diet Tracker Demo | Ethan Mayer</title>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="style.css?v=2">
+</head>
+<body class="diet-body">
+    <header class="diet-site-header">
+        <nav aria-label="Primary navigation">
+            <a class="nav-name" href="../index.html">Ethan Mayer</a>
+            <ul>
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="../resume/">Resume</a></li>
+                <li><a aria-current="page" href="../projects/">Projects</a></li>
+                <li><a href="../games/">Games</a></li>
+                <li><a href="../photos/">Photos</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="diet-page-shell">
+        <section class="project-intro" aria-labelledby="project-title">
+            <div>
+                <a class="back-link" href="../projects/"><span aria-hidden="true">&larr;</span> Project index</a>
+                <p class="eyebrow">Gremlin Hub / Static product demo</p>
+                <h1 id="project-title">A calmer way to log a meal.</h1>
+            </div>
+            <div class="intro-copy">
+                <p>This browser-only version recreates the photo-first loop from my private Gremlin Hub diet tracker. Add a meal, watch the local-analysis workflow, then review and adjust the estimate.</p>
+                <div class="intro-tags" aria-label="Project focus areas"><span>Photo capture</span><span>Local-first UX</span><span>Nutrition review</span></div>
+            </div>
+        </section>
+
+        <section class="tracker-frame" aria-label="Interactive diet tracker demo">
+            <aside class="hub-rail">
+                <div class="hub-brand">
+                    <svg viewBox="0 0 48 48" aria-hidden="true">
+                        <path d="M10 15 5 7l12 4M38 15l5-8-12 4" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M9 23c0-9 6-14 15-14s15 5 15 14v5c0 8-6 13-15 13S9 36 9 28z" fill="currentColor"/>
+                        <circle cx="18" cy="24" r="3" fill="#101a20"/><circle cx="30" cy="24" r="3" fill="#101a20"/>
+                        <path d="M18 32c4 3 8 3 12 0" fill="none" stroke="#101a20" stroke-width="2.5" stroke-linecap="round"/>
+                    </svg>
+                    <span><strong>Gremlin Hub</strong><small>local workspace</small></span>
+                </div>
+                <nav class="hub-nav" aria-label="Diet tracker sections">
+                    <a class="is-active" href="#overview"><span aria-hidden="true">01</span>Overview</a>
+                    <a href="#capture"><span aria-hidden="true">02</span>Capture meal</a>
+                    <a href="#history"><span aria-hidden="true">03</span>Meal history</a>
+                </nav>
+                <div class="rail-note"><i></i><span><strong>Static mode</strong><small>Data stays in this browser</small></span></div>
+            </aside>
+
+            <div class="tracker-app">
+                <header class="app-topbar">
+                    <div>
+                        <p>Gremlin Hub / Life</p>
+                        <h2>Diet Tracker</h2>
+                    </div>
+                    <div class="topbar-actions">
+                        <span class="demo-chip">Fictional demo data</span>
+                        <button class="quiet-button" id="reset-button" type="button">Reset demo</button>
+                    </div>
+                </header>
+
+                <div class="app-content">
+                    <section id="overview" class="overview-section" aria-labelledby="overview-title">
+                        <div class="section-title-row">
+                            <div><p class="section-kicker">Today</p><h3 id="overview-title">Your fuel at a glance</h3></div>
+                            <time id="today-label"></time>
+                        </div>
+
+                        <div class="overview-grid">
+                            <article class="calorie-card">
+                                <div class="calorie-ring" id="calorie-ring">
+                                    <div><strong id="calorie-total">0</strong><span>of 2,300 kcal</span></div>
+                                </div>
+                                <div class="calorie-copy"><span class="status-dot"></span><div><strong id="calorie-remaining">2,300 remaining</strong><p>Daily energy target</p></div></div>
+                            </article>
+
+                            <article class="macro-card">
+                                <div class="card-heading"><div><p class="section-kicker">Macros</p><h3>Daily balance</h3></div><span id="meal-count">0 meals</span></div>
+                                <div class="macro-list" id="macro-list"></div>
+                            </article>
+
+                            <article class="week-card">
+                                <div class="card-heading"><div><p class="section-kicker">7-day view</p><h3>Energy rhythm</h3></div><span>kcal</span></div>
+                                <div class="week-chart" id="week-chart" aria-label="Seven day calorie chart"></div>
+                            </article>
+                        </div>
+                    </section>
+
+                    <section id="capture" class="capture-section" aria-labelledby="capture-title">
+                        <div class="section-title-row">
+                            <div><p class="section-kicker">Photo-first logging</p><h3 id="capture-title">Capture a meal</h3></div>
+                            <p>Demo analysis runs entirely in your browser.</p>
+                        </div>
+
+                        <form id="meal-form" class="capture-card">
+                            <div class="photo-stage" id="photo-stage">
+                                <div class="photo-placeholder" id="photo-placeholder">
+                                    <span class="camera-mark" aria-hidden="true"></span>
+                                    <strong>Drop in a meal photo</strong>
+                                    <p>or try one of the prepared demo plates</p>
+                                </div>
+                                <img id="photo-preview" alt="Selected meal preview" hidden>
+                                <input id="meal-photo" type="file" accept="image/*" hidden>
+                                <div class="photo-actions">
+                                    <button class="light-button" id="choose-photo" type="button">Choose photo</button>
+                                    <button class="light-button" id="sample-photo" type="button">Use sample plate</button>
+                                </div>
+                            </div>
+
+                            <div class="capture-fields">
+                                <div class="capture-heading"><span class="capture-number">01</span><div><strong>Add a little context</strong><p>Optional details improve the simulated estimate.</p></div></div>
+                                <label>Meal type<select id="meal-type"><option>Breakfast</option><option selected>Lunch</option><option>Dinner</option><option>Snack</option></select></label>
+                                <label>Description<input id="meal-description" maxlength="80" placeholder="e.g. chicken, rice, avocado"></label>
+                                <label>Notes<textarea id="meal-notes" maxlength="160" placeholder="How did it feel? Anything worth remembering?"></textarea></label>
+                                <button class="analyze-button" id="analyze-button" type="submit"><span>Analyze demo meal</span><span aria-hidden="true">&rarr;</span></button>
+                                <p class="estimate-note">Estimates are fictional and are not nutrition or medical advice.</p>
+                            </div>
+
+                            <div class="analysis-layer" id="analysis-layer" hidden aria-live="polite">
+                                <div class="scan-line"></div>
+                                <span class="analysis-orb"></span>
+                                <strong id="analysis-label">Preparing image...</strong>
+                                <div class="analysis-steps" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+                            </div>
+                        </form>
+                    </section>
+
+                    <section id="history" class="history-section" aria-labelledby="history-title">
+                        <div class="section-title-row history-heading">
+                            <div><p class="section-kicker">Review and adjust</p><h3 id="history-title">Meal history</h3></div>
+                            <div class="history-controls">
+                                <label for="meal-filter">Show</label>
+                                <select id="meal-filter"><option value="today">Today</option><option value="all">All meals</option></select>
+                            </div>
+                        </div>
+                        <div class="meal-list" id="meal-list"></div>
+                    </section>
+                </div>
+            </div>
+        </section>
+
+        <section class="project-note" aria-labelledby="built-title">
+            <div><p class="eyebrow">What changed for the public demo</p><h2 id="built-title">The useful loop, without the private infrastructure.</h2></div>
+            <p>The production tool stores photos on a private server and runs dual local vision models through Ollama. This version preserves the interaction design with deterministic browser-side estimates, generated sample artwork, and local storage.</p>
+        </section>
+    </main>
+
+    <footer class="diet-footer"><p>&copy; 2026 Ethan Mayer</p></footer>
+
+    <dialog id="edit-dialog" class="app-dialog">
+        <form id="edit-form" method="dialog">
+            <div class="dialog-heading"><div><p class="section-kicker">Meal entry</p><h2>Edit estimate</h2></div><button class="dialog-close" value="cancel" aria-label="Close dialog">&times;</button></div>
+            <input id="edit-id" type="hidden">
+            <label>Description<input id="edit-description" maxlength="80" required></label>
+            <div class="edit-macros">
+                <label>Calories<input id="edit-calories" type="number" min="0" max="5000" required></label>
+                <label>Protein (g)<input id="edit-protein" type="number" min="0" max="500" required></label>
+                <label>Carbs (g)<input id="edit-carbs" type="number" min="0" max="800" required></label>
+                <label>Fat (g)<input id="edit-fat" type="number" min="0" max="400" required></label>
+            </div>
+            <label>Notes<textarea id="edit-notes" maxlength="160"></textarea></label>
+            <div class="dialog-actions"><button class="quiet-button" value="cancel">Cancel</button><button class="analyze-button" type="submit" value="default">Save changes</button></div>
+        </form>
+    </dialog>
+
+    <dialog id="reset-dialog" class="app-dialog compact-dialog">
+        <form method="dialog">
+            <p class="section-kicker">Local demo</p><h2>Restore the sample meals?</h2>
+            <p>This removes meals and edits saved by this browser.</p>
+            <div class="dialog-actions"><button class="quiet-button" value="cancel">Keep changes</button><button class="danger-button" id="confirm-reset" value="default">Reset demo</button></div>
+        </form>
+    </dialog>
+
+    <div class="app-toast" id="app-toast" role="status" aria-live="polite"></div>
+    <script src="app.js?v=2"></script>
+</body>
+</html>

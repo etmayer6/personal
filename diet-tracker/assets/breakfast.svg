@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img" aria-labelledby="title desc">
+  <title id="title">Berry yogurt oat bowl</title><desc id="desc">A stylized bowl with yogurt, oats, berries, and almonds.</desc>
+  <defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#cfdfd4"/><stop offset="1" stop-color="#7fa695"/></linearGradient><radialGradient id="bowl"><stop stop-color="#fbf7e9"/><stop offset="1" stop-color="#d8e3dc"/></radialGradient></defs>
+  <rect width="800" height="600" fill="url(#bg)"/><circle cx="105" cy="92" r="170" fill="#e6f0e9" opacity=".28"/><circle cx="713" cy="532" r="210" fill="#355f54" opacity=".18"/>
+  <ellipse cx="400" cy="335" rx="285" ry="202" fill="#25463e" opacity=".24"/><ellipse cx="400" cy="300" rx="270" ry="190" fill="url(#bowl)"/><ellipse cx="400" cy="286" rx="232" ry="150" fill="#f7f1df"/>
+  <path d="M205 270c105-86 287-95 391 0-25 95-104 153-195 153-93 0-171-58-196-153z" fill="#e8dcc1"/>
+  <g fill="#8f3f62"><circle cx="282" cy="269" r="34"/><circle cx="474" cy="243" r="31"/><circle cx="525" cy="329" r="27"/><circle cx="355" cy="350" r="30"/></g>
+  <g fill="#273c72"><circle cx="338" cy="230" r="18"/><circle cx="434" cy="318" r="19"/><circle cx="245" cy="342" r="17"/><circle cx="560" cy="274" r="18"/></g>
+  <g fill="#a97b48"><ellipse cx="390" cy="261" rx="38" ry="13" transform="rotate(18 390 261)"/><ellipse cx="309" cy="316" rx="35" ry="12" transform="rotate(-28 309 316)"/><ellipse cx="475" cy="369" rx="34" ry="11" transform="rotate(31 475 369)"/></g>
+</svg>

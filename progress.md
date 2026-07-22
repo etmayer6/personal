@@ -217,3 +217,46 @@ Original prompt: Remove clutter from the games on the website. Right now they do
 - Browser QA passes semester placement and restoration, live multi-word catalog filtering with retained input focus, local review submission, both reset-dialog paths, and mobile navigation.
 - Desktop and 390px layouts were visually inspected; the phone layout keeps the planning controls readable and contains the wide flowchart within its own scrolling canvas.
 - Browser QA recorded no console errors.
+
+## Gremlin Hub diet tracker demo
+
+- Recreated the private Gremlin Hub diet tracker as a public, dependency-free `diet-tracker/` experience using fictional data and generated meal artwork.
+- Preserved the original photo-first workflow with local photo preview, staged analysis feedback, nutrition estimates, detected ingredients, editing, protected deletion, filtering, and browser-local persistence.
+- Added a responsive daily macro dashboard, calorie progress ring, and seven-day energy chart that update from the meal history.
+- Removed private infrastructure details and replaced Ollama-backed analysis with clearly labeled deterministic demo estimates.
+- Connected the Projects archive card to the interactive demo and updated the open/private project totals.
+
+## Diet tracker verification
+
+- JavaScript syntax and diff checks pass, with all page, script, stylesheet, and generated meal assets available from the static route.
+- Browser QA passes sample analysis, aggregate updates, ingredient expansion, estimate editing, protected deletion, reset cancellation and confirmation, and persistence after reload.
+- Desktop and 390px dashboard, capture, and meal-history states were visually inspected with no console errors.
+
+## Gremlin Hub receipt meal planner demo
+
+- Recreated the private receipt-to-recipe workflow as a public, dependency-free `meal-planner/` demo with two generated fictional grocery receipts.
+- Preserved the production pipeline structure: receipt preparation, OCR cleanup, purchased-product normalization, usable ingredient inference, recipe fit ranking, missing-item disclosure, pantry assumptions, and saved analysis history.
+- Added planning-style controls, staged browser-only processing, result tabs, meal-type filtering, expandable recipe steps, OCR copy support, custom receipt preview, and browser-local persistence.
+- Shared the Gremlin Hub visual shell with the Diet Tracker while giving receipt planning its original amber accent and a denser evidence-oriented workspace.
+- Linked the Projects archive card to the demo and updated the open/private project totals.
+
+## Receipt planner verification
+
+- JavaScript syntax and diff checks pass, and all page, script, stylesheet, and generated receipt assets resolve from the static route.
+- Browser QA passes alternate receipt selection, vegetarian planning, pipeline result updates, recipe expansion and filtering, purchased-item and OCR tabs, copying, saved-history loading, reload persistence, and both reset paths.
+- Desktop recipe results and 390px overview, receipt input, and pantry states were visually inspected with no console errors.
+
+## Gremlin Hub childhood timeline demo
+
+- Recreated the private archive-review workflow as a public, dependency-free `childhood-timeline/` demo using eight entirely fictional events.
+- Preserved the useful engineering concepts: archive extraction, deduplication, theme classification, evidence confidence, relative chronology, human review, and structured-record inspection.
+- Added search, theme, source, evidence-type, confidence, and chronology controls plus browser-local re-review flags.
+- Removed real names, exact dates, locations, media, excerpts, source platforms, and original links; dates use relative archive-year buckets and sources use generic labels.
+- Linked the Projects archive card to the interactive demo and updated the open/private project totals.
+
+## Childhood timeline verification
+
+- JavaScript syntax and diff checks pass, and the page, script, stylesheet, and Projects route resolve from the static server.
+- Browser QA passes combined filters, chronology switching, event selection, safe structured-record viewing, re-review persistence, reset behavior, and project-card navigation.
+- Desktop and 390px hero, filters, timeline, evidence, method, and privacy-audit states were visually inspected with no console errors or horizontal overflow.
+- A focused privacy scan confirms that known private source terms do not appear in the public demo files.
