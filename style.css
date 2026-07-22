@@ -852,7 +852,8 @@ body.apartment-body :is(
 }
 
 .hunt-progress,
-.gremlin-mode-toggle {
+.gremlin-mode-toggle,
+.night-shift-exit {
     position: fixed;
     z-index: 1001;
     bottom: 18px;
@@ -877,6 +878,20 @@ body.apartment-body :is(
 
 .gremlin-mode-toggle {
     right: 18px;
+}
+
+.night-shift-exit {
+    right: 18px;
+    color: #071719;
+    border-color: rgba(246, 179, 75, 0.72);
+    background: #f6b34b;
+    box-shadow: 6px 6px 0 rgba(44, 185, 155, 0.24);
+}
+
+body.night-shift-mode .gremlin-mode-toggle {
+    right: auto;
+    left: 18px;
+    bottom: 72px;
 }
 
 .site-play-dialog {
@@ -1030,6 +1045,12 @@ body.gremlin-mode :is(.work-card, .focus-grid article, .feature-card, .archive-c
     animation: gremlin-prowl 9s linear infinite;
 }
 
+.site-play-dialog-actions .site-play-night-link {
+    color: #071719;
+    border-color: #f0a640;
+    background: #f0a640;
+}
+
 .gremlin-swarm .gremlin-icon {
     width: 25px;
     height: 25px;
@@ -1046,6 +1067,139 @@ body.gremlin-mode :is(.work-card, .focus-grid article, .feature-card, .archive-c
     100% { transform: translateX(115vw) rotate(360deg); }
 }
 
+/* Earned after-hours layer. It deliberately reads as instrumentation, not generic dark mode. */
+body.night-shift-mode {
+    --paper: #071719;
+    --paper-deep: #0a2224;
+    --surface: #102c2e;
+    --ink: #e8f0dc;
+    --ink-soft: #9db7ad;
+    --accent: #f0a640;
+    --accent-dark: #ffc76f;
+    --aero: #38a88f;
+    --line: rgba(135, 213, 190, 0.2);
+    --site-ink: var(--ink);
+    --site-ink-soft: var(--ink-soft);
+    --site-accent: var(--aero);
+    --site-accent-soft: #153b3a;
+    --site-border: var(--line);
+    color: var(--ink);
+    color-scheme: dark;
+    background-color: #071719;
+    background-image:
+        linear-gradient(90deg, rgba(79, 167, 145, 0.06) 1px, transparent 1px),
+        linear-gradient(rgba(79, 167, 145, 0.06) 1px, transparent 1px),
+        radial-gradient(circle at 78% 12%, rgba(240, 166, 64, 0.08), transparent 28%);
+    background-size: 42px 42px, 42px 42px, auto;
+}
+
+body.night-shift-mode::after {
+    content: "NIGHT SHIFT // FACILITY ONLINE";
+    position: fixed;
+    z-index: 998;
+    right: 16px;
+    top: 82px;
+    padding: 7px 9px;
+    color: rgba(255, 199, 111, 0.82);
+    border: 1px solid rgba(240, 166, 64, 0.28);
+    background: rgba(4, 20, 22, 0.8);
+    font-family: Consolas, "Courier New", monospace;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    pointer-events: none;
+}
+
+body.night-shift-mode header,
+body.night-shift-mode .site-header,
+body.night-shift-mode .projects-header,
+body.night-shift-mode .games-header,
+body.night-shift-mode .photos-header,
+body.night-shift-mode .resume-header {
+    background: rgba(3, 17, 20, 0.96);
+    border-bottom-color: rgba(120, 216, 190, 0.2);
+}
+
+body.night-shift-mode h1,
+body.night-shift-mode h2,
+body.night-shift-mode h3,
+body.night-shift-mode .games-hero h1,
+body.night-shift-mode .photos-intro h1,
+body.night-shift-mode .resume-hero-copy h1 {
+    color: #eef4e7;
+    text-shadow: 2px 2px 0 rgba(240, 166, 64, 0.12);
+}
+
+body.night-shift-mode :is(.hero-summary, .projects-summary, .games-hero > p, .photos-intro > p, .resume-body .hero-summary) {
+    color: #9db7ad;
+}
+
+body.night-shift-mode :is(.hero-copy, .focus-grid article, .work-card, .resume-hero-copy, .profile-card, .resume-panel, .photos-empty) {
+    color: #e8f0dc;
+    border-color: rgba(135, 213, 190, 0.2);
+    background: rgba(11, 37, 39, 0.92);
+    box-shadow: none;
+}
+
+body.night-shift-mode :is(.projects-hero, .games-hero, .photos-intro) {
+    border-bottom-color: rgba(135, 213, 190, 0.2);
+}
+
+body.night-shift-mode .project-tally {
+    color: #eef4e7;
+    background: #0b292b;
+    box-shadow: 18px 18px 0 rgba(240, 166, 64, 0.14);
+}
+
+body.night-shift-mode .photo-card {
+    border-color: rgba(135, 213, 190, 0.22);
+    background: #0b292b;
+}
+
+body.night-shift-mode .photo-card img {
+    filter: saturate(0.82) contrast(1.08) brightness(0.84);
+}
+
+body.night-shift-mode img {
+    filter: saturate(0.82) contrast(1.08) brightness(0.84);
+}
+
+body.night-shift-mode .eyebrow,
+body.night-shift-mode .work-type,
+body.night-shift-mode .focus-number {
+    color: #ffc76f;
+}
+
+body.night-shift-mode .button-primary,
+body.night-shift-mode .primary-action {
+    color: #071719;
+    border-color: #43b99b;
+    background: #43b99b;
+}
+
+body.night-shift-mode .button-secondary,
+body.night-shift-mode .secondary-action {
+    color: #e8f0dc;
+    border-color: rgba(135, 213, 190, 0.34);
+    background: transparent;
+}
+
+body.night-shift-mode .site-play-toast,
+body.night-shift-mode .site-play-dialog {
+    color: #e8f0dc;
+    border-color: rgba(135, 213, 190, 0.28);
+    background: #0a2426;
+    box-shadow: 12px 12px 0 rgba(240, 166, 64, 0.18);
+}
+
+body.night-shift-mode .site-play-dialog-copy {
+    color: #9db7ad;
+}
+
+body.night-shift-mode .site-play-dialog::backdrop {
+    background: rgba(1, 10, 12, 0.86);
+}
+
 @media (max-width: 700px) {
     .scavenger-token {
         right: 10px;
@@ -1053,7 +1207,8 @@ body.gremlin-mode :is(.work-card, .focus-grid article, .feature-card, .archive-c
     }
 
     .hunt-progress,
-    .gremlin-mode-toggle {
+    .gremlin-mode-toggle,
+    .night-shift-exit {
         bottom: 10px;
         min-height: 38px;
         padding: 8px 10px;
@@ -1062,6 +1217,18 @@ body.gremlin-mode :is(.work-card, .focus-grid article, .feature-card, .archive-c
 
     .hunt-progress { left: 10px; }
     .gremlin-mode-toggle { right: 10px; }
+    .night-shift-exit { right: 10px; }
+
+    body.night-shift-mode .gremlin-mode-toggle {
+        right: auto;
+        left: 10px;
+        bottom: 58px;
+    }
+
+    body.night-shift-mode::after {
+        top: 72px;
+        right: 10px;
+    }
 
     .site-play-dialog {
         padding: 24px;

@@ -5,6 +5,9 @@
     const rootUrl = new URL("./", scriptUrl);
     const modeKey = "ethan-site-gremlin-mode";
     const huntKey = "ethan-site-hunt-progress";
+    const nightUnlockKey = "ethan-site-night-shift-unlocked";
+    const nightModeKey = "ethan-site-night-shift";
+    const visitKey = "ethan-site-visit-log";
     const originalName = "Ethan Mayer";
     const hunt = [
         {
@@ -37,7 +40,7 @@
         },
         {
             page: "flight",
-            host: ".flight-site-copy",
+            host: "#flight-sim-root .workHubHeader",
             title: "Containment failed",
             clue: "You found every mark. Gremlin Mode is now yours."
         }
@@ -45,13 +48,20 @@
 
     let memoryProgress = 0;
     let memoryMode = false;
+    let memoryNightUnlocked = false;
+    let memoryNightMode = false;
+    let memoryVisits = [];
     let progress = readProgress();
     let gremlinMode = readMode();
+    let nightShiftUnlocked = readNightUnlock() || progress >= hunt.length;
+    let nightShiftMode = readNightMode() && nightShiftUnlocked;
     const page = identifyPage();
     const toast = createToast();
     const dialog = createDialog();
     const modeToggle = createModeToggle();
+    const nightShiftExit = createNightShiftExit();
     const originalNavName = document.querySelector(".nav-name");
+    let huntHostObserver = null;
 
     function identifyPage() {
         const classes = document.body.classList;
@@ -77,6 +87,15 @@
         } catch (error) {
             if (key === huntKey) memoryProgress = Number(value) || 0;
             if (key === modeKey) memoryMode = value === "true";
+            if (key === nightUnlockKey) memoryNightUnlocked = value === "true";
+            if (key === nightModeKey) memoryNightMode = value === "true";
+            if (key === visitKey) {
+                try {
+                    memoryVisits = JSON.parse(value);
+                } catch (parseError) {
+                    memoryVisits = [];
+                }
+            }
         }
     }
 
@@ -89,6 +108,60 @@
     function readMode() {
         const stored = storageGet(modeKey);
         return stored == null ? memoryMode : stored === "true";
+    }
+
+    function readNightUnlock() {
+        const stored = storageGet(nightUnlockKey);
+        return stored == null ? memoryNightUnlocked : stored === "true";
+    }
+
+    function readNightMode() {
+        const stored = storageGet(nightModeKey);
+        return stored == null ? memoryNightMode : stored === "true";
+    }
+
+    function recordVisit() {
+        const routeLabels = {
+            home: "Home",
+            resume: "Resume",
+            projects: "Projects",
+            games: "Games",
+            photos: "Photos",
+            "flight-sim": "Flight Sim",
+            pinpoint: "Pinpoint",
+            "block-blast": "Block Blast",
+            "word-sort": "Word Sort",
+            travel: "Travel Map",
+            apartments: "Apartment Hunt",
+            "groggy-climbs": "Groggy Climbs",
+            courseflow: "CourseFlow",
+            "diet-tracker": "Diet Tracker",
+            "meal-planner": "Meal Planner",
+            "childhood-timeline": "Timeline"
+        };
+        const currentUrl = new URL(window.location.href);
+        const rootPath = rootUrl.pathname.endsWith("/") ? rootUrl.pathname : rootUrl.pathname + "/";
+        const relativePath = currentUrl.pathname.startsWith(rootPath)
+            ? currentUrl.pathname.slice(rootPath.length)
+            : currentUrl.pathname.replace(/^\/+/, "");
+        const route = relativePath.split("/").filter(Boolean)[0] || "home";
+        if (!routeLabels[route]) return;
+
+        let visits = memoryVisits;
+        const stored = storageGet(visitKey);
+        if (stored) {
+            try {
+                visits = JSON.parse(stored);
+            } catch (error) {
+                visits = [];
+            }
+        }
+        if (!Array.isArray(visits)) visits = [];
+        visits = visits.filter(function (entry) {
+            return entry && entry.route !== route;
+        });
+        visits.push({ route: route, label: routeLabels[route] });
+        storageSet(visitKey, JSON.stringify(visits.slice(-12)));
     }
 
     function createToast() {
@@ -151,6 +224,14 @@
         const actions = document.createElement("div");
         actions.className = "site-play-dialog-actions";
 
+        if (nightShiftUnlocked || complete) {
+            const nightLink = document.createElement("a");
+            nightLink.href = new URL("night-shift/", rootUrl).href;
+            nightLink.textContent = "Report for night shift";
+            nightLink.className = "site-play-night-link";
+            actions.appendChild(nightLink);
+        }
+
         if (nextPath) {
             const link = document.createElement("a");
             link.href = new URL(nextPath, rootUrl).href;
@@ -185,6 +266,18 @@
         button.className = "gremlin-mode-toggle";
         button.addEventListener("click", function () {
             setGremlinMode(!gremlinMode, true);
+        });
+        document.body.appendChild(button);
+        return button;
+    }
+
+    function createNightShiftExit() {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "night-shift-exit";
+        button.textContent = "End Night Shift";
+        button.addEventListener("click", function () {
+            setNightShiftMode(false, true);
         });
         document.body.appendChild(button);
         return button;
@@ -227,9 +320,7 @@
         modeToggle.textContent = gremlinMode ? "Contain gremlins" : "Release gremlins";
         modeToggle.setAttribute("aria-pressed", String(gremlinMode));
 
-        if (originalNavName) {
-            originalNavName.textContent = gremlinMode ? "Ethan Mayhem" : originalName;
-        }
+        updateNavName();
 
         const existingSwarm = document.querySelector(".gremlin-swarm");
         if (gremlinMode) createSwarm();
@@ -239,6 +330,33 @@
             announce(gremlinMode
                 ? "Gremlin Mode released. Type gremlin again to contain it."
                 : "Gremlins contained. Mostly.");
+        }
+    }
+
+    function updateNavName() {
+        if (!originalNavName) return;
+        if (nightShiftMode) originalNavName.textContent = "Ethan After Hours";
+        else if (gremlinMode) originalNavName.textContent = "Ethan Mayhem";
+        else originalNavName.textContent = originalName;
+    }
+
+    function unlockNightShift() {
+        nightShiftUnlocked = true;
+        storageSet(nightUnlockKey, "true");
+    }
+
+    function setNightShiftMode(active, shouldAnnounce) {
+        nightShiftMode = Boolean(active) && nightShiftUnlocked;
+        storageSet(nightModeKey, String(nightShiftMode));
+        document.body.classList.toggle("night-shift-mode", nightShiftMode);
+        nightShiftExit.hidden = !nightShiftMode;
+        nightShiftExit.setAttribute("aria-pressed", String(nightShiftMode));
+        updateNavName();
+
+        if (shouldAnnounce) {
+            announce(nightShiftMode
+                ? "Night Shift active. The facility is running after hours."
+                : "Night Shift ended. Daylight systems restored.");
         }
     }
 
@@ -252,6 +370,10 @@
     }
 
     function renderHunt() {
+        if (huntHostObserver) {
+            huntHostObserver.disconnect();
+            huntHostObserver = null;
+        }
         document.querySelectorAll(".scavenger-token, .hunt-progress").forEach(function (element) {
             element.remove();
         });
@@ -260,9 +382,18 @@
             const status = document.createElement("button");
             status.type = "button";
             status.className = "hunt-progress";
-            status.textContent = progress >= hunt.length ? "Hunt complete" : "Hunt " + progress + "/" + hunt.length;
+            status.textContent = progress >= hunt.length ? "Night Shift unlocked" : "Hunt " + progress + "/" + hunt.length;
             status.addEventListener("click", showProgressDialog);
             document.body.appendChild(status);
+        } else if (nightShiftUnlocked) {
+            const entry = document.createElement("button");
+            entry.type = "button";
+            entry.className = "hunt-progress night-shift-entry";
+            entry.textContent = "Night Shift";
+            entry.addEventListener("click", function () {
+                window.location.href = new URL("night-shift/", rootUrl).href;
+            });
+            document.body.appendChild(entry);
         }
 
         modeToggle.hidden = !gremlinMode && progress < hunt.length;
@@ -271,7 +402,16 @@
         const current = hunt[progress];
         if (page !== current.page) return;
         const host = document.querySelector(current.host);
-        if (!host) return;
+        if (!host) {
+            huntHostObserver = new MutationObserver(function () {
+                if (!document.querySelector(current.host)) return;
+                huntHostObserver.disconnect();
+                huntHostObserver = null;
+                renderHunt();
+            });
+            huntHostObserver.observe(document.body, { childList: true, subtree: true });
+            return;
+        }
 
         host.classList.add("scavenger-host");
         const token = document.createElement("button");
@@ -284,6 +424,7 @@
             const found = current;
             progress += 1;
             storageSet(huntKey, String(progress));
+            if (progress >= hunt.length) unlockNightShift();
             renderHunt();
             if (progress >= hunt.length) {
                 setGremlinMode(true, false);
@@ -311,6 +452,9 @@
         }
     });
 
+    if (progress >= hunt.length) unlockNightShift();
+    recordVisit();
     setGremlinMode(gremlinMode, false);
+    setNightShiftMode(nightShiftMode, false);
     renderHunt();
 })();

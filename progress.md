@@ -260,3 +260,19 @@ Original prompt: Remove clutter from the games on the website. Right now they do
 - Browser QA passes combined filters, chronology switching, event selection, safe structured-record viewing, re-review persistence, reset behavior, and project-card navigation.
 - Desktop and 390px hero, filters, timeline, evidence, method, and privacy-audit states were visually inspected with no console errors or horizontal overflow.
 - A focused privacy scan confirms that known private source terms do not appear in the public demo files.
+
+## Night Shift secret experience
+
+- Added a gated `night-shift/` control room that unlocks permanently after all five scavenger marks are recovered, while still allowing the hunt itself to be reset and replayed.
+- Extended the shared site layer with browser-local visit history, an after-hours identity, a persistent Night Shift visual mode, and a single visible exit control while the mode is active.
+- Added a fictional COMMS-to-NAV-to-TEST power-routing diagnostic with dependency clues, bus-trip feedback, canvas instrumentation, deterministic state output, replay support, and a persistent Gremlin Systems Operator badge.
+- Added a local-only shift report, project codenames, incident records, radar treatment, and a read-only maintenance terminal without exposing private data or adding a public navigation link.
+- Fixed the final scavenger mark by observing late-mounted Flight Sim content and targeting its current React header instead of the removed legacy host.
+- Added the shared Night Shift script to the newer CourseFlow and Gremlin Hub demos and cache-busted existing shared script references.
+
+## Night Shift verification
+
+- The required web-game harness captures the locked route and text state with no error artifact; browser QA then covers the complete five-page unlock path and delayed Flight Sim mark.
+- Interaction QA passes locked access, wrong-order trips, ordered recovery, certification, replay, terminal commands, global activation, persistence, global exit, hunt reset with retained unlock, and combined Gremlin/Night Shift modes.
+- Desktop gate, hero, tripped panel, completed panel, badge, terminal, homepage, and Projects states plus 390px hero and diagnostic states were visually inspected.
+- Mobile controls remain separated, the sticky-header anchor offset is correct, the canvas scales within the viewport, and browser QA records no console errors.

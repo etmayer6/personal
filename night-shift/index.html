@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A secret after-hours control room hidden inside Ethan Mayer's portfolio.">
+    <title>Night Shift | Ethan Mayer</title>
+    <link rel="stylesheet" href="../style.css?v=night-shift">
+    <link rel="stylesheet" href="style.css?v=3">
+</head>
+<body class="night-shift-body">
+    <header class="night-header">
+        <a class="night-brand" href="../index.html" aria-label="Return to Ethan Mayer homepage">
+            <span class="brand-mark" aria-hidden="true">06</span>
+            <span><strong>Night Shift</strong><small>Gremlin Systems Facility</small></span>
+        </a>
+        <div class="header-signal"><span aria-hidden="true"></span> Local systems only</div>
+    </header>
+
+    <main>
+        <section id="access-gate" class="access-gate" aria-labelledby="gate-title">
+            <div class="gate-stamp" aria-hidden="true">LOCKED</div>
+            <p class="system-label">Restricted facility // Clearance required</p>
+            <h1 id="gate-title">The doors stay locked until the hunt is complete.</h1>
+            <p>Five gremlin marks form the access key. The first one is hiding where the site begins.</p>
+            <a href="../index.html">Return to the homepage <span aria-hidden="true">&rarr;</span></a>
+        </section>
+
+        <div id="control-room" hidden>
+            <section class="night-hero" aria-labelledby="night-title">
+                <div class="night-hero-copy">
+                    <p class="system-label">Access granted // After-hours facility 06</p>
+                    <h1 id="night-title">Everyone else went home.</h1>
+                    <p>The test floor is yours until sunrise. Restore the three system buses, review the incident log, and try not to encourage the gremlins.</p>
+                    <div class="hero-actions">
+                        <a href="#diagnostic">Begin diagnostic <span aria-hidden="true">&darr;</span></a>
+                        <a class="quiet-link" href="../index.html">Exit facility</a>
+                    </div>
+                </div>
+                <div class="radar-unit" aria-hidden="true">
+                    <div class="radar-screen">
+                        <span class="radar-ring ring-one"></span>
+                        <span class="radar-ring ring-two"></span>
+                        <span class="radar-cross horizontal"></span>
+                        <span class="radar-cross vertical"></span>
+                        <span class="radar-sweep"></span>
+                        <span class="radar-contact contact-one"></span>
+                        <span class="radar-contact contact-two"></span>
+                    </div>
+                    <div class="radar-caption"><span>Perimeter</span><strong>Mostly clear</strong></div>
+                </div>
+            </section>
+
+            <section class="status-rail" aria-label="Night Shift status">
+                <div><span>Local time</span><strong id="shift-clock">--:--</strong></div>
+                <div><span>Clearance</span><strong>Gremlin / 05</strong></div>
+                <div><span>Marks recovered</span><strong id="marks-count">5 / 5</strong></div>
+                <div><span>Facility state</span><strong id="facility-state">Power restricted</strong></div>
+            </section>
+
+            <section class="control-layout">
+                <article id="diagnostic" class="diagnostic-panel" aria-labelledby="diagnostic-title">
+                    <div class="panel-heading">
+                        <div>
+                            <p class="system-label">Bus restoration // Interactive diagnostic</p>
+                            <h2 id="diagnostic-title">Bring the test floor online.</h2>
+                        </div>
+                        <div class="attempt-readout"><span>Trips</span><strong id="attempt-count">00</strong></div>
+                    </div>
+
+                    <div class="briefing">
+                        <span aria-hidden="true">!</span>
+                        <p><strong>Dependency note:</strong> Navigation needs a stable signal, and automated testing must wait for navigation lock.</p>
+                    </div>
+
+                    <canvas id="systems-canvas" width="900" height="420" role="img" aria-label="Three offline facility systems connected to the main power bus"></canvas>
+
+                    <div class="breaker-grid" aria-label="System breakers">
+                        <button type="button" data-system="comms"><span>01</span><strong>COMMS</strong><small>Signal uplink</small></button>
+                        <button type="button" data-system="nav"><span>02</span><strong>NAV</strong><small>Heading reference</small></button>
+                        <button type="button" data-system="test"><span>03</span><strong>TEST</strong><small>Automation rack</small></button>
+                    </div>
+
+                    <div class="diagnostic-footer">
+                        <p id="diagnostic-status" role="status" aria-live="polite">Choose the first system that does not depend on another bus.</p>
+                        <button id="reset-diagnostic" class="text-button" type="button">Reset panel</button>
+                    </div>
+                </article>
+
+                <aside class="shift-report" aria-labelledby="report-title">
+                    <p class="system-label">Operator record</p>
+                    <div class="operator-mark" aria-hidden="true">
+                        <svg viewBox="0 0 64 64">
+                            <path d="M22 19 5 8l6 24 7 2c-1 3-1 7 0 10 2 8 8 13 14 13s12-5 14-13c1-3 1-7 0-10l7-2 6-24-17 11c-3-2-7-3-10-3s-7 1-10 3Z"/>
+                            <path class="mark-detail" d="M20 31l10-4-3 9-7-5Zm24 0-10-4 3 9 7-5ZM25 42c4 3 10 3 14 0-1 7-13 7-14 0Z"/>
+                        </svg>
+                    </div>
+                    <h2 id="report-title">Shift report</h2>
+                    <p id="shift-summary">Clearance verified. Building a local activity report.</p>
+                    <div class="station-label">Stations logged</div>
+                    <ul id="visited-stations" class="station-list"></ul>
+
+                    <div id="operator-badge" class="operator-badge" hidden>
+                        <span>Certification issued</span>
+                        <strong>Gremlin Systems Operator</strong>
+                        <small>Badge GSO-06 // Browser local</small>
+                    </div>
+
+                    <button id="night-mode-toggle" class="night-mode-toggle" type="button" disabled>Restore systems to enable</button>
+                    <a id="night-home-link" class="night-home-link" href="../index.html" hidden>Open the site after hours <span aria-hidden="true">&rarr;</span></a>
+                    <p class="local-note">Progress and preferences stay in this browser. Nothing is transmitted.</p>
+                </aside>
+            </section>
+
+            <section class="incident-section" aria-labelledby="incident-title">
+                <div class="section-heading">
+                    <p class="system-label">Recovered incident log</p>
+                    <h2 id="incident-title">Projects after midnight.</h2>
+                    <p>Normal portfolio labels have been replaced with their unofficial facility codenames.</p>
+                </div>
+                <div class="incident-grid">
+                    <a href="../courseflow/">
+                        <span class="incident-code">CF-19 // Stable</span>
+                        <strong>Project Switchyard</strong>
+                        <p>Degree routes, prerequisite interlocks, and one suspiciously organized planning board.</p>
+                        <small>CourseFlow &rarr;</small>
+                    </a>
+                    <a href="../pinpoint/">
+                        <span class="incident-code">PN-04 // Tracking</span>
+                        <strong>Project Wayfinder</strong>
+                        <p>Worldwide imagery, imprecise human instincts, and a map that remembers every miss.</p>
+                        <small>Pinpoint &rarr;</small>
+                    </a>
+                    <a href="../diet-tracker/">
+                        <span class="incident-code">DT-10 // Fed</span>
+                        <strong>Project Snackwatch</strong>
+                        <p>A browser-local nutrition station trained exclusively on fictional meals.</p>
+                        <small>Diet Tracker &rarr;</small>
+                    </a>
+                    <a href="../childhood-timeline/">
+                        <span class="incident-code">AR-12 // Redacted</span>
+                        <strong>Project Time Capsule</strong>
+                        <p>An archive-review system with the private details safely removed from the building.</p>
+                        <small>Childhood Timeline &rarr;</small>
+                    </a>
+                </div>
+            </section>
+
+            <section class="terminal-section" aria-labelledby="terminal-title">
+                <div>
+                    <p class="system-label">Maintenance terminal // Read only</p>
+                    <h2 id="terminal-title">Ask the building.</h2>
+                    <p>Try <code>STATUS</code>, <code>LOGS</code>, <code>PROJECTS</code>, <code>GREMLIN</code>, or <code>HELP</code>.</p>
+                </div>
+                <div class="terminal-window">
+                    <div class="terminal-bar"><span></span><span></span><span></span><strong>facility-06</strong></div>
+                    <pre id="terminal-output" aria-live="polite">NIGHT/OS 6.0
+Restricted console ready.</pre>
+                    <form id="terminal-form">
+                        <label for="terminal-input">facility@night:~$</label>
+                        <input id="terminal-input" name="command" autocomplete="off" spellcheck="false">
+                        <button type="submit">Run</button>
+                    </form>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer class="night-footer">
+        <span>Facility 06 // Static systems demonstration</span>
+        <a href="../index.html">Return to daylight</a>
+    </footer>
+
+    <script src="app.js?v=3"></script>
+</body>
+</html>
