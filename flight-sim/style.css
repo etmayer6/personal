@@ -725,10 +725,11 @@
 .monitor-result[data-status="running"] strong { color: var(--flight-amber); }
 .monitor-result[data-status="pass"] strong { color: var(--flight-green); }
 .monitor-result[data-status="fail"] strong { color: var(--flight-red); }
+.monitor-result[data-status="invalid"] strong { color: #ff9f68; }
 
 .monitor-summary {
     display: grid;
-    grid-template-columns: 0.75fr 1.4fr 0.6fr 0.6fr;
+    grid-template-columns: 0.75fr 1.25fr 0.55fr 0.6fr 0.65fr;
     border-bottom: 1px solid #364249;
     background: #0a1216;
 }
@@ -751,6 +752,87 @@
     text-overflow: ellipsis;
     white-space: nowrap;
 }
+
+[data-role="monitor-link"][data-quality="valid"] { color: var(--flight-green); }
+[data-role="monitor-link"][data-quality="invalid"] { color: #ff9f68; }
+
+.phase-track {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1px;
+    padding: 8px;
+    border-bottom: 1px solid #364249;
+    background: #080f13;
+}
+
+.phase-step {
+    position: relative;
+    min-width: 0;
+    display: grid;
+    grid-template-columns: 27px minmax(0, 1fr);
+    gap: 9px;
+    align-items: center;
+    padding: 9px 11px;
+    border: 1px solid #2e3a40;
+    background: rgba(14, 24, 29, 0.82);
+}
+
+.phase-step:not(:last-child)::after {
+    position: absolute;
+    top: 50%;
+    right: -7px;
+    z-index: 2;
+    width: 12px;
+    height: 1px;
+    background: #56636a;
+    content: "";
+}
+
+.phase-marker {
+    display: grid;
+    width: 25px;
+    height: 25px;
+    place-items: center;
+    border: 1px solid #4a585f;
+    color: #77868c;
+    font-family: var(--flight-mono);
+    font-size: 8px;
+}
+
+.phase-step strong,
+.phase-step div > span {
+    display: block;
+    overflow: hidden;
+    font-family: var(--flight-mono);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.phase-step strong {
+    color: #99a5a8;
+    font-size: 10px;
+}
+
+.phase-step div > span {
+    margin-top: 3px;
+    color: #65757b;
+    font-size: 8px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.phase-step[data-status="active"] {
+    border-color: rgba(244, 184, 96, 0.65);
+    background: rgba(244, 184, 96, 0.07);
+}
+
+.phase-step[data-status="active"] .phase-marker { border-color: var(--flight-amber); color: var(--flight-amber); }
+.phase-step[data-status="active"] strong { color: var(--flight-amber); }
+.phase-step[data-status="complete"] .phase-marker { border-color: var(--flight-green); color: var(--flight-green); }
+.phase-step[data-status="complete"] strong { color: var(--flight-green); }
+.phase-step[data-status="invalid"] { border-color: rgba(255, 121, 111, 0.7); }
+.phase-step[data-status="invalid"] .phase-marker,
+.phase-step[data-status="invalid"] strong { color: var(--flight-red); border-color: var(--flight-red); }
 
 .monitor-workspace {
     display: grid;
@@ -806,6 +888,18 @@
     border: 1px solid #2f3d42;
     background: rgba(6, 16, 15, 0.86);
 }
+
+.telemetry-grid > div[data-state="active"] {
+    border-color: rgba(156, 217, 223, 0.42);
+    background: rgba(13, 31, 32, 0.9);
+}
+
+.telemetry-grid > div[data-state="caution"] {
+    border-color: rgba(255, 121, 111, 0.6);
+    background: rgba(43, 19, 18, 0.86);
+}
+
+.telemetry-grid > div[data-state="caution"] dd { color: var(--flight-red); }
 
 .telemetry-grid dt {
     color: #698087;
@@ -876,6 +970,48 @@
     line-height: 1.45;
 }
 
+.assertion-meta {
+    min-width: 0;
+    display: flex;
+    justify-content: space-between;
+    gap: 9px;
+    margin-top: 6px;
+    color: #62767b;
+    font-family: var(--flight-mono);
+    font-size: 8px;
+    line-height: 1.35;
+}
+
+.assertion-meta span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.assertion-meta span:last-child {
+    color: var(--flight-cyan);
+    text-align: right;
+}
+
+.assertion-progress {
+    height: 2px;
+    margin-top: 7px;
+    overflow: hidden;
+    background: rgba(156, 217, 223, 0.1);
+}
+
+.assertion-progress span {
+    display: block;
+    width: 0;
+    height: 100%;
+    background: #596970;
+    transition: width 120ms linear;
+}
+
+.assertion-row[data-status="active"] .assertion-progress span { background: var(--flight-amber); }
+.assertion-row[data-status="pass"] .assertion-progress span { background: var(--flight-green); }
+.assertion-row[data-status="fail"] .assertion-progress span { background: var(--flight-red); }
+
 .event-row time {
     color: var(--flight-cyan);
     font-family: var(--flight-mono);
@@ -885,6 +1021,7 @@
 .event-row[data-type="fail"] strong { color: var(--flight-red); }
 .event-row[data-type="pass"] strong { color: var(--flight-green); }
 .event-row[data-type="phase"] strong { color: var(--flight-amber); }
+.event-row[data-type="invalid"] strong { color: #ff9f68; }
 
 @media (max-width: 1100px) {
     .scenario-library {
@@ -1043,7 +1180,23 @@
     }
 
     .monitor-summary > div:nth-child(2) { border-right: 0; }
-    .monitor-summary > div:nth-child(n + 3) { border-bottom: 0; }
+    .monitor-summary > div:nth-child(n + 4) { border-bottom: 0; }
+    .monitor-summary > div:nth-child(4) { border-right: 0; }
+    .monitor-summary > div:last-child { grid-column: 1 / -1; }
+
+    .phase-track {
+        grid-template-columns: 1fr;
+        gap: 4px;
+    }
+
+    .phase-step:not(:last-child)::after {
+        top: auto;
+        right: auto;
+        bottom: -5px;
+        left: 24px;
+        width: 1px;
+        height: 6px;
+    }
 
     .monitor-workspace {
         grid-template-columns: 1fr;
@@ -1081,6 +1234,17 @@
     .assertion-list,
     .event-stream {
         max-height: 270px;
+    }
+
+    .assertion-meta {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 3px;
+    }
+
+    .assertion-meta span:last-child {
+        max-width: 100%;
+        text-align: left;
     }
 
     #flight-sim-root .workHub {

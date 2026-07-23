@@ -6,7 +6,7 @@
     <title>Flight Sim | Ethan Mayer</title>
     <link rel="stylesheet" href="../style.css">
     <link rel="stylesheet" href="./assets/flight-sim-export.css">
-    <link rel="stylesheet" href="./style.css?v=scenario-lab-1">
+    <link rel="stylesheet" href="./style.css?v=scenario-engine-2">
 </head>
 <body class="flight-site-body">
     <header class="flight-site-header">
@@ -59,7 +59,10 @@
                     <div><span>Active phase</span><strong data-role="monitor-phase">Awaiting flight</strong></div>
                     <div><span>Elapsed</span><strong data-role="monitor-elapsed">0.0 s</strong></div>
                     <div><span>Evidence</span><strong data-role="monitor-evidence">0 / 0</strong></div>
+                    <div><span>Data link</span><strong data-role="monitor-link" data-quality="waiting">READY</strong></div>
                 </div>
+
+                <div class="phase-track" data-role="phase-track" aria-label="Scenario phase timeline"></div>
 
                 <div class="monitor-workspace">
                     <article class="monitor-panel telemetry-panel">
@@ -90,8 +93,8 @@
         </section>
     </main>
 
-    <script src="./scenario-monitor.js?v=scenario-lab-1"></script>
-    <script type="module" src="./assets/flight-sim-export.js?v=scenario-lab-1"></script>
+    <script src="./scenario-monitor.js?v=scenario-engine-2"></script>
+  <script type="module" src="./assets/flight-sim-export.js?v=visuals-2"></script>
     <script src="../site-play.js?v=night-shift-2"></script>
 </body>
 </html>

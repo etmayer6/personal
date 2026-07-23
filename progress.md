@@ -415,3 +415,42 @@ Original prompt: Remove clutter from the games on the website. Right now they do
 - The page-level regression pass confirmed all three selectors, scenario-specific preflight copy, disabled selection during active flight, monitor phase advancement, and a passing engine-fault detection assertion.
 - Full-page desktop and 390px mobile captures were visually inspected with no horizontal overflow or dead space between the simulator and monitor.
 - `node --check` and `git diff --check` pass for the scenario monitor and exported simulator bundle.
+
+## Flight scenario engine v2
+
+- Added startup validation for duplicate scenario and assertion identifiers, unknown phases, invalid timing modes, missing evaluators, and non-positive phase or assertion durations.
+- Added telemetry integrity monitoring for missing signals, unknown aircraft modes, stale packets, and non-monotonic simulation time.
+- Added a distinct `INVALID` lifecycle result so corrupted test evidence is not misreported as pilot or aircraft failure.
+- Added phase timeouts, complete transition records, active phase age, sample count, monitor frequency, and maximum telemetry gap tracking.
+- Expanded assertion evidence with observed values, captured telemetry, pass/fail timestamps, live timing progress, and first-failure context.
+- Added deterministic manual-update and catalog-validation hooks for regression testing without changing the public gameplay flow.
+- Upgraded the monitor with a data-link health indicator, phase timeline, assertion progress bars, observed values, and caution-state telemetry.
+
+## Flight scenario engine v2 verification
+
+- Catalog validation passes for all three public scenarios.
+- A synthetic stabilized approach completes all three phases and all six requirements with a `PASS` verdict.
+- A crosswind run exceeds the bank limit and returns `FAIL` with `WND-102` plus the captured observation `bank 50.0 deg / limit +/-42`.
+- Stale, reversed, and missing telemetry produce `INVALID` with three distinct integrity reasons while monitoring remains active.
+- Holding the engine-loss scenario in its armed phase beyond 18 seconds produces `INVALID` and marks the phase timeout in the timeline.
+- The real rendered engine-loss flight reaches Forced glide, detects the 12% power state, passes `ENG-101`, and records no integrity faults.
+- Required Playwright game-client and page-level tests report no console errors; the 390px monitor has no horizontal overflow.
+
+## Flight simulator visual overhaul
+
+- Upgraded the WebGL renderer with warmer directional lighting, sky/ground ambient response, longer-distance atmospheric haze, gamma-balanced output, and per-object unlit, fog, and emissive controls.
+- Added a camera-following gradient sky dome, visible sun, wind-drifting rounded cloud clusters, and clearer depth separation without changing flight physics or telemetry.
+- Expanded the airport environment with runway edge lines, threshold stripes, touchdown-zone markings, scaled edge lights, green and red threshold/end lights, approach strobes, and emissive PAPI fixtures.
+- Added emissive red, green, white, and landing lights to the imported aircraft while preserving the existing model and fallback rendering path.
+- Replaced blank cockpit gauge circles with state-driven IAS, altitude, attitude, heading, and vertical-speed instrument faces and needles.
+
+## Flight simulator visual verification
+
+- The required Playwright game client completed repeated deterministic chase-view input runs with synchronized flight state and no console or page errors.
+- Desktop chase and cockpit captures were visually inspected at both initial intercept and close runway range; sky banding and oversized legacy light fixtures found during QA were corrected and re-tested.
+- The 390px full-page flight and Scenario Monitor layout was visually inspected with `scrollWidth === clientWidth` and no horizontal overflow.
+- `node --check` passes for the exported simulator and Scenario Monitor bundles, and `git diff --check` reports no whitespace errors.
+
+## Flight simulator visual TODO
+
+- None for this visual pass.

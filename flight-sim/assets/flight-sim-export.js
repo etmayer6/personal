@@ -10763,6 +10763,7 @@ function tB(u) {
     uniform mat4 uViewProj;
     uniform mat4 uModel;
     uniform vec3 uCameraPos;
+    uniform float uUnlit;
     varying vec3 vColor;
     varying vec2 vUv;
     varying float vLight;
@@ -10771,11 +10772,12 @@ function tB(u) {
     void main() {
       vec4 world = uModel * vec4(aPosition, 1.0);
       vec3 normal = normalize((uModel * vec4(aNormal, 0.0)).xyz);
-      vec3 sun = normalize(vec3(-0.45, 0.85, 0.18));
-      float diffuse = max(dot(normal, sun), 0.0);
+      vec3 sun = normalize(vec3(-0.42, 0.82, -0.28));
+      float diffuse = max(dot(normal, sun) * 0.86 + 0.14, 0.0);
       float hemi = normal.y * 0.5 + 0.5;
-      vLight = 0.22 + diffuse * 0.62 + hemi * 0.26;
-      vFog = clamp((distance(world.xyz, uCameraPos) - 240.0) / 3600.0, 0.0, 1.0);
+      float naturalLight = 0.24 + diffuse * 0.58 + hemi * 0.22;
+      vLight = mix(naturalLight, 1.0, uUnlit);
+      vFog = clamp((distance(world.xyz, uCameraPos) - 420.0) / 5200.0, 0.0, 1.0);
       vColor = aColor;
       vUv = aUv;
       gl_Position = uViewProj * world;
@@ -10791,6 +10793,8 @@ function tB(u) {
     uniform float uAlphaCutout;
     uniform vec3 uTint;
     uniform vec3 uFogColor;
+    uniform float uFogStrength;
+    uniform float uEmissive;
 
     void main() {
       vec4 texel = texture2D(uTexture, vUv);
@@ -10798,12 +10802,14 @@ function tB(u) {
         discard;
       }
       vec3 baseColor = mix(vColor, vColor * texel.rgb, uUseTexture);
-      vec3 lit = baseColor * uTint * vLight;
-      vec3 shaded = mix(lit, uFogColor, vFog);
+      vec3 material = baseColor * uTint;
+      vec3 lit = material * mix(vLight, 1.16, uEmissive);
+      vec3 shaded = mix(lit, uFogColor, clamp(vFog * uFogStrength, 0.0, 1.0));
+      shaded = pow(max(shaded, vec3(0.0)), vec3(0.96));
       float alpha = mix(1.0, texel.a, uUseTexture);
       gl_FragColor = vec4(shaded, alpha);
     }
-  `), E = c.getAttribLocation(B, "aPosition"), T = c.getAttribLocation(B, "aNormal"), i = c.getAttribLocation(B, "aColor"), o = c.getAttribLocation(B, "aUv"), I = c.getUniformLocation(B, "uViewProj"), b = c.getUniformLocation(B, "uModel"), h = c.getUniformLocation(B, "uCameraPos"), q = c.getUniformLocation(B, "uTexture"), x = c.getUniformLocation(B, "uUseTexture"), Y = c.getUniformLocation(B, "uAlphaCutout"), F = c.getUniformLocation(B, "uTint"), PA = c.getUniformLocation(B, "uFogColor"), aA = /* @__PURE__ */ new Set(), K = /* @__PURE__ */ new Set(), N = ii();
+  `), E = c.getAttribLocation(B, "aPosition"), T = c.getAttribLocation(B, "aNormal"), i = c.getAttribLocation(B, "aColor"), o = c.getAttribLocation(B, "aUv"), I = c.getUniformLocation(B, "uViewProj"), b = c.getUniformLocation(B, "uModel"), h = c.getUniformLocation(B, "uCameraPos"), q = c.getUniformLocation(B, "uTexture"), x = c.getUniformLocation(B, "uUseTexture"), Y = c.getUniformLocation(B, "uAlphaCutout"), F = c.getUniformLocation(B, "uTint"), PA = c.getUniformLocation(B, "uFogColor"), L = c.getUniformLocation(B, "uUnlit"), U = c.getUniformLocation(B, "uFogStrength"), C = c.getUniformLocation(B, "uEmissive"), aA = /* @__PURE__ */ new Set(), K = /* @__PURE__ */ new Set(), N = ii();
   c.enable(c.DEPTH_TEST);
   function R(V) {
     const nA = c.createTexture();
@@ -10832,16 +10838,16 @@ function tB(u) {
     c.bindBuffer(c.ARRAY_BUFFER, V.buffer), c.enableVertexAttribArray(E), c.enableVertexAttribArray(T), c.enableVertexAttribArray(i), c.enableVertexAttribArray(o), c.vertexAttribPointer(E, 3, c.FLOAT, !1, rn * 4, 0), c.vertexAttribPointer(T, 3, c.FLOAT, !1, rn * 4, 12), c.vertexAttribPointer(i, 3, c.FLOAT, !1, rn * 4, 24), c.vertexAttribPointer(o, 2, c.FLOAT, !1, rn * 4, 36);
   }
   function FA(V, nA) {
-    AB(u), c.viewport(0, 0, u.width, u.height), c.clearColor(0.54, 0.72, 0.94, 1), c.clear(c.COLOR_BUFFER_BIT | c.DEPTH_BUFFER_BIT), c.useProgram(B);
+    AB(u), c.viewport(0, 0, u.width, u.height), c.clearColor(0.46, 0.64, 0.78, 1), c.clear(c.COLOR_BUFFER_BIT | c.DEPTH_BUFFER_BIT), c.useProgram(B);
     const xA = u.width / Math.max(1, u.height), _A = uu(
       W8(V.fov * Math.PI / 180, xA, V.near, V.far),
       F8(V.position, V.target, V.up)
     );
-    c.uniformMatrix4fv(I, !1, _A), c.uniform3f(h, V.position.x, V.position.y, V.position.z), c.uniform3f(PA, 0.83, 0.91, 0.99), c.activeTexture(c.TEXTURE0), c.uniform1i(q, 0);
+    c.uniformMatrix4fv(I, !1, _A), c.uniform3f(h, V.position.x, V.position.y, V.position.z), c.uniform3f(PA, 0.71, 0.82, 0.89), c.activeTexture(c.TEXTURE0), c.uniform1i(q, 0);
     for (const S of nA) {
       $(S.mesh), c.uniformMatrix4fv(b, !1, S.model ?? N);
       const X = S.tint ?? { r: 1, g: 1, b: 1 };
-      c.uniform3f(F, X.r, X.g, X.b), c.uniform1f(x, S.mesh.hasTexture ? 1 : 0), c.uniform1f(Y, S.mesh.alphaMode === "mask" || S.mesh.alphaMode === "blend" ? 1 : 0), S.mesh.alphaMode === "blend" ? (c.enable(c.BLEND), c.blendFunc(c.SRC_ALPHA, c.ONE_MINUS_SRC_ALPHA)) : c.disable(c.BLEND), c.bindTexture(c.TEXTURE_2D, S.mesh.texture ?? G), c.drawArrays(c.TRIANGLES, 0, S.mesh.vertexCount);
+      c.uniform3f(F, X.r, X.g, X.b), c.uniform1f(L, S.unlit ? 1 : 0), c.uniform1f(U, S.fogStrength ?? 1), c.uniform1f(C, S.emissive ?? 0), c.uniform1f(x, S.mesh.hasTexture ? 1 : 0), c.uniform1f(Y, S.mesh.alphaMode === "mask" || S.mesh.alphaMode === "blend" ? 1 : 0), S.mesh.alphaMode === "blend" ? (c.enable(c.BLEND), c.blendFunc(c.SRC_ALPHA, c.ONE_MINUS_SRC_ALPHA)) : c.disable(c.BLEND), c.bindTexture(c.TEXTURE_2D, S.mesh.texture ?? G), c.drawArrays(c.TRIANGLES, 0, S.mesh.vertexCount);
     }
   }
   function SA() {
@@ -11437,6 +11443,13 @@ function n9() {
     s(-Te, ma, ht),
     D("#303745")
   );
+  for (const a of [-1, 1])
+    u.quad(s(a * (Te - 2.5), ge, GA - 8), s(a * (Te - 0.7), ge, GA - 8), s(a * (Te - 0.7), ge, ht + 8), s(a * (Te - 2.5), ge, ht + 8), D("#e7ebef"));
+  for (const a of jB)
+    u.quad(s(a * 3 - 3.6, ge, GA - 28), s(a * 3 + 3.6, ge, GA - 28), s(a * 3 + 3.6, ge, GA - 78), s(a * 3 - 3.6, ge, GA - 78), D("#f3f5f7"));
+  for (const a of [GA - 310, GA - 470, GA - 630])
+    for (const c of [-1, 1])
+      u.quad(s(c * 22 - 8, ge, a), s(c * 22 + 8, ge, a), s(c * 22 + 8, ge, a - 34), s(c * 22 - 8, ge, a - 34), D("#e9ecef"));
   for (let a = GA - 28; a > ht + 110; a -= 132)
     u.quad(s(-5, ge, a), s(5, ge, a), s(5, ge, a - 72), s(-5, ge, a - 72), D("#f6f7fa"));
   for (const a of [-1, 1]) {
@@ -11457,9 +11470,9 @@ function n9() {
       );
   }
   for (let a = GA + 24; a > ht + 20; a -= 112)
-    u.box(s(-Te - 16, Tt + 5, a), s(4, 10, 4), { top: D("#ffe7a4"), sideA: D("#8d7b46"), sideB: D("#706037") }), u.box(s(Te + 16, Tt + 5, a), s(4, 10, 4), { top: D("#ffe7a4"), sideA: D("#8d7b46"), sideB: D("#706037") });
+    u.box(s(-Te - 9, Tt + 1.1, a), s(1.2, 2.2, 1.2), { top: D("#ffe7a4"), sideA: D("#6c654c"), sideB: D("#514c3b") }), u.box(s(Te + 9, Tt + 1.1, a), s(1.2, 2.2, 1.2), { top: D("#ffe7a4"), sideA: D("#6c654c"), sideB: D("#514c3b") });
   for (let a = GA + 120; a < GA + 520; a += 90)
-    u.box(s(0, Tt + 3, a), s(6, 6, 6), { top: D("#dde4ee"), sideA: D("#677387"), sideB: D("#566273") }), u.box(s(-24, Tt + 2.5, a), s(4, 5, 4), { top: D("#dde4ee"), sideA: D("#677387"), sideB: D("#566273") }), u.box(s(24, Tt + 2.5, a), s(4, 5, 4), { top: D("#dde4ee"), sideA: D("#677387"), sideB: D("#566273") });
+    u.box(s(0, Tt + 1.05, a), s(1.4, 2.1, 1.4), { top: D("#edf4ff"), sideA: D("#586474"), sideB: D("#46505f") }), u.box(s(-24, Tt + 0.9, a), s(1.1, 1.8, 1.1), { top: D("#edf4ff"), sideA: D("#586474"), sideB: D("#46505f") }), u.box(s(24, Tt + 0.9, a), s(1.1, 1.8, 1.1), { top: D("#edf4ff"), sideA: D("#586474"), sideB: D("#46505f") });
   for (let a = 0; a < 4; a += 1) {
     const c = -Te - 58 - a * 12, g = GA - 34;
     u.box(s(c, Tt + 2.4, g), s(2.4, 4.8, 2.4), { top: D("#6f6a57"), sideA: D("#5b5647"), sideB: D("#4d493d") }), u.box(s(c, Tt + 5.6, g), s(8, 3.2, 6), { top: D("#d6d9df"), sideA: D("#6a7078"), sideB: D("#555b64") });
@@ -11479,7 +11492,7 @@ function n9() {
     [s(-920, 0, 3100), s(-980, 0, 2300), s(-1020, 0, 1380), s(-1120, 0, 280), s(-1220, 0, -1120), s(-1360, 0, -2800), s(-1520, 0, -4700)],
     22,
     D("#5f6873")
-  ), gn(u, -1490, 1550, 4, 4, 96), gn(u, -1020, 930, 3, 3, 92), gn(u, 1850, 1830, 4, 3, 88), gn(u, 1420, -2220, 3, 4, 100), gn(u, 2980, 1520, 3, 3, 86), gn(u, 2260, -1320, 3, 3, 92), gn(u, -2280, 2920, 2, 3, 98), Ll(u, -1950, 2460, 32, 620, 740, 44, 72), Ll(u, -2380, -1500, 26, 760, 1180, 46, 78), Ll(u, 2240, 840, 26, 760, 820, 44, 72), Ll(u, 2760, -2780, 34, 960, 1160, 50, 86), Ll(u, -720, -4180, 24, 900, 820, 48, 78), Ll(u, 2920, 1600, 20, 420, 700, 40, 66), Ll(u, 2460, -480, 18, 520, 860, 42, 70), Ll(u, 780, 2920, 18, 820, 420, 36, 58), Q9(u), T9(u), E9(u), sn(u, ql - 1120, 430, 760, 760, D("#7f93a9"), -0.55), sn(u, ql - 420, 340, 640, 540, D("#637b91"), 0.45), sn(u, ql - 60, 290, 540, 420, D("#526a80"), 1.2), sn(u, ql + 420, 230, 420, 360, D("#455a6f"), 1.9), sn(u, fn + 220, 190, 340, 460, D("#6a8193"), -0.25), sn(u, fn + 520, 160, 260, 340, D("#586d7e"), 0.7), sn(u, fn + 1080, 240, 460, 620, D("#7a90a1"), 1.35), d9(u), u.toMesh();
+), gn(u, -1490, 1550, 4, 4, 96), gn(u, -1020, 930, 3, 3, 92), gn(u, 1850, 1830, 4, 3, 88), gn(u, 1420, -2220, 3, 4, 100), gn(u, 2980, 1520, 3, 3, 86), gn(u, 2260, -1320, 3, 3, 92), gn(u, -2280, 2920, 2, 3, 98), Ll(u, -1950, 2460, 32, 620, 740, 44, 72), Ll(u, -2380, -1500, 26, 760, 1180, 46, 78), Ll(u, 2240, 840, 26, 760, 820, 44, 72), Ll(u, 2760, -2780, 34, 960, 1160, 50, 86), Ll(u, -720, -4180, 24, 900, 820, 48, 78), Ll(u, 2920, 1600, 20, 420, 700, 40, 66), Ll(u, 2460, -480, 18, 520, 860, 42, 70), Ll(u, 780, 2920, 18, 820, 420, 36, 58), Q9(u), T9(u), E9(u), sn(u, ql - 1120, 430, 760, 760, D("#7f93a9"), -0.55), sn(u, ql - 420, 340, 640, 540, D("#637b91"), 0.45), sn(u, ql - 60, 290, 540, 420, D("#526a80"), 1.2), sn(u, ql + 420, 230, 420, 360, D("#455a6f"), 1.9), sn(u, fn + 220, 190, 340, 460, D("#6a8193"), -0.25), sn(u, fn + 520, 160, 260, 340, D("#586d7e"), 0.7), sn(u, fn + 1080, 240, 460, 620, D("#7a90a1"), 1.35), u.toMesh();
 }
 function qa(u, a, c) {
   u.box(gA(a, s(0, 8, 0)), s(6, 16, 6), { top: D("#8e6d42"), sideA: D("#765630"), sideB: D("#66481f") });
@@ -11772,16 +11785,16 @@ function sn(u, a, c, g, r, B, E) {
   }
 }
 function w9(u, a, c) {
-  const g = D("#f4f6fb"), r = D("#d8deea"), B = D("#c7d1df");
-  u.box(a, s(180 * c, 42 * c, 72 * c), { top: g, sideA: r, sideB: B }), u.box(gA(a, s(-60 * c, 12 * c, -24 * c)), s(94 * c, 34 * c, 58 * c), {
-    top: g,
-    sideA: r,
-    sideB: B
-  }), u.box(gA(a, s(68 * c, 8 * c, 18 * c)), s(108 * c, 36 * c, 66 * c), {
-    top: g,
-    sideA: r,
-    sideB: B
-  });
+  const g = D("#f7f9fc"), r = D("#e5ebf2"), B = D("#cbd5e1"), E = [
+    [-58, 2, -12, 34, B],
+    [-28, 12, 8, 42, r],
+    [8, 16, -8, 48, g],
+    [48, 9, 10, 40, r],
+    [76, 0, -12, 30, B],
+    [16, -4, 22, 36, B]
+  ];
+  for (const [T, i, o, I, b] of E)
+    u.ring(gA(a, s(T * c, i * c, o * c)), 0, I * c, 10, 7, b);
 }
 function d9(u) {
   const a = [
@@ -11927,20 +11940,73 @@ function y9() {
   const u = aP();
   return u.quad(s(-16, 0, -24), s(16, 0, -24), s(12, 0, 16), s(-12, 0, 16), D("#17202c")), u.toMesh();
 }
-const m9 = n9(), U9 = b9(), j9 = p9(), S9 = I9(), h9 = M9(), H9 = y9();
+function createAtmosphereMesh() {
+  const u = aP(), radius = 7200, segments = 28, layers = 12, horizonColor = D("#c4d7df"), midColor = D("#79a9c8"), zenithColor = D("#2d6593"), point = (elevation, angle) => {
+    const horizontalRadius = Math.cos(elevation) * radius;
+    return s(Math.sin(angle) * horizontalRadius, Math.sin(elevation) * radius, Math.cos(angle) * horizontalRadius);
+  }, colorAt = (amount) => amount < 0.42 ? DA(horizonColor, midColor, amount / 0.42) : DA(midColor, zenithColor, (amount - 0.42) / 0.58), normal = s(0, 1, 0), addTriangle = (first, firstColor, second, secondColor, third, thirdColor) => {
+    u.pushVertex(first, normal, firstColor), u.pushVertex(second, normal, secondColor), u.pushVertex(third, normal, thirdColor);
+  };
+  for (let layer = 0; layer < layers; layer += 1) {
+    const lowerElevation = RA(-0.16, Math.PI * 0.5, layer / layers), upperElevation = RA(-0.16, Math.PI * 0.5, (layer + 1) / layers), lowerColor = colorAt(layer / layers), upperColor = colorAt((layer + 1) / layers);
+    for (let segment = 0; segment < segments; segment += 1) {
+      const startAngle = segment / segments * Math.PI * 2, endAngle = (segment + 1) / segments * Math.PI * 2;
+      addTriangle(point(lowerElevation, startAngle), lowerColor, point(upperElevation, endAngle), upperColor, point(lowerElevation, endAngle), lowerColor), addTriangle(point(lowerElevation, startAngle), lowerColor, point(upperElevation, startAngle), upperColor, point(upperElevation, endAngle), upperColor);
+    }
+  }
+  return u.toMesh();
+}
+function createSunMesh() {
+  const u = aP();
+  return u.ring(s(0, 0, 0), 0, 82, 14, 10, D("#fff4c7")), u.toMesh();
+}
+function createCloudLayerMesh() {
+  const u = aP();
+  return d9(u), u.toMesh();
+}
+function createRunwayLightsMesh() {
+  const u = aP(), a = D("#f2f7ff"), c = D("#ffd789"), g = D("#77efb7"), r = D("#ff716b"), B = (T, i, o) => {
+    u.box(s(T, Tt + 0.9, i), s(1.05, 1.8, 1.05), { top: o, sideA: o, sideB: o });
+  };
+  for (let T = GA - 26; T > ht + 26; T -= 82) {
+    const i = T < ht + 320 ? c : a;
+    B(-Te - 7, T, i), B(Te + 7, T, i);
+  }
+  for (const T of jB)
+    B(T * 3, GA - 18, g), B(T * 3, ht + 18, r);
+  for (let T = GA + 72; T < GA + 650; T += 72)
+    B(0, T, a);
+  for (const T of [GA + 210, GA + 426, GA + 642])
+    B(-22, T, a), B(22, T, a);
+  return u.toMesh();
+}
+function createNavLightMesh() {
+  const u = aP();
+  return u.ring(s(0, 0, 0), 0, 1.15, 8, 6, D("#ffffff")), u.toMesh();
+}
+const m9 = n9(), U9 = b9(), j9 = p9(), S9 = I9(), h9 = M9(), H9 = y9(), atmosphereMesh = createAtmosphereMesh(), sunMesh = createSunMesh(), cloudLayerMesh = createCloudLayerMesh(), runwayLightsMesh = createRunwayLightsMesh(), navLightMesh = createNavLightMesh();
 function O9(u, a) {
-  const c = [{ mesh: a.staticWorld }], g = yi(u), r = cu(u.position);
+  const g = yi(u), r = cu(u.position), B = KA(s(-0.42, 0.82, -0.28)), E = gA(u.camera.position, OA(B, 5200)), T = s(u.wind.x * u.time * 0.22, 0, u.wind.z * u.time * 0.22), c = [
+    { mesh: a.atmosphere, model: K8(u.camera.position), unlit: !0, fogStrength: 0 },
+    { mesh: a.sun, model: K8(E), unlit: !0, fogStrength: 0, emissive: 1 },
+    { mesh: a.staticWorld },
+    { mesh: a.cloudLayer, model: K8(T), unlit: !0, fogStrength: 0.82 },
+    { mesh: a.runwayLights, unlit: !0, fogStrength: 0.48, emissive: 0.9 }
+  ];
   for (let E = 0; E < ft.length; E += 1) {
     const T = ft[E];
     c.push({
       mesh: a.ring,
       model: Ai(T.center, 0, 0, u.time * 0.3, T.radius / Qi),
-      tint: t9(E, u)
+      tint: t9(E, u),
+      unlit: !0,
+      fogStrength: 0.55,
+      emissive: 0.58
     });
   }
-  const B = u.position.y - uA(u.position.x, u.position.z);
-  if (B < 80) {
-    const E = AA(1 + B / 180, 1, 1.45), T = KA(s(g.trackForward.x, 0, g.trackForward.z)), i = Math.hypot(T.x, T.y, T.z) > 1e-4 ? KA(_t(T, s(0, 1, 0))) : s(1, 0, 0);
+  const I = u.position.y - uA(u.position.x, u.position.z);
+  if (I < 80) {
+    const E = AA(1 + I / 180, 1, 1.45), T = KA(s(g.trackForward.x, 0, g.trackForward.z)), i = Math.hypot(T.x, T.y, T.z) > 1e-4 ? KA(_t(T, s(0, 1, 0))) : s(1, 0, 0);
     c.push({
       mesh: a.shadow,
       model: $0(
@@ -11976,13 +12042,18 @@ function O9(u, a) {
         tint: D("#ffffff")
       });
     }
+    const i = gA(gA(u.position, OA(g.bodyRight, -21.2)), OA(g.bodyUp, 1.35)), o = gA(gA(u.position, OA(g.bodyRight, 21.2)), OA(g.bodyUp, 1.35)), I = gA(gA(u.position, OA(g.bodyForward, -16.5)), OA(g.bodyUp, 2.1)), b = gA(gA(u.position, OA(g.bodyForward, 10.5)), OA(g.bodyUp, -0.6));
+    c.push({ mesh: a.navLight, model: K8(i), tint: D("#ff4059"), unlit: !0, fogStrength: 0.4, emissive: 1 }), c.push({ mesh: a.navLight, model: K8(o), tint: D("#45e3a6"), unlit: !0, fogStrength: 0.4, emissive: 1 }), c.push({ mesh: a.navLight, model: K8(I), tint: D("#f4f8ff"), unlit: !0, fogStrength: 0.4, emissive: 1 }), c.push({ mesh: a.navLight, model: K8(b), tint: D("#fff1c4"), unlit: !0, fogStrength: 0.35, emissive: 1 });
   }
   for (let E = 0; E < 4; E += 1) {
     const T = -Te - 58 - E * 12, i = GA - 34;
     c.push({
       mesh: a.papiLight,
       model: Ai(s(T, Tt + 5.6, i), 0, 0, 0, 1),
-      tint: FB(E, r)
+      tint: FB(E, r),
+      unlit: !0,
+      fogStrength: 0.35,
+      emissive: 1
     });
   }
   return c;
@@ -12199,12 +12270,17 @@ function k9() {
     try {
       const sA = tB(J), Q = {
         renderer: sA,
+        atmosphere: sA.createMesh(atmosphereMesh),
+        sun: sA.createMesh(sunMesh),
         staticWorld: sA.createMesh(m9),
+        cloudLayer: sA.createMesh(cloudLayerMesh),
+        runwayLights: sA.createMesh(runwayLightsMesh),
         plane: sA.createMesh(U9),
         propeller: sA.createMesh(j9),
         ring: sA.createMesh(h9),
         shadow: sA.createMesh(H9),
         papiLight: sA.createMesh(S9),
+        navLight: sA.createMesh(navLightMesh),
         importedPlaneParts: null
       };
       B.current = Q, b(null), lB(zB).then((IA) => {
@@ -12465,7 +12541,17 @@ function k9() {
                 /* @__PURE__ */ C.jsx("div", { style: { position: "absolute", left: "50%", bottom: "13.5%", width: "min(72%, 760px)", height: "7.5%", transform: "translateX(-50%)", borderRadius: "999px 999px 0 0", background: "linear-gradient(180deg, rgba(73,83,98,0.82), rgba(22,28,37,0.98))", boxShadow: "0 -12px 28px rgba(0,0,0,0.34)" } }),
                 /* @__PURE__ */ C.jsx("div", { style: { position: "absolute", left: "50%", bottom: "-6%", width: "min(94%, 1100px)", height: "30%", transform: "translateX(-50%)", borderRadius: "46% 46% 0 0 / 88% 88% 0 0", background: "radial-gradient(circle at 50% 4%, rgba(92,103,120,0.6), rgba(25,31,41,0.98) 34%, rgba(8,11,17,1) 68%)", boxShadow: "0 -24px 60px rgba(0,0,0,0.46)" } }),
                 /* @__PURE__ */ C.jsx("div", { style: { position: "absolute", left: "50%", bottom: "11%", width: "min(22%, 220px)", height: "7%", transform: "translateX(-50%)", clipPath: "polygon(26% 100%, 74% 100%, 58% 0, 42% 0)", background: "linear-gradient(180deg, rgba(64,74,90,0.78), rgba(18,24,33,0.96))" } }),
-                [-160, -92, -24, 44, 112].map((J) => /* @__PURE__ */ C.jsx("div", { style: { position: "absolute", left: `calc(50% + ${J}px)`, bottom: "7%", width: J === -24 ? 84 : 72, height: J === -24 ? 84 : 72, transform: "translateX(-50%)", borderRadius: "50%", background: "radial-gradient(circle at 50% 40%, rgba(20,27,35,0.98), rgba(5,8,13,1) 74%)", border: "1px solid rgba(154,172,192,0.2)", boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.04)" } }, `cockpit-gauge-${J}`)),
+                [
+                  { offset: -160, label: "IAS", angle: AA((kl(i.speed) - 140) * 1.15, -126, 126) },
+                  { offset: -92, label: "ALT", angle: oA % 100 / 100 * 360 - 180 },
+                  { offset: -24, label: "ATT", angle: i.roll * 57.3 },
+                  { offset: 44, label: "HDG", angle: Pu(i.heading) - 180 },
+                  { offset: 112, label: "VSI", angle: AA(i.verticalVelocity * 8, -126, 126) }
+                ].map((J) => /* @__PURE__ */ C.jsxs("div", { style: { position: "absolute", left: `calc(50% + ${J.offset}px)`, bottom: "7%", width: J.offset === -24 ? 84 : 72, height: J.offset === -24 ? 84 : 72, transform: "translateX(-50%)", borderRadius: "50%", background: "radial-gradient(circle, rgba(12,18,26,0.96) 0 56%, transparent 57%), repeating-conic-gradient(from -2deg, rgba(207,224,238,0.5) 0 1deg, transparent 1deg 15deg)", border: "1px solid rgba(154,172,192,0.28)", boxShadow: "inset 0 0 0 4px rgba(2,5,9,0.74), 0 3px 10px rgba(0,0,0,0.32)" }, children: [
+                  /* @__PURE__ */ C.jsx("div", { style: { position: "absolute", left: "50%", top: "50%", width: 2, height: "31%", borderRadius: 999, background: "#f6c453", boxShadow: "0 0 5px rgba(246,196,83,0.35)", transformOrigin: "50% 100%", transform: `translate(-50%, -100%) rotate(${J.angle}deg)` } }),
+                  /* @__PURE__ */ C.jsx("div", { style: { position: "absolute", left: "50%", top: "50%", width: 6, height: 6, borderRadius: "50%", transform: "translate(-50%, -50%)", background: "#dce7ef", border: "2px solid #263340" } }),
+                  /* @__PURE__ */ C.jsx("div", { style: { position: "absolute", left: "50%", bottom: "15%", transform: "translateX(-50%)", fontSize: 7, fontWeight: 800, letterSpacing: 1.1, color: "rgba(218,231,241,0.7)" }, children: J.label })
+                ] }, `cockpit-gauge-${J.offset}`)),
                 /* @__PURE__ */ C.jsx("div", { style: { position: "absolute", left: "50%", top: "9%", width: "min(62%, 560px)", height: "14%", transform: "translateX(-50%)", background: "linear-gradient(180deg, rgba(180,215,255,0.07), rgba(180,215,255,0))", borderRadius: "0 0 42px 42px" } })
               ] }) : null,
               /* @__PURE__ */ C.jsxs("div", { className: "flight-objective", style: { position: "absolute", top: Z ? 10 : 18, left: "50%", transform: "translateX(-50%)", width: Z ? "min(calc(100% - 16px), 332px)" : void 0, minWidth: Z ? 0 : N ? 360 : 300, maxWidth: Z ? "calc(100% - 16px)" : "min(64vw, 520px)", padding: Z ? "10px 12px" : N ? "12px 16px" : "10px 14px", borderRadius: 16, background: "rgba(6,11,18,0.68)", border: "1px solid rgba(255,255,255,0.1)", backdropFilter: "blur(10px)", textAlign: "center" }, children: [
