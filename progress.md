@@ -374,3 +374,44 @@ Original prompt: Remove clutter from the games on the website. Right now they do
 - The blog generator builds four published posts and features the travel entry first.
 - Mobile and desktop browser checks confirm the article renders without horizontal overflow.
 - The generated article contains six paragraphs and the expected Travel and Outside work tags.
+
+## Flight Sim realism UI pass
+
+- New request: begin improving Flight Sim realism with a focused UI overhaul.
+- Reframed the game as an N172GM approach-training console with a technical mission header, avionics status bar, tactile controls, instrument-style HUD readouts, and a structured preflight briefing.
+- Preserved the existing WebGL scene, flight model, cameras, flight director, autopilot, and approach logic.
+- Added stable CSS hooks around the screen, HUD, briefing, status message, and toolbar so the exported game can be maintained without rewriting its simulation code.
+- Kept the deterministic game-state hooks available across React lifecycle cleanup so automated flight checks remain reliable.
+
+## Flight Sim realism UI TODO
+
+- None for the initial realism-focused UI pass.
+
+## Flight Sim realism UI verification
+
+- The required Playwright game client completed two deterministic flight iterations with synchronized state and no console or page errors.
+- Right-bank and pitch-up inputs changed roll from 3.2 to 7.7 degrees and pitch from -0.6 to 2.0 degrees while remaining in stable active flight.
+- Desktop start, active chase, active cockpit, and expanded-control states were visually inspected.
+- The 390px briefing fits completely inside the display, all primary controls remain available, the compact HUD avoids desktop overlay collisions, and horizontal overflow is absent.
+- `node --check` and `git diff --check` pass for the updated flight-sim files.
+
+## Lightweight flight scenario lab
+
+- Used the local Scenario project as architectural inspiration while keeping employer-specific integrations and data out of the public site.
+- Added three selectable, deterministic sorties: Stabilized Visual, Crosswind Correction, and Engine Power Loss.
+- Connected scenario selection to the real browser flight model: the crosswind profile adds a sustained lateral wind, while the emergency profile triggers a timed power loss with reduced thrust and RPM.
+- Added a static Scenario Monitor Engine that evaluates telemetry-driven phases and assertions, records first-failure evidence, and reports standby, running, pass, or fail states.
+- Added live IAS, altitude, vertical speed, bank, cross-track deviation, wind, engine health, and G-load telemetry alongside requirement and event streams.
+- Reframed the project card as Flight Scenario Lab so the portfolio description matches the expanded experience.
+
+## Lightweight flight scenario lab TODO
+
+- None for the initial public-safe scenario demonstrator.
+
+## Lightweight flight scenario lab verification
+
+- The required Playwright game client completed deterministic crosswind and engine-loss runs with no console or page errors.
+- The crosswind run produced 15.4 kt of wind; the engine-loss run triggered at 13.0 simulated seconds and exposed 12% engine health plus the emergency flight message.
+- The page-level regression pass confirmed all three selectors, scenario-specific preflight copy, disabled selection during active flight, monitor phase advancement, and a passing engine-fault detection assertion.
+- Full-page desktop and 390px mobile captures were visually inspected with no horizontal overflow or dead space between the simulator and monitor.
+- `node --check` and `git diff --check` pass for the scenario monitor and exported simulator bundle.

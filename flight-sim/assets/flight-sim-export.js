@@ -11339,8 +11339,12 @@ function t9(u, a) {
   return u < a.nextRing ? D("#5de08a") : u > a.nextRing ? D("#8bc4ff") : DA(D("#ffdc6e"), D("#ff9c43"), (Math.sin(a.time * 3.4) + 1) * 0.5);
 }
 function lv() {
+  const u = typeof window < "u" ? window.flightScenarioSelection || "stabilized-approach" : "stabilized-approach";
   return {
     mode: "title",
+    scenarioId: u,
+    engineHealth: 1,
+    scenarioFaultActive: !1,
     cameraMode: "chase",
     position: { ...uP },
     speed: 84,
@@ -11373,7 +11377,7 @@ function lv() {
     time: 0,
     score: 0,
     nextRing: 0,
-    message: "Three gates. One runway. Keep the approach smooth.",
+    message: "Three gates. One runway. Maintain a stabilized visual approach.",
     stall: !1,
     wind: s(0, 0, 0),
     camera: {
@@ -11984,7 +11988,7 @@ function O9(u, a) {
   return c;
 }
 function k9() {
-  const u = Dt.useRef(null), a = Dt.useRef(null), c = Dt.useRef(null), g = Dt.useRef({}), r = Dt.useRef(lv()), B = Dt.useRef(null), E = Dt.useRef("off"), T = Dt.useRef(null), [i, o] = Dt.useState(lv()), [I, b] = Dt.useState(null), [h, q] = Dt.useState("off"), [x, Y] = Dt.useState(() => PP()), [F, PA] = Dt.useState(!1), [aA, K] = Dt.useState(!1), N = h !== "off", R = h === "immersive", G = N && x.width <= 900, Z = G && x.width <= 640, oA = Math.max(0, i.position.y - uA(i.position.x, i.position.z)), $ = cu(i.position), FA = Pu(i.heading), SA = Pu(i.selectedHeading), V = AA(gi(i.selectedHeading, i.heading) * 57.3 * 0.6, -84, 84), nA = i.pitch * 57.3, xA = cv(i) * 57.3, _A = AA((nA - xA) * 5.2, -70, 70), S = AA(i.slip * 78, -60, 60), X = AA((nA - i.commandPitch * 57.3) * 5.2, -72, 72), vA = AA($.localizerDots * 18, -62, 62), yA = AA($.glideslopeDots * 18, -62, 62), mA = Math.abs($.localizerMeters) < 2 ? "LOC centered" : `LOC ${Math.abs($.localizerDots).toFixed(1)} ${$.localizerMeters > 0 ? "R" : "L"}`, d = Math.abs($.glideslopeDeviation) < 2 ? "GS on path" : `GS ${Math.abs($.glideslopeDeviation).toFixed(0)}m ${$.glideslopeDeviation > 0 ? "high" : "low"}`, k = Array.from({ length: 9 }, (J, TA) => {
+  const u = Dt.useRef(null), a = Dt.useRef(null), c = Dt.useRef(null), g = Dt.useRef({}), r = Dt.useRef(lv()), B = Dt.useRef(null), E = Dt.useRef("off"), T = Dt.useRef(null), [i, o] = Dt.useState(lv()), [I, b] = Dt.useState(null), [h, q] = Dt.useState("off"), [x, Y] = Dt.useState(() => PP()), [F, PA] = Dt.useState(!1), [aA, K] = Dt.useState(!1), N = h !== "off", R = h === "immersive", G = x.width <= 900, Z = x.width <= 640, oA = Math.max(0, i.position.y - uA(i.position.x, i.position.z)), $ = cu(i.position), FA = Pu(i.heading), SA = Pu(i.selectedHeading), V = AA(gi(i.selectedHeading, i.heading) * 57.3 * 0.6, -84, 84), nA = i.pitch * 57.3, xA = cv(i) * 57.3, _A = AA((nA - xA) * 5.2, -70, 70), S = AA(i.slip * 78, -60, 60), X = AA((nA - i.commandPitch * 57.3) * 5.2, -72, 72), vA = AA($.localizerDots * 18, -62, 62), yA = AA($.glideslopeDots * 18, -62, 62), mA = Math.abs($.localizerMeters) < 2 ? "LOC centered" : `LOC ${Math.abs($.localizerDots).toFixed(1)} ${$.localizerMeters > 0 ? "R" : "L"}`, d = Math.abs($.glideslopeDeviation) < 2 ? "GS on path" : `GS ${Math.abs($.glideslopeDeviation).toFixed(0)}m ${$.glideslopeDeviation > 0 ? "high" : "low"}`, k = Array.from({ length: 9 }, (J, TA) => {
     const nt = (TA - 4) * 10, EA = (Math.round(FA / 10) * 10 + nt + 360) % 360;
     return {
       offset: nt * 6,
@@ -12099,8 +12103,8 @@ function k9() {
     });
   }
   function Vl(J = "flying") {
-    const TA = lv();
-    TA.mode = J, TA.message = J === "title" ? "Real 3D pass: WebGL scene, chase/cockpit cameras, and now a sim-style flight director plus autopilot layer." : "Fly the gates, keep your energy under control, and land on the centerline.", r.current = TA, Et();
+    const TA = lv(), nt = typeof window < "u" && Array.isArray(window.flightScenarioCatalog) ? window.flightScenarioCatalog.find((EA) => EA.id === TA.scenarioId) : null;
+    TA.mode = J, TA.message = J === "title" ? "Aircraft configured for a visual approach. Review the profile, then begin the sortie." : nt?.launchMessage || "Fly the gates, manage your energy, and touch down on the centerline.", r.current = TA, Et();
   }
   function on() {
     Vl("flying");
@@ -12226,16 +12230,17 @@ function k9() {
       const Q = r.current;
       if (Q.mode === "flying") {
         const IA = (g.current.arrowup || g.current.w ? 1 : 0) - (g.current.arrowdown || g.current.s ? 1 : 0), HA = (g.current.arrowright || g.current.d ? 1 : 0) - (g.current.arrowleft || g.current.a ? 1 : 0), jt = (g.current.e ? 1 : 0) - (g.current.q ? 1 : 0), At = (g.current.pageup || g.current["throttle-up"] ? 1 : 0) - (g.current.pagedown || g.current["throttle-down"] ? 1 : 0), ot = (g.current.r || g.current["trim-up"] ? 1 : 0) - (g.current.g || g.current["trim-down"] ? 1 : 0), Ie = AA(Q.speed / 64, 0.42, 1.18), al = VB(Q.position, Q.time), Me = Q.flaps * 0.5, Ja = YB + Q.trim * 0.34, zn = cu(Q.position), Zl = gi(Q.selectedHeading, Q.heading), sP = Q.selectedAltitude - Q.position.y, Le = Q.lateralMode === "wlv" ? 0 : Q.lateralMode === "hdg" ? AA(Zl * 1.85, -0.42, 0.42) : AA(-zn.localizerDots * 0.12 - Q.slip * 0.05 - Q.position.x * 8e-4, -0.4, 0.4), qe = Q.verticalMode === "alt" ? AA(sP * 65e-4 - Q.verticalVelocity * 0.03 + 0.01, -0.14, 0.18) : AA((zn.desiredAltitude - Q.position.y) * 85e-4 - Q.verticalVelocity * 0.032 + 0.02, -0.16, 0.18);
+        Q.scenarioId === "crosswind-correction" && (al.x -= 7.2, al.z += 0.8), Q.scenarioId === "engine-power-loss" && Q.time >= 12 && !Q.scenarioFaultActive && (Q.scenarioFaultActive = !0, Q.engineHealth = 0.12, Q.autopilot = !1, Q.commandRoll = 0, Q.commandPitch = 0, Q.message = "ENGINE POWER LOSS. Maintain glide speed and continue toward the runway.");
         Q.commandRoll = Q.flightDirector ? Le : 0, Q.commandPitch = Q.flightDirector ? qe : 0, Q.autopilot && Math.abs(IA) + Math.abs(HA) + Math.abs(jt) > 1.2 && (Q.autopilot = !1, Q.message = "Autopilot disconnected. You have the airplane.");
         const Xl = Q.autopilot ? AA((Le - Q.roll) * 2.8 - Q.rollRate * 0.45, -1, 1) : 0, cl = Q.autopilot ? AA((qe - Q.pitch) * 3.1 - Q.pitchRate * 0.4, -1, 1) : 0, vt = Q.autopilot && Q.lateralMode === "apr" ? AA(-Q.slip * 1.4 - zn.localizerDots * 0.08, -0.35, 0.35) : 0, fu = AA(IA + cl, -1, 1), Qn = AA(HA + Xl, -1, 1), fe = AA(jt + vt, -1, 1), vl = (Math.sin(Q.time * 1.42 + Q.position.x * 14e-4) + Math.cos(Q.time * 0.96 + Q.position.z * 18e-4)) * 8e-3, Na = (Math.cos(Q.time * 1.14 + Q.position.z * 12e-4) + Math.sin(Q.time * 0.88 + Q.position.x * 11e-4)) * 0.012;
-        Q.wind = al, Q.rollRate += (Qn * 1.82 * Ie - Q.rollRate * 2.12 - Q.roll * 0.28 + Q.slip * 0.18 - fe * 0.06 + Na) * sA, Q.pitchRate += (fu * 0.98 * Ie - Q.pitchRate * 1.78 - (Q.pitch - Ja) * 0.18 + vl) * sA, Q.yawRate += (fe * 0.88 * Ie - Q.yawRate * 1.78 - Q.slip * 0.78 - Qn * 0.14 + Math.sin(Q.roll) * 0.2) * sA, Q.roll += Q.rollRate * sA, Q.roll = AA(Q.roll, -1.02, 1.02), Q.pitch += Q.pitchRate * sA, Q.pitch = AA(Q.pitch, -0.24, 0.34), Q.throttle = AA(Q.throttle + At * 0.4 * sA, 0, 1), Q.trim = AA(Q.trim + ot * 0.085 * sA, -0.18, 0.18), Q.engineRpm = RA(Q.engineRpm, 900 + Q.throttle * 2200 + Q.speed * 12.5, 0.08), Q.brakes = 0, Q.fuel = AA(Q.fuel - Q.throttle * sA * 1.55, 0, 100);
+        Q.wind = al, Q.rollRate += (Qn * 1.82 * Ie - Q.rollRate * 2.12 - Q.roll * 0.28 + Q.slip * 0.18 - fe * 0.06 + Na) * sA, Q.pitchRate += (fu * 0.98 * Ie - Q.pitchRate * 1.78 - (Q.pitch - Ja) * 0.18 + vl) * sA, Q.yawRate += (fe * 0.88 * Ie - Q.yawRate * 1.78 - Q.slip * 0.78 - Qn * 0.14 + Math.sin(Q.roll) * 0.2) * sA, Q.roll += Q.rollRate * sA, Q.roll = AA(Q.roll, -1.02, 1.02), Q.pitch += Q.pitchRate * sA, Q.pitch = AA(Q.pitch, -0.24, 0.34), Q.throttle = AA(Q.throttle + At * 0.4 * sA, 0, 1), Q.trim = AA(Q.trim + ot * 0.085 * sA, -0.18, 0.18), Q.engineRpm = RA(Q.engineRpm, 760 + (140 + Q.throttle * 2200 + Q.speed * 12.5) * Q.engineHealth, 0.08), Q.brakes = 0, Q.fuel = AA(Q.fuel - Q.throttle * sA * 1.55 * Q.engineHealth, 0, 100);
         const Je = Q.position.y - uA(Q.position.x, Q.position.z);
         Q.slip = AA(
           Q.slip + (Math.sin(Q.roll) * 0.34 - Q.yawRate * 0.48 - fe * 0.2 - Q.slip * 2.1 + Qn * 0.02) * sA,
           -0.5,
           0.5
         );
-        const Tn = Math.atan2(Q.verticalVelocity - al.y, Math.max(22, Q.speed)), gl = AA(Q.pitch - Tn, -0.24, 0.44), sl = AA((Math.abs(gl) - ui) / 0.12, 0, 1), En = Me * 0.22, Be = Me * 0.08 + Me * Me * 0.03, Ot = AA(OB + kB * gl + En, -0.7, ai + Me * 0.2), Bu = Math.sign(gl || 1) * RA(ai + Me * 0.16, LB + Me * 0.08, sl), rP = RA(Ot, Bu, sl), wn = Math.abs(Q.position.x) <= Te + 20 && Q.position.z <= GA + 160 && Q.position.z >= ht - 60 && Je < 32 ? AA((32 - Je) / 32, 0, 1) : 0, iP = 0.5 * SB * Q.speed * Q.speed, dn = qB + JB * rP * rP + Be + sl * NB + Math.abs(Q.slip) * xB, ou = RA(hB, HB, Q.throttle), yt = iP * Pi * rP * (1 + wn * 0.08), fP = iP * Pi * Math.max(0.02, dn - wn * 0.03), Cu = (ou * Math.cos(gl) - fP) / Ua - ja * Math.sin(Tn), BP = (yt * Math.cos(Q.roll) + ou * Math.sin(Q.pitch)) / Ua - ja - Q.verticalVelocity * 0.035 + al.y * 0.02, Ne = Math.max(24, Q.speed * Math.cos(Tn)), Du = yt * Math.sin(Q.roll) / Ua - Q.slip * 3.2, zu = ja * Math.tan(Q.roll) / Math.max(34, Ne), rl = RA(Du / Ne, zu, 0.68) + Q.yawRate * 0.12;
+        const Tn = Math.atan2(Q.verticalVelocity - al.y, Math.max(22, Q.speed)), gl = AA(Q.pitch - Tn, -0.24, 0.44), sl = AA((Math.abs(gl) - ui) / 0.12, 0, 1), En = Me * 0.22, Be = Me * 0.08 + Me * Me * 0.03, Ot = AA(OB + kB * gl + En, -0.7, ai + Me * 0.2), Bu = Math.sign(gl || 1) * RA(ai + Me * 0.16, LB + Me * 0.08, sl), rP = RA(Ot, Bu, sl), wn = Math.abs(Q.position.x) <= Te + 20 && Q.position.z <= GA + 160 && Q.position.z >= ht - 60 && Je < 32 ? AA((32 - Je) / 32, 0, 1) : 0, iP = 0.5 * SB * Q.speed * Q.speed, dn = qB + JB * rP * rP + Be + sl * NB + Math.abs(Q.slip) * xB, ou = RA(hB, HB, Q.throttle) * Q.engineHealth, yt = iP * Pi * rP * (1 + wn * 0.08), fP = iP * Pi * Math.max(0.02, dn - wn * 0.03), Cu = (ou * Math.cos(gl) - fP) / Ua - ja * Math.sin(Tn), BP = (yt * Math.cos(Q.roll) + ou * Math.sin(Q.pitch)) / Ua - ja - Q.verticalVelocity * 0.035 + al.y * 0.02, Ne = Math.max(24, Q.speed * Math.cos(Tn)), Du = yt * Math.sin(Q.roll) / Ua - Q.slip * 3.2, zu = ja * Math.tan(Q.roll) / Math.max(34, Ne), rl = RA(Du / Ne, zu, 0.68) + Q.yawRate * 0.12;
         if (Q.speed = AA(Q.speed + Cu * sA, 38, 112), Q.verticalVelocity = AA(Q.verticalVelocity + BP * sA, -24, 18), Q.heading = vi(Q.heading, Q.heading + rl * sA, 1), Q.angleOfAttack = gl, Q.gLoad = AA(yt * Math.cos(Q.roll) / (Ua * ja), 0, 3.4), Q.stall = Math.abs(gl) > ui, Math.abs(Q.position.x) <= Te + 16 && Q.position.z <= GA + 40 && Q.position.z >= ht - 40 && Je < 20 && Q.pitch > 0) {
           const oe = AA((20 - Je) / 20, 0, 1) * (0.22 + Me * 0.04);
           Q.verticalVelocity = RA(Q.verticalVelocity, -1.6 + Q.pitch * 3.8, oe);
@@ -12264,7 +12269,7 @@ function k9() {
         } else (Q.position.x < Di + 120 || Q.position.x > zi - 120 || Q.position.z < ql + 180 || Q.position.z > fn - 180 || Q.position.y > 1800) && pe("crashed", "You left the modeled flight region. Turn back toward the valley and the runway.");
       } else if (Q.mode === "rollout") {
         const IA = (g.current.e ? 1 : 0) - (g.current.q ? 1 : 0) + ((g.current.arrowright || g.current.d ? 1 : 0) - (g.current.arrowleft || g.current.a ? 1 : 0)) * 0.5, HA = g.current.b || g.current.brake ? 1 : 0, jt = (g.current.pageup || g.current["throttle-up"] ? 1 : 0) - (g.current.pagedown || g.current["throttle-down"] ? 1 : 0);
-        Q.brakes = HA, Q.throttle = AA(Q.throttle + jt * 0.25 * sA, 0, 0.3), Q.engineRpm = RA(Q.engineRpm, 760 + Q.throttle * 1150, 0.08);
+        Q.brakes = HA, Q.throttle = AA(Q.throttle + jt * 0.25 * sA, 0, 0.3), Q.engineRpm = RA(Q.engineRpm, 760 + Q.throttle * 1150 * Q.engineHealth, 0.08);
         const At = IA * 0.42;
         Q.heading = vi(Q.heading, Q.heading + At * sA * AA(Q.groundSpeed / 22, 0.35, 1.2), 1);
         const ot = 3.8 + Q.brakes * 10.5 + Math.abs(At) * 1.6;
@@ -12279,6 +12284,12 @@ function k9() {
       coordinateSystem: { x: "right", y: "up", z: "toward runway when decreasing" },
       mode: r.current.mode,
       cameraMode: r.current.cameraMode,
+      scenario: {
+        id: r.current.scenarioId,
+        elapsedS: Number(r.current.time.toFixed(2)),
+        engineHealth: Number(r.current.engineHealth.toFixed(2)),
+        faultActive: r.current.scenarioFaultActive
+      },
       plane: {
         x: Number(r.current.position.x.toFixed(1)),
         y: Number(r.current.position.y.toFixed(1)),
@@ -12356,7 +12367,7 @@ function k9() {
       vP(1 / 60), Dn(), c.current = window.requestAnimationFrame(gP);
     };
     return Dn(), nt || (c.current = window.requestAnimationFrame(gP)), () => {
-      EA = !0, c.current != null && window.cancelAnimationFrame(c.current), B.current?.renderer.dispose(), B.current = null, delete TA.render_game_to_text, delete TA.advanceTime;
+      EA = !0, c.current != null && window.cancelAnimationFrame(c.current), B.current?.renderer.dispose(), B.current = null;
     };
   }, []), Dt.useEffect(() => {
     const J = (nt) => {
@@ -12387,34 +12398,35 @@ function k9() {
   }, []), /* @__PURE__ */ C.jsxs("div", { className: "workHub", children: [
     /* @__PURE__ */ C.jsxs("div", { className: "workHubHeader", children: [
       /* @__PURE__ */ C.jsxs("div", { children: [
-        /* @__PURE__ */ C.jsx("div", { className: "workHubTitle", children: "Gremlin Approach" }),
-        /* @__PURE__ */ C.jsx("div", { className: "workHubSubtitle", children: "Fly three gates, settle onto the runway, and keep the approach smooth." })
+        /* @__PURE__ */ C.jsx("div", { className: "flight-ident", children: "Gremlin Aviation // N172GM" }),
+        /* @__PURE__ */ C.jsx("div", { className: "workHubTitle", children: "Approach Training Console" }),
+        /* @__PURE__ */ C.jsx("div", { className: "workHubSubtitle", children: "Runway 18 visual approach // Three checkpoints // Full-stop landing" })
       ] })
     ] }),
     /* @__PURE__ */ C.jsxs("div", { className: "workHubGrid", style: { marginTop: 12, alignItems: "start" }, children: [
-      /* @__PURE__ */ C.jsxs("section", { ref: a, className: "panel", style: He, children: [
-        /* @__PURE__ */ C.jsxs("div", { className: "panelHeader", children: [
+      /* @__PURE__ */ C.jsxs("section", { ref: a, className: "panel flight-deck-panel", style: He, children: [
+        /* @__PURE__ */ C.jsxs("div", { className: "panelHeader flight-command-bar", children: [
           /* @__PURE__ */ C.jsxs("div", { children: [
-            /* @__PURE__ */ C.jsx("div", { className: "panelTitle", children: "Flight deck" })
+            /* @__PURE__ */ C.jsx("div", { className: "panelTitle", children: "N172GM // Flight Deck" })
           ] }),
-          /* @__PURE__ */ C.jsxs("div", { style: { display: "flex", gap: 8, flexWrap: "wrap" }, children: [
-            /* @__PURE__ */ C.jsx("button", { id: "flight-start", onClick: on, children: i.mode === "flying" ? "Restart" : "Start" }),
-            /* @__PURE__ */ C.jsx("button", { onClick: Ae, children: i.cameraMode === "cockpit" ? "Chase view" : "Cockpit view" }),
+          /* @__PURE__ */ C.jsxs("div", { className: "flight-toolbar", style: { display: "flex", gap: 8, flexWrap: "wrap" }, children: [
+            /* @__PURE__ */ C.jsx("button", { id: "flight-start", onClick: on, children: i.mode === "flying" ? "Reset Flight" : "Fly" }),
+            /* @__PURE__ */ C.jsx("button", { onClick: Ae, children: i.cameraMode === "cockpit" ? "External View" : "Pilot View" }),
             /* @__PURE__ */ C.jsx("button", { onClick: () => {
               K(!aA), PA(!aA);
-            }, children: aA ? "Hide flight deck" : "Show flight deck" }),
+            }, children: aA ? "Hide Controls" : "Show Controls" }),
             /* @__PURE__ */ C.jsx("button", { onClick: () => {
               gu();
             }, children: N ? "Exit Fullscreen" : "Fullscreen" })
           ] })
         ] }),
         /* @__PURE__ */ C.jsxs("div", { className: "panelBody", style: de, children: [
-          /* @__PURE__ */ C.jsx("div", { style: xl, children: /* @__PURE__ */ C.jsxs("div", { style: ul, children: [
+          /* @__PURE__ */ C.jsx("div", { className: "flight-screen-bezel", style: xl, children: /* @__PURE__ */ C.jsxs("div", { className: "flight-viewport", style: ul, children: [
             /* @__PURE__ */ C.jsx("canvas", { ref: u, style: { width: "100%", height: "100%", display: "block", background: "#0d1523" } }),
             I ? /* @__PURE__ */ C.jsx("div", { style: { position: "absolute", inset: 0, display: "grid", placeItems: "center", background: "rgba(10,15,24,0.82)", textAlign: "center", padding: 24 }, children: /* @__PURE__ */ C.jsxs("div", { children: [
               /* @__PURE__ */ C.jsx("div", { style: { fontSize: 22, fontWeight: 700 }, children: "Renderer unavailable" }),
               /* @__PURE__ */ C.jsx("div", { style: { marginTop: 10, opacity: 0.82 }, children: I })
-            ] }) }) : /* @__PURE__ */ C.jsxs("div", { style: { position: "absolute", inset: 0, pointerEvents: "none" }, children: [
+            ] }) }) : /* @__PURE__ */ C.jsxs("div", { className: "flight-hud", style: { position: "absolute", inset: 0, pointerEvents: "none" }, children: [
               Nl ? /* @__PURE__ */ C.jsxs("div", { style: { position: "absolute", inset: 0, overflow: "hidden" }, children: [
                 /* @__PURE__ */ C.jsx("div", { style: { position: "absolute", inset: 0, background: "radial-gradient(circle at 50% 44%, rgba(255,255,255,0.07), rgba(12,16,24,0.03) 34%, rgba(8,12,18,0.18) 100%)" } }),
                 /* @__PURE__ */ C.jsx("div", { style: { position: "absolute", inset: "0 0 auto 0", height: "17%", background: "linear-gradient(180deg, rgba(7,10,15,0.98), rgba(11,16,24,0.56) 70%, rgba(11,16,24,0))" } }),
@@ -12456,8 +12468,8 @@ function k9() {
                 [-160, -92, -24, 44, 112].map((J) => /* @__PURE__ */ C.jsx("div", { style: { position: "absolute", left: `calc(50% + ${J}px)`, bottom: "7%", width: J === -24 ? 84 : 72, height: J === -24 ? 84 : 72, transform: "translateX(-50%)", borderRadius: "50%", background: "radial-gradient(circle at 50% 40%, rgba(20,27,35,0.98), rgba(5,8,13,1) 74%)", border: "1px solid rgba(154,172,192,0.2)", boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.04)" } }, `cockpit-gauge-${J}`)),
                 /* @__PURE__ */ C.jsx("div", { style: { position: "absolute", left: "50%", top: "9%", width: "min(62%, 560px)", height: "14%", transform: "translateX(-50%)", background: "linear-gradient(180deg, rgba(180,215,255,0.07), rgba(180,215,255,0))", borderRadius: "0 0 42px 42px" } })
               ] }) : null,
-              /* @__PURE__ */ C.jsxs("div", { style: { position: "absolute", top: Z ? 10 : 18, left: "50%", transform: "translateX(-50%)", width: Z ? "min(calc(100% - 16px), 332px)" : void 0, minWidth: Z ? 0 : N ? 360 : 300, maxWidth: Z ? "calc(100% - 16px)" : "min(64vw, 520px)", padding: Z ? "10px 12px" : N ? "12px 16px" : "10px 14px", borderRadius: 16, background: "rgba(6,11,18,0.68)", border: "1px solid rgba(255,255,255,0.1)", backdropFilter: "blur(10px)", textAlign: "center" }, children: [
-                /* @__PURE__ */ C.jsx("div", { style: { fontSize: 11, letterSpacing: 1.6, textTransform: "uppercase", opacity: 0.72 }, children: "Objective" }),
+              /* @__PURE__ */ C.jsxs("div", { className: "flight-objective", style: { position: "absolute", top: Z ? 10 : 18, left: "50%", transform: "translateX(-50%)", width: Z ? "min(calc(100% - 16px), 332px)" : void 0, minWidth: Z ? 0 : N ? 360 : 300, maxWidth: Z ? "calc(100% - 16px)" : "min(64vw, 520px)", padding: Z ? "10px 12px" : N ? "12px 16px" : "10px 14px", borderRadius: 16, background: "rgba(6,11,18,0.68)", border: "1px solid rgba(255,255,255,0.1)", backdropFilter: "blur(10px)", textAlign: "center" }, children: [
+                /* @__PURE__ */ C.jsx("div", { style: { fontSize: 11, letterSpacing: 1.6, textTransform: "uppercase", opacity: 0.72 }, children: "Next checkpoint" }),
                 /* @__PURE__ */ C.jsx("div", { style: { marginTop: 6, fontSize: Z ? 14 : N ? 16 : 14, fontWeight: 700 }, children: Ht }),
                 /* @__PURE__ */ C.jsx("div", { style: { marginTop: 10, height: 8, borderRadius: 999, background: "rgba(255,255,255,0.1)", overflow: "hidden" }, children: /* @__PURE__ */ C.jsx("div", { style: { width: `${se}%`, height: "100%", background: "linear-gradient(90deg, #67f0b6, #67a5ff)" } }) }),
                 /* @__PURE__ */ C.jsxs("div", { style: { marginTop: 8, display: "flex", justifyContent: "center", gap: Z ? 10 : 16, flexWrap: "wrap", fontSize: Z ? 11 : 12, opacity: 0.8 }, children: [
@@ -12467,11 +12479,11 @@ function k9() {
                     ft.length,
                     " gates"
                   ] }),
-                  /* @__PURE__ */ C.jsx("span", { children: Ee ? "terrain run live" : "stable approach" })
+                  /* @__PURE__ */ C.jsx("span", { children: Ee ? "terrain run active" : "approach stable" })
                 ] })
               ] }),
-              F ? null : /* @__PURE__ */ C.jsx("div", { style: { position: "absolute", left: Z ? 12 : 18, right: Z ? 12 : void 0, bottom: Z ? 64 : 72, display: "flex", gap: 8, flexWrap: "wrap", justifyContent: Z ? "center" : "flex-start", maxWidth: Z ? "none" : "min(56vw, 420px)" }, children: tA.map((J) => /* @__PURE__ */ C.jsx("span", { className: J.tone, children: J.label }, J.label)) }),
-              F ? /* @__PURE__ */ C.jsxs(C.Fragment, { children: [
+              F ? null : /* @__PURE__ */ C.jsx("div", { className: "flight-quick-instruments", style: { position: "absolute", left: Z ? 12 : 18, right: Z ? 12 : void 0, bottom: Z ? 64 : 72, display: "flex", gap: 8, flexWrap: "wrap", justifyContent: Z ? "center" : "flex-start", maxWidth: Z ? "none" : "min(56vw, 420px)" }, children: tA.map((J) => /* @__PURE__ */ C.jsx("span", { className: J.tone, children: J.label }, J.label)) }),
+              F && !Z ? /* @__PURE__ */ C.jsxs(C.Fragment, { children: [
                 /* @__PURE__ */ C.jsx("div", { style: { position: "absolute", top: Z ? 94 : N ? 108 : 102, left: "50%", transform: "translateX(-50%)", width: Z ? "min(calc(100% - 24px), 320px)" : "min(62vw, 380px)", padding: Z ? "8px 10px" : "8px 12px", borderRadius: 14, background: "rgba(6,11,18,0.6)", border: "1px solid rgba(255,255,255,0.08)", backdropFilter: "blur(10px)" }, children: /* @__PURE__ */ C.jsxs("div", { style: { position: "relative", height: 30, overflow: "hidden" }, children: [
                   k.map((J) => /* @__PURE__ */ C.jsxs("div", { style: { position: "absolute", left: `calc(50% + ${J.offset}px)`, top: 0, transform: "translateX(-50%)", textAlign: "center", opacity: J.major ? 0.92 : 0.56 }, children: [
                     /* @__PURE__ */ C.jsx("div", { style: { fontSize: 10, letterSpacing: 1.2, textTransform: "uppercase" }, children: J.label }),
@@ -12736,7 +12748,7 @@ function k9() {
                     children: /* @__PURE__ */ C.jsx("div", { style: { width: `${i.slip * 50 + 50}%`, height: "100%", background: "linear-gradient(90deg, rgba(255,113,113,0.85), rgba(104,255,203,0.9), rgba(255,113,113,0.85))" } })
                   }
                 ),
-                /* @__PURE__ */ C.jsxs("div", { style: { position: "absolute", left: 18, bottom: 72, display: "flex", gap: 8, flexWrap: "wrap", maxWidth: "min(54vw, 420px)" }, children: [
+                /* @__PURE__ */ C.jsxs("div", { className: "flight-systems-strip", style: { position: "absolute", left: 18, bottom: 72, display: "flex", gap: 8, flexWrap: "wrap", maxWidth: "min(54vw, 420px)" }, children: [
                   /* @__PURE__ */ C.jsxs("div", { style: { padding: "9px 12px", borderRadius: 999, background: Ee ? "rgba(69,167,121,0.88)" : "rgba(8,14,22,0.68)", border: "1px solid rgba(255,255,255,0.1)", fontSize: 12 }, children: [
                     "Terrain Run ",
                     Ee ? `${i.terrainRunTime.toFixed(1)}s` : "standby"
@@ -12762,32 +12774,32 @@ function k9() {
                   ] })
                 ] })
               ] }) : null,
-              ["title", "landed", "crashed"].includes(i.mode) ? /* @__PURE__ */ C.jsx("div", { style: { position: "absolute", inset: 0, display: "grid", placeItems: "center", background: "rgba(4,7,12,0.38)" }, children: /* @__PURE__ */ C.jsxs("div", { style: { width: "min(92%, 460px)", padding: N ? "26px 28px" : "22px 24px", borderRadius: 24, background: we, border: "1px solid rgba(255,255,255,0.14)", boxShadow: "0 24px 70px rgba(0,0,0,0.32)", textAlign: "center" }, children: [
-                /* @__PURE__ */ C.jsx("div", { style: { fontSize: 12, letterSpacing: 1.8, textTransform: "uppercase", opacity: 0.76 }, children: i.mode === "title" ? "Flight Deck Ready" : i.mode === "landed" ? "Runway Complete" : "Flight Lost" }),
-                /* @__PURE__ */ C.jsx("div", { style: { marginTop: 10, fontSize: N ? 34 : 30, fontWeight: 800 }, children: i.mode === "title" ? "Gremlin Approach" : i.mode === "landed" ? "Touchdown Logged" : "Reset The Pattern" }),
-                /* @__PURE__ */ C.jsx("div", { style: { marginTop: 12, fontSize: N ? 15 : 14, lineHeight: 1.6, opacity: 0.9 }, children: i.message }),
-                false ? /* @__PURE__ */ C.jsxs("div", { style: { marginTop: 18, display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: 10, textAlign: "left" }, children: [
+              ["title", "landed", "crashed"].includes(i.mode) ? /* @__PURE__ */ C.jsx("div", { className: "preflight-overlay", style: { position: "absolute", inset: 0, display: "grid", placeItems: "center", background: "rgba(4,7,12,0.38)" }, children: /* @__PURE__ */ C.jsxs("div", { className: "preflight-card", style: { width: "min(92%, 460px)", padding: N ? "26px 28px" : "22px 24px", borderRadius: 24, background: we, border: "1px solid rgba(255,255,255,0.14)", boxShadow: "0 24px 70px rgba(0,0,0,0.32)", textAlign: "center" }, children: [
+                /* @__PURE__ */ C.jsx("div", { className: "preflight-kicker", style: { fontSize: 12, letterSpacing: 1.8, textTransform: "uppercase", opacity: 0.76 }, children: i.mode === "title" ? "Preflight Briefing" : i.mode === "landed" ? "Runway Vacated" : "Aircraft Lost" }),
+                /* @__PURE__ */ C.jsx("div", { className: "preflight-title", style: { marginTop: 10, fontSize: N ? 34 : 30, fontWeight: 800 }, children: i.mode === "title" ? "Runway 18 Visual" : i.mode === "landed" ? "Full Stop Complete" : "Reset The Pattern" }),
+                /* @__PURE__ */ C.jsx("div", { className: "preflight-description", style: { marginTop: 12, fontSize: N ? 15 : 14, lineHeight: 1.6, opacity: 0.9 }, children: i.message }),
+                i.mode === "title" ? /* @__PURE__ */ C.jsxs("div", { className: "preflight-profile", style: { marginTop: 18, display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: 10, textAlign: "left" }, children: [
                   /* @__PURE__ */ C.jsxs("div", { style: { padding: "10px 12px", borderRadius: 16, background: "rgba(255,255,255,0.08)" }, children: [
-                    /* @__PURE__ */ C.jsx("div", { style: { fontSize: 11, letterSpacing: 1.3, textTransform: "uppercase", opacity: 0.72 }, children: "Mission" }),
-                    /* @__PURE__ */ C.jsx("div", { style: { marginTop: 6, fontSize: 13, fontWeight: 700 }, children: "Three gates, one runway" })
+                    /* @__PURE__ */ C.jsx("div", { style: { fontSize: 11, letterSpacing: 1.3, textTransform: "uppercase", opacity: 0.72 }, children: "Profile" }),
+                    /* @__PURE__ */ C.jsx("div", { style: { marginTop: 6, fontSize: 13, fontWeight: 700 }, children: "3 gates / full stop" })
                   ] }),
                   /* @__PURE__ */ C.jsxs("div", { style: { padding: "10px 12px", borderRadius: 16, background: "rgba(255,255,255,0.08)" }, children: [
-                    /* @__PURE__ */ C.jsx("div", { style: { fontSize: 11, letterSpacing: 1.3, textTransform: "uppercase", opacity: 0.72 }, children: "Playstyle" }),
-                    /* @__PURE__ */ C.jsx("div", { style: { marginTop: 6, fontSize: 13, fontWeight: 700 }, children: "Low passes + controlled flare" })
+                    /* @__PURE__ */ C.jsx("div", { style: { fontSize: 11, letterSpacing: 1.3, textTransform: "uppercase", opacity: 0.72 }, children: "Power" }),
+                    /* @__PURE__ */ C.jsx("div", { style: { marginTop: 6, fontSize: 13, fontWeight: 700 }, children: "Stable to touchdown" })
                   ] }),
                   /* @__PURE__ */ C.jsxs("div", { style: { padding: "10px 12px", borderRadius: 16, background: "rgba(255,255,255,0.08)" }, children: [
-                    /* @__PURE__ */ C.jsx("div", { style: { fontSize: 11, letterSpacing: 1.3, textTransform: "uppercase", opacity: 0.72 }, children: "Shortcuts" }),
-                    /* @__PURE__ */ C.jsx("div", { style: { marginTop: 6, fontSize: 13, fontWeight: 700 }, children: "F fullscreen, C camera, Z/X flaps" })
+                    /* @__PURE__ */ C.jsx("div", { style: { fontSize: 11, letterSpacing: 1.3, textTransform: "uppercase", opacity: 0.72 }, children: "Condition" }),
+                    /* @__PURE__ */ C.jsx("div", { style: { marginTop: 6, fontSize: 13, fontWeight: 700 }, children: "C camera / Z-X" })
                   ] })
                 ] }) : null,
                 /* @__PURE__ */ C.jsxs("div", { style: { marginTop: 18, display: "flex", justifyContent: "center", gap: 10, flexWrap: "wrap", pointerEvents: "auto" }, children: [
-                  /* @__PURE__ */ C.jsx("button", { id: "flight-overlay-start", onClick: on, children: i.mode === "title" ? "Launch Sortie" : "Fly Again" })
+                  /* @__PURE__ */ C.jsx("button", { id: "flight-overlay-start", onClick: on, children: i.mode === "title" ? "Begin Approach" : "Fly Again" })
                 ] })
               ] }) }) : null,
-              i.mode === "flying" ? /* @__PURE__ */ C.jsx("div", { style: { position: "absolute", left: 18, right: 18, bottom: 18, padding: N ? "12px 16px" : "10px 14px", borderRadius: 14, background: "rgba(7,12,20,0.62)", backdropFilter: "blur(10px)", border: "1px solid rgba(255,255,255,0.1)", fontSize: BA }, children: i.message }) : null
+              i.mode === "flying" ? /* @__PURE__ */ C.jsx("div", { className: "flight-radio-message", style: { position: "absolute", left: 18, right: 18, bottom: 18, padding: N ? "12px 16px" : "10px 14px", borderRadius: 14, background: "rgba(7,12,20,0.62)", backdropFilter: "blur(10px)", border: "1px solid rgba(255,255,255,0.1)", fontSize: BA }, children: i.message }) : null
             ] })
           ] }) }),
-          $t ? /* @__PURE__ */ C.jsxs("div", { style: { display: "grid", gridTemplateColumns: G ? "1fr" : N ? "1.1fr 1fr 1fr" : "repeat(3, minmax(0, 1fr))", gap: 10 }, children: [
+          $t ? /* @__PURE__ */ C.jsxs("div", { className: "flight-control-rack", style: { display: "grid", gridTemplateColumns: G ? "1fr" : N ? "1.1fr 1fr 1fr" : "repeat(3, minmax(0, 1fr))", gap: 10 }, children: [
             /* @__PURE__ */ C.jsxs("div", { style: { padding: "12px", borderRadius: 18, background: "rgba(10,16,27,0.72)", border: "1px solid rgba(255,255,255,0.08)", display: "grid", gap: 10 }, children: [
               /* @__PURE__ */ C.jsx("div", { style: { fontSize: 11, letterSpacing: 1.4, textTransform: "uppercase", opacity: 0.68 }, children: "Flight Controls" }),
               /* @__PURE__ */ C.jsxs("div", { style: { display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: 8 }, children: [

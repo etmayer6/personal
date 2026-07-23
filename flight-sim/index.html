@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Flight Sim | Ethan Mayer</title>
     <link rel="stylesheet" href="../style.css">
-    <link rel="stylesheet" href="./style.css">
     <link rel="stylesheet" href="./assets/flight-sim-export.css">
+    <link rel="stylesheet" href="./style.css?v=scenario-lab-1">
 </head>
 <body class="flight-site-body">
     <header class="flight-site-header">
@@ -25,15 +25,73 @@
 
     <main class="flight-site-shell">
         <section class="flight-site-app">
+            <section class="scenario-library" aria-labelledby="scenario-library-title">
+                <div class="scenario-library-copy">
+                    <p class="scenario-eyebrow">Scenario Lab / Static Demonstrator</p>
+                    <h1 id="scenario-library-title">Choose the test condition.</h1>
+                    <p>Select a deterministic sortie, fly the aircraft, and watch the monitor evaluate phases and requirements from live telemetry.</p>
+                </div>
+                <div class="scenario-options" data-role="scenario-options" role="radiogroup" aria-label="Available flight scenarios"></div>
+            </section>
+
             <div id="flight-sim-root" class="flight-site-root">
                 <div class="flight-site-loading">
-                    <div class="flight-site-loading-title">Loading Flight Sim...</div>
+                    <div class="flight-site-loading-kicker">Gremlin Aviation Systems</div>
+                    <div class="flight-site-loading-title">Initializing flight deck</div>
+                    <div class="flight-site-loading-track"><span></span></div>
                 </div>
             </div>
+
+            <section class="scenario-monitor" aria-labelledby="scenario-monitor-title">
+                <header class="scenario-monitor-header">
+                    <div>
+                        <p class="scenario-eyebrow">Deterministic evaluation</p>
+                        <h2 id="scenario-monitor-title">Scenario Monitor Engine</h2>
+                    </div>
+                    <div class="monitor-result" data-role="monitor-result" data-status="standby">
+                        <span>Run status</span>
+                        <strong>STANDBY</strong>
+                    </div>
+                </header>
+
+                <div class="monitor-summary" aria-label="Scenario run summary">
+                    <div><span>Scenario</span><strong data-role="monitor-scenario">--</strong></div>
+                    <div><span>Active phase</span><strong data-role="monitor-phase">Awaiting flight</strong></div>
+                    <div><span>Elapsed</span><strong data-role="monitor-elapsed">0.0 s</strong></div>
+                    <div><span>Evidence</span><strong data-role="monitor-evidence">0 / 0</strong></div>
+                </div>
+
+                <div class="monitor-workspace">
+                    <article class="monitor-panel telemetry-panel">
+                        <div class="monitor-panel-heading"><span>01</span><h3>Live telemetry</h3></div>
+                        <dl class="telemetry-grid">
+                            <div><dt>IAS</dt><dd data-telemetry="speed">--</dd></div>
+                            <div><dt>ALT AGL</dt><dd data-telemetry="altitude">--</dd></div>
+                            <div><dt>V/S</dt><dd data-telemetry="vertical-speed">--</dd></div>
+                            <div><dt>BANK</dt><dd data-telemetry="roll">--</dd></div>
+                            <div><dt>XTK</dt><dd data-telemetry="localizer">--</dd></div>
+                            <div><dt>WIND</dt><dd data-telemetry="wind">--</dd></div>
+                            <div><dt>ENGINE</dt><dd data-telemetry="engine">--</dd></div>
+                            <div><dt>G LOAD</dt><dd data-telemetry="g-load">--</dd></div>
+                        </dl>
+                    </article>
+
+                    <article class="monitor-panel assertion-panel">
+                        <div class="monitor-panel-heading"><span>02</span><h3>Requirement assertions</h3></div>
+                        <div class="assertion-list" data-role="assertion-list"></div>
+                    </article>
+
+                    <article class="monitor-panel event-panel">
+                        <div class="monitor-panel-heading"><span>03</span><h3>Evidence stream</h3></div>
+                        <div class="event-stream" data-role="event-stream" aria-live="polite"></div>
+                    </article>
+                </div>
+            </section>
         </section>
     </main>
 
-    <script type="module" src="./assets/flight-sim-export.js"></script>
+    <script src="./scenario-monitor.js?v=scenario-lab-1"></script>
+    <script type="module" src="./assets/flight-sim-export.js?v=scenario-lab-1"></script>
     <script src="../site-play.js?v=night-shift-2"></script>
 </body>
 </html>
