@@ -2,6 +2,7 @@
 title: A few state lines later
 date: 2026-07-22
 order: 4
+author: Ethan Mayer
 summary: A short field note about traveling to different states and collecting experiences that do not fit neatly into a project update.
 tags: Travel, Outside work
 ---

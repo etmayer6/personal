@@ -2,6 +2,7 @@
 title: Opening the notebook
 date: 2026-07-22
 order: 1
+author: Ethan Mayer
 summary: A small place for project updates, lessons learned, and the details that do not belong on a portfolio card.
 tags: Site notes, Projects
 ---

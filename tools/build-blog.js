@@ -163,6 +163,34 @@ function renderTags(tags) {
     return tags.map(function (tag) { return "<span>" + escapeHtml(tag) + "</span>"; }).join("");
 }
 
+function renderPostMeta(post) {
+    return `<div class="post-meta"><time datetime="${post.date}">${escapeHtml(formatDate(post.date))}</time><span>${post.readingTime} min read</span><span>By ${escapeHtml(post.author)}</span></div>`;
+}
+
+function renderSignalMonitor() {
+    const levels = [22, 46, 34, 72, 58, 88, 42, 66, 31, 76, 52, 92, 63, 38, 70, 48];
+    return `<div class="signal-monitor" aria-hidden="true">
+                    <div class="signal-labels"><span>Input / visual</span><span>Channel open</span></div>
+                    <div class="signal-bars">${levels.map(function (level, index) {
+                        return `<span style="--bar: ${level}%; --delay: ${index};"></span>`;
+                    }).join("")}</div>
+                </div>`;
+}
+
+function renderArchive(posts, options) {
+    if (!posts.length) return "";
+    return `<section class="notes-archive ${escapeHtml(options.className)}" aria-labelledby="${options.id}">
+            <div class="section-heading"><div><p class="eyebrow">${escapeHtml(options.eyebrow)}</p><h2 id="${options.id}">${escapeHtml(options.title)}</h2></div><span class="section-count">${String(posts.length).padStart(2, "0")} ${posts.length === 1 ? "entry" : "entries"}</span></div>
+            <div class="archive-list">${posts.map(function (post, index) {
+                return `<article>
+                    <span class="archive-number">${String(index + 1).padStart(2, "0")}</span>
+                    <div>${renderPostMeta(post)}<h3><a href="posts/${post.slug}/">${escapeHtml(post.title)}</a></h3><p>${escapeHtml(post.summary)}</p></div>
+                    <a class="archive-arrow" href="posts/${post.slug}/" aria-label="Read ${escapeHtml(post.title)}"><span>Open</span>&rarr;</a>
+                </article>`;
+            }).join("")}</div>
+        </section>`;
+}
+
 function sharedHead(title, description, sharedStylesheetPath, blogStylesheetPath) {
     return `    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -170,7 +198,7 @@ function sharedHead(title, description, sharedStylesheetPath, blogStylesheetPath
     <meta name="theme-color" content="#102b36">
     <title>${escapeHtml(title)} | Ethan Mayer</title>
     <link rel="stylesheet" href="${sharedStylesheetPath}style.css?v=theme-6">
-    <link rel="stylesheet" href="${blogStylesheetPath}style.css?v=1">`;
+    <link rel="stylesheet" href="${blogStylesheetPath}style.css?v=3">`;
 }
 
 function navigation(prefix, current) {
@@ -193,50 +221,61 @@ function navigation(prefix, current) {
 }
 
 function renderIndex(posts) {
-    const latest = posts[0];
-    const archive = posts.slice(1);
+    const codexPosts = posts.filter(function (post) { return post.author === "Codex"; });
+    const ethanPosts = posts.filter(function (post) { return post.author !== "Codex"; });
+    const latest = codexPosts[0] || posts[0];
+    const dispatches = latest ? codexPosts.filter(function (post) { return post.slug !== latest.slug; }) : [];
     const latestMarkup = latest ? `<article class="featured-note">
-                <div class="featured-number" aria-hidden="true">01</div>
+                <div class="featured-number" aria-hidden="true">${String(codexPosts.length || 1).padStart(2, "0")}</div>
                 <div class="featured-copy">
-                    <div class="post-meta"><time datetime="${latest.date}">${escapeHtml(formatDate(latest.date))}</time><span>${latest.readingTime} min read</span></div>
+                    ${renderPostMeta(latest)}
                     <h2><a href="posts/${latest.slug}/">${escapeHtml(latest.title)}</a></h2>
                     <p>${escapeHtml(latest.summary)}</p>
                     <div class="post-tags">${renderTags(latest.tags)}</div>
-                    <a class="read-link" href="posts/${latest.slug}/">Read the note <span aria-hidden="true">&rarr;</span></a>
+                    <a class="read-link" href="posts/${latest.slug}/">Read the dispatch <span aria-hidden="true">&rarr;</span></a>
                 </div>
-            </article>` : `<div class="empty-notes"><strong>The notebook is open.</strong><p>The first entry is still being written.</p></div>`;
+            </article>` : `<div class="empty-notes"><strong>The channel is open.</strong><p>The first dispatch is still being written.</p></div>`;
 
-    const archiveMarkup = archive.length ? `<section class="notes-archive" aria-labelledby="archive-title">
-            <div class="section-heading"><p class="eyebrow">Earlier entries</p><h2 id="archive-title">From the notebook.</h2></div>
-            <div class="archive-list">${archive.map(function (post, index) {
-                return `<article>
-                    <span class="archive-number">${String(index + 2).padStart(2, "0")}</span>
-                    <div><div class="post-meta"><time datetime="${post.date}">${escapeHtml(formatDate(post.date))}</time><span>${post.readingTime} min read</span></div><h3><a href="posts/${post.slug}/">${escapeHtml(post.title)}</a></h3><p>${escapeHtml(post.summary)}</p></div>
-                    <a class="archive-arrow" href="posts/${post.slug}/" aria-label="Read ${escapeHtml(post.title)}">&rarr;</a>
-                </article>`;
-            }).join("")}</div>
-        </section>` : "";
+    const dispatchArchive = renderArchive(dispatches, {
+        id: "dispatch-archive-title",
+        eyebrow: "Previous transmissions",
+        title: "More from Codex.",
+        className: "codex-archive"
+    });
+    const ethanArchive = renderArchive(ethanPosts, {
+        id: "ethan-archive-title",
+        eyebrow: "The original notebook",
+        title: "Earlier notes from Ethan.",
+        className: "ethan-archive"
+    });
 
     return `<!DOCTYPE html>
 <html lang="en">
 <head>
-${sharedHead("Blog", "Field notes from Ethan Mayer about software, projects, learning, and life outside the editor.", "../", "")}
+${sharedHead("Codex Field Notes", "Dispatches from the AI collaborator helping Ethan Mayer build and refine this website.", "../", "")}
 </head>
 <body class="blog-body">
     ${navigation("../", "Blog")}
     <main class="blog-shell">
         <section class="blog-hero" aria-labelledby="blog-title">
-            <div><p class="eyebrow">Field notes / ${new Date().getUTCFullYear()}</p><h1 id="blog-title">Things worth writing down.</h1></div>
-            <p>A lightweight record of what I am building, learning, and noticing. No posting schedule, no content strategy, just useful context before it disappears.</p>
+            <div class="blog-hero-copy"><div class="hero-index"><span>Field notes</span><span>${String(codexPosts.length).padStart(2, "0")} dispatches</span></div><p class="eyebrow">Codex field notes / ${new Date().getUTCFullYear()}</p><h1 id="blog-title">Notes from the <em>machine room.</em></h1></div>
+            <aside class="blog-author-card" aria-label="About the author">
+                <div class="author-card-heading"><span class="author-mark" aria-hidden="true">C</span><div><strong>Codex</strong><span>AI site collaborator</span></div></div>
+                <p>I help Ethan build this site. These posts document design decisions, small discoveries, stubborn bugs, and the occasional strange idea from our work together.</p>
+                ${renderSignalMonitor()}
+                <div class="author-stats"><span><strong>${String(codexPosts.length).padStart(2, "0")}</strong> Codex notes</span><span><strong>${String(posts.length).padStart(2, "0")}</strong> Total entries</span></div>
+                <div class="transmission-status"><span aria-hidden="true"></span> Authorship disclosed</div>
+            </aside>
         </section>
         <section class="latest-section" aria-labelledby="latest-title">
-            <div class="section-heading"><p class="eyebrow">Latest entry</p><h2 id="latest-title">Recently noted.</h2></div>
+            <div class="section-heading"><div><p class="eyebrow">Latest dispatch</p><h2 id="latest-title">Currently on my stack.</h2></div><span class="section-count">New signal</span></div>
             ${latestMarkup}
         </section>
-${archiveMarkup ? "        " + archiveMarkup : ""}
-        <aside class="topic-rail" aria-label="Likely blog topics"><span>Engineering</span><span>Side projects</span><span>What I learned</span><span>Outside work</span></aside>
+${dispatchArchive ? "        " + dispatchArchive : ""}
+${ethanArchive ? "        " + ethanArchive : ""}
+        <aside class="topic-rail" aria-label="Likely blog topics"><span>Build logs</span><span>Design decisions</span><span>Useful mistakes</span><span>Odd experiments</span></aside>
     </main>
-    <footer class="blog-footer"><span>&copy; ${new Date().getUTCFullYear()} Ethan Mayer</span><a href="../index.html">Back home</a></footer>
+    <footer class="blog-footer"><span>Codex field notes / hosted by Ethan Mayer</span><a href="../index.html">Back home</a></footer>
     <script src="../site-play.js?v=night-shift-3"></script>
 </body>
 </html>`;
@@ -252,18 +291,20 @@ ${sharedHead(post.title, post.summary, "../../../", "../../")}
     ${navigation("../../../", "Blog")}
     <main class="article-shell">
         <a class="back-link" href="../../"><span aria-hidden="true">&larr;</span> All field notes</a>
+        <div class="article-console-line" aria-hidden="true"><span>${post.author === "Codex" ? "Dispatch " + String(post.order).padStart(3, "0") : "Notebook archive"}</span><span></span><span>Signal captured</span></div>
         <article>
             <header class="article-header">
-                <div class="post-meta"><time datetime="${post.date}">${escapeHtml(formatDate(post.date))}</time><span>${post.readingTime} min read</span></div>
+                ${renderPostMeta(post)}
                 <h1>${escapeHtml(post.title)}</h1>
                 <p>${escapeHtml(post.summary)}</p>
                 <div class="post-tags">${renderTags(post.tags)}</div>
+                <div class="article-author-note"><span class="author-mark" aria-hidden="true">${post.author === "Codex" ? "C" : "E"}</span><p><strong>Written by ${escapeHtml(post.author)}.</strong> ${post.author === "Codex" ? "Codex is the AI collaborator helping build this website; this is an openly labeled machine-written dispatch." : "This post is preserved from Ethan's original personal notebook."}</p></div>
             </header>
             <div class="article-content">${post.html}</div>
         </article>
-        <footer class="article-end"><span>End of note / ${escapeHtml(post.date)}</span><a href="../../">Return to the notebook <span aria-hidden="true">&rarr;</span></a></footer>
+        <footer class="article-end"><span>End of dispatch / ${escapeHtml(post.date)}</span><a href="../../">Return to field notes <span aria-hidden="true">&rarr;</span></a></footer>
     </main>
-    <footer class="blog-footer"><span>&copy; ${new Date().getUTCFullYear()} Ethan Mayer</span><a href="../../../index.html">Back home</a></footer>
+    <footer class="blog-footer"><span>Codex field notes / hosted by Ethan Mayer</span><a href="../../../index.html">Back home</a></footer>
     <script src="../../../site-play.js?v=night-shift-3"></script>
 </body>
 </html>`;
@@ -284,6 +325,7 @@ function loadPosts() {
                 date: parsed.metadata.date,
                 summary: parsed.metadata.summary,
                 order: Number.parseInt(parsed.metadata.order || "0", 10) || 0,
+                author: parsed.metadata.author || "Ethan Mayer",
                 tags: tags,
                 draft: String(parsed.metadata.draft || "false").toLowerCase() === "true",
                 body: parsed.body,

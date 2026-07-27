@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Photos | Ethan Mayer</title>
-    <link rel="stylesheet" href="../style.css">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../style.css?v=theme-6">
+    <link rel="stylesheet" href="style.css?v=journal-3">
 </head>
 <body class="photos-body">
     <header class="photos-header">
@@ -25,12 +25,20 @@
     <main class="photos-shell">
         <section class="photos-intro">
             <div>
-                <p class="eyebrow">Photo journal</p>
-                <h1>Photos</h1>
+                <p class="eyebrow">27 selected / 97 in the archive</p>
+                <h1>Field of view.</h1>
             </div>
-            <p>A shuffled collection of places, people, and moments worth keeping.</p>
+            <p>A deliberately edited journal of water, Iowa seasons, green landscapes, and the smaller details that made each place memorable.</p>
         </section>
-        <section id="photos-grid" class="photos-grid"></section>
+        <section class="photos-toolbar" aria-label="Gallery controls">
+            <div class="view-control" role="group" aria-label="Photo order">
+                <button class="view-button is-active" type="button" data-gallery-mode="journal" aria-pressed="true">Curated journal</button>
+                <button class="view-button" type="button" data-gallery-mode="archive" aria-pressed="false">Full archive</button>
+                <button class="view-button" type="button" data-gallery-mode="shuffle" aria-pressed="false">Shuffle all</button>
+            </div>
+            <p id="photos-status" aria-live="polite">27 selected photographs across four chapters.</p>
+        </section>
+        <div id="photos-gallery" class="photos-gallery"></div>
         <section id="photos-empty" class="photos-empty" hidden>
             <p>No photos to show yet.</p>
         </section>
@@ -40,8 +48,9 @@
         <p>&copy; 2026 Ethan Mayer</p>
     </footer>
 
-    <script src="data.js"></script>
-    <script src="app.js"></script>
+    <script src="data.js?v=curated-3"></script>
+    <script src="full-data.js?v=archive-1"></script>
+    <script src="app.js?v=journal-3"></script>
     <script src="../site-play.js?v=night-shift-2"></script>
 </body>
 </html>

@@ -2,6 +2,7 @@
 title: Playing basketball lately
 date: 2026-07-22
 order: 3
+author: Ethan Mayer
 summary: A short field note about spending some time on the basketball court and sharing the ordinary things happening away from a screen.
 tags: Outside work, Basketball
 ---

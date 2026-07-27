@@ -2,9 +2,10 @@ const fs = require("fs");
 const path = require("path");
 
 const root = path.resolve(__dirname, "..");
-const gallerySource = fs.readFileSync(path.join(root, "photos", "data.js"), "utf8");
-const filenames = [...gallerySource.matchAll(/src:\s*"\.\.\/images\/photos\/([^"]+)"/g)]
-    .map((match) => match[1]);
+const sourceDirectory = path.join(root, "images", "photos");
+const filenames = fs.readdirSync(sourceDirectory)
+    .filter((filename) => /\.(?:jpe?g|png)$/i.test(filename))
+    .sort((left, right) => left.localeCompare(right, undefined, { numeric: true }));
 
 const locations = {
     marion: {

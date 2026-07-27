@@ -2,6 +2,7 @@
 title: Cloning plants, minus the science-fiction lab
 date: 2026-07-22
 order: 2
+author: Ethan Mayer
 summary: A quick note about turning pieces of existing plants into new plants and treating the process like a small living experiment.
 tags: Outside work, Experiments
 ---
