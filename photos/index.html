@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Photos | Ethan Mayer</title>
     <link rel="stylesheet" href="../style.css?v=theme-6">
-    <link rel="stylesheet" href="style.css?v=journal-3">
+    <link rel="stylesheet" href="style.css?v=slideshow-1">
 </head>
 <body class="photos-body">
     <header class="photos-header">
@@ -44,13 +44,43 @@
         </section>
     </main>
 
+    <dialog id="photo-viewer" class="photo-viewer" aria-labelledby="photo-viewer-title" aria-describedby="photo-viewer-note">
+        <div class="photo-viewer-shell">
+            <header class="photo-viewer-header">
+                <p><span id="photo-viewer-position">01 / 01</span><span>Fullscreen slideshow</span></p>
+                <div>
+                    <span class="photo-viewer-hint"><kbd>&larr;</kbd><kbd>&rarr;</kbd> Navigate</span>
+                    <button id="photo-viewer-close" class="photo-viewer-close" type="button">Close <span aria-hidden="true">&times;</span></button>
+                </div>
+            </header>
+            <div id="photo-viewer-stage" class="photo-viewer-stage">
+                <button id="photo-viewer-previous" class="photo-viewer-nav photo-viewer-nav--previous" type="button" aria-label="Previous photo">
+                    <span aria-hidden="true">&larr;</span>
+                </button>
+                <div class="photo-viewer-image-wrap">
+                    <img id="photo-viewer-image" src="" alt="">
+                </div>
+                <button id="photo-viewer-next" class="photo-viewer-nav photo-viewer-nav--next" type="button" aria-label="Next photo">
+                    <span aria-hidden="true">&rarr;</span>
+                </button>
+            </div>
+            <footer class="photo-viewer-caption">
+                <div>
+                    <p id="photo-viewer-metadata"></p>
+                    <h2 id="photo-viewer-title">Photograph</h2>
+                </div>
+                <p id="photo-viewer-note"></p>
+            </footer>
+        </div>
+    </dialog>
+
     <footer class="photos-footer">
         <p>&copy; 2026 Ethan Mayer</p>
     </footer>
 
     <script src="data.js?v=curated-3"></script>
     <script src="full-data.js?v=archive-1"></script>
-    <script src="app.js?v=journal-3"></script>
+    <script src="app.js?v=slideshow-1"></script>
     <script src="../site-play.js?v=night-shift-2"></script>
 </body>
 </html>
