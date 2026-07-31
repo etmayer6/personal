@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Molly's online art studio: original work, past pieces, and projects in progress.">
+    <meta name="theme-color" content="#173e8f">
+    <title>Molly Studio | Art, Process, and Projects</title>
+    <link rel="stylesheet" href="style.css?v=1">
+</head>
+<body>
+    <a class="skip-link" href="#main-content">Skip to the art</a>
+
+    <header class="studio-header">
+        <nav aria-label="Molly Studio navigation">
+            <a class="studio-mark" href="#top" aria-label="Molly Studio home">
+                <span class="mark-dot" aria-hidden="true"></span>
+                <span>Molly / Studio</span>
+            </a>
+            <div class="nav-links">
+                <a href="#shop">Shop</a>
+                <a href="#about">About</a>
+                <a href="#archive">Past work</a>
+                <a href="#school">School projects</a>
+            </div>
+            <button class="bag-button" id="bag-button" type="button" aria-haspopup="dialog">
+                Inquiry bag <span id="bag-count" aria-label="0 items">0</span>
+            </button>
+        </nav>
+    </header>
+
+    <main id="main-content">
+        <section class="hero" id="top" aria-labelledby="hero-title">
+            <div class="hero-copy">
+                <p class="kicker">Independent art studio / Preview edition</p>
+                <h1 id="hero-title">A place for the work, the process, and <em>what comes next.</em></h1>
+                <p class="hero-intro">
+                    Molly&rsquo;s online studio is taking shape. This is where original work will be available,
+                    older pieces can live together, and school projects can be seen beyond the classroom.
+                </p>
+                <div class="hero-actions">
+                    <a class="primary-action" href="#shop">Visit the shop shelf</a>
+                    <a class="text-action" href="#about">Read the studio note <span aria-hidden="true">&darr;</span></a>
+                </div>
+            </div>
+
+            <div class="hero-gallery" aria-label="Preview frames awaiting Molly's artwork">
+                <div class="hero-frame hero-frame-main placeholder-art art-field" aria-hidden="true">
+                    <span>Artwork<br>goes here</span>
+                </div>
+                <div class="hero-frame hero-frame-small placeholder-art art-grid" aria-hidden="true">
+                    <span>Study</span>
+                </div>
+                <p class="hero-caption"><span>001</span> First collection assembling now.</p>
+            </div>
+        </section>
+
+        <aside class="studio-ticker" aria-label="Studio status">
+            <span>Original work</span>
+            <span>Small editions</span>
+            <span>Experiments</span>
+            <span>School projects</span>
+            <strong>Studio preview is open</strong>
+        </aside>
+
+        <section class="shop-section section-shell" id="shop" aria-labelledby="shop-title">
+            <div class="section-heading reveal">
+                <div>
+                    <p class="kicker">Available work / 01</p>
+                    <h2 id="shop-title">The shop shelf.</h2>
+                </div>
+                <p>
+                    Preview the future storefront and save pieces to an inquiry bag. Real artwork, prices,
+                    and purchase links can be added when the first collection is ready.
+                </p>
+            </div>
+
+            <div class="collection-toolbar reveal" aria-label="Filter artwork">
+                <div class="filter-list" id="shop-filters"></div>
+                <span class="collection-count" id="collection-count" aria-live="polite"></span>
+            </div>
+
+            <div class="art-grid-list" id="shop-grid"></div>
+        </section>
+
+        <section class="about-section" id="about" aria-labelledby="about-title">
+            <div class="about-index reveal" aria-hidden="true">02</div>
+            <div class="about-copy reveal">
+                <p class="kicker">Artist note</p>
+                <h2 id="about-title">The story belongs in her own words.</h2>
+                <p class="about-lead">
+                    This space is reserved for Molly to explain what she makes, what she notices, and what
+                    keeps pulling her back into the studio.
+                </p>
+                <p>
+                    Until that statement is ready, the page stays honest: the work is coming, the point of
+                    view is hers, and no placeholder biography is pretending to speak for her.
+                </p>
+                <dl class="artist-facts">
+                    <div><dt>Working in</dt><dd>Materials to be added</dd></div>
+                    <div><dt>Interested in</dt><dd>Ideas to be added</dd></div>
+                    <div><dt>Currently</dt><dd>Building the first collection</dd></div>
+                </dl>
+            </div>
+            <div class="about-portrait placeholder-art art-orbit reveal" role="img" aria-label="Portrait or studio photograph placeholder">
+                <span>Studio portrait</span>
+            </div>
+        </section>
+
+        <section class="archive-section section-shell" id="archive" aria-labelledby="archive-title">
+            <div class="section-heading reveal">
+                <div>
+                    <p class="kicker">Selected archive / 03</p>
+                    <h2 id="archive-title">Things made before.</h2>
+                </div>
+                <p>
+                    A flexible wall for past paintings, drawings, experiments, and pieces that are no longer
+                    available but still belong in the story.
+                </p>
+            </div>
+            <div class="archive-wall" id="archive-wall"></div>
+        </section>
+
+        <section class="school-section" id="school" aria-labelledby="school-title">
+            <div class="school-heading reveal">
+                <p class="kicker">In progress / 04</p>
+                <h2 id="school-title">From the classroom to the studio.</h2>
+                <p>
+                    School projects can show more than a finished image. Each entry has room for the prompt,
+                    early studies, process notes, and the final result.
+                </p>
+            </div>
+            <div class="project-list" id="project-list"></div>
+        </section>
+
+        <section class="closing-section section-shell reveal" aria-labelledby="closing-title">
+            <p class="kicker">The next piece</p>
+            <h2 id="closing-title">This wall is waiting for Molly.</h2>
+            <p>
+                The structure is ready. Add photographs of the art, Molly&rsquo;s words, availability,
+                pricing, and a preferred sales link to turn the preview into a working studio shop.
+            </p>
+            <a class="primary-action" href="#shop">Back to the collection</a>
+        </section>
+    </main>
+
+    <footer class="studio-footer">
+        <span>Molly / Studio</span>
+        <span>Independent art, process, and projects</span>
+        <a href="../">Return to Ethan&rsquo;s site</a>
+    </footer>
+
+    <dialog class="art-dialog" id="art-dialog" aria-labelledby="art-dialog-title">
+        <button class="dialog-close" id="art-dialog-close" type="button" aria-label="Close artwork details">&times;</button>
+        <div class="dialog-art placeholder-art" id="dialog-art" aria-hidden="true"></div>
+        <div class="dialog-copy">
+            <p class="kicker" id="art-dialog-meta"></p>
+            <h2 id="art-dialog-title"></h2>
+            <p id="art-dialog-description"></p>
+            <dl class="dialog-details">
+                <div><dt>Medium</dt><dd id="art-dialog-medium"></dd></div>
+                <div><dt>Size</dt><dd id="art-dialog-size"></dd></div>
+                <div><dt>Availability</dt><dd id="art-dialog-status"></dd></div>
+            </dl>
+            <button class="primary-action button-reset" id="art-dialog-add" type="button">Add to inquiry bag</button>
+        </div>
+    </dialog>
+
+    <dialog class="bag-dialog" id="bag-dialog" aria-labelledby="bag-title">
+        <div class="bag-heading">
+            <div>
+                <p class="kicker">Saved work</p>
+                <h2 id="bag-title">Inquiry bag</h2>
+            </div>
+            <button class="dialog-close static-close" id="bag-close" type="button" aria-label="Close inquiry bag">&times;</button>
+        </div>
+        <p class="bag-intro">
+            Save the pieces you want to ask about. During this preview, the site prepares a message rather
+            than taking payment.
+        </p>
+        <div class="bag-items" id="bag-items"></div>
+        <div class="bag-actions">
+            <button class="primary-action button-reset" id="prepare-inquiry" type="button">Copy inquiry</button>
+            <button class="text-button" id="clear-bag" type="button">Clear bag</button>
+        </div>
+        <p class="bag-status" id="bag-status" aria-live="polite"></p>
+    </dialog>
+
+    <script src="data.js?v=1"></script>
+    <script src="app.js?v=1"></script>
+</body>
+</html>
