@@ -540,6 +540,8 @@
 .tone-orange { --card-accent: #ce733d; }
 .tone-indigo { --card-accent: #59658d; }
 .tone-garage { --card-accent: #327567; }
+.tone-flight-radar { --card-accent: #3f8f91; }
+.tone-whiteboard { --card-accent: #c55a32; }
 
 .projects-footer {
     padding: 80px 20px 36px;

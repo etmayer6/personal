@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A lightweight local-first digital whiteboard by Ethan Mayer for sketching ideas and marking up thoughts.">
+    <title>Idea Whiteboard | Ethan Mayer</title>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="whiteboard-body">
+    <header class="whiteboard-header">
+        <nav aria-label="Primary navigation">
+            <a class="nav-name" href="../index.html">Ethan Mayer</a>
+            <ul>
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="../resume/">Resume</a></li>
+                <li><a aria-current="page" href="../projects/">Projects</a></li>
+                <li><a href="../games/">Games</a></li>
+                <li><a href="../photos/">Photos</a></li>
+                <li><a href="../blog/">Blog</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="whiteboard-shell">
+        <section class="whiteboard-hero" aria-labelledby="whiteboard-title">
+            <div class="whiteboard-hero-copy">
+                <p class="eyebrow">Open workbench / 15</p>
+                <h1 id="whiteboard-title">Put the idea on the wall.</h1>
+                <p class="whiteboard-summary">
+                    A quiet, local-first canvas for rough diagrams, sticky-note thoughts, and the first shape of a
+                    problem. Nothing leaves this browser unless you export it.
+                </p>
+            </div>
+            <aside class="whiteboard-hero-note" aria-label="Whiteboard note">
+                <span class="hero-note-number">Idea whiteboard</span>
+                <strong>Draw first.<br>Explain later.</strong>
+                <span>Local storage / no account</span>
+            </aside>
+        </section>
+
+        <section class="whiteboard-layout" aria-label="Digital whiteboard workspace">
+            <div class="whiteboard-app">
+                <div class="whiteboard-toolbar" role="toolbar" aria-label="Whiteboard tools">
+                    <div class="tool-group tool-list" aria-label="Drawing tools">
+                        <button class="tool-button" type="button" data-tool="select" aria-pressed="true" title="Select and move objects (V)">
+                            <span class="tool-symbol symbol-select" aria-hidden="true"></span>
+                            <span>Select</span><kbd>V</kbd>
+                        </button>
+                        <button class="tool-button" type="button" data-tool="pen" aria-pressed="false" title="Draw a freehand line (P)">
+                            <span class="tool-symbol symbol-pen" aria-hidden="true"></span>
+                            <span>Pen</span><kbd>P</kbd>
+                        </button>
+                        <button class="tool-button" type="button" data-tool="line" aria-pressed="false" title="Draw a connector line (L)">
+                            <span class="tool-symbol symbol-line" aria-hidden="true"></span>
+                            <span>Line</span><kbd>L</kbd>
+                        </button>
+                        <button class="tool-button" type="button" data-tool="rectangle" aria-pressed="false" title="Draw a rectangle (R)">
+                            <span class="tool-symbol symbol-rectangle" aria-hidden="true"></span>
+                            <span>Box</span><kbd>R</kbd>
+                        </button>
+                        <button class="tool-button" type="button" data-tool="ellipse" aria-pressed="false" title="Draw an ellipse (O)">
+                            <span class="tool-symbol symbol-ellipse" aria-hidden="true"></span>
+                            <span>Oval</span><kbd>O</kbd>
+                        </button>
+                        <button class="tool-button" type="button" data-tool="text" aria-pressed="false" title="Place a text note (T)">
+                            <span class="tool-symbol symbol-text" aria-hidden="true">T</span>
+                            <span>Text</span><kbd>T</kbd>
+                        </button>
+                        <button class="tool-button" type="button" data-tool="eraser" aria-pressed="false" title="Erase an object (E)">
+                            <span class="tool-symbol symbol-eraser" aria-hidden="true"></span>
+                            <span>Eraser</span><kbd>E</kbd>
+                        </button>
+                    </div>
+
+                    <div class="toolbar-divider" aria-hidden="true"></div>
+
+                    <div class="tool-group tool-settings" aria-label="Drawing settings">
+                        <label class="color-control" for="stroke-color">
+                            <span>Ink</span>
+                            <input id="stroke-color" type="color" value="#102b36" aria-label="Ink color">
+                        </label>
+                        <label class="range-control" for="stroke-width">
+                            <span>Stroke</span>
+                            <input id="stroke-width" type="range" min="1" max="12" value="4">
+                            <output id="stroke-output" for="stroke-width">4</output>
+                        </label>
+                        <label class="check-control" for="fill-toggle">
+                            <input id="fill-toggle" type="checkbox">
+                            <span>Fill</span>
+                        </label>
+                        <button class="toolbar-toggle" id="grid-toggle" type="button" aria-pressed="true" title="Toggle the guide grid (G)">
+                            Grid <kbd>G</kbd>
+                        </button>
+                    </div>
+
+                    <div class="toolbar-divider" aria-hidden="true"></div>
+
+                    <div class="tool-group toolbar-actions" aria-label="Board actions">
+                        <button class="toolbar-action" id="undo-button" type="button" disabled title="Undo (Ctrl or Command + Z)">Undo</button>
+                        <button class="toolbar-action" id="redo-button" type="button" disabled title="Redo (Ctrl or Command + Shift + Z)">Redo</button>
+                        <button class="toolbar-action toolbar-action-export" id="export-button" type="button" title="Export the board as a PNG">Export PNG</button>
+                    </div>
+                </div>
+
+                <div class="board-frame">
+                    <div class="board-frame-top">
+                        <div>
+                            <span class="board-kicker">Thought board</span>
+                            <span class="board-live"><i aria-hidden="true"></i>Saved locally</span>
+                        </div>
+                        <span id="object-count">0 objects</span>
+                    </div>
+                    <div class="canvas-wrap" id="canvas-wrap">
+                        <canvas id="whiteboard-canvas" width="1600" height="950" tabindex="0" aria-label="Digital whiteboard. Draw or place notes here."></canvas>
+                        <div class="board-empty" id="board-empty" aria-hidden="true">
+                            <span class="empty-mark">+</span>
+                            <strong>Start with a mark.</strong>
+                            <span>Pick a tool, then draw on the board.</span>
+                        </div>
+                        <div class="text-editor" id="text-editor" hidden>
+                            <form id="text-form">
+                                <label for="text-input">Write a note</label>
+                                <input id="text-input" type="text" maxlength="80" autocomplete="off" placeholder="Type something useful">
+                                <div class="text-editor-actions">
+                                    <button id="text-cancel" type="button">Cancel</button>
+                                    <button class="text-editor-place" type="submit">Place note</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="board-frame-bottom">
+                        <span id="board-status" role="status" aria-live="polite">Ready when you are.</span>
+                        <span>Local board / export when ready.</span>
+                    </div>
+                </div>
+            </div>
+
+            <aside class="whiteboard-sidebar">
+                <section class="whiteboard-note-card">
+                    <p class="eyebrow">A small toolkit</p>
+                    <h2>Make a messy first draft.</h2>
+                    <p>Use the board like a notebook: get the shape down, move it around, and keep the useful accidents.</p>
+                    <ul class="shortcut-list">
+                        <li><kbd>V</kbd><span>Select and move</span></li>
+                        <li><kbd>P</kbd><span>Freehand pen</span></li>
+                        <li><kbd>T</kbd><span>Place a note</span></li>
+                        <li><kbd>Del</kbd><span>Remove selection</span></li>
+                    </ul>
+                </section>
+                <section class="whiteboard-note-card note-card-dark">
+                    <span class="note-card-label">Local-first</span>
+                    <h2>Your board stays here.</h2>
+                    <p>The drawing is saved in this browser. Export a PNG when the thought is ready to leave the wall.</p>
+                    <button class="clear-board-button" id="clear-button" type="button">Clear board</button>
+                </section>
+            </aside>
+        </section>
+
+        <section class="whiteboard-footer-note">
+            <p class="eyebrow">Why this exists</p>
+            <h2>Good tools leave room for the thought.</h2>
+            <p>This is a compact browser experiment inspired by diagramming tools, built without a framework or a server.</p>
+            <a href="../projects/">Back to all projects <span aria-hidden="true">&rarr;</span></a>
+        </section>
+    </main>
+
+    <footer class="whiteboard-footer"><p>&copy; 2026 Ethan Mayer</p></footer>
+    <script src="../site-play.js?v=night-shift-2"></script>
+    <script src="app.js?v=1"></script>
+</body>
+</html>

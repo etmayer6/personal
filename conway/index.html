@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Play a browser-based Conway's Game of Life simulation. Paint cells, choose a seed, and watch the board evolve.">
+    <title>Conway&rsquo;s Game of Life | Ethan Mayer</title>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="style.css?v=1">
+</head>
+<body class="life-body">
+    <header class="site-header">
+        <nav aria-label="Primary navigation">
+            <a class="nav-name" href="../index.html">Ethan Mayer</a>
+            <ul>
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="../resume/">Resume</a></li>
+                <li><a href="../projects/">Projects</a></li>
+                <li><a aria-current="page" href="../games/">Games</a></li>
+                <li><a href="../photos/">Photos</a></li>
+                <li><a href="../blog/">Blog</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="life-shell">
+        <section class="life-hero" aria-labelledby="life-title">
+            <div>
+                <p class="life-kicker">Cellular automata / 05</p>
+                <h1 id="life-title">Watch simple rules make strange worlds.</h1>
+            </div>
+            <p class="life-hero-note">Paint a starting pattern, press play, and see whether your little universe survives.</p>
+        </section>
+
+        <section class="life-game" aria-labelledby="board-title">
+            <div class="life-game-heading">
+                <div>
+                    <p class="life-kicker">The simulation</p>
+                    <h2 id="board-title">Seed the board. Start the clock.</h2>
+                </div>
+                <div class="life-status" id="life-status" role="status" aria-live="polite">Ready to evolve</div>
+            </div>
+
+            <div class="life-board-layout">
+                <div class="life-board" id="life-board">
+                    <canvas id="life-canvas" width="960" height="600" tabindex="0" aria-label="Game of Life board. Click or drag to paint cells."></canvas>
+                    <div class="canvas-footer">
+                        <span>Click or drag to paint cells</span>
+                        <span id="coordinate-readout">x 00 / y 00</span>
+                    </div>
+                </div>
+
+                <aside class="life-controls" aria-label="Simulation controls">
+                    <div class="control-cluster primary-controls">
+                        <button class="control-button control-button-primary" id="run-button" type="button">Start simulation</button>
+                        <button class="control-button" id="step-button" type="button">Next generation</button>
+                    </div>
+
+                    <div class="control-cluster">
+                        <div class="control-label"><span>Generations</span><strong id="generation-value">0</strong></div>
+                        <div class="control-label"><span>Living cells</span><strong id="population-value">0</strong></div>
+                        <label class="speed-label" for="speed-input"><span>Simulation speed</span><output id="speed-value" for="speed-input">8 gen/s</output></label>
+                        <input id="speed-input" type="range" min="1" max="20" value="8">
+                    </div>
+
+                    <div class="control-cluster">
+                        <p class="control-heading">Start with a pattern</p>
+                        <div class="pattern-list" id="pattern-list">
+                            <button type="button" data-pattern="glider">Glider</button>
+                            <button type="button" data-pattern="blinker">Blinker</button>
+                            <button type="button" data-pattern="pulsar">Pulsar</button>
+                            <button type="button" data-pattern="r-pentomino">R-pentomino</button>
+                            <button type="button" data-pattern="random">Random soup</button>
+                        </div>
+                    </div>
+
+                    <div class="control-cluster utility-controls">
+                        <button class="control-button" id="randomize-button" type="button">Randomize board</button>
+                        <button class="control-button" id="clear-button" type="button">Clear board</button>
+                        <button class="control-button" id="fullscreen-button" type="button">Fullscreen <span aria-hidden="true">F</span></button>
+                    </div>
+                </aside>
+            </div>
+
+            <div class="life-rules">
+                <div><span>01</span><strong>Birth</strong><p>A dead cell with exactly three neighbors becomes alive.</p></div>
+                <div><span>02</span><strong>Survival</strong><p>A living cell with two or three neighbors stays alive.</p></div>
+                <div><span>03</span><strong>Silence</strong><p>Everything else disappears or stays empty.</p></div>
+            </div>
+        </section>
+
+        <section class="life-notes" aria-labelledby="notes-title">
+            <div>
+                <p class="life-kicker">A tiny rulebook</p>
+                <h2 id="notes-title">The board does not know what you meant.</h2>
+            </div>
+            <div>
+                <p>There is no goal hidden behind the grid. A good run might be a glider that keeps moving, a pattern that pulses forever, or a messy seed that teaches you something before it vanishes.</p>
+                <p class="keyboard-note"><kbd>Space</kbd> play/pause <kbd>N</kbd> step <kbd>R</kbd> randomize <kbd>C</kbd> clear <kbd>F</kbd> fullscreen</p>
+            </div>
+        </section>
+
+        <a class="back-to-games" href="../games/">Back to all games <span aria-hidden="true">&rarr;</span></a>
+    </main>
+
+    <footer class="life-footer"><p>&copy; 2026 Ethan Mayer</p></footer>
+    <script src="../site-play.js?v=night-shift-2"></script>
+    <script src="app.js?v=1"></script>
+</body>
+</html>

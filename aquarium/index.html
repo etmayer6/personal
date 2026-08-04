@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Feed and grow Momo the mola mola in a tiny virtual aquarium by Ethan Mayer.">
+    <title>Mola Mola Aquarium | Ethan Mayer</title>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="aquarium-body">
+    <header class="aquarium-header">
+        <nav aria-label="Primary navigation">
+            <a class="nav-name" href="../index.html">Ethan Mayer</a>
+            <ul>
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="../resume/">Resume</a></li>
+                <li><a href="../projects/">Projects</a></li>
+                <li><a aria-current="page" href="../games/">Games</a></li>
+                <li><a href="../photos/">Photos</a></li>
+                <li><a href="../blog/">Blog</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="aquarium-shell">
+        <section class="aquarium-hero" aria-labelledby="aquarium-title">
+            <div class="aquarium-hero-copy">
+                <p class="eyebrow">Virtual aquarium / 06</p>
+                <h1 id="aquarium-title">Raise a gentle giant.</h1>
+                <p class="aquarium-summary">
+                    Meet Momo, a tiny mola mola with a big appetite. Feed the tank, keep the water happy, and watch a
+                    curious little pancake grow into an ocean-sized sunfish.
+                </p>
+            </div>
+            <aside class="aquarium-hero-note" aria-label="Aquarium objective">
+                <span class="hero-note-number">01</span>
+                <strong>Small snacks.<br>Big fish.</strong>
+                <span>Click the water or use the care controls.</span>
+            </aside>
+        </section>
+
+        <section class="aquarium-layout" aria-labelledby="tank-heading">
+            <div class="tank-panel" id="aquarium-board">
+                <header class="tank-header">
+                    <div>
+                        <p class="tank-kicker">Momo's tank</p>
+                        <h2 id="tank-heading">A quiet corner of the ocean.</h2>
+                    </div>
+                    <div class="tank-readout" aria-live="polite">
+                        <span class="tank-status-dot" aria-hidden="true"></span>
+                        <span id="tank-status">Water calm</span>
+                        <span id="tank-day">Day 01</span>
+                    </div>
+                </header>
+
+                <div class="tank-canvas-wrap">
+                    <canvas id="aquarium-canvas" width="960" height="600" tabindex="0" aria-label="Momo's aquarium. Click the water to feed the mola mola fish."></canvas>
+                    <div class="tank-corner tank-corner-top">MOLA-01 / LIVE TANK</div>
+                    <div class="tank-corner tank-corner-bottom">CLICK WATER TO FEED</div>
+                </div>
+
+                <footer class="tank-footer">
+                    <span><i class="legend-fish" aria-hidden="true"></i>Momo</span>
+                    <span><i class="legend-snack" aria-hidden="true"></i>Snack pellet</span>
+                    <span><i class="legend-plant" aria-hidden="true"></i>Reef garden</span>
+                </footer>
+            </div>
+
+            <aside class="aquarium-controls" aria-label="Momo care controls">
+                <section class="care-card fish-card">
+                    <div class="care-heading">
+                        <div>
+                            <p class="tank-kicker">Your mola mola</p>
+                            <h2 id="fish-name">Momo</h2>
+                        </div>
+                        <span class="fish-badge" id="fish-stage">Tiny pancake</span>
+                    </div>
+                    <div class="fish-stats">
+                        <div><span>Size</span><strong id="size-value">0.4 m</strong></div>
+                        <div><span>Age</span><strong id="age-value">Day 01</strong></div>
+                        <div><span>Mood</span><strong id="mood-value">Curious</strong></div>
+                    </div>
+                    <div class="meter-group">
+                        <div class="meter-label"><span>Hunger</span><strong id="hunger-value">78%</strong></div>
+                        <div class="meter"><span id="hunger-fill"></span></div>
+                    </div>
+                    <div class="meter-group">
+                        <div class="meter-label"><span>Water quality</span><strong id="cleanliness-value">86%</strong></div>
+                        <div class="meter meter-clean"><span id="cleanliness-fill"></span></div>
+                    </div>
+                </section>
+
+                <section class="care-card action-card">
+                    <div class="care-heading">
+                        <div>
+                            <p class="tank-kicker">Daily care</p>
+                            <h2>Keep Momo thriving.</h2>
+                        </div>
+                    </div>
+                    <div class="care-actions">
+                        <button class="care-button care-button-primary" id="feed-button" type="button">Feed a snack <kbd>Space</kbd></button>
+                        <button class="care-button" id="clean-button" type="button">Clean the water <kbd>C</kbd></button>
+                        <button class="care-button" id="play-button" type="button">Play with Momo <kbd>P</kbd></button>
+                        <button class="care-button care-button-quiet" id="fullscreen-button" type="button">Fullscreen <kbd>F</kbd></button>
+                    </div>
+                    <p class="care-hint">A little care goes a long way. Neglect the tank and Momo gets gloomy.</p>
+                </section>
+
+                <section class="care-card growth-card">
+                    <div class="care-heading">
+                        <div>
+                            <p class="tank-kicker">Growth log</p>
+                            <h2 id="growth-heading">Tiny fins, big plans.</h2>
+                        </div>
+                        <strong class="growth-number" id="growth-value">0%</strong>
+                    </div>
+                    <div class="growth-track" aria-label="Growth progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                        <span id="growth-fill"></span>
+                    </div>
+                    <p id="event-message" class="event-message" aria-live="polite">Momo is floating peacefully.</p>
+                </section>
+            </aside>
+        </section>
+
+        <section class="aquarium-note" aria-label="How to play">
+            <div>
+                <p class="eyebrow">How to play</p>
+                <h2>Feed, fuss, repeat.</h2>
+            </div>
+            <p>
+                Each snack makes Momo a little bigger. Clean water restores the tank, play lifts the mood, and the
+                aquarium fills with small surprises as the fish grows.
+            </p>
+            <a href="../games/">Back to all games <span aria-hidden="true">&rarr;</span></a>
+        </section>
+    </main>
+
+    <footer class="aquarium-footer">
+        <p>&copy; 2026 Ethan Mayer</p>
+        <a href="../games/">Back to games</a>
+    </footer>
+
+    <script src="../site-play.js?v=night-shift-2"></script>
+    <script src="app.js?v=1"></script>
+</body>
+</html>

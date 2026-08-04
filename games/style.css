@@ -260,6 +260,197 @@
     color: #fff;
 }
 
+.game-life {
+    min-height: 300px;
+    display: grid;
+    grid-template-columns: minmax(0, 0.78fr) minmax(360px, 1.22fr);
+    margin-top: 16px;
+    color: #f8f1e6;
+    background: #173e8f;
+}
+
+.game-life .game-copy {
+    padding: 38px;
+}
+
+.game-life .game-meta {
+    color: #f2cb3f;
+}
+
+.game-life h2 {
+    color: #fffaf0;
+    font-size: clamp(40px, 5vw, 64px);
+}
+
+.game-life p {
+    color: rgba(255, 255, 255, 0.74);
+}
+
+.game-life a {
+    color: #fffaf0;
+}
+
+.game-aquarium {
+    min-height: 300px;
+    display: grid;
+    grid-template-columns: minmax(0, 0.78fr) minmax(360px, 1.22fr);
+    margin-top: 16px;
+    color: #f8f1e6;
+    background: #0d5b68;
+}
+
+.game-aquarium .game-copy {
+    padding: 38px;
+}
+
+.game-aquarium .game-meta {
+    color: #f2cb3f;
+}
+
+.game-aquarium h2 {
+    color: #fffaf0;
+    font-size: clamp(42px, 5vw, 66px);
+}
+
+.game-aquarium p {
+    color: rgba(255, 255, 255, 0.74);
+}
+
+.game-aquarium a {
+    color: #fffaf0;
+}
+
+.aquarium-poster {
+    position: relative;
+    min-height: 250px;
+    margin: 24px 24px 24px 0;
+    overflow: hidden;
+    background:
+        linear-gradient(rgba(180, 246, 224, 0.1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(180, 246, 224, 0.1) 1px, transparent 1px),
+        radial-gradient(circle at 45% 42%, rgba(123, 224, 203, 0.28), transparent 27%),
+        #062f40;
+    background-size: 34px 34px, 34px 34px, auto, auto;
+}
+
+.aquarium-poster-ray {
+    position: absolute;
+    top: -10%;
+    width: 110px;
+    height: 125%;
+    background: rgba(255, 237, 157, 0.08);
+    transform: rotate(23deg);
+}
+
+.ray-one { left: 18%; }
+.ray-two { left: 45%; transform: rotate(23deg); }
+
+.aquarium-poster-fish {
+    position: absolute;
+    top: 42%;
+    left: 46%;
+    width: 124px;
+    height: 98px;
+    border: 3px solid #fff0a7;
+    border-radius: 50%;
+    background: #e8ac4e;
+    box-shadow: 0 0 0 11px rgba(232, 172, 78, 0.14), 0 0 28px rgba(242, 203, 63, 0.26);
+    transform: translate(-50%, -50%);
+}
+
+.aquarium-poster-fish::before,
+.aquarium-poster-fish::after {
+    position: absolute;
+    left: 43px;
+    width: 38px;
+    height: 50px;
+    border-radius: 50%;
+    background: #e77952;
+    content: "";
+}
+
+.aquarium-poster-fish::before {
+    top: -37px;
+    transform: rotate(-10deg);
+}
+
+.aquarium-poster-fish::after {
+    bottom: -37px;
+    transform: rotate(10deg);
+}
+
+.aquarium-poster-plant {
+    position: absolute;
+    bottom: 0;
+    width: 17px;
+    height: 112px;
+    border-radius: 60% 40% 0 0;
+    background: #258879;
+    transform-origin: bottom;
+}
+
+.plant-one { left: 12%; transform: rotate(-11deg); }
+.plant-two { right: 14%; height: 145px; background: #1b716d; transform: rotate(13deg); }
+
+.aquarium-poster-bubble {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    border: 2px solid rgba(183, 245, 223, 0.74);
+    border-radius: 50%;
+}
+
+.bubble-one { top: 29%; right: 25%; }
+.bubble-two { top: 21%; right: 18%; width: 6px; height: 6px; }
+
+.life-poster {
+    position: relative;
+    min-height: 250px;
+    margin: 24px 24px 24px 0;
+    overflow: hidden;
+    background:
+        linear-gradient(rgba(255, 250, 240, 0.13) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 250, 240, 0.13) 1px, transparent 1px),
+        #0c265e;
+    background-size: 30px 30px;
+}
+
+.life-poster-cell {
+    position: absolute;
+    width: 34px;
+    height: 34px;
+    background: #f2cb3f;
+    box-shadow: 0 0 0 3px rgba(242, 203, 63, 0.08);
+}
+
+.life-poster .cell-a { top: 28%; left: 34%; }
+.life-poster .cell-b { top: 28%; left: 42%; }
+.life-poster .cell-c { top: 28%; left: 50%; }
+.life-poster .cell-d { top: 43%; left: 42%; background: #e75438; }
+.life-poster .cell-e { top: 58%; left: 42%; background: #e75438; }
+.life-poster .cell-f { top: 58%; left: 58%; background: #f2cb3f; }
+
+.life-poster-orbit {
+    position: absolute;
+    right: 15%;
+    bottom: 16%;
+    width: 88px;
+    height: 88px;
+    border: 2px solid rgba(255, 250, 240, 0.45);
+    border-radius: 50%;
+}
+
+.life-poster-orbit::after {
+    content: "";
+    position: absolute;
+    top: -9px;
+    left: 30px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #e75438;
+}
+
 .flight-poster {
     position: relative;
     min-height: 340px;
@@ -402,6 +593,14 @@
         grid-template-columns: 1fr;
     }
 
+    .game-life {
+        grid-template-columns: minmax(0, 0.95fr) minmax(300px, 1.05fr);
+    }
+
+    .game-aquarium {
+        grid-template-columns: minmax(0, 0.95fr) minmax(300px, 1.05fr);
+    }
+
     .block-poster,
     .word-poster {
         min-height: 230px;
@@ -450,6 +649,25 @@
         min-height: 300px;
         margin: 0 24px 24px;
     }
+
+    .game-life {
+        display: block;
+    }
+
+    .game-life .life-poster {
+        min-height: 230px;
+        margin: 0 18px 18px;
+    }
+
+    .game-aquarium {
+        display: block;
+    }
+
+    .game-aquarium .aquarium-poster {
+        min-height: 230px;
+        margin: 0 18px 18px;
+    }
+
 }
 
 @media (prefers-reduced-motion: reduce) {
