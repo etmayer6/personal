@@ -1,0 +1,125 @@
+.site-pet-companion {
+    position: fixed;
+    right: 18px;
+    bottom: 68px;
+    z-index: 1002;
+    display: grid;
+    justify-items: center;
+    width: 86px;
+    padding: 8px 7px 7px;
+    border: 1px solid rgba(16, 43, 54, 0.22);
+    color: #102b36;
+    background: #fffdf8;
+    box-shadow: 5px 5px 0 rgba(197, 90, 50, 0.2);
+    font: inherit;
+    cursor: pointer;
+    transition: transform 160ms ease, box-shadow 160ms ease;
+}
+
+.site-pet-companion:hover,
+.site-pet-companion:focus-visible {
+    transform: translateY(-3px) rotate(-2deg);
+    box-shadow: 7px 8px 0 rgba(197, 90, 50, 0.24);
+}
+
+.site-pet-companion-name {
+    max-width: 72px;
+    overflow: hidden;
+    color: #8f3e24;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-overflow: ellipsis;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.site-pet-companion-art {
+    display: grid;
+    width: 60px;
+    height: 58px;
+    place-items: center;
+    margin: 1px 0;
+}
+
+.site-pet-svg {
+    display: block;
+    width: 116px;
+    height: 116px;
+}
+
+.site-pet-svg-compact {
+    width: 58px;
+    height: 58px;
+}
+
+.site-pet-ear,
+.site-pet-body {
+    stroke: rgba(16, 43, 54, 0.24);
+    stroke-width: 1.2;
+    stroke-linejoin: round;
+}
+
+.site-pet-eye {
+    fill: #102b36;
+}
+
+.site-pet-companion-hint {
+    color: #5b7074;
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.site-pet-companion.is-petted .site-pet-companion-art {
+    animation: site-pet-hop 420ms ease;
+}
+
+@keyframes site-pet-hop {
+    50% { transform: translateY(-6px) rotate(4deg); }
+}
+
+body.night-shift-mode .site-pet-companion {
+    color: #e8f0dc;
+    border-color: rgba(135, 213, 190, 0.28);
+    background: #0b292b;
+    box-shadow: 5px 5px 0 rgba(240, 166, 64, 0.18);
+}
+
+body.night-shift-mode .site-pet-companion-name {
+    color: #ffc76f;
+}
+
+body.night-shift-mode .site-pet-companion-hint {
+    color: #9db7ad;
+}
+
+@media (max-width: 700px) {
+    .site-pet-companion {
+        right: 10px;
+        bottom: 52px;
+        width: 72px;
+        padding: 6px 5px 5px;
+    }
+
+    .site-pet-companion-art {
+        width: 52px;
+        height: 50px;
+    }
+
+    .site-pet-svg-compact {
+        width: 50px;
+        height: 50px;
+    }
+
+    .site-pet-companion-hint {
+        display: none;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .site-pet-companion.is-petted .site-pet-companion-art {
+        animation: none;
+    }
+}

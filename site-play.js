@@ -8,6 +8,7 @@
     const nightUnlockKey = "ethan-site-night-shift-unlocked";
     const nightModeKey = "ethan-site-night-shift";
     const visitKey = "ethan-site-visit-log";
+    const petKey = "ethan-site-custom-pet";
     const originalName = "Ethan Mayer";
     const hunt = [
         {
@@ -51,6 +52,7 @@
     let memoryNightUnlocked = false;
     let memoryNightMode = false;
     let memoryVisits = [];
+    let memoryPet = null;
     let progress = readProgress();
     let gremlinMode = readMode();
     let nightShiftUnlocked = readNightUnlock() || progress >= hunt.length;
@@ -96,6 +98,13 @@
                     memoryVisits = [];
                 }
             }
+            if (key === petKey) {
+                try {
+                    memoryPet = JSON.parse(value);
+                } catch (parseError) {
+                    memoryPet = null;
+                }
+            }
         }
     }
 
@@ -139,7 +148,8 @@
             "diet-tracker": "Diet Tracker",
             "meal-planner": "Meal Planner",
             "childhood-timeline": "Timeline",
-            garage: "Garage Bay"
+            garage: "Garage Bay",
+            "pet-studio": "Pet Studio"
         };
         const currentUrl = new URL(window.location.href);
         const rootPath = rootUrl.pathname.endsWith("/") ? rootUrl.pathname : rootUrl.pathname + "/";
@@ -175,6 +185,77 @@
         return element;
     }
 
+    function sanitizePet(value) {
+        if (!value || typeof value !== "object") return null;
+        const name = String(value.name || "")
+            .replace(/[^a-zA-Z0-9' !?.-]/g, "")
+            .trim()
+            .slice(0, 18);
+        if (!name) return null;
+        const species = ["cat", "dog", "fox", "dragon"].includes(value.species) ? value.species : "cat";
+        const color = /^#[0-9a-f]{6}$/i.test(value.color) ? value.color : "#f2cb3f";
+        const accent = /^#[0-9a-f]{6}$/i.test(value.accent) ? value.accent : "#e77952";
+        const accessory = ["none", "scarf", "crown", "star"].includes(value.accessory) ? value.accessory : "none";
+        return { name, species, color, accent, accessory };
+    }
+
+    function readPet() {
+        const stored = storageGet(petKey);
+        if (stored == null) return sanitizePet(memoryPet);
+        try {
+            return sanitizePet(JSON.parse(stored));
+        } catch (error) {
+            return null;
+        }
+    }
+
+    function petMarkup(pet) {
+        const ears = {
+            cat: `<path class="site-pet-ear" d="M18 29 14 10l14 10Zm28 0 4-19-14 10Z" fill="${pet.color}"/>`,
+            dog: `<path class="site-pet-ear" d="M18 28 8 16l6 22Zm28 0 10-12-6 22Z" fill="${pet.color}"/>`,
+            fox: `<path class="site-pet-ear" d="M17 28 13 8l16 13Zm30 0 4-20-16 13Z" fill="${pet.color}"/>`,
+            dragon: `<path class="site-pet-ear" d="M19 27 10 10l16 9Zm26 0 9-17-16 9Z" fill="${pet.color}"/>`
+        }[pet.species];
+        const accessories = {
+            none: "",
+            scarf: `<path class="site-pet-accessory" d="M15 42c10 6 24 6 34 0l-2 8c-10 4-20 4-30 0Z" fill="${pet.accent}"/><path class="site-pet-accessory" d="M39 48h8v10h-8Z" fill="${pet.accent}"/>`,
+            crown: `<path class="site-pet-accessory" d="m19 22 4-10 9 8 9-8 4 10Z" fill="${pet.accent}"/><path class="site-pet-accessory" d="M19 22h26v4H19Z" fill="${pet.accent}"/>`,
+            star: `<path class="site-pet-accessory" d="m46 12 2 5 5 1-4 3 1 5-4-3-5 3 2-5-4-3 5-1Z" fill="${pet.accent}"/>`
+        }[pet.accessory];
+        return `${ears}
+            <path class="site-pet-tail" d="M14 43C3 45 5 31 15 34" fill="none" stroke="${pet.color}" stroke-width="7" stroke-linecap="round"/>
+            <ellipse class="site-pet-body" cx="32" cy="38" rx="19" ry="17" fill="${pet.color}"/>
+            <ellipse class="site-pet-belly" cx="32" cy="43" rx="11" ry="8" fill="${pet.accent}" opacity="0.32"/>
+            <circle class="site-pet-eye" cx="25" cy="35" r="2.2"/>
+            <circle class="site-pet-eye" cx="39" cy="35" r="2.2"/>
+            <path class="site-pet-mouth" d="M29 42c2 2 4 2 6 0" fill="none" stroke="#102b36" stroke-width="1.8" stroke-linecap="round"/>
+            ${accessories}`;
+    }
+
+    function createPetSvg(pet, compact) {
+        const icon = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+        icon.setAttribute("class", compact ? "site-pet-svg site-pet-svg-compact" : "site-pet-svg");
+        icon.setAttribute("viewBox", "0 0 64 64");
+        icon.setAttribute("aria-hidden", "true");
+        icon.innerHTML = petMarkup(pet);
+        return icon;
+    }
+
+    function ensurePetStyles() {
+        if (document.querySelector("link[data-pet-styles]")) return;
+        const link = document.createElement("link");
+        link.rel = "stylesheet";
+        link.dataset.petStyles = "true";
+        link.href = new URL("pet-companion.css?v=1", rootUrl).href;
+        document.head.appendChild(link);
+    }
+
+    window.EthanSitePet = {
+        key: petKey,
+        sanitize: sanitizePet,
+        createSvg: createPetSvg
+    };
+
     function announce(message) {
         toast.textContent = message;
         toast.classList.add("is-visible");
@@ -182,6 +263,41 @@
         announce.timeoutId = window.setTimeout(function () {
             toast.classList.remove("is-visible");
         }, 3400);
+    }
+
+    function renderPetCompanion() {
+        const existing = document.querySelector(".site-pet-companion");
+        if (existing) existing.remove();
+        const pet = readPet();
+        if (!pet) return;
+        ensurePetStyles();
+
+        const companion = document.createElement("button");
+        companion.type = "button";
+        companion.className = "site-pet-companion";
+        companion.setAttribute("aria-label", "Visit with " + pet.name + ", your " + pet.species + " companion");
+        companion.title = pet.name + " is following you around the site.";
+
+        const name = document.createElement("span");
+        name.className = "site-pet-companion-name";
+        name.textContent = pet.name;
+
+        const art = document.createElement("span");
+        art.className = "site-pet-companion-art";
+        art.appendChild(createPetSvg(pet, true));
+
+        const hint = document.createElement("span");
+        hint.className = "site-pet-companion-hint";
+        hint.textContent = "following";
+
+        companion.append(name, art, hint);
+        companion.addEventListener("click", function () {
+            companion.classList.remove("is-petted");
+            void companion.offsetWidth;
+            companion.classList.add("is-petted");
+            announce(pet.name + " found a good spot. Keep exploring together.");
+        });
+        document.body.appendChild(companion);
     }
 
     function createDialog() {
@@ -454,9 +570,12 @@
         }
     });
 
+    window.addEventListener("ethan-site-pet-updated", renderPetCompanion);
+
     if (progress >= hunt.length) unlockNightShift();
     recordVisit();
     setGremlinMode(gremlinMode, false);
     setNightShiftMode(nightShiftMode, false);
     renderHunt();
+    renderPetCompanion();
 })();

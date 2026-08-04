@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Create a custom pet companion that follows you around Ethan Mayer's personal site.">
+    <title>Pet Studio | Ethan Mayer</title>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="../pet-companion.css?v=1">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="pet-studio-body">
+    <header class="pet-studio-header">
+        <nav aria-label="Primary navigation">
+            <a class="nav-name" href="../index.html">Ethan Mayer</a>
+            <ul>
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="../resume/">Resume</a></li>
+                <li><a aria-current="page" href="../projects/">Projects</a></li>
+                <li><a href="../games/">Games</a></li>
+                <li><a href="../photos/">Photos</a></li>
+                <li><a href="../blog/">Blog</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="pet-studio-shell">
+        <section class="pet-studio-hero" aria-labelledby="pet-studio-title">
+            <div class="pet-studio-hero-copy">
+                <p class="eyebrow">Interactive workspace / 16</p>
+                <h1 id="pet-studio-title">Give the site a little company.</h1>
+                <p class="pet-studio-summary">
+                    Make a tiny companion, give them a name, and they&rsquo;ll follow you through the rest of the site.
+                    Your pet stays in this browser, so the journey is yours alone.
+                </p>
+            </div>
+            <aside class="pet-studio-hero-note" aria-label="Pet companion note">
+                <span>Companion found</span>
+                <strong>Small paws.<br>Long journey.</strong>
+                <span>Local storage / site-wide</span>
+            </aside>
+        </section>
+
+        <section class="pet-studio-layout" aria-label="Custom pet creator">
+            <div class="pet-preview-panel">
+                <div class="pet-panel-top">
+                    <div>
+                        <span class="pet-panel-kicker">Pet studio</span>
+                        <span class="pet-panel-status"><i aria-hidden="true"></i><span id="pet-preview-status">Draft companion</span></span>
+                    </div>
+                    <span id="pet-preview-species">CAT</span>
+                </div>
+                <div class="pet-preview-stage">
+                    <div class="pet-preview-sky" aria-hidden="true"></div>
+                    <div id="pet-preview-art" class="pet-preview-art" aria-label="Custom pet preview"></div>
+                    <div class="pet-preview-shadow" aria-hidden="true"></div>
+                    <span class="pet-preview-spark spark-one" aria-hidden="true">+</span>
+                    <span class="pet-preview-spark spark-two" aria-hidden="true">+</span>
+                </div>
+                <div class="pet-preview-caption">
+                    <div>
+                        <span class="pet-caption-label">Your companion</span>
+                        <h2 id="pet-preview-name">Unnamed friend</h2>
+                    </div>
+                    <span id="pet-preview-trait">Ready to roam</span>
+                </div>
+            </div>
+
+            <form class="pet-builder-card" id="pet-form">
+                <div class="builder-heading">
+                    <p class="eyebrow">Build your buddy</p>
+                    <h2>A little personality goes a long way.</h2>
+                </div>
+
+                <label class="builder-label" for="pet-name">Name
+                    <input id="pet-name" name="pet-name" type="text" maxlength="18" autocomplete="off" placeholder="Mochi" required>
+                </label>
+
+                <fieldset class="builder-fieldset">
+                    <legend>Creature type</legend>
+                    <div class="builder-choice-grid">
+                        <button type="button" class="builder-choice" data-species="cat" aria-pressed="true">Cat</button>
+                        <button type="button" class="builder-choice" data-species="dog" aria-pressed="false">Dog</button>
+                        <button type="button" class="builder-choice" data-species="fox" aria-pressed="false">Fox</button>
+                        <button type="button" class="builder-choice" data-species="dragon" aria-pressed="false">Dragon</button>
+                    </div>
+                </fieldset>
+
+                <div class="builder-color-row">
+                    <label class="builder-label" for="pet-color">Body color
+                        <input id="pet-color" type="color" value="#f2cb3f" aria-label="Pet body color">
+                    </label>
+                    <label class="builder-label" for="pet-accent">Markings
+                        <input id="pet-accent" type="color" value="#e77952" aria-label="Pet markings color">
+                    </label>
+                </div>
+
+                <fieldset class="builder-fieldset">
+                    <legend>Accessory</legend>
+                    <div class="builder-choice-grid builder-accessory-grid">
+                        <button type="button" class="builder-choice" data-accessory="none" aria-pressed="true">None</button>
+                        <button type="button" class="builder-choice" data-accessory="scarf" aria-pressed="false">Scarf</button>
+                        <button type="button" class="builder-choice" data-accessory="crown" aria-pressed="false">Crown</button>
+                        <button type="button" class="builder-choice" data-accessory="star" aria-pressed="false">Star</button>
+                    </div>
+                </fieldset>
+
+                <div class="builder-actions">
+                    <button class="builder-save" type="submit">Bring pet along <span aria-hidden="true">&rarr;</span></button>
+                    <button class="builder-reset" id="release-pet" type="button" hidden>Release pet</button>
+                </div>
+                <p class="builder-status" id="builder-status" role="status" aria-live="polite">Design a friend, then send them exploring.</p>
+            </form>
+        </section>
+
+        <section class="pet-studio-notes">
+            <div>
+                <p class="eyebrow">How it works</p>
+                <h2>They&rsquo;ll be there when you move on.</h2>
+            </div>
+            <p>The companion is saved locally and rendered by the site&rsquo;s shared layer, so your pet can appear on the home page, projects, photos, games, and everywhere else this site takes you.</p>
+        </section>
+    </main>
+
+    <footer class="pet-studio-footer"><p>&copy; 2026 Ethan Mayer</p></footer>
+    <script src="../site-play.js?v=pet-companion-1"></script>
+    <script src="app.js?v=1"></script>
+</body>
+</html>
