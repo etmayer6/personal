@@ -33,6 +33,7 @@
     const populationValue = document.querySelector("#population-value");
     const statusValue = document.querySelector("#life-status");
     const coordinateReadout = document.querySelector("#coordinate-readout");
+    const canvasFooter = document.querySelector(".canvas-footer");
     const patternButtons = Array.from(document.querySelectorAll("[data-pattern]"));
 
     function indexFor(x, y) {
@@ -159,6 +160,22 @@
     }
 
     function resizeCanvas() {
+        const boardStyles = window.getComputedStyle(board);
+        const paddingX = parseFloat(boardStyles.paddingLeft) + parseFloat(boardStyles.paddingRight);
+        const paddingY = parseFloat(boardStyles.paddingTop) + parseFloat(boardStyles.paddingBottom);
+        const footerHeight = canvasFooter ? canvasFooter.getBoundingClientRect().height : 0;
+        const availableWidth = Math.max(1, board.clientWidth - paddingX);
+        const isDesktopLayout = window.matchMedia("(min-width: 901px)").matches;
+        const availableHeight = isDesktopLayout
+            ? Math.max(1, board.clientHeight - paddingY - footerHeight)
+            : availableWidth * rows / columns;
+        const cellSize = Math.max(1, Math.min(availableWidth / columns, availableHeight / rows));
+        const canvasWidth = Math.max(1, Math.floor(cellSize * columns));
+        const canvasHeight = Math.max(1, Math.floor(cellSize * rows));
+
+        canvas.style.width = canvasWidth + "px";
+        canvas.style.height = canvasHeight + "px";
+
         const rect = canvas.getBoundingClientRect();
         const pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
         canvas.width = Math.max(1, Math.floor(rect.width * pixelRatio));

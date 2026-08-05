@@ -472,6 +472,10 @@
         const button = document.createElement("button");
         button.type = "button";
         button.className = "gremlin-mode-toggle";
+        button.setAttribute("aria-label", "Toggle Gremlin Mode");
+        button.setAttribute("aria-keyshortcuts", "Shift+G");
+        button.title = "Toggle Gremlin Mode (Shift+G)";
+        button.hidden = true;
         button.addEventListener("click", function () {
             setGremlinMode(!gremlinMode, true);
         });
@@ -524,7 +528,7 @@
         gremlinMode = Boolean(active);
         storageSet(modeKey, String(gremlinMode));
         document.body.classList.toggle("gremlin-mode", gremlinMode);
-        modeToggle.hidden = !gremlinMode && progress < hunt.length;
+        modeToggle.hidden = true;
         modeToggle.textContent = gremlinMode ? "Contain gremlins" : "Release gremlins";
         modeToggle.setAttribute("aria-pressed", String(gremlinMode));
 
@@ -536,7 +540,7 @@
 
         if (shouldAnnounce) {
             announce(gremlinMode
-                ? "Gremlin Mode released. Type gremlin again to contain it."
+                ? "Gremlin Mode released. Press Shift+G again to contain it."
                 : "Gremlins contained. Mostly.");
         }
     }
@@ -568,6 +572,14 @@
         }
     }
 
+    function openNightShift() {
+        if (!nightShiftUnlocked) {
+            announce("Night Shift is still locked. Finish the scavenger hunt first.");
+            return;
+        }
+        window.location.href = new URL("night-shift/", rootUrl).href;
+    }
+
     function showProgressDialog() {
         if (progress >= hunt.length) {
             showDialog(hunt[hunt.length - 1].title, hunt[hunt.length - 1].clue, null, true);
@@ -586,25 +598,16 @@
             element.remove();
         });
 
-        if (progress > 0) {
+        if (progress > 0 && progress < hunt.length) {
             const status = document.createElement("button");
             status.type = "button";
             status.className = "hunt-progress";
-            status.textContent = progress >= hunt.length ? "Night Shift unlocked" : "Hunt " + progress + "/" + hunt.length;
+            status.textContent = "Hunt " + progress + "/" + hunt.length;
             status.addEventListener("click", showProgressDialog);
             document.body.appendChild(status);
-        } else if (nightShiftUnlocked) {
-            const entry = document.createElement("button");
-            entry.type = "button";
-            entry.className = "hunt-progress night-shift-entry";
-            entry.textContent = "Night Shift";
-            entry.addEventListener("click", function () {
-                window.location.href = new URL("night-shift/", rootUrl).href;
-            });
-            document.body.appendChild(entry);
         }
 
-        modeToggle.hidden = !gremlinMode && progress < hunt.length;
+        modeToggle.hidden = true;
         if (progress >= hunt.length) return;
 
         const current = hunt[progress];
@@ -650,6 +653,18 @@
         const isTyping = target instanceof HTMLElement &&
             (target.matches("input, textarea, select") || target.isContentEditable);
         if (isTyping || event.ctrlKey || event.metaKey || event.altKey) return;
+
+        const key = event.key.toLowerCase();
+        if (event.shiftKey && key === "g") {
+            event.preventDefault();
+            setGremlinMode(!gremlinMode, true);
+            return;
+        }
+        if (event.shiftKey && key === "n") {
+            event.preventDefault();
+            openNightShift();
+            return;
+        }
 
         if (event.key.length === 1) {
             typed = (typed + event.key.toLowerCase()).slice(-7);

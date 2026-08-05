@@ -880,6 +880,12 @@ body.apartment-body :is(
     right: 18px;
 }
 
+/* Keep these legacy controls available to the shared script without adding fixed-page clutter. */
+.gremlin-mode-toggle,
+.night-shift-entry {
+    display: none !important;
+}
+
 .hunt-progress,
 .gremlin-mode-toggle {
     min-height: 32px;

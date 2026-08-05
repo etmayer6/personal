@@ -493,3 +493,102 @@ Original prompt: Remove clutter from the games on the website. Right now they do
 ## Mola mola aquarium TODO
 
 - None for this pass.
+
+## Conway square tiles
+
+- New request: prevent the Game of Life cells from being stretched horizontally on the focused desktop layout.
+- Updated the canvas resize path to calculate one tile size from the available board width and height, then size the 48x30 canvas from that square tile.
+- Centered the fitted desktop canvas inside the wide board, kept the mobile board full-width, and preserved pointer coordinate mapping and fullscreen behavior.
+
+## Conway square tiles verification
+
+- `node --check conway/app.js` and `git diff --check` pass.
+- The required web-game harness confirms square-looking grid cells, preserved glider/custom-seed interaction, `interactionMode: idle` at rest, and the expected live-cell coordinates after pointer input.
+- Browser geometry checks report desktop cells at approximately `15.06px x 15.07px` and mobile cells at approximately `6.69px x 6.67px`.
+- The 390px layout has no horizontal overflow and browser console logs contain no warnings or errors.
+
+## Conway square tiles TODO
+
+- None for this pass.
+
+## Hidden calendar route
+
+- New request: keep the scheduling page available at `/calendar` without exposing it through the site's clickable navigation.
+- Moved the static scheduling page from `schedule/` to `calendar/` so `/calendar` is the canonical direct route.
+- Removed the home page's `Schedule a catch-up` link while leaving the page's own home and external Calendly links intact.
+
+## Hidden calendar route verification
+
+- Direct browser navigation to `/calendar` resolves to `/calendar/` and renders the scheduling page.
+- The site-wide HTML scan finds no remaining `schedule/` or `calendar/` links, and the calendar page's primary navigation contains no scheduling destination.
+- Browser console logs contain no warnings or errors; `git diff --check` passes.
+
+## Hidden calendar route TODO
+
+- None for this pass.
+
+## Iowa Skywatch geographic map
+
+- New request: replace the inaccurate Iowa placeholder map with a real Iowa boundary and live aircraft overlay.
+- Replaced the hand-drawn 29-point Iowa polygon with a locally embedded, simplified official State of Iowa boundary outline, including the Missouri River edge, western boundary notches, and Mississippi River edge.
+- Kept the existing geographic projection, airport markers, aircraft feed, selection behavior, and over-Iowa highlighting intact so live aircraft remain aligned to their coordinates.
+- Updated the map description and data note to identify the geographic boundary source and distinguish it from the community ADS-B feed.
+
+## Iowa Skywatch geographic map verification
+
+- `node --check flight-radar/app.js` and `git diff --check` pass.
+- Browser QA rendered the accurate outline with 64 live aircraft markers and all 6 Iowa airport markers; the feed reached `Live snapshot`.
+- Desktop and 390px mobile checks report no horizontal overflow; mobile retains the detailed map within the responsive board.
+- Browser console logs contain no warnings or errors.
+
+## Iowa Skywatch geographic map TODO
+
+- None for this pass.
+
+## New blog dispatch
+
+- New request: write another personal blog post for the site.
+- Added the Codex dispatch `The map had to know where Iowa was`, reflecting on replacing the Iowa Skywatch hand-drawn map with real local geography and keeping the live aircraft layer lightweight.
+- Promoted the new post on the blog index, moved the previous gallery dispatch into the Codex archive, and updated the author-card entry counts.
+
+## New blog dispatch verification
+
+- The blog index links to the new featured post, retains the gallery archive link, and reports 04 Codex notes / 08 total entries.
+- The new article renders at `/blog/posts/the-map-had-to-know-iowa/` with Dispatch 008, four section headings, and the labeled Codex author note.
+- Desktop browser captures show no horizontal overflow; browser console logs contain no warnings or errors.
+
+## New blog dispatch TODO
+
+- None for this pass.
+
+## Games on projects page
+
+- New request: add links for games that were missing from the projects archive.
+- Added project cards for Pinpoint, Conway's Game of Life, and Mola Mola, matching the existing workbench card layout and numbering.
+- Updated the project index from 16 to 19 builds and from 13 to 16 open workbench projects.
+
+## Games on projects page verification
+
+- `git diff --check` passes.
+- Browser QA confirms all 16 archive cards render, each new game link is present, the project tally reads 19 builds, and there is no horizontal overflow at the available desktop viewport.
+- Browser console logs contain no warnings or errors.
+
+## Games on projects page TODO
+
+- None for this pass.
+
+## Quiet site shortcuts
+
+- New request: reduce the fixed-page clutter from the completed Night Shift and Gremlin Mode controls.
+- Removed the completed `Night Shift unlocked` and `Release gremlins` corner controls while keeping the in-progress hunt counter and contextual completion dialog.
+- Added `Shift+N` to open the unlocked Night Shift route and `Shift+G` to toggle Gremlin Mode without changing how text fields handle keyboard input.
+
+## Quiet site shortcuts verification
+
+- `node --check site-play.js` and `git diff --check` pass.
+- Browser QA confirms `Shift+G` releases and contains the swarm while the toggle remains hidden, and `Shift+N` opens `/night-shift/` for an unlocked session.
+- The homepage has no visible completed-state controls, no horizontal overflow, and no browser console warnings or errors.
+
+## Quiet site shortcuts TODO
+
+- None for this pass.
