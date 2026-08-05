@@ -3,6 +3,7 @@
 
     const scriptUrl = new URL(document.currentScript.src, window.location.href);
     const rootUrl = new URL("./", scriptUrl);
+    const isPetStudio = document.body.classList.contains("pet-studio-body");
     const modeKey = "ethan-site-gremlin-mode";
     const huntKey = "ethan-site-hunt-progress";
     const nightUnlockKey = "ethan-site-night-shift-unlocked";
@@ -58,10 +59,10 @@
     let nightShiftUnlocked = readNightUnlock() || progress >= hunt.length;
     let nightShiftMode = readNightMode() && nightShiftUnlocked;
     const page = identifyPage();
-    const toast = createToast();
-    const dialog = createDialog();
-    const modeToggle = createModeToggle();
-    const nightShiftExit = createNightShiftExit();
+    const toast = isPetStudio ? null : createToast();
+    const dialog = isPetStudio ? document.createElement("dialog") : createDialog();
+    const modeToggle = isPetStudio ? document.createElement("button") : createModeToggle();
+    const nightShiftExit = isPetStudio ? document.createElement("button") : createNightShiftExit();
     const originalNavName = document.querySelector(".nav-name");
     let huntHostObserver = null;
 
@@ -105,6 +106,14 @@
                     memoryPet = null;
                 }
             }
+        }
+    }
+
+    function storageRemove(key) {
+        try {
+            window.localStorage.removeItem(key);
+        } catch (error) {
+            if (key === petKey) memoryPet = null;
         }
     }
 
@@ -210,11 +219,44 @@
     }
 
     function petMarkup(pet) {
-        const ears = {
-            cat: `<path class="site-pet-ear" d="M18 29 14 10l14 10Zm28 0 4-19-14 10Z" fill="${pet.color}"/>`,
-            dog: `<path class="site-pet-ear" d="M18 28 8 16l6 22Zm28 0 10-12-6 22Z" fill="${pet.color}"/>`,
-            fox: `<path class="site-pet-ear" d="M17 28 13 8l16 13Zm30 0 4-20-16 13Z" fill="${pet.color}"/>`,
-            dragon: `<path class="site-pet-ear" d="M19 27 10 10l16 9Zm26 0 9-17-16 9Z" fill="${pet.color}"/>`
+        const creatures = {
+            cat: `<path class="site-pet-ear" d="M18 28 14 10l14 10Zm28 0 4-18-14 10Z" fill="${pet.color}"/>
+                <path class="site-pet-tail" d="M15 43C3 46 5 30 17 34" fill="none" stroke="${pet.color}" stroke-width="7" stroke-linecap="round"/>
+                <ellipse class="site-pet-body" cx="32" cy="39" rx="18" ry="17" fill="${pet.color}"/>
+                <ellipse class="site-pet-belly" cx="32" cy="44" rx="10" ry="8" fill="${pet.accent}" opacity="0.32"/>
+                <path class="site-pet-detail" d="M19 45v7m26-7v7M17 37l-8-2m9 7-9 1m40-6 8-2m-9 7 9 1" fill="none" stroke-linecap="round"/>
+                <circle class="site-pet-eye" cx="25" cy="35" r="2.2"/>
+                <circle class="site-pet-eye" cx="39" cy="35" r="2.2"/>
+                <path class="site-pet-detail" d="M29 41h6l-3 3Z" fill="${pet.accent}" stroke="none"/>
+                <path class="site-pet-mouth" d="M29 44c2 2 4 2 6 0" fill="none" stroke="#102b36" stroke-width="1.6" stroke-linecap="round"/>`,
+            dog: `<path class="site-pet-ear" d="M20 29C10 24 7 15 13 10c8 2 11 11 10 20Zm24 0c10-5 13-14 7-19-8 2-11 11-10 20Z" fill="${pet.color}"/>
+                <path class="site-pet-tail" d="M48 40c13-6 13-16 4-17" fill="none" stroke="${pet.color}" stroke-width="7" stroke-linecap="round"/>
+                <ellipse class="site-pet-body" cx="32" cy="40" rx="18" ry="16" fill="${pet.color}"/>
+                <ellipse class="site-pet-belly" cx="32" cy="45" rx="11" ry="7" fill="${pet.accent}" opacity="0.34"/>
+                <ellipse class="site-pet-muzzle" cx="32" cy="41" rx="8" ry="6" fill="${pet.accent}" opacity="0.82"/>
+                <circle class="site-pet-eye" cx="25" cy="34" r="2.2"/>
+                <circle class="site-pet-eye" cx="39" cy="34" r="2.2"/>
+                <circle class="site-pet-nose" cx="32" cy="40" r="2.1" fill="#102b36"/>
+                <path class="site-pet-detail" d="M20 48v5m24-5v5" fill="none" stroke-linecap="round"/>`,
+            fox: `<path class="site-pet-ear" d="M18 28 12 7l17 14Zm28 0 6-21-17 14Z" fill="${pet.color}"/>
+                <path class="site-pet-detail" d="m14 12 5 13 7-4Zm36 0-5 13-7-4Z" fill="${pet.accent}" stroke="none"/>
+                <path class="site-pet-tail" d="M19 44C7 48 3 38 11 31l9 2Z" fill="${pet.color}"/>
+                <path class="site-pet-detail" d="m10 37 9-4-5 9Z" fill="${pet.accent}" stroke="none"/>
+                <path class="site-pet-body" d="M17 30c7-8 23-8 30 0l-3 19c-7 8-17 8-24 0Z" fill="${pet.color}"/>
+                <path class="site-pet-belly" d="M27 42h10l-5 9Z" fill="${pet.accent}" opacity="0.76" stroke="none"/>
+                <path class="site-pet-detail" d="M24 34 29 39m16-5-5 5" fill="none" stroke-linecap="round"/>
+                <circle class="site-pet-eye" cx="25" cy="34" r="2.1"/>
+                <circle class="site-pet-eye" cx="39" cy="34" r="2.1"/>
+                <path class="site-pet-detail" d="m29 41 3 2 3-2" fill="none" stroke-linecap="round"/>`,
+            dragon: `<path class="site-pet-wing" d="M20 31C10 29 5 22 7 12c8 2 14 8 17 16Zm24 0c10-2 15-9 13-19-8 2-14 8-17 16Z" fill="${pet.accent}"/>
+                <path class="site-pet-ear" d="m23 23-5-11 10 6Zm18 0 5-11-10 6Z" fill="${pet.color}"/>
+                <path class="site-pet-tail" d="M18 46C5 53 7 38 16 36" fill="none" stroke="${pet.color}" stroke-width="7" stroke-linecap="round"/>
+                <path class="site-pet-detail" d="m12 45 5-5 4 4 4-5" fill="none" stroke="${pet.accent}" stroke-width="3" stroke-linecap="round"/>
+                <path class="site-pet-body" d="M17 30c5-9 25-9 30 0l-3 20c-7 7-17 7-24 0Z" fill="${pet.color}"/>
+                <path class="site-pet-belly" d="M27 36c3 3 7 3 10 0v14c-3 3-7 3-10 0Z" fill="${pet.accent}" opacity="0.54"/>
+                <circle class="site-pet-eye" cx="25" cy="33" r="2.1"/>
+                <circle class="site-pet-eye" cx="39" cy="33" r="2.1"/>
+                <path class="site-pet-detail" d="M29 41h6m-5 5h4m-3-19 1-4 1 4" fill="none" stroke-linecap="round"/>`
         }[pet.species];
         const accessories = {
             none: "",
@@ -222,14 +264,7 @@
             crown: `<path class="site-pet-accessory" d="m19 22 4-10 9 8 9-8 4 10Z" fill="${pet.accent}"/><path class="site-pet-accessory" d="M19 22h26v4H19Z" fill="${pet.accent}"/>`,
             star: `<path class="site-pet-accessory" d="m46 12 2 5 5 1-4 3 1 5-4-3-5 3 2-5-4-3 5-1Z" fill="${pet.accent}"/>`
         }[pet.accessory];
-        return `${ears}
-            <path class="site-pet-tail" d="M14 43C3 45 5 31 15 34" fill="none" stroke="${pet.color}" stroke-width="7" stroke-linecap="round"/>
-            <ellipse class="site-pet-body" cx="32" cy="38" rx="19" ry="17" fill="${pet.color}"/>
-            <ellipse class="site-pet-belly" cx="32" cy="43" rx="11" ry="8" fill="${pet.accent}" opacity="0.32"/>
-            <circle class="site-pet-eye" cx="25" cy="35" r="2.2"/>
-            <circle class="site-pet-eye" cx="39" cy="35" r="2.2"/>
-            <path class="site-pet-mouth" d="M29 42c2 2 4 2 6 0" fill="none" stroke="#102b36" stroke-width="1.8" stroke-linecap="round"/>
-            ${accessories}`;
+        return `${creatures}${accessories}`;
     }
 
     function createPetSvg(pet, compact) {
@@ -246,7 +281,7 @@
         const link = document.createElement("link");
         link.rel = "stylesheet";
         link.dataset.petStyles = "true";
-        link.href = new URL("pet-companion.css?v=1", rootUrl).href;
+        link.href = new URL("pet-companion.css?v=2", rootUrl).href;
         document.head.appendChild(link);
     }
 
@@ -257,6 +292,7 @@
     };
 
     function announce(message) {
+        if (!toast) return;
         toast.textContent = message;
         toast.classList.add("is-visible");
         window.clearTimeout(announce.timeoutId);
@@ -266,6 +302,7 @@
     }
 
     function renderPetCompanion() {
+        if (isPetStudio) return;
         const existing = document.querySelector(".site-pet-companion");
         if (existing) existing.remove();
         const pet = readPet();
@@ -275,8 +312,8 @@
         const companion = document.createElement("button");
         companion.type = "button";
         companion.className = "site-pet-companion";
-        companion.setAttribute("aria-label", "Visit with " + pet.name + ", your " + pet.species + " companion");
-        companion.title = pet.name + " is following you around the site.";
+        companion.setAttribute("aria-label", "Open options for " + pet.name + ", your " + pet.species + " companion");
+        companion.title = "Open options for " + pet.name;
 
         const name = document.createElement("span");
         name.className = "site-pet-companion-name";
@@ -288,14 +325,11 @@
 
         const hint = document.createElement("span");
         hint.className = "site-pet-companion-hint";
-        hint.textContent = "following";
+        hint.textContent = "options";
 
         companion.append(name, art, hint);
         companion.addEventListener("click", function () {
-            companion.classList.remove("is-petted");
-            void companion.offsetWidth;
-            companion.classList.add("is-petted");
-            announce(pet.name + " found a good spot. Keep exploring together.");
+            showPetOptions(pet);
         });
         document.body.appendChild(companion);
     }
@@ -323,6 +357,62 @@
         button.addEventListener("click", action);
         container.appendChild(button);
         return button;
+    }
+
+    function showPetOptions(pet) {
+        dialog.replaceChildren();
+
+        const label = document.createElement("p");
+        label.className = "site-play-dialog-label";
+        label.textContent = "Companion options";
+
+        const heading = document.createElement("h2");
+        heading.textContent = pet.name + " is here.";
+
+        const message = document.createElement("p");
+        message.className = "site-play-dialog-copy";
+        message.textContent = "Give your traveling buddy a new name, or send them home for now.";
+
+        const field = document.createElement("label");
+        field.className = "site-pet-option-field";
+        field.textContent = "Name";
+
+        const input = document.createElement("input");
+        input.className = "site-pet-option-input";
+        input.type = "text";
+        input.maxLength = 18;
+        input.value = pet.name;
+        input.autocomplete = "off";
+        field.appendChild(input);
+
+        const actions = document.createElement("div");
+        actions.className = "site-play-dialog-actions";
+        addDialogButton(actions, "Save name", "site-play-primary", function () {
+            const updated = sanitizePet({ ...pet, name: input.value });
+            if (!updated) {
+                input.setCustomValidity("Give your companion a name first.");
+                input.reportValidity();
+                return;
+            }
+            input.setCustomValidity("");
+            storageSet(petKey, JSON.stringify(updated));
+            window.dispatchEvent(new CustomEvent("ethan-site-pet-updated"));
+            closeDialog();
+            announce(updated.name + " has a new name.");
+        });
+        addDialogButton(actions, "Keep exploring", "site-play-reset", closeDialog);
+        addDialogButton(actions, "Release pet", "site-pet-release", function () {
+            storageRemove(petKey);
+            window.dispatchEvent(new CustomEvent("ethan-site-pet-updated"));
+            closeDialog();
+            announce(pet.name + " is resting. You can make a new companion anytime.");
+        });
+
+        dialog.append(label, heading, message, field, actions);
+        if (typeof dialog.showModal === "function") dialog.showModal();
+        else dialog.setAttribute("open", "");
+        input.focus();
+        input.select();
     }
 
     function showDialog(title, copy, nextPath, complete) {
@@ -570,12 +660,14 @@
         }
     });
 
-    window.addEventListener("ethan-site-pet-updated", renderPetCompanion);
+    if (!isPetStudio) {
+        window.addEventListener("ethan-site-pet-updated", renderPetCompanion);
 
-    if (progress >= hunt.length) unlockNightShift();
-    recordVisit();
-    setGremlinMode(gremlinMode, false);
-    setNightShiftMode(nightShiftMode, false);
-    renderHunt();
-    renderPetCompanion();
+        if (progress >= hunt.length) unlockNightShift();
+        recordVisit();
+        setGremlinMode(gremlinMode, false);
+        setNightShiftMode(nightShiftMode, false);
+        renderHunt();
+        renderPetCompanion();
+    }
 })();

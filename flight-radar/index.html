@@ -29,8 +29,8 @@
                 <p class="eyebrow">Live airspace / Iowa</p>
                 <h1 id="radar-title">Watch the sky move.</h1>
                 <p class="radar-summary">
-                    A small, live snapshot of the aircraft moving through the Iowa sector. Pick a plane to inspect its
-                    callsign, altitude, speed, and direction.
+                    A live view of the airspace around Iowa. Click a marker to inspect its callsign, altitude, speed,
+                    and direction.
                 </p>
                 <div class="radar-actions">
                     <button class="radar-button" id="refresh-button" type="button">Refresh feed</button>
@@ -38,15 +38,11 @@
                         Open full radar <span aria-hidden="true">&nearr;</span>
                     </a>
                 </div>
+                <div class="radar-hero-meta" aria-label="Feed details">
+                    <span class="radar-live-state"><i aria-hidden="true"></i>Live community feed</span>
+                    <span>Central Iowa / 250 km view</span>
+                </div>
             </div>
-
-            <aside class="radar-signal" aria-label="Live feed summary">
-                <span class="signal-kicker">Local signal</span>
-                <span class="signal-dot" aria-hidden="true"></span>
-                <strong id="signal-count">--</strong>
-                <span>aircraft in range</span>
-                <div class="signal-rings" aria-hidden="true"><i></i><i></i><i></i></div>
-            </aside>
         </section>
 
         <section class="radar-workspace" aria-labelledby="sector-heading">
@@ -67,34 +63,28 @@
                         <desc id="map-description">A stylized map showing live aircraft positions from the Airplanes.live ADS-B feed.</desc>
                         <defs>
                             <pattern id="radar-grid" width="56" height="56" patternUnits="userSpaceOnUse">
-                                <path d="M 56 0 L 0 0 0 56" fill="none" stroke="#2e626d" stroke-width="1" opacity="0.48"></path>
+                                <path d="M 56 0 L 0 0 0 56" fill="none" stroke="#86a59e" stroke-width="1" opacity="0.28"></path>
                             </pattern>
                             <radialGradient id="radar-wash" cx="50%" cy="45%" r="72%">
-                                <stop offset="0%" stop-color="#173e47"></stop>
-                                <stop offset="100%" stop-color="#0c252e"></stop>
+                                <stop offset="0%" stop-color="#e5efea"></stop>
+                                <stop offset="100%" stop-color="#cbded7"></stop>
                             </radialGradient>
                         </defs>
                         <rect class="map-surface" width="1000" height="640" fill="url(#radar-wash)"></rect>
                         <rect class="map-grid" width="1000" height="640" fill="url(#radar-grid)"></rect>
-                        <g class="map-rings" aria-hidden="true">
-                            <circle cx="500" cy="332" r="120"></circle>
-                            <circle cx="500" cy="332" r="230"></circle>
-                            <circle cx="500" cy="332" r="350"></circle>
-                            <line x1="500" y1="24" x2="500" y2="616"></line>
-                            <line x1="64" y1="332" x2="936" y2="332"></line>
-                        </g>
-                        <g class="map-routes" aria-hidden="true">
-                            <path d="M 20 232 C 245 145, 452 174, 976 87"></path>
-                            <path d="M 22 501 C 278 421, 612 476, 986 378"></path>
-                            <path d="M 170 36 C 349 191, 584 311, 900 608"></path>
-                        </g>
-                        <g class="state-labels" aria-hidden="true">
-                            <text x="138" y="110">SOUTH DAKOTA</text>
-                            <text x="122" y="555">NEBRASKA</text>
-                            <text x="448" y="74">MINNESOTA</text>
-                            <text x="787" y="255">WISCONSIN</text>
-                            <text x="788" y="540">ILLINOIS</text>
-                            <text x="452" y="580">MISSOURI</text>
+                        <g class="regional-states" aria-hidden="true">
+                            <path class="neighbor-state" d="M 0 0 H 236 V 187 L 174 197 L 92 214 L 0 228 Z"></path>
+                            <path class="neighbor-state" d="M 236 0 H 830 V 78 L 792 126 L 742 187 H 236 Z"></path>
+                            <path class="neighbor-state" d="M 830 0 H 1000 V 272 L 932 316 L 820 252 L 742 187 L 792 126 Z"></path>
+                            <path class="neighbor-state" d="M 0 228 L 236 187 V 455 L 0 478 Z"></path>
+                            <path class="neighbor-state" d="M 0 478 L 236 455 H 730 L 760 640 H 0 Z"></path>
+                            <path class="neighbor-state" d="M 730 455 L 742 187 L 820 252 L 932 316 L 1000 272 V 640 H 760 Z"></path>
+                            <text x="102" y="112">SOUTH DAKOTA</text>
+                            <text x="500" y="72">MINNESOTA</text>
+                            <text x="900" y="142">WISCONSIN</text>
+                            <text x="104" y="360">NEBRASKA</text>
+                            <text x="870" y="500">ILLINOIS</text>
+                            <text x="470" y="570">MISSOURI</text>
                         </g>
                         <path id="iowa-shape" class="iowa-shape" aria-hidden="true"></path>
                         <text id="iowa-label" class="iowa-label" aria-hidden="true">IOWA</text>
@@ -116,22 +106,6 @@
             </div>
 
             <aside class="radar-sidebar" aria-label="Flight details">
-                <section class="radar-side-card radar-stats-card">
-                    <div class="side-card-heading">
-                        <div>
-                            <p class="panel-kicker">Snapshot</p>
-                            <h2>Traffic picture</h2>
-                        </div>
-                        <span class="live-chip">LIVE</span>
-                    </div>
-                    <div class="radar-stats">
-                        <div><span>In view</span><strong id="stat-visible">--</strong></div>
-                        <div><span>Over Iowa</span><strong id="stat-iowa">--</strong></div>
-                        <div><span>High altitude</span><strong id="stat-high">--</strong></div>
-                        <div><span>Refresh</span><strong>60s</strong></div>
-                    </div>
-                </section>
-
                 <section class="radar-side-card selected-card" aria-live="polite">
                     <div class="side-card-heading">
                         <div>
@@ -140,7 +114,7 @@
                         </div>
                         <span class="selected-mark" aria-hidden="true">+</span>
                     </div>
-                    <p class="selected-type" id="selected-type">Choose a marker or flight below.</p>
+                    <p class="selected-type" id="selected-type">Click a marker on the map to see its details.</p>
                     <dl class="selected-data">
                         <div><dt>Position</dt><dd id="selected-position">--</dd></div>
                         <div><dt>Altitude</dt><dd id="selected-altitude">--</dd></div>
@@ -148,32 +122,12 @@
                         <div><dt>Track</dt><dd id="selected-track">--</dd></div>
                     </dl>
                 </section>
-
-                <section class="radar-side-card aircraft-list-card">
-                    <div class="side-card-heading">
-                        <div>
-                            <p class="panel-kicker">Traffic list</p>
-                            <h2>Aircraft nearby</h2>
-                        </div>
-                        <span class="list-count" id="list-count">--</span>
-                    </div>
-                    <ul class="aircraft-list" id="aircraft-list" aria-label="Nearby aircraft">
-                        <li class="empty-list">Scanning the local sky...</li>
-                    </ul>
-                </section>
             </aside>
         </section>
 
         <section class="radar-note" aria-label="Data note">
-            <div>
-                <p class="eyebrow">A small live experiment</p>
-                <h2>Useful, not mission-critical.</h2>
-            </div>
-            <p>
-                Positions come from community-received ADS-B and MLAT data. This page is an informational snapshot,
-                not a navigation tool, and the feed may be quiet or temporarily unavailable.
-            </p>
-            <a href="https://airplanes.live/" target="_blank" rel="noopener noreferrer">Data by Airplanes.live <span aria-hidden="true">&nearr;</span></a>
+            <p><span class="eyebrow">Community ADS-B / updated every 60 seconds</span> Informational only, not for navigation.</p>
+            <a href="https://airplanes.live/" target="_blank" rel="noopener noreferrer">Airplanes.live source <span aria-hidden="true">&nearr;</span></a>
         </section>
     </main>
 
@@ -182,7 +136,7 @@
         <a href="../index.html">Back home</a>
     </footer>
 
-    <script src="../site-play.js?v=pet-companion-1"></script>
+    <script src="../site-play.js?v=pet-companion-2"></script>
     <script src="app.js?v=1"></script>
 </body>
 </html>

@@ -10,61 +10,19 @@
 </head>
 <body class="aquarium-body">
     <header class="aquarium-header">
-        <nav aria-label="Primary navigation">
-            <a class="nav-name" href="../index.html">Ethan Mayer</a>
-            <ul>
-                <li><a href="../index.html">Home</a></li>
-                <li><a href="../resume/">Resume</a></li>
-                <li><a href="../projects/">Projects</a></li>
-                <li><a aria-current="page" href="../games/">Games</a></li>
-                <li><a href="../photos/">Photos</a></li>
-                <li><a href="../blog/">Blog</a></li>
-            </ul>
-        </nav>
+        <div class="aquarium-header-inner">
+            <a class="aquarium-brand" href="../games/">&larr; Games</a>
+            <h1 class="aquarium-header-title">Mola Mola Aquarium</h1>
+            <span class="aquarium-header-status">Tank lab</span>
+        </div>
     </header>
 
     <main class="aquarium-shell">
-        <section class="aquarium-hero" aria-labelledby="aquarium-title">
-            <div class="aquarium-hero-copy">
-                <p class="eyebrow">Virtual aquarium / 06</p>
-                <h1 id="aquarium-title">Raise a gentle giant.</h1>
-                <p class="aquarium-summary">
-                    Meet Momo, a tiny mola mola with a big appetite. Feed the tank, keep the water happy, and watch a
-                    curious little pancake grow into an ocean-sized sunfish.
-                </p>
-            </div>
-            <aside class="aquarium-hero-note" aria-label="Aquarium objective">
-                <span class="hero-note-number">01</span>
-                <strong>Small snacks.<br>Big fish.</strong>
-                <span>Click the water or use the care controls.</span>
-            </aside>
-        </section>
-
         <section class="aquarium-layout" aria-labelledby="tank-heading">
             <div class="tank-panel" id="aquarium-board">
-                <header class="tank-header">
-                    <div>
-                        <p class="tank-kicker">Momo's tank</p>
-                        <h2 id="tank-heading">A quiet corner of the ocean.</h2>
-                    </div>
-                    <div class="tank-readout" aria-live="polite">
-                        <span class="tank-status-dot" aria-hidden="true"></span>
-                        <span id="tank-status">Water calm</span>
-                        <span id="tank-day">Day 01</span>
-                    </div>
-                </header>
-
                 <div class="tank-canvas-wrap">
                     <canvas id="aquarium-canvas" width="960" height="600" tabindex="0" aria-label="Momo's aquarium. Click the water to feed the mola mola fish."></canvas>
-                    <div class="tank-corner tank-corner-top">MOLA-01 / LIVE TANK</div>
-                    <div class="tank-corner tank-corner-bottom">CLICK WATER TO FEED</div>
                 </div>
-
-                <footer class="tank-footer">
-                    <span><i class="legend-fish" aria-hidden="true"></i>Momo</span>
-                    <span><i class="legend-snack" aria-hidden="true"></i>Snack pellet</span>
-                    <span><i class="legend-plant" aria-hidden="true"></i>Reef garden</span>
-                </footer>
             </div>
 
             <aside class="aquarium-controls" aria-label="Momo care controls">
@@ -104,6 +62,15 @@
                         <button class="care-button" id="play-button" type="button">Play with Momo <kbd>P</kbd></button>
                         <button class="care-button care-button-quiet" id="fullscreen-button" type="button">Fullscreen <kbd>F</kbd></button>
                     </div>
+                    <div class="food-picker" aria-label="Choose Momo's food">
+                        <p class="food-picker-label">Choose a food</p>
+                        <div class="food-options">
+                            <button class="food-option is-selected" type="button" data-food="jellyfish" aria-pressed="true">Jellyfish</button>
+                            <button class="food-option" type="button" data-food="krill" aria-pressed="false">Krill</button>
+                            <button class="food-option" type="button" data-food="seaweed" aria-pressed="false">Sea lettuce</button>
+                        </div>
+                        <p class="food-description" id="food-description" aria-live="polite">Soft, floaty, and Momo's favorite.</p>
+                    </div>
                     <p class="care-hint">A little care goes a long way. Neglect the tank and Momo gets gloomy.</p>
                 </section>
 
@@ -123,25 +90,8 @@
             </aside>
         </section>
 
-        <section class="aquarium-note" aria-label="How to play">
-            <div>
-                <p class="eyebrow">How to play</p>
-                <h2>Feed, fuss, repeat.</h2>
-            </div>
-            <p>
-                Each snack makes Momo a little bigger. Clean water restores the tank, play lifts the mood, and the
-                aquarium fills with small surprises as the fish grows.
-            </p>
-            <a href="../games/">Back to all games <span aria-hidden="true">&rarr;</span></a>
-        </section>
     </main>
 
-    <footer class="aquarium-footer">
-        <p>&copy; 2026 Ethan Mayer</p>
-        <a href="../games/">Back to games</a>
-    </footer>
-
-    <script src="../site-play.js?v=pet-companion-1"></script>
     <script src="app.js?v=1"></script>
 </body>
 </html>

@@ -454,3 +454,42 @@ Original prompt: Remove clutter from the games on the website. Right now they do
 ## Flight simulator visual TODO
 
 - None for this visual pass.
+
+## Conway focused workspace
+
+- New request: remove Conway's Game of Life page framing clutter and prevent hover from painting cells before the user clicks.
+- Replaced the full navigation, hero, notes, footer, and back-link shell with a compact Games header and full-page simulation workspace.
+- Removed the secondary rule strip so the board and core controls have more room, especially on desktop and mobile.
+- Added an explicit idle interaction state; hover now only updates the cell preview/readout, while a pointer press temporarily chooses placing or erasing for the active gesture.
+- Updated the board instructions, cursor states, and deterministic text output to expose the current interaction mode.
+
+## Conway verification
+
+- `node --check conway/app.js` and `git diff --check` pass.
+- The required web-game harness captures the updated board after hover and an intentional drag, with `interactionMode: idle` at rest and only the intentional cells added.
+- Browser QA confirms hover leaves population unchanged, drag places cells, clicking an occupied cell erases one, and start/pause simulation controls update correctly.
+- Desktop and 390px mobile screenshots were visually inspected; the focused route has no shared overlays, horizontal overflow, or browser console warnings/errors.
+
+## Conway TODO
+
+- None for this pass.
+
+## Mola mola aquarium refresh
+
+- New request: remove aquarium framing clutter, improve Momo's visual model, and replace the generic food pellets with several recognizable food types.
+- Reworked the route into a focused aquarium workspace with a compact Games header, a full-size tank canvas, and a dedicated care rail; removed the redundant tank header, canvas labels, footer legend, page note, footer, and shared site overlays.
+- Rebuilt Momo as a broad sunfish silhouette with separated face and rear clavus lobes, dorsal and anal fins, pectoral fin, gill and mouth details, eye highlights, body spots, and a soft belly shadow.
+- Added Jellyfish, Krill, and Sea lettuce food choices with distinct canvas artwork, descriptions, hunger/mood/growth effects, and feeding messages.
+- Kept the existing care loop, keyboard shortcuts, click-to-feed behavior, fullscreen control, growth stages, and deterministic game-state output intact.
+
+## Mola mola aquarium verification
+
+- `node --check aquarium/app.js` and `git diff --check` pass.
+- The required web-game harness confirms a running aquarium, a jellyfish pellet, updated hunger/growth state, and the selected-food value in `render_game_to_text`.
+- Browser QA confirms Jellyfish, Krill, and Sea lettuce selection and feeding each update their pressed state, description, message, and growth behavior.
+- Desktop and 390px mobile captures were visually inspected; the mobile care rail reaches the growth log, has no horizontal overflow, and has no global overlays.
+- Browser console logs contain no warnings or errors.
+
+## Mola mola aquarium TODO
+
+- None for this pass.

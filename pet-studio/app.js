@@ -28,6 +28,13 @@
     };
     let pet = loadPet();
 
+    function cleanName(value) {
+        return String(value || "")
+            .replace(/[^a-zA-Z0-9' !?.-]/g, "")
+            .trim()
+            .slice(0, 18);
+    }
+
     function loadPet() {
         try {
             const stored = JSON.parse(window.localStorage.getItem(petKey) || "null");
@@ -81,8 +88,21 @@
         builderStatus.textContent = message;
     }
 
+    function renderNameDetails() {
+        previewName.textContent = pet.name || "Unnamed friend";
+        previewStatus.textContent = pet.name ? "Companion ready" : "Draft companion";
+        releaseButton.hidden = !pet.name;
+    }
+
+    nameInput.addEventListener("input", function () {
+        // Keep the in-progress name when another control re-renders the preview.
+        pet.name = cleanName(nameInput.value);
+        renderNameDetails();
+    });
+
     document.querySelectorAll("[data-species]").forEach(function (button) {
         button.addEventListener("click", function () {
+            pet.name = cleanName(nameInput.value);
             pet.species = button.dataset.species;
             renderPreview();
             setStatus("A " + pet.species + " feels right.");
@@ -109,7 +129,7 @@
 
     form.addEventListener("submit", function (event) {
         event.preventDefault();
-        const name = nameInput.value.replace(/[^a-zA-Z0-9' !?.-]/g, "").trim().slice(0, 18);
+        const name = cleanName(nameInput.value);
         if (!name) {
             setStatus("Give your companion a name first.");
             nameInput.focus();

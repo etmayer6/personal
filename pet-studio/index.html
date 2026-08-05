@@ -6,41 +6,19 @@
     <meta name="description" content="Create a custom pet companion that follows you around Ethan Mayer's personal site.">
     <title>Pet Studio | Ethan Mayer</title>
     <link rel="stylesheet" href="../style.css">
-    <link rel="stylesheet" href="../pet-companion.css?v=1">
+    <link rel="stylesheet" href="../pet-companion.css?v=2">
     <link rel="stylesheet" href="style.css">
 </head>
 <body class="pet-studio-body">
     <header class="pet-studio-header">
-        <nav aria-label="Primary navigation">
-            <a class="nav-name" href="../index.html">Ethan Mayer</a>
-            <ul>
-                <li><a href="../index.html">Home</a></li>
-                <li><a href="../resume/">Resume</a></li>
-                <li><a aria-current="page" href="../projects/">Projects</a></li>
-                <li><a href="../games/">Games</a></li>
-                <li><a href="../photos/">Photos</a></li>
-                <li><a href="../blog/">Blog</a></li>
-            </ul>
-        </nav>
+        <div class="pet-studio-header-inner">
+            <a class="pet-studio-brand" href="../projects/">&larr; Projects</a>
+            <h1 id="pet-studio-title" class="pet-studio-header-title">Pet Studio</h1>
+            <span class="pet-studio-header-status">Companion lab</span>
+        </div>
     </header>
 
     <main class="pet-studio-shell">
-        <section class="pet-studio-hero" aria-labelledby="pet-studio-title">
-            <div class="pet-studio-hero-copy">
-                <p class="eyebrow">Interactive workspace / 16</p>
-                <h1 id="pet-studio-title">Give the site a little company.</h1>
-                <p class="pet-studio-summary">
-                    Make a tiny companion, give them a name, and they&rsquo;ll follow you through the rest of the site.
-                    Your pet stays in this browser, so the journey is yours alone.
-                </p>
-            </div>
-            <aside class="pet-studio-hero-note" aria-label="Pet companion note">
-                <span>Companion found</span>
-                <strong>Small paws.<br>Long journey.</strong>
-                <span>Local storage / site-wide</span>
-            </aside>
-        </section>
-
         <section class="pet-studio-layout" aria-label="Custom pet creator">
             <div class="pet-preview-panel">
                 <div class="pet-panel-top">
@@ -68,8 +46,8 @@
 
             <form class="pet-builder-card" id="pet-form">
                 <div class="builder-heading">
-                    <p class="eyebrow">Build your buddy</p>
-                    <h2>A little personality goes a long way.</h2>
+                    <p class="eyebrow">Companion lab</p>
+                    <h2>Make a pet to explore with.</h2>
                 </div>
 
                 <label class="builder-label" for="pet-name">Name
@@ -112,18 +90,9 @@
                 <p class="builder-status" id="builder-status" role="status" aria-live="polite">Design a friend, then send them exploring.</p>
             </form>
         </section>
-
-        <section class="pet-studio-notes">
-            <div>
-                <p class="eyebrow">How it works</p>
-                <h2>They&rsquo;ll be there when you move on.</h2>
-            </div>
-            <p>The companion is saved locally and rendered by the site&rsquo;s shared layer, so your pet can appear on the home page, projects, photos, games, and everywhere else this site takes you.</p>
-        </section>
     </main>
 
-    <footer class="pet-studio-footer"><p>&copy; 2026 Ethan Mayer</p></footer>
-    <script src="../site-play.js?v=pet-companion-1"></script>
+    <script src="../site-play.js?v=pet-companion-2"></script>
     <script src="app.js?v=1"></script>
 </body>
 </html>

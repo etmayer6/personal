@@ -139,20 +139,11 @@
     overflow: hidden;
 }
 
-.tank-header,
-.care-heading,
-.tank-footer {
+.care-heading {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 18px;
-}
-
-.tank-header {
-    min-height: 88px;
-    padding: 18px 24px;
-    color: #f6f1e6;
-    border-bottom: 1px solid rgba(123, 224, 203, 0.18);
 }
 
 .tank-kicker {
@@ -164,43 +155,10 @@
     text-transform: uppercase;
 }
 
-.tank-header h2,
 .care-heading h2,
 .aquarium-note h2 {
     margin: 0;
     font-family: Georgia, "Palatino Linotype", serif;
-}
-
-.tank-header h2 {
-    font-size: 29px;
-    line-height: 1;
-}
-
-.tank-readout {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    color: rgba(246, 241, 230, 0.7);
-    font-size: 10px;
-    font-weight: 800;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    white-space: nowrap;
-}
-
-.tank-readout span:last-child {
-    margin-left: 8px;
-    padding-left: 10px;
-    color: var(--aqua-gold);
-    border-left: 1px solid rgba(123, 224, 203, 0.25);
-}
-
-.tank-status-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: var(--aqua-mint);
-    box-shadow: 0 0 14px rgba(123, 224, 203, 0.85);
 }
 
 .tank-canvas-wrap {
@@ -215,57 +173,6 @@
     height: auto;
     min-height: 480px;
     cursor: crosshair;
-}
-
-.tank-corner {
-    position: absolute;
-    color: rgba(246, 241, 230, 0.48);
-    font-size: 10px;
-    font-weight: 800;
-    letter-spacing: 0.1em;
-    pointer-events: none;
-    text-transform: uppercase;
-}
-
-.tank-corner-top { top: 14px; left: 18px; }
-.tank-corner-bottom { right: 18px; bottom: 14px; }
-
-.tank-footer {
-    justify-content: flex-start;
-    flex-wrap: wrap;
-    min-height: 54px;
-    padding: 12px 20px;
-    color: rgba(246, 241, 230, 0.6);
-    border-top: 1px solid rgba(123, 224, 203, 0.18);
-    font-size: 11px;
-}
-
-.tank-footer span {
-    display: inline-flex;
-    align-items: center;
-    gap: 7px;
-}
-
-.tank-footer i {
-    display: inline-block;
-    width: 9px;
-    height: 9px;
-}
-
-.legend-fish {
-    border-radius: 50%;
-    background: var(--aqua-gold);
-    box-shadow: 0 0 8px rgba(242, 203, 63, 0.75);
-}
-
-.legend-snack {
-    border-radius: 50%;
-    background: var(--aqua-coral);
-}
-
-.legend-plant {
-    border-radius: 50% 50% 0 50%;
-    background: var(--aqua-mint);
 }
 
 .aquarium-controls {
@@ -545,24 +452,9 @@ kbd {
         min-height: 190px;
     }
 
-    .tank-header {
-        align-items: flex-start;
-        flex-direction: column;
-        padding: 18px;
-    }
-
-    .tank-readout {
-        width: 100%;
-        justify-content: space-between;
-    }
-
     .tank-canvas-wrap,
     #aquarium-canvas {
         min-height: 0;
-    }
-
-    .tank-footer {
-        padding-inline: 16px;
     }
 
     .aquarium-note {
@@ -595,5 +487,252 @@ kbd {
     .meter span,
     .growth-track span {
         transition: none;
+    }
+}
+
+.food-picker {
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(123, 224, 203, 0.18);
+}
+
+.food-picker-label {
+    margin: 0 0 9px;
+    color: rgba(246, 241, 230, 0.54);
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.food-options {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+}
+
+.food-option {
+    min-height: 36px;
+    padding: 7px 5px;
+    color: rgba(246, 241, 230, 0.74);
+    border: 1px solid rgba(123, 224, 203, 0.24);
+    background: rgba(123, 224, 203, 0.06);
+    font: inherit;
+    font-size: 9px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: color 160ms ease, background-color 160ms ease, border-color 160ms ease, transform 160ms ease;
+}
+
+.food-option:hover,
+.food-option:focus-visible,
+.food-option.is-selected {
+    color: var(--aqua-deep);
+    border-color: var(--aqua-gold);
+    background: var(--aqua-gold);
+    transform: translateY(-1px);
+}
+
+.food-description {
+    min-height: 18px;
+    margin: 9px 0 0;
+    color: rgba(246, 241, 230, 0.58);
+    font-size: 11px;
+    line-height: 1.4;
+}
+
+/* Keep the aquarium itself as the page, not another portfolio wrapper. */
+html {
+    height: 100%;
+}
+
+.aquarium-body {
+    display: flex;
+    min-height: 100dvh;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.aquarium-header {
+    position: relative;
+    flex: 0 0 58px;
+}
+
+.aquarium-header-inner {
+    display: grid;
+    width: 100%;
+    min-height: 58px;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 18px;
+    padding: 0 clamp(16px, 3vw, 36px);
+    background: rgba(12, 35, 43, 0.94);
+}
+
+.aquarium-brand,
+.aquarium-header-status {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-decoration: none;
+    text-transform: uppercase;
+}
+
+.aquarium-brand {
+    justify-self: start;
+}
+
+.aquarium-brand:hover,
+.aquarium-brand:focus-visible {
+    color: var(--aqua-gold);
+}
+
+.aquarium-header-title {
+    margin: 0;
+    color: #f6f1e6;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.16em;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+.aquarium-header-status {
+    justify-self: end;
+    color: var(--aqua-gold);
+}
+
+.aquarium-shell {
+    width: 100%;
+    height: calc(100dvh - 58px);
+    margin: 0;
+    padding: 0;
+}
+
+.aquarium-layout {
+    display: grid;
+    height: 100%;
+    grid-template-columns: minmax(0, 1.35fr) minmax(330px, 0.65fr);
+    gap: 0;
+    margin: 0;
+}
+
+.tank-panel {
+    display: flex;
+    min-height: 0;
+    flex-direction: column;
+    border: 0;
+}
+
+.tank-canvas-wrap {
+    min-height: 0;
+    flex: 1 1 auto;
+}
+
+#aquarium-canvas {
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+}
+
+.aquarium-controls {
+    min-height: 0;
+    overflow-y: auto;
+    padding: 16px;
+    background: var(--aqua-deep);
+}
+
+.care-card {
+    padding: 18px;
+}
+
+@media (max-width: 980px) {
+    .aquarium-body {
+        overflow: auto;
+    }
+
+    .aquarium-shell {
+        height: auto;
+        min-height: calc(100dvh - 58px);
+    }
+
+    .aquarium-layout {
+        height: auto;
+        grid-template-columns: 1fr;
+    }
+
+    .tank-panel {
+        height: min(64dvh, 560px);
+        min-height: 420px;
+    }
+
+    .aquarium-controls {
+        overflow: visible;
+    }
+}
+
+@media (max-width: 720px) {
+    .aquarium-header,
+    .aquarium-header-inner {
+        min-height: 52px;
+    }
+
+    .aquarium-header {
+        flex-basis: 52px;
+    }
+
+    .aquarium-header-inner {
+        gap: 8px;
+        padding: 0 12px;
+    }
+
+    .aquarium-header-title,
+    .aquarium-header-status,
+    .aquarium-brand {
+        font-size: 9px;
+        letter-spacing: 0.08em;
+    }
+
+    .aquarium-shell {
+        min-height: calc(100dvh - 52px);
+    }
+
+    .tank-panel {
+        height: 58dvh;
+        min-height: 380px;
+    }
+
+    .aquarium-controls {
+        gap: 12px;
+        padding: 12px;
+    }
+
+    .food-options {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 430px) {
+    .aquarium-header-inner {
+        grid-template-columns: auto minmax(0, 1fr);
+    }
+
+    .aquarium-header-status {
+        display: none;
+    }
+
+    .aquarium-header-title {
+        font-size: 8px;
+    }
+
+    .aquarium-header-status,
+    .aquarium-brand {
+        font-size: 8px;
+    }
+
+    .food-option {
+        font-size: 8px;
     }
 }

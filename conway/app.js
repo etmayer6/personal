@@ -15,7 +15,8 @@
         speed: 8,
         activePattern: "Custom seed",
         pointerPainting: false,
-        paintValue: 1,
+        interactionMode: "idle",
+        paintValue: null,
         lastFrame: 0,
         accumulator: 0,
         hoveredCell: null
@@ -44,6 +45,8 @@
         state.running = false;
         state.accumulator = 0;
         state.activePattern = "Empty board";
+        state.pointerPainting = false;
+        setInteractionMode("idle");
         if (announce) setStatus("Board cleared");
         updateUi();
         render();
@@ -63,6 +66,8 @@
         state.running = false;
         state.accumulator = 0;
         state.activePattern = name === "random" ? "Random soup" : name[0].toUpperCase() + name.slice(1);
+        state.pointerPainting = false;
+        setInteractionMode("idle");
 
         if (name === "glider") placePattern([[1, 0], [2, 1], [0, 2], [1, 2], [2, 2]], 8, 7);
         if (name === "blinker") placePattern([[0, 0], [1, 0], [2, 0]], 10, 8);
@@ -136,6 +141,13 @@
         statusValue.textContent = message;
     }
 
+    function setInteractionMode(mode) {
+        state.interactionMode = mode;
+        canvas.classList.toggle("is-placing", mode === "placing");
+        canvas.classList.toggle("is-erasing", mode === "erasing");
+        canvas.dataset.interactionMode = mode;
+    }
+
     function updateUi() {
         const population = countPopulation();
         runButton.textContent = state.running ? "Pause simulation" : "Start simulation";
@@ -204,16 +216,25 @@
     }
 
     function paintCell(event) {
+        if (!state.pointerPainting) return;
         const cell = cellFromPointer(event);
         if (!cell) return;
         state.hoveredCell = cell;
         const cellIndex = indexFor(cell.x, cell.y);
         grid[cellIndex] = state.paintValue;
         state.activePattern = "Custom seed";
-        setStatus("Custom seed in progress");
+        setStatus(state.interactionMode === "erasing" ? "Erasing cells" : "Placing cells");
         updateUi();
         render();
         coordinateReadout.textContent = "x " + String(cell.x).padStart(2, "0") + " / y " + String(cell.y).padStart(2, "0");
+    }
+
+    function updateHoveredCell(event) {
+        state.hoveredCell = cellFromPointer(event);
+        if (state.hoveredCell) {
+            coordinateReadout.textContent = "x " + String(state.hoveredCell.x).padStart(2, "0") + " / y " + String(state.hoveredCell.y).padStart(2, "0");
+        }
+        render();
     }
 
     function simulateElapsed(milliseconds) {
@@ -271,11 +292,25 @@
         canvas.setPointerCapture(event.pointerId);
         state.pointerPainting = true;
         state.paintValue = grid[indexFor(cell.x, cell.y)] ? 0 : 1;
+        setInteractionMode(state.paintValue ? "placing" : "erasing");
         paintCell(event);
     });
-    canvas.addEventListener("pointermove", paintCell);
-    canvas.addEventListener("pointerup", function () { state.pointerPainting = false; render(); });
-    canvas.addEventListener("pointercancel", function () { state.pointerPainting = false; render(); });
+    canvas.addEventListener("pointermove", function (event) {
+        if (state.pointerPainting) paintCell(event);
+        else updateHoveredCell(event);
+    });
+    canvas.addEventListener("pointerup", function () {
+        state.pointerPainting = false;
+        setInteractionMode("idle");
+        setStatus("Click a cell to edit again");
+        render();
+    });
+    canvas.addEventListener("pointercancel", function () {
+        state.pointerPainting = false;
+        setInteractionMode("idle");
+        setStatus("Click a cell to edit again");
+        render();
+    });
     canvas.addEventListener("pointerleave", function () {
         if (!state.pointerPainting) {
             state.hoveredCell = null;
@@ -310,6 +345,7 @@
             population: countPopulation(),
             board: { columns: columns, rows: rows, coordinateSystem: "origin top-left; x increases right; y increases down" },
             speed: state.speed,
+            interactionMode: state.interactionMode,
             activePattern: state.activePattern,
             liveCells: liveCells
         });

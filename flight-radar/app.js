@@ -3,7 +3,8 @@
 
     const API_URL = "https://api.airplanes.live/v2/point/42.03/-93.5/250";
     const REFRESH_MS = 60000;
-    const MAP_AIRCRAFT_LIMIT = 180;
+    const MAP_AIRCRAFT_LIMIT = 64;
+    const MAP_IOWA_LIMIT = 48;
     const SVG_NS = "http://www.w3.org/2000/svg";
     const MAP_WIDTH = 1000;
     const MAP_HEIGHT = 640;
@@ -17,21 +18,33 @@
     const IOWA_BORDER = [
         [43.5017, -96.6397],
         [43.5017, -91.2000],
-        [43.3400, -91.0700],
-        [43.0200, -91.1500],
-        [42.6800, -90.6500],
-        [42.3500, -90.5000],
-        [41.9500, -90.7300],
-        [41.6500, -90.8000],
-        [41.2500, -91.0500],
-        [40.6000, -91.5800],
+        [43.3600, -91.0900],
+        [43.1600, -91.1200],
+        [42.9200, -90.8200],
+        [42.6500, -90.6500],
+        [42.4200, -90.5900],
+        [42.1800, -90.5700],
+        [41.9200, -90.5800],
+        [41.7000, -90.6000],
+        [41.5000, -90.6600],
+        [41.3400, -90.9300],
+        [41.1200, -91.0800],
+        [40.9000, -91.1300],
+        [40.6800, -91.2200],
+        [40.4800, -91.3600],
+        [40.3750, -91.4300],
         [40.3750, -95.7600],
-        [40.5800, -96.0500],
-        [41.0000, -96.3200],
-        [41.5500, -96.6100],
-        [42.1000, -96.6500],
-        [42.6500, -96.5800],
-        [43.1000, -96.6000]
+        [40.5000, -95.8200],
+        [40.7200, -95.8800],
+        [40.9800, -95.9700],
+        [41.2400, -96.0600],
+        [41.5000, -96.1600],
+        [41.7600, -96.2600],
+        [42.0200, -96.3600],
+        [42.2800, -96.4700],
+        [42.5500, -96.5600],
+        [42.8200, -96.6100],
+        [43.1200, -96.6300]
     ];
 
     const AIRPORTS = [
@@ -45,20 +58,14 @@
 
     const elements = {
         refreshButton: document.getElementById("refresh-button"),
-        signalCount: document.getElementById("signal-count"),
         feedStatus: document.getElementById("feed-status"),
         lastUpdated: document.getElementById("last-updated"),
-        statVisible: document.getElementById("stat-visible"),
-        statIowa: document.getElementById("stat-iowa"),
-        statHigh: document.getElementById("stat-high"),
         selectedCallsign: document.getElementById("selected-callsign"),
         selectedType: document.getElementById("selected-type"),
         selectedPosition: document.getElementById("selected-position"),
         selectedAltitude: document.getElementById("selected-altitude"),
         selectedSpeed: document.getElementById("selected-speed"),
         selectedTrack: document.getElementById("selected-track"),
-        listCount: document.getElementById("list-count"),
-        aircraftList: document.getElementById("aircraft-list"),
         iowaShape: document.getElementById("iowa-shape"),
         iowaLabel: document.getElementById("iowa-label"),
         airportLayer: document.getElementById("airport-layer"),
@@ -181,24 +188,12 @@
         elements.feedStatus.dataset.state = status;
     }
 
-    function renderStats() {
-        const overIowa = state.aircraft.filter(function (aircraft) { return aircraft.overIowa; }).length;
-        const highAltitude = state.aircraft.filter(function (aircraft) {
-            return aircraft.altitude !== null && aircraft.altitude >= 30000;
-        }).length;
-        elements.signalCount.textContent = state.aircraft.length;
-        elements.statVisible.textContent = state.aircraft.length;
-        elements.statIowa.textContent = overIowa;
-        elements.statHigh.textContent = highAltitude;
-        elements.listCount.textContent = state.aircraft.length;
-    }
-
     function renderSelected() {
         const aircraft = state.aircraft.find(function (item) { return item.id === state.selectedId; });
         if (!aircraft) {
             state.selectedId = null;
             elements.selectedCallsign.textContent = "None selected";
-            elements.selectedType.textContent = "Choose a marker or flight below.";
+            elements.selectedType.textContent = "Click a marker on the map to see its details.";
             elements.selectedPosition.textContent = "--";
             elements.selectedAltitude.textContent = "--";
             elements.selectedSpeed.textContent = "--";
@@ -207,23 +202,28 @@
         }
 
         elements.selectedCallsign.textContent = aircraft.callsign;
-        elements.selectedType.textContent = aircraft.type + (aircraft.overIowa ? " / over Iowa" : " / in range");
+        elements.selectedType.textContent = aircraft.type + (aircraft.overIowa ? " / over Iowa" : " / regional view");
         elements.selectedPosition.textContent = formatPosition(aircraft);
         elements.selectedAltitude.textContent = formatAltitude(aircraft);
         elements.selectedSpeed.textContent = formatSpeed(aircraft);
         elements.selectedTrack.textContent = formatTrack(aircraft);
     }
 
+    function aircraftForMap() {
+        const overIowa = state.aircraft.filter(function (aircraft) { return aircraft.overIowa; }).slice(0, MAP_IOWA_LIMIT);
+        const nearby = state.aircraft.filter(function (aircraft) { return !aircraft.overIowa; }).slice(0, MAP_AIRCRAFT_LIMIT - overIowa.length);
+        return overIowa.concat(nearby);
+    }
+
     function selectAircraft(id) {
         state.selectedId = id;
         renderBoard();
-        renderList();
         renderSelected();
     }
 
     function renderBoard() {
         elements.aircraftLayer.replaceChildren();
-        const plottedAircraft = state.aircraft.slice(0, MAP_AIRCRAFT_LIMIT);
+        const plottedAircraft = aircraftForMap();
         const selectedAircraft = state.aircraft.find(function (aircraft) { return aircraft.id === state.selectedId; });
         if (selectedAircraft && !plottedAircraft.some(function (aircraft) { return aircraft.id === selectedAircraft.id; })) {
             plottedAircraft.push(selectedAircraft);
@@ -256,47 +256,6 @@
                 }
             });
             elements.aircraftLayer.appendChild(group);
-        });
-    }
-
-    function renderList() {
-        elements.aircraftList.replaceChildren();
-        if (!state.aircraft.length) {
-            const empty = document.createElement("li");
-            empty.className = "empty-list";
-            empty.textContent = "No aircraft with a current position.";
-            elements.aircraftList.appendChild(empty);
-            return;
-        }
-
-        state.aircraft.slice(0, 40).forEach(function (aircraft) {
-            const item = document.createElement("li");
-            const button = document.createElement("button");
-            button.type = "button";
-            button.className = "aircraft-row" + (aircraft.overIowa ? " is-over-iowa" : "") + (aircraft.id === state.selectedId ? " is-selected" : "");
-            button.setAttribute("aria-label", "Select " + aircraft.callsign);
-            button.addEventListener("click", function () { selectAircraft(aircraft.id); });
-
-            const icon = document.createElement("span");
-            icon.className = "row-icon";
-            icon.setAttribute("aria-hidden", "true");
-            icon.textContent = "↑";
-            icon.style.transform = "rotate(" + aircraft.track.toFixed(1) + "deg)";
-
-            const main = document.createElement("span");
-            main.className = "row-main";
-            const callsign = document.createElement("strong");
-            callsign.textContent = aircraft.callsign;
-            const type = document.createElement("small");
-            type.textContent = aircraft.type;
-            main.append(callsign, type);
-
-            const meta = document.createElement("span");
-            meta.className = "row-meta";
-            meta.textContent = aircraft.overIowa ? "IOWA" : formatAltitude(aircraft);
-            button.append(icon, main, meta);
-            item.appendChild(button);
-            elements.aircraftList.appendChild(item);
         });
     }
 
@@ -334,9 +293,7 @@
             state.lastUpdated = payload.now ? new Date(payload.now < 100000000000 ? payload.now * 1000 : payload.now) : new Date();
             setFeedStatus(flights.length ? "Live snapshot" : "Quiet sky", flights.length ? "success" : "quiet");
             elements.lastUpdated.textContent = "Updated " + formatUpdateTime(state.lastUpdated) + " local time";
-            renderStats();
             renderBoard();
-            renderList();
             renderSelected();
         } catch (error) {
             setFeedStatus(state.aircraft.length ? "Using last snapshot" : "Feed unavailable", "error");
@@ -365,7 +322,6 @@
     });
 
     setMapBackdrop();
-    renderStats();
     renderSelected();
     scheduleRefresh();
     loadFlights();

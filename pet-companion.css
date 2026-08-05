@@ -54,14 +54,62 @@
 }
 
 .site-pet-ear,
-.site-pet-body {
+.site-pet-body,
+.site-pet-wing,
+.site-pet-tail {
     stroke: rgba(16, 43, 54, 0.24);
     stroke-width: 1.2;
     stroke-linejoin: round;
 }
 
+.site-pet-detail {
+    stroke: rgba(16, 43, 54, 0.42);
+    stroke-width: 1.2;
+    stroke-linejoin: round;
+}
+
+.site-pet-detail[stroke="none"] {
+    stroke: none;
+}
+
 .site-pet-eye {
     fill: #102b36;
+}
+
+.site-pet-option-field {
+    display: grid;
+    gap: 8px;
+    margin-top: 24px;
+    color: #4c636a;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.site-pet-option-input {
+    width: 100%;
+    min-height: 46px;
+    padding: 10px 12px;
+    border: 1px solid rgba(16, 43, 54, 0.2);
+    color: #102b36;
+    background: #ffffff;
+    font: inherit;
+    font-size: 16px;
+    letter-spacing: normal;
+    text-transform: none;
+}
+
+.site-pet-release {
+    color: #8f3e24;
+    background: transparent;
+}
+
+.site-pet-release:hover,
+.site-pet-release:focus-visible {
+    color: #ffffff;
+    border-color: #8f3e24;
+    background: #8f3e24;
 }
 
 .site-pet-companion-hint {
@@ -93,6 +141,17 @@ body.night-shift-mode .site-pet-companion-name {
 
 body.night-shift-mode .site-pet-companion-hint {
     color: #9db7ad;
+}
+
+body.night-shift-mode .site-pet-option-field,
+body.night-shift-mode .site-pet-option-input {
+    color: #9db7ad;
+}
+
+body.night-shift-mode .site-pet-option-input {
+    border-color: rgba(135, 213, 190, 0.28);
+    color: #e8f0dc;
+    background: #0e3032;
 }
 
 @media (max-width: 700px) {

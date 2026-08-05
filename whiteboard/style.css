@@ -767,3 +767,152 @@
         transition: none;
     }
 }
+
+/* Keep this route focused on the board instead of the surrounding portfolio. */
+html {
+    height: 100%;
+}
+
+.whiteboard-body {
+    display: flex;
+    height: 100dvh;
+    min-height: 100dvh;
+    overflow: hidden;
+    flex-direction: column;
+}
+
+.whiteboard-header {
+    position: relative;
+    flex: 0 0 58px;
+    min-height: 58px;
+}
+
+.whiteboard-header-inner {
+    display: flex;
+    height: 100%;
+    align-items: center;
+    gap: 18px;
+    padding: 0 18px;
+}
+
+.whiteboard-brand {
+    color: var(--whiteboard-aqua);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-decoration: none;
+    text-transform: uppercase;
+}
+
+.whiteboard-brand:hover,
+.whiteboard-brand:focus-visible {
+    color: #ffffff;
+}
+
+.whiteboard-header-title {
+    margin: 0;
+    color: #f8f1e6;
+    font-family: Georgia, "Palatino Linotype", serif;
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+}
+
+.whiteboard-header-status {
+    margin-left: auto;
+    color: rgba(255, 255, 255, 0.56);
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.whiteboard-shell {
+    width: 100%;
+    height: calc(100dvh - 58px);
+    min-height: 0;
+    margin: 0;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.whiteboard-layout {
+    display: block;
+    height: 100%;
+    margin: 0;
+}
+
+.whiteboard-app {
+    display: flex;
+    height: 100%;
+    min-height: 0;
+    box-sizing: border-box;
+    flex-direction: column;
+    padding: 10px;
+    box-shadow: none;
+}
+
+.whiteboard-toolbar {
+    flex: 0 0 auto;
+}
+
+.board-frame {
+    display: flex;
+    min-height: 0;
+    flex: 1 1 auto;
+    flex-direction: column;
+    margin-top: 10px;
+}
+
+.canvas-wrap {
+    min-height: 0;
+    flex: 1 1 auto;
+    aspect-ratio: auto;
+}
+
+#whiteboard-canvas {
+    min-height: 0;
+}
+
+.board-frame-bottom {
+    flex: 0 0 auto;
+}
+
+.whiteboard-sidebar,
+.whiteboard-footer-note,
+.whiteboard-footer {
+    display: none;
+}
+
+@media (max-width: 700px) {
+    .whiteboard-header {
+        flex-basis: 52px;
+        min-height: 52px;
+    }
+
+    .whiteboard-header-inner {
+        gap: 10px;
+        padding: 0 10px;
+    }
+
+    .whiteboard-header-title {
+        font-size: 18px;
+    }
+
+    .whiteboard-header-status {
+        display: none;
+    }
+
+    .whiteboard-shell {
+        height: calc(100dvh - 52px);
+        padding: 6px;
+    }
+
+    .whiteboard-app {
+        padding: 6px;
+    }
+
+    .board-frame {
+        margin-top: 6px;
+    }
+}

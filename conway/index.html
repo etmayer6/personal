@@ -9,43 +9,29 @@
     <link rel="stylesheet" href="style.css?v=1">
 </head>
 <body class="life-body">
-    <header class="site-header">
-        <nav aria-label="Primary navigation">
-            <a class="nav-name" href="../index.html">Ethan Mayer</a>
-            <ul>
-                <li><a href="../index.html">Home</a></li>
-                <li><a href="../resume/">Resume</a></li>
-                <li><a href="../projects/">Projects</a></li>
-                <li><a aria-current="page" href="../games/">Games</a></li>
-                <li><a href="../photos/">Photos</a></li>
-                <li><a href="../blog/">Blog</a></li>
-            </ul>
-        </nav>
+    <header class="life-header">
+        <div class="life-header-inner">
+            <a class="life-brand" href="../games/">&larr; Games</a>
+            <h1 class="life-header-title">Conway&rsquo;s Game of Life</h1>
+            <span class="life-header-status">Life lab</span>
+        </div>
     </header>
 
     <main class="life-shell">
-        <section class="life-hero" aria-labelledby="life-title">
-            <div>
-                <p class="life-kicker">Cellular automata / 05</p>
-                <h1 id="life-title">Watch simple rules make strange worlds.</h1>
-            </div>
-            <p class="life-hero-note">Paint a starting pattern, press play, and see whether your little universe survives.</p>
-        </section>
-
         <section class="life-game" aria-labelledby="board-title">
             <div class="life-game-heading">
                 <div>
                     <p class="life-kicker">The simulation</p>
-                    <h2 id="board-title">Seed the board. Start the clock.</h2>
+                    <h2 id="board-title">Seed the board.</h2>
                 </div>
                 <div class="life-status" id="life-status" role="status" aria-live="polite">Ready to evolve</div>
             </div>
 
             <div class="life-board-layout">
                 <div class="life-board" id="life-board">
-                    <canvas id="life-canvas" width="960" height="600" tabindex="0" aria-label="Game of Life board. Click or drag to paint cells."></canvas>
+                    <canvas id="life-canvas" width="960" height="600" tabindex="0" aria-label="Game of Life board. Click a cell to place or erase it, then drag to continue."></canvas>
                     <div class="canvas-footer">
-                        <span>Click or drag to paint cells</span>
+                        <span>Click a cell to place or erase; drag after pressing</span>
                         <span id="coordinate-readout">x 00 / y 00</span>
                     </div>
                 </div>
@@ -82,29 +68,10 @@
                 </aside>
             </div>
 
-            <div class="life-rules">
-                <div><span>01</span><strong>Birth</strong><p>A dead cell with exactly three neighbors becomes alive.</p></div>
-                <div><span>02</span><strong>Survival</strong><p>A living cell with two or three neighbors stays alive.</p></div>
-                <div><span>03</span><strong>Silence</strong><p>Everything else disappears or stays empty.</p></div>
-            </div>
         </section>
 
-        <section class="life-notes" aria-labelledby="notes-title">
-            <div>
-                <p class="life-kicker">A tiny rulebook</p>
-                <h2 id="notes-title">The board does not know what you meant.</h2>
-            </div>
-            <div>
-                <p>There is no goal hidden behind the grid. A good run might be a glider that keeps moving, a pattern that pulses forever, or a messy seed that teaches you something before it vanishes.</p>
-                <p class="keyboard-note"><kbd>Space</kbd> play/pause <kbd>N</kbd> step <kbd>R</kbd> randomize <kbd>C</kbd> clear <kbd>F</kbd> fullscreen</p>
-            </div>
-        </section>
-
-        <a class="back-to-games" href="../games/">Back to all games <span aria-hidden="true">&rarr;</span></a>
     </main>
 
-    <footer class="life-footer"><p>&copy; 2026 Ethan Mayer</p></footer>
-    <script src="../site-play.js?v=pet-companion-1"></script>
     <script src="app.js?v=1"></script>
 </body>
 </html>

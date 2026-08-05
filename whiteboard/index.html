@@ -10,36 +10,14 @@
 </head>
 <body class="whiteboard-body">
     <header class="whiteboard-header">
-        <nav aria-label="Primary navigation">
-            <a class="nav-name" href="../index.html">Ethan Mayer</a>
-            <ul>
-                <li><a href="../index.html">Home</a></li>
-                <li><a href="../resume/">Resume</a></li>
-                <li><a aria-current="page" href="../projects/">Projects</a></li>
-                <li><a href="../games/">Games</a></li>
-                <li><a href="../photos/">Photos</a></li>
-                <li><a href="../blog/">Blog</a></li>
-            </ul>
-        </nav>
+        <div class="whiteboard-header-inner">
+            <a class="whiteboard-brand" href="../projects/">&larr; Projects</a>
+            <h1 class="whiteboard-header-title">Idea Whiteboard</h1>
+            <span class="whiteboard-header-status">Local board</span>
+        </div>
     </header>
 
     <main class="whiteboard-shell">
-        <section class="whiteboard-hero" aria-labelledby="whiteboard-title">
-            <div class="whiteboard-hero-copy">
-                <p class="eyebrow">Open workbench / 15</p>
-                <h1 id="whiteboard-title">Put the idea on the wall.</h1>
-                <p class="whiteboard-summary">
-                    A quiet, local-first canvas for rough diagrams, sticky-note thoughts, and the first shape of a
-                    problem. Nothing leaves this browser unless you export it.
-                </p>
-            </div>
-            <aside class="whiteboard-hero-note" aria-label="Whiteboard note">
-                <span class="hero-note-number">Idea whiteboard</span>
-                <strong>Draw first.<br>Explain later.</strong>
-                <span>Local storage / no account</span>
-            </aside>
-        </section>
-
         <section class="whiteboard-layout" aria-label="Digital whiteboard workspace">
             <div class="whiteboard-app">
                 <div class="whiteboard-toolbar" role="toolbar" aria-label="Whiteboard tools">
@@ -100,6 +78,7 @@
                     <div class="tool-group toolbar-actions" aria-label="Board actions">
                         <button class="toolbar-action" id="undo-button" type="button" disabled title="Undo (Ctrl or Command + Z)">Undo</button>
                         <button class="toolbar-action" id="redo-button" type="button" disabled title="Redo (Ctrl or Command + Shift + Z)">Redo</button>
+                        <button class="toolbar-action" id="clear-button" type="button" title="Clear the board">Clear</button>
                         <button class="toolbar-action toolbar-action-export" id="export-button" type="button" title="Export the board as a PNG">Export PNG</button>
                     </div>
                 </div>
@@ -107,7 +86,7 @@
                 <div class="board-frame">
                     <div class="board-frame-top">
                         <div>
-                            <span class="board-kicker">Thought board</span>
+                            <span class="board-kicker">Idea whiteboard</span>
                             <span class="board-live"><i aria-hidden="true"></i>Saved locally</span>
                         </div>
                         <span id="object-count">0 objects</span>
@@ -136,38 +115,9 @@
                     </div>
                 </div>
             </div>
-
-            <aside class="whiteboard-sidebar">
-                <section class="whiteboard-note-card">
-                    <p class="eyebrow">A small toolkit</p>
-                    <h2>Make a messy first draft.</h2>
-                    <p>Use the board like a notebook: get the shape down, move it around, and keep the useful accidents.</p>
-                    <ul class="shortcut-list">
-                        <li><kbd>V</kbd><span>Select and move</span></li>
-                        <li><kbd>P</kbd><span>Freehand pen</span></li>
-                        <li><kbd>T</kbd><span>Place a note</span></li>
-                        <li><kbd>Del</kbd><span>Remove selection</span></li>
-                    </ul>
-                </section>
-                <section class="whiteboard-note-card note-card-dark">
-                    <span class="note-card-label">Local-first</span>
-                    <h2>Your board stays here.</h2>
-                    <p>The drawing is saved in this browser. Export a PNG when the thought is ready to leave the wall.</p>
-                    <button class="clear-board-button" id="clear-button" type="button">Clear board</button>
-                </section>
-            </aside>
-        </section>
-
-        <section class="whiteboard-footer-note">
-            <p class="eyebrow">Why this exists</p>
-            <h2>Good tools leave room for the thought.</h2>
-            <p>This is a compact browser experiment inspired by diagramming tools, built without a framework or a server.</p>
-            <a href="../projects/">Back to all projects <span aria-hidden="true">&rarr;</span></a>
         </section>
     </main>
 
-    <footer class="whiteboard-footer"><p>&copy; 2026 Ethan Mayer</p></footer>
-    <script src="../site-play.js?v=pet-companion-1"></script>
     <script src="app.js?v=1"></script>
 </body>
 </html>

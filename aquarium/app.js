@@ -17,6 +17,33 @@
         { name: "Gentle giant", threshold: MAX_GROWTH, size: 1.34, color: "#c97b50", accent: "#b84d5c", title: "The tank has a legend." }
     ];
 
+    const FOOD_TYPES = {
+        jellyfish: {
+            label: "Jellyfish",
+            description: "Soft, floaty, and Momo's favorite.",
+            growth: 8,
+            hunger: 9,
+            mood: 4,
+            message: "Momo says: blub blub, thank you."
+        },
+        krill: {
+            label: "Krill",
+            description: "Tiny, bright, and a quick energy boost.",
+            growth: 6,
+            hunger: 12,
+            mood: 2,
+            message: "Momo chased the krill in a happy little loop."
+        },
+        seaweed: {
+            label: "Sea lettuce",
+            description: "A crisp reef snack that lifts Momo's mood.",
+            growth: 5,
+            hunger: 7,
+            mood: 8,
+            message: "Momo tucked into the sea lettuce. Very refined."
+        }
+    };
+
     const state = {
         mode: "running",
         elapsed: 0,
@@ -25,6 +52,7 @@
         cleanliness: 86,
         mood: 72,
         feedings: 0,
+        foodType: "jellyfish",
         pellets: [],
         bubbles: [],
         message: "Momo is floating peacefully.",
@@ -41,8 +69,6 @@
     };
 
     const elements = {
-        tankStatus: document.getElementById("tank-status"),
-        tankDay: document.getElementById("tank-day"),
         fishName: document.getElementById("fish-name"),
         fishStage: document.getElementById("fish-stage"),
         sizeValue: document.getElementById("size-value"),
@@ -60,7 +86,9 @@
         feedButton: document.getElementById("feed-button"),
         cleanButton: document.getElementById("clean-button"),
         playButton: document.getElementById("play-button"),
-        fullscreenButton: document.getElementById("fullscreen-button")
+        fullscreenButton: document.getElementById("fullscreen-button"),
+        foodButtons: Array.from(document.querySelectorAll("[data-food]")),
+        foodDescription: document.getElementById("food-description")
     };
 
     const plants = [
@@ -141,20 +169,43 @@
         });
     }
 
-    function feedFish(x) {
+    function feedFish(x, foodType) {
         if (state.feedCooldown > 0) {
             setMessage("Momo is still chewing that one.", 2);
             return;
         }
+        const selectedFoodType = FOOD_TYPES[foodType] ? foodType : state.foodType;
+        const food = FOOD_TYPES[selectedFoodType];
         const targetX = clamp(typeof x === "number" ? x : 260 + ((state.feedings * 137) % 440), 80, WIDTH - 80);
-        state.pellets.push({ x: targetX, y: 68, drift: (state.feedings % 2 ? 1 : -1) * 12, life: 5 });
-        state.hunger = clamp(state.hunger + 9, 0, 100);
-        state.mood = clamp(state.mood + 4, 0, 100);
-        state.growth = clamp(state.growth + 8, 0, MAX_GROWTH);
+        state.pellets.push({
+            type: selectedFoodType,
+            x: targetX,
+            y: 68,
+            drift: (state.feedings % 2 ? 1 : -1) * 12,
+            life: 5,
+            seed: state.feedings * 1.7
+        });
+        state.hunger = clamp(state.hunger + food.hunger, 0, 100);
+        state.mood = clamp(state.mood + food.mood, 0, 100);
+        state.growth = clamp(state.growth + food.growth, 0, MAX_GROWTH);
         state.feedings += 1;
         state.feedCooldown = 0.12;
         addBubble(targetX + 12, 88, 0.75);
-        setMessage(state.growth >= MAX_GROWTH ? "Momo reached gentle giant status!" : "Snack away. Momo got a little bigger.", 4);
+        setMessage(state.growth >= MAX_GROWTH ? "Momo reached gentle giant status!" : food.message, 4);
+    }
+
+    function selectFood(foodType) {
+        if (!FOOD_TYPES[foodType]) return;
+        state.foodType = foodType;
+        const food = FOOD_TYPES[foodType];
+        elements.foodButtons.forEach(function (button) {
+            const selected = button.dataset.food === foodType;
+            button.classList.toggle("is-selected", selected);
+            button.setAttribute("aria-pressed", String(selected));
+        });
+        elements.foodDescription.textContent = food.description;
+        setMessage(food.label + " ready for the tank.", 3);
+        renderUI();
     }
 
     function cleanTank() {
@@ -343,13 +394,82 @@
 
     function drawPellets() {
         state.pellets.forEach(function (pellet) {
+            const foodType = pellet.type || "jellyfish";
+            const wobble = Math.sin(state.elapsed * 4 + (pellet.seed || 0));
             context.save();
-            context.fillStyle = "#e77952";
-            context.shadowColor = "rgba(231, 121, 82, 0.8)";
+            context.translate(pellet.x, pellet.y);
             context.shadowBlur = 10;
-            context.beginPath();
-            context.arc(pellet.x, pellet.y, 8, 0, TAU);
-            context.fill();
+
+            if (foodType === "krill") {
+                context.rotate(-0.18 + wobble * 0.12);
+                context.shadowColor = "rgba(245, 146, 75, 0.8)";
+                context.fillStyle = "#f29b52";
+                context.beginPath();
+                context.ellipse(0, 0, 13, 5, 0, 0, TAU);
+                context.fill();
+                context.fillStyle = "#ffd36a";
+                context.beginPath();
+                context.moveTo(-12, 0);
+                context.lineTo(-20, -7);
+                context.lineTo(-17, 2);
+                context.lineTo(-20, 8);
+                context.closePath();
+                context.fill();
+                context.strokeStyle = "#ffe4a0";
+                context.lineWidth = 2;
+                context.beginPath();
+                context.moveTo(-2, -5);
+                context.lineTo(-2, 5);
+                context.moveTo(4, -4);
+                context.lineTo(4, 4);
+                context.stroke();
+                context.fillStyle = "#183e45";
+                context.beginPath();
+                context.arc(9, -1, 2, 0, TAU);
+                context.fill();
+            } else if (foodType === "seaweed") {
+                context.rotate(wobble * 0.12);
+                context.shadowColor = "rgba(123, 224, 203, 0.7)";
+                context.strokeStyle = "#7be0cb";
+                context.lineWidth = 5;
+                context.lineCap = "round";
+                context.beginPath();
+                context.moveTo(-5, 12);
+                context.bezierCurveTo(-15, 4, -12, -5, -4, -13);
+                context.bezierCurveTo(2, -5, 0, 4, 8, -6);
+                context.stroke();
+                context.strokeStyle = "#b4f1a1";
+                context.lineWidth = 2;
+                context.beginPath();
+                context.moveTo(5, 13);
+                context.bezierCurveTo(14, 4, 11, -4, 5, -12);
+                context.stroke();
+            } else {
+                context.scale(1 + wobble * 0.05, 1 - wobble * 0.05);
+                context.shadowColor = "rgba(231, 121, 82, 0.8)";
+                context.fillStyle = "#ef8e92";
+                context.beginPath();
+                context.arc(0, -3, 11, Math.PI, TAU);
+                context.lineTo(10, 2);
+                context.quadraticCurveTo(0, 8, -10, 2);
+                context.closePath();
+                context.fill();
+                context.strokeStyle = "#ffd1b3";
+                context.lineWidth = 2;
+                context.beginPath();
+                context.moveTo(-7, 3);
+                context.quadraticCurveTo(-8, 12, -5, 16);
+                context.moveTo(0, 4);
+                context.quadraticCurveTo(-1, 14, 2, 18);
+                context.moveTo(7, 3);
+                context.quadraticCurveTo(8, 12, 6, 16);
+                context.stroke();
+                context.fillStyle = "#fff1ce";
+                context.beginPath();
+                context.arc(-4, -5, 2, 0, TAU);
+                context.arc(4, -5, 2, 0, TAU);
+                context.fill();
+            }
             context.restore();
         });
     }
@@ -365,59 +485,101 @@
 
         context.fillStyle = "rgba(0, 27, 37, 0.2)";
         context.beginPath();
-        context.ellipse(4, 82, 90, 14, 0, 0, TAU);
+        context.ellipse(8, 82, 92, 14, 0, 0, TAU);
+        context.fill();
+
+        // Broad fins and the lobed clavus make the silhouette read as a sunfish.
+        context.fillStyle = stage.accent;
+        context.beginPath();
+        context.moveTo(-45, -42);
+        context.bezierCurveTo(-38, -83, -19, -111, 2, -125);
+        context.bezierCurveTo(0, -91, 11, -62, 25, -45);
+        context.closePath();
+        context.fill();
+        context.beginPath();
+        context.moveTo(-43, 41);
+        context.bezierCurveTo(-35, 82, -15, 108, 6, 122);
+        context.bezierCurveTo(5, 90, 14, 61, 26, 44);
+        context.closePath();
         context.fill();
 
         context.fillStyle = stage.accent;
         context.beginPath();
-        context.moveTo(-24, -58);
-        context.lineTo(-3, -112);
-        context.lineTo(20, -57);
+        context.moveTo(-63, -49);
+        context.bezierCurveTo(-88, -49, -105, -38, -117, -24);
+        context.bezierCurveTo(-106, -15, -106, -6, -118, 0);
+        context.bezierCurveTo(-106, 7, -106, 16, -117, 25);
+        context.bezierCurveTo(-100, 40, -84, 49, -63, 48);
         context.closePath();
         context.fill();
+        context.strokeStyle = "rgba(255, 238, 174, 0.42)";
+        context.lineWidth = 2;
         context.beginPath();
-        context.moveTo(-24, 58);
-        context.lineTo(-3, 110);
-        context.lineTo(20, 57);
-        context.closePath();
-        context.fill();
+        context.moveTo(-80, -32);
+        context.quadraticCurveTo(-96, -20, -106, -15);
+        context.moveTo(-80, 31);
+        context.quadraticCurveTo(-96, 20, -106, 15);
+        context.stroke();
 
-        context.fillStyle = "#d88055";
+        context.fillStyle = stage.accent;
         context.beginPath();
-        context.moveTo(69, -28);
-        context.lineTo(109, 0);
-        context.lineTo(69, 28);
+        context.moveTo(-49, 4);
+        context.bezierCurveTo(-73, 10, -76, 29, -57, 42);
+        context.bezierCurveTo(-40, 34, -30, 23, -28, 13);
         context.closePath();
         context.fill();
 
         context.fillStyle = stage.color;
         context.beginPath();
-        context.ellipse(0, 0, 82, 68, 0, 0, TAU);
+        context.ellipse(0, 0, 84, 70, 0, 0, TAU);
         context.fill();
         context.strokeStyle = "rgba(255, 246, 200, 0.7)";
         context.lineWidth = 3;
         context.stroke();
 
+        context.fillStyle = "rgba(255, 240, 173, 0.28)";
+        context.beginPath();
+        context.ellipse(-10, 18, 58, 42, -0.12, 0, TAU);
+        context.fill();
+
         context.fillStyle = "rgba(255, 240, 173, 0.5)";
-        [[-35, -28, 9], [-2, -42, 6], [-42, 16, 6], [24, 25, 10], [48, -6, 5]].forEach(function (spot) {
+        [[-43, -36, 10], [-18, -52, 5], [16, -43, 7], [-49, 0, 5], [-22, 11, 8], [10, 27, 10], [42, 5, 6]].forEach(function (spot) {
             context.beginPath();
             context.arc(spot[0], spot[1], spot[2], 0, TAU);
             context.fill();
         });
 
+        context.strokeStyle = "rgba(119, 66, 68, 0.6)";
+        context.lineWidth = 3;
+        context.beginPath();
+        context.arc(40, 0, 15, -0.9, 0.9);
+        context.stroke();
+
+        context.fillStyle = stage.accent;
+        context.beginPath();
+        context.moveTo(21, 12);
+        context.bezierCurveTo(39, 21, 54, 34, 47, 49);
+        context.bezierCurveTo(32, 43, 22, 31, 15, 18);
+        context.closePath();
+        context.fill();
+
         context.fillStyle = "#183e45";
         context.beginPath();
-        context.arc(48, -17, 10, 0, TAU);
+        context.arc(51, -21, 10, 0, TAU);
         context.fill();
         context.fillStyle = "#fff9db";
         context.beginPath();
-        context.arc(51, -20, 3, 0, TAU);
+        context.arc(54, -24, 3, 0, TAU);
         context.fill();
 
-        context.strokeStyle = "#8d3f45";
-        context.lineWidth = 4;
+        context.fillStyle = "#f5c45d";
         context.beginPath();
-        context.arc(46, 12, 11, 0.15, Math.PI - 0.15);
+        context.ellipse(67, 14, 9, 6, 0, 0, TAU);
+        context.fill();
+        context.strokeStyle = "#7d3d4b";
+        context.lineWidth = 3;
+        context.beginPath();
+        context.arc(68, 14, 6, 0.2, Math.PI - 0.2);
         context.stroke();
 
         context.restore();
@@ -427,19 +589,7 @@
         context.font = "800 12px Trebuchet MS, sans-serif";
         context.textAlign = "center";
         context.letterSpacing = "2px";
-        context.fillText("MOMO", state.fish.x, state.fish.y - 116 * size);
-        context.restore();
-    }
-
-    function drawTankLabel() {
-        const stage = currentStage();
-        context.save();
-        context.fillStyle = "rgba(246, 241, 230, 0.82)";
-        context.font = "800 12px Trebuchet MS, sans-serif";
-        context.fillText("STAGE " + String(stageIndex() + 1).padStart(2, "0") + " / " + stage.name.toUpperCase(), 24, 42);
-        context.fillStyle = "rgba(246, 241, 230, 0.55)";
-        context.font = "12px Trebuchet MS, sans-serif";
-        context.fillText("Feed the fish. Grow the legend.", 24, 61);
+        context.fillText("MOMO", state.fish.x, state.fish.y - 140 * size);
         context.restore();
     }
 
@@ -450,7 +600,6 @@
         drawBubbles();
         drawPellets();
         drawFish();
-        drawTankLabel();
     }
 
     function renderUI() {
@@ -458,10 +607,7 @@
         const progress = stageProgress();
         const day = String(ageDay()).padStart(2, "0");
         const size = sizeInMeters();
-        const waterStatus = state.cleanliness < 32 ? "Water cloudy" : state.hunger < 28 ? "Momo hungry" : "Water calm";
 
-        elements.tankStatus.textContent = waterStatus;
-        elements.tankDay.textContent = "Day " + day;
         elements.fishName.textContent = "Momo";
         elements.fishStage.textContent = stage.name;
         elements.sizeValue.textContent = size.toFixed(1) + " m";
@@ -478,6 +624,7 @@
         elements.growthFill.style.width = progress + "%";
         elements.growthTrack.setAttribute("aria-valuenow", String(Math.round(progress)));
         elements.eventMessage.textContent = state.message;
+        elements.foodDescription.textContent = FOOD_TYPES[state.foodType].description;
     }
 
     function pointerPosition(event) {
@@ -525,6 +672,7 @@
                 progress: Math.round(stageProgress()),
                 max: MAX_GROWTH
             },
+            selectedFood: state.foodType,
             pellets: state.pellets.length,
             day: ageDay(),
             message: state.message,
@@ -537,6 +685,9 @@
     elements.cleanButton.addEventListener("click", cleanTank);
     elements.playButton.addEventListener("click", playWithFish);
     elements.fullscreenButton.addEventListener("click", toggleFullscreen);
+    elements.foodButtons.forEach(function (button) {
+        button.addEventListener("click", function () { selectFood(button.dataset.food); });
+    });
     canvas.addEventListener("pointerdown", function (event) {
         const point = pointerPosition(event);
         feedFish(point.x);
