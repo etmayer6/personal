@@ -46,6 +46,10 @@
                             <span class="tool-symbol symbol-text" aria-hidden="true">T</span>
                             <span>Text</span><kbd>T</kbd>
                         </button>
+                        <button class="tool-button" type="button" data-tool="note" aria-pressed="false" title="Place a sticky note (N)">
+                            <span class="tool-symbol symbol-note" aria-hidden="true"></span>
+                            <span>Note</span><kbd>N</kbd>
+                        </button>
                         <button class="tool-button" type="button" data-tool="eraser" aria-pressed="false" title="Erase an object (E)">
                             <span class="tool-symbol symbol-eraser" aria-hidden="true"></span>
                             <span>Eraser</span><kbd>E</kbd>
@@ -75,6 +79,16 @@
 
                     <div class="toolbar-divider" aria-hidden="true"></div>
 
+                    <div class="tool-group tool-view" aria-label="Board view">
+                        <span class="toolbar-label">View</span>
+                        <button class="toolbar-action zoom-button" id="zoom-out" type="button" aria-label="Zoom out" title="Zoom out (-)">−</button>
+                        <output class="zoom-output" id="zoom-output" aria-label="Current zoom">100%</output>
+                        <button class="toolbar-action zoom-button" id="zoom-in" type="button" aria-label="Zoom in" title="Zoom in (+)">+</button>
+                        <button class="toolbar-action" id="zoom-fit" type="button" title="Reset zoom (0)">Fit</button>
+                    </div>
+
+                    <div class="toolbar-divider" aria-hidden="true"></div>
+
                     <div class="tool-group toolbar-actions" aria-label="Board actions">
                         <button class="toolbar-action" id="undo-button" type="button" disabled title="Undo (Ctrl or Command + Z)">Undo</button>
                         <button class="toolbar-action" id="redo-button" type="button" disabled title="Redo (Ctrl or Command + Shift + Z)">Redo</button>
@@ -100,11 +114,11 @@
                         </div>
                         <div class="text-editor" id="text-editor" hidden>
                             <form id="text-form">
-                                <label for="text-input">Write a note</label>
+                                <label id="text-editor-label" for="text-input">Write a text label</label>
                                 <input id="text-input" type="text" maxlength="80" autocomplete="off" placeholder="Type something useful">
                                 <div class="text-editor-actions">
                                     <button id="text-cancel" type="button">Cancel</button>
-                                    <button class="text-editor-place" type="submit">Place note</button>
+                                    <button class="text-editor-place" type="submit">Place</button>
                                 </div>
                             </form>
                         </div>
@@ -118,6 +132,6 @@
         </section>
     </main>
 
-    <script src="app.js?v=1"></script>
+    <script src="app.js?v=2"></script>
 </body>
 </html>

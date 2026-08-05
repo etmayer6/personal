@@ -320,6 +320,119 @@
     color: #fffaf0;
 }
 
+.game-sandbox {
+    min-height: 300px;
+    display: grid;
+    grid-template-columns: minmax(0, 0.78fr) minmax(360px, 1.22fr);
+    margin-top: 16px;
+    color: #f8f1e6;
+    background: #4b3d59;
+}
+
+.game-sandbox .game-copy {
+    padding: 38px;
+}
+
+.game-sandbox .game-meta {
+    color: #f2cb3f;
+}
+
+.game-sandbox h2 {
+    color: #fffaf0;
+    font-size: clamp(40px, 5vw, 66px);
+}
+
+.game-sandbox p {
+    color: rgba(255, 255, 255, 0.74);
+}
+
+.game-sandbox a {
+    color: #fffaf0;
+}
+
+.sandbox-poster {
+    position: relative;
+    min-height: 250px;
+    margin: 24px 24px 24px 0;
+    overflow: hidden;
+    background:
+        radial-gradient(circle at 20% 22%, rgba(242, 203, 63, 0.18), transparent 23%),
+        linear-gradient(90deg, rgba(255, 250, 240, 0.1) 1px, transparent 1px),
+        linear-gradient(rgba(255, 250, 240, 0.1) 1px, transparent 1px),
+        #2e263b;
+    background-size: auto, 30px 30px, 30px 30px, auto;
+}
+
+.sandbox-grid {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, transparent 48%, rgba(231, 121, 82, 0.18) 49% 51%, transparent 52%);
+}
+
+.sandbox-orbit {
+    position: absolute;
+    border: 1px dashed rgba(220, 192, 244, 0.52);
+    border-radius: 50%;
+}
+
+.orbit-one {
+    top: 18%;
+    left: 16%;
+    width: 180px;
+    height: 120px;
+    transform: rotate(-18deg);
+}
+
+.orbit-two {
+    right: 12%;
+    bottom: 14%;
+    width: 150px;
+    height: 98px;
+    border-color: rgba(111, 195, 169, 0.62);
+    transform: rotate(22deg);
+}
+
+.sandbox-piece {
+    position: absolute;
+    display: grid;
+    width: 38px;
+    height: 38px;
+    place-items: center;
+    border: 2px solid #fffaf0;
+    border-radius: 50%;
+    color: #102b36;
+    font-family: Georgia, "Palatino Linotype", serif;
+    font-size: 18px;
+    font-weight: 700;
+    box-shadow: 0 10px 20px rgba(11, 20, 31, 0.25);
+}
+
+.piece-water { top: 28%; left: 32%; background: #6dbed0; transform: rotate(-12deg); }
+.piece-spark { top: 22%; right: 28%; background: #f2cb3f; }
+.piece-gremlin { bottom: 19%; left: 45%; background: #a967b8; color: #fffaf0; }
+.piece-snack { right: 15%; bottom: 29%; background: #e77952; }
+
+.sandbox-arrow {
+    position: absolute;
+    top: 44%;
+    left: 40%;
+    width: 104px;
+    border-top: 2px dashed rgba(255, 250, 240, 0.6);
+    transform: rotate(18deg);
+}
+
+.sandbox-arrow::after {
+    position: absolute;
+    right: -2px;
+    top: -5px;
+    width: 9px;
+    height: 9px;
+    border-top: 2px solid rgba(255, 250, 240, 0.75);
+    border-right: 2px solid rgba(255, 250, 240, 0.75);
+    content: "";
+    transform: rotate(45deg);
+}
+
 .aquarium-poster {
     position: relative;
     min-height: 250px;
@@ -601,6 +714,10 @@
         grid-template-columns: minmax(0, 0.95fr) minmax(300px, 1.05fr);
     }
 
+    .game-sandbox {
+        grid-template-columns: minmax(0, 0.95fr) minmax(300px, 1.05fr);
+    }
+
     .block-poster,
     .word-poster {
         min-height: 230px;
@@ -664,6 +781,15 @@
     }
 
     .game-aquarium .aquarium-poster {
+        min-height: 230px;
+        margin: 0 18px 18px;
+    }
+
+    .game-sandbox {
+        display: block;
+    }
+
+    .game-sandbox .sandbox-poster {
         min-height: 230px;
         margin: 0 18px 18px;
     }

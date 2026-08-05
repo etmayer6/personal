@@ -7,7 +7,7 @@
     <title>Pet Studio | Ethan Mayer</title>
     <link rel="stylesheet" href="../style.css">
     <link rel="stylesheet" href="../pet-companion.css?v=2">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=2">
 </head>
 <body class="pet-studio-body">
     <header class="pet-studio-header">
@@ -57,10 +57,22 @@
                 <fieldset class="builder-fieldset">
                     <legend>Creature type</legend>
                     <div class="builder-choice-grid">
-                        <button type="button" class="builder-choice" data-species="cat" aria-pressed="true">Cat</button>
-                        <button type="button" class="builder-choice" data-species="dog" aria-pressed="false">Dog</button>
-                        <button type="button" class="builder-choice" data-species="fox" aria-pressed="false">Fox</button>
-                        <button type="button" class="builder-choice" data-species="dragon" aria-pressed="false">Dragon</button>
+                        <button type="button" class="builder-choice" data-species="cat" aria-label="Cat, curious" aria-pressed="true">
+                            <span class="builder-choice-art" aria-hidden="true"></span>
+                            <span class="builder-choice-copy"><strong>Cat</strong><small>curious</small></span>
+                        </button>
+                        <button type="button" class="builder-choice" data-species="dog" aria-label="Dog, loyal" aria-pressed="false">
+                            <span class="builder-choice-art" aria-hidden="true"></span>
+                            <span class="builder-choice-copy"><strong>Dog</strong><small>loyal</small></span>
+                        </button>
+                        <button type="button" class="builder-choice" data-species="fox" aria-label="Fox, clever" aria-pressed="false">
+                            <span class="builder-choice-art" aria-hidden="true"></span>
+                            <span class="builder-choice-copy"><strong>Fox</strong><small>clever</small></span>
+                        </button>
+                        <button type="button" class="builder-choice" data-species="dragon" aria-label="Dragon, mighty" aria-pressed="false">
+                            <span class="builder-choice-art" aria-hidden="true"></span>
+                            <span class="builder-choice-copy"><strong>Dragon</strong><small>mighty</small></span>
+                        </button>
                     </div>
                 </fieldset>
 
@@ -76,15 +88,28 @@
                 <fieldset class="builder-fieldset">
                     <legend>Accessory</legend>
                     <div class="builder-choice-grid builder-accessory-grid">
-                        <button type="button" class="builder-choice" data-accessory="none" aria-pressed="true">None</button>
-                        <button type="button" class="builder-choice" data-accessory="scarf" aria-pressed="false">Scarf</button>
-                        <button type="button" class="builder-choice" data-accessory="crown" aria-pressed="false">Crown</button>
-                        <button type="button" class="builder-choice" data-accessory="star" aria-pressed="false">Star</button>
+                        <button type="button" class="builder-choice" data-accessory="none" aria-label="None, clean" aria-pressed="true">
+                            <span class="accessory-icon accessory-icon-none" aria-hidden="true"></span>
+                            <span class="builder-choice-copy"><strong>None</strong><small>clean</small></span>
+                        </button>
+                        <button type="button" class="builder-choice" data-accessory="scarf" aria-label="Scarf, cozy" aria-pressed="false">
+                            <span class="accessory-icon accessory-icon-scarf" aria-hidden="true"></span>
+                            <span class="builder-choice-copy"><strong>Scarf</strong><small>cozy</small></span>
+                        </button>
+                        <button type="button" class="builder-choice" data-accessory="crown" aria-label="Crown, regal" aria-pressed="false">
+                            <span class="accessory-icon accessory-icon-crown" aria-hidden="true"></span>
+                            <span class="builder-choice-copy"><strong>Crown</strong><small>regal</small></span>
+                        </button>
+                        <button type="button" class="builder-choice" data-accessory="star" aria-label="Star, cosmic" aria-pressed="false">
+                            <span class="accessory-icon accessory-icon-star" aria-hidden="true"></span>
+                            <span class="builder-choice-copy"><strong>Star</strong><small>cosmic</small></span>
+                        </button>
                     </div>
                 </fieldset>
 
                 <div class="builder-actions">
-                    <button class="builder-save" type="submit">Bring pet along <span aria-hidden="true">&rarr;</span></button>
+                    <button class="builder-save" id="save-pet" type="submit">Bring pet along <span aria-hidden="true">&rarr;</span></button>
+                    <button class="builder-randomize" id="randomize-pet" type="button">Surprise me</button>
                     <button class="builder-reset" id="release-pet" type="button" hidden>Release pet</button>
                 </div>
                 <p class="builder-status" id="builder-status" role="status" aria-live="polite">Design a friend, then send them exploring.</p>
@@ -93,6 +118,6 @@
     </main>
 
     <script src="../site-play.js?v=pet-companion-2"></script>
-    <script src="app.js?v=1"></script>
+    <script src="app.js?v=2"></script>
 </body>
 </html>

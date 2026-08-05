@@ -158,7 +158,8 @@
             "meal-planner": "Meal Planner",
             "childhood-timeline": "Timeline",
             garage: "Garage Bay",
-            "pet-studio": "Pet Studio"
+            "pet-studio": "Pet Studio",
+            "gremlin-lab": "Physics Lab"
         };
         const currentUrl = new URL(window.location.href);
         const rootPath = rootUrl.pathname.endsWith("/") ? rootUrl.pathname : rootUrl.pathname + "/";

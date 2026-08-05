@@ -31,7 +31,7 @@
                 <div class="life-board" id="life-board">
                     <canvas id="life-canvas" width="960" height="600" tabindex="0" aria-label="Game of Life board. Click a cell to place or erase it, then drag to continue."></canvas>
                     <div class="canvas-footer">
-                        <span>Click a cell to place or erase; drag after pressing</span>
+                        <span id="interaction-readout">Click a cell to paint or erase; drag to draw</span>
                         <span id="coordinate-readout">x 00 / y 00</span>
                     </div>
                 </div>
@@ -45,6 +45,7 @@
                     <div class="control-cluster">
                         <div class="control-label"><span>Generations</span><strong id="generation-value">0</strong></div>
                         <div class="control-label"><span>Living cells</span><strong id="population-value">0</strong></div>
+                        <div class="control-label"><span>Board state</span><strong id="lifecycle-value">Seeded</strong></div>
                         <label class="speed-label" for="speed-input"><span>Simulation speed</span><output id="speed-value" for="speed-input">8 gen/s</output></label>
                         <input id="speed-input" type="range" min="1" max="20" value="8">
                     </div>
@@ -54,8 +55,11 @@
                         <div class="pattern-list" id="pattern-list">
                             <button type="button" data-pattern="glider">Glider</button>
                             <button type="button" data-pattern="blinker">Blinker</button>
+                            <button type="button" data-pattern="beacon">Beacon</button>
+                            <button type="button" data-pattern="toad">Toad</button>
                             <button type="button" data-pattern="pulsar">Pulsar</button>
                             <button type="button" data-pattern="r-pentomino">R-pentomino</button>
+                            <button type="button" data-pattern="spaceship">Spaceship</button>
                             <button type="button" data-pattern="random">Random soup</button>
                         </div>
                     </div>

@@ -52,6 +52,8 @@
         cleanliness: 86,
         mood: 72,
         feedings: 0,
+        foodsTried: {},
+        lastFood: "jellyfish",
         foodType: "jellyfish",
         pellets: [],
         bubbles: [],
@@ -64,7 +66,12 @@
             y: 315,
             phase: 0,
             direction: 1,
-            targetX: 430
+            targetX: 430,
+            targetY: 310,
+            velocity: 0,
+            tilt: 0,
+            eatTimer: 0,
+            happyTimer: 0
         }
     };
 
@@ -82,6 +89,8 @@
         growthValue: document.getElementById("growth-value"),
         growthTrack: document.querySelector(".growth-track"),
         growthFill: document.getElementById("growth-fill"),
+        foodVarietyValue: document.getElementById("food-variety-value"),
+        foodVarietyFill: document.getElementById("food-variety-fill"),
         eventMessage: document.getElementById("event-message"),
         feedButton: document.getElementById("feed-button"),
         cleanButton: document.getElementById("clean-button"),
@@ -107,6 +116,12 @@
         { x: 694, y: 220, r: 4, speed: 0.8, phase: 0.8 },
         { x: 838, y: 148, r: 3, speed: 0.9, phase: 2.8 },
         { x: 902, y: 292, r: 5, speed: 0.5, phase: 1.1 }
+    ];
+
+    const reefFriends = [
+        { x: 160, y: 206, baseY: 206, scale: 0.7, speed: 8, color: "#7be0cb", phase: 0.3 },
+        { x: 760, y: 270, baseY: 270, scale: 0.52, speed: -6, color: "#f2cb3f", phase: 2.1 },
+        { x: 590, y: 150, baseY: 150, scale: 0.42, speed: 5, color: "#ef9a92", phase: 4.2 }
     ];
 
     let lastTimestamp = performance.now();
@@ -176,6 +191,7 @@
         }
         const selectedFoodType = FOOD_TYPES[foodType] ? foodType : state.foodType;
         const food = FOOD_TYPES[selectedFoodType];
+        const firstTaste = !state.foodsTried[selectedFoodType];
         const targetX = clamp(typeof x === "number" ? x : 260 + ((state.feedings * 137) % 440), 80, WIDTH - 80);
         state.pellets.push({
             type: selectedFoodType,
@@ -183,15 +199,24 @@
             y: 68,
             drift: (state.feedings % 2 ? 1 : -1) * 12,
             life: 5,
-            seed: state.feedings * 1.7
+            seed: state.feedings * 1.7,
+            message: food.message
         });
+        state.foodsTried[selectedFoodType] = true;
+        state.lastFood = selectedFoodType;
         state.hunger = clamp(state.hunger + food.hunger, 0, 100);
         state.mood = clamp(state.mood + food.mood, 0, 100);
         state.growth = clamp(state.growth + food.growth, 0, MAX_GROWTH);
         state.feedings += 1;
         state.feedCooldown = 0.12;
+        state.fish.targetX = targetX;
+        state.fish.happyTimer = 1.2;
         addBubble(targetX + 12, 88, 0.75);
-        setMessage(state.growth >= MAX_GROWTH ? "Momo reached gentle giant status!" : food.message, 4);
+        if (firstTaste && Object.keys(state.foodsTried).length === Object.keys(FOOD_TYPES).length) {
+            setMessage("Momo sampled the full reef menu. Variety bonus!", 5);
+        } else {
+            setMessage(state.growth >= MAX_GROWTH ? "Momo reached gentle giant status!" : food.message, 4);
+        }
     }
 
     function selectFood(foodType) {
@@ -211,6 +236,7 @@
     function cleanTank() {
         state.cleanliness = clamp(state.cleanliness + 24, 0, 100);
         state.mood = clamp(state.mood + 5, 0, 100);
+        state.fish.happyTimer = 1.4;
         for (let index = 0; index < 4; index += 1) {
             addBubble(250 + index * 126, 480, 1.15);
         }
@@ -220,6 +246,8 @@
     function playWithFish() {
         state.mood = clamp(state.mood + 20, 0, 100);
         state.fish.targetX = 150 + ((state.feedings + 2) * 163) % 660;
+        state.fish.happyTimer = 3;
+        state.fish.targetY = 250 + ((state.feedings * 37) % 110);
         addBubble(state.fish.x, state.fish.y + 40, 1.1);
         setMessage("Momo did a very slow zoomie.", 4);
     }
@@ -245,7 +273,9 @@
             if (nearFish) {
                 pellet.life = -1;
                 addBubble(pellet.x, pellet.y, 0.7);
-                setMessage("Momo says: blub blub, thank you.", 3);
+                state.fish.eatTimer = 0.7;
+                state.fish.happyTimer = 2.2;
+                setMessage(pellet.message || FOOD_TYPES[pellet.type].message, 3);
             }
         });
         state.pellets = state.pellets.filter(function (pellet) { return pellet.life > 0 && pellet.y < HEIGHT - 55; });
@@ -270,12 +300,30 @@
         state.fish.phase += delta;
         const driftTarget = 450 + Math.sin(state.elapsed * 0.22) * 230;
         const target = state.pellets.length ? state.pellets[0].x : state.fish.targetX * 0.35 + driftTarget * 0.65;
+        const previousX = state.fish.x;
         state.fish.x += (target - state.fish.x) * Math.min(1, delta * 0.8);
-        state.fish.y = 310 + Math.sin(state.fish.phase * 0.65) * 34 + Math.sin(state.fish.phase * 1.4) * 8;
+        state.fish.velocity = (state.fish.x - previousX) / Math.max(delta, 0.001);
+        state.fish.tilt += (clamp(state.fish.velocity * 0.018, -0.16, 0.16) - state.fish.tilt) * Math.min(1, delta * 4);
+        const targetY = state.fish.targetY || 310;
+        const swimY = 310 + Math.sin(state.fish.phase * 0.65) * 34 + Math.sin(state.fish.phase * 1.4) * 8;
+        state.fish.y += (targetY + (swimY - 310) - state.fish.y) * Math.min(1, delta * 1.4);
+        state.fish.targetY += (310 - state.fish.targetY) * Math.min(1, delta * 0.45);
+        state.fish.eatTimer = Math.max(0, state.fish.eatTimer - delta);
+        state.fish.happyTimer = Math.max(0, state.fish.happyTimer - delta);
         if (Math.abs(target - state.fish.x) > 2) {
             state.fish.direction = target >= state.fish.x ? 1 : -1;
         }
         state.fish.x = clamp(state.fish.x, 125, WIDTH - 125);
+        state.fish.y = clamp(state.fish.y, 170, 455);
+    }
+
+    function updateReefFriends(delta) {
+        reefFriends.forEach(function (friend) {
+            friend.x += friend.speed * delta;
+            friend.y = friend.baseY + Math.sin(state.elapsed * 0.7 + friend.phase) * 12;
+            if (friend.x < -80) friend.x = WIDTH + 80;
+            if (friend.x > WIDTH + 80) friend.x = -80;
+        });
     }
 
     function update(delta) {
@@ -307,6 +355,7 @@
         updateFish(delta);
         updatePellets(delta);
         updateBubbles(delta);
+        updateReefFriends(delta);
     }
 
     function drawWater() {
@@ -390,6 +439,30 @@
             context.stroke();
         });
         context.restore();
+    }
+
+    function drawReefFriends() {
+        reefFriends.forEach(function (friend) {
+            context.save();
+            context.translate(friend.x, friend.y);
+            context.scale(friend.speed < 0 ? -friend.scale : friend.scale, friend.scale);
+            context.globalAlpha = 0.72;
+            context.fillStyle = friend.color;
+            context.beginPath();
+            context.ellipse(0, 0, 19, 9, 0, 0, TAU);
+            context.fill();
+            context.beginPath();
+            context.moveTo(-14, 0);
+            context.lineTo(-28, -10);
+            context.lineTo(-26, 10);
+            context.closePath();
+            context.fill();
+            context.fillStyle = "#113e49";
+            context.beginPath();
+            context.arc(10, -3, 2.5, 0, TAU);
+            context.fill();
+            context.restore();
+        });
     }
 
     function drawPellets() {
@@ -479,9 +552,11 @@
         const size = stage.size;
         const bob = Math.sin(state.fish.phase * 0.8) * 2;
         const direction = state.fish.direction;
+        const happyPulse = state.fish.happyTimer > 0 ? 1 + Math.sin(state.elapsed * 10) * 0.025 : 1;
         context.save();
         context.translate(state.fish.x, state.fish.y + bob);
-        context.scale(direction * size, size);
+        context.rotate(state.fish.tilt * direction);
+        context.scale(direction * size * happyPulse, size * happyPulse);
 
         context.fillStyle = "rgba(0, 27, 37, 0.2)";
         context.beginPath();
@@ -572,10 +647,17 @@
         context.arc(54, -24, 3, 0, TAU);
         context.fill();
 
+        const mouthOpen = state.fish.eatTimer > 0 ? 1.8 : 1;
         context.fillStyle = "#f5c45d";
         context.beginPath();
-        context.ellipse(67, 14, 9, 6, 0, 0, TAU);
+        context.ellipse(67, 14, 9, 6 * mouthOpen, 0, 0, TAU);
         context.fill();
+        if (mouthOpen > 1) {
+            context.fillStyle = "#7d3d4b";
+            context.beginPath();
+            context.ellipse(68, 14, 5, 3.5, 0, 0, TAU);
+            context.fill();
+        }
         context.strokeStyle = "#7d3d4b";
         context.lineWidth = 3;
         context.beginPath();
@@ -583,6 +665,16 @@
         context.stroke();
 
         context.restore();
+
+        if (state.fish.happyTimer > 0) {
+            context.save();
+            context.fillStyle = "rgba(242, 203, 63, 0.9)";
+            context.beginPath();
+            context.arc(state.fish.x + 94, state.fish.y - 82, 4, 0, TAU);
+            context.arc(state.fish.x + 108, state.fish.y - 102, 2.5, 0, TAU);
+            context.fill();
+            context.restore();
+        }
 
         context.save();
         context.fillStyle = "rgba(255, 250, 222, 0.92)";
@@ -596,6 +688,7 @@
     function render() {
         context.clearRect(0, 0, WIDTH, HEIGHT);
         drawWater();
+        drawReefFriends();
         drawPlants();
         drawBubbles();
         drawPellets();
@@ -623,6 +716,9 @@
         elements.growthValue.textContent = Math.round(progress) + "%";
         elements.growthFill.style.width = progress + "%";
         elements.growthTrack.setAttribute("aria-valuenow", String(Math.round(progress)));
+        const variety = Object.keys(state.foodsTried).length;
+        elements.foodVarietyValue.textContent = variety + " / " + Object.keys(FOOD_TYPES).length;
+        elements.foodVarietyFill.style.width = (variety / Object.keys(FOOD_TYPES).length) * 100 + "%";
         elements.eventMessage.textContent = state.message;
         elements.foodDescription.textContent = FOOD_TYPES[state.foodType].description;
     }
@@ -673,6 +769,8 @@
                 max: MAX_GROWTH
             },
             selectedFood: state.foodType,
+            foodVariety: Object.keys(state.foodsTried).length,
+            lastFood: state.lastFood,
             pellets: state.pellets.length,
             day: ageDay(),
             message: state.message,
@@ -690,7 +788,9 @@
     });
     canvas.addEventListener("pointerdown", function (event) {
         const point = pointerPosition(event);
-        feedFish(point.x);
+        const nearFish = Math.hypot(point.x - state.fish.x, point.y - state.fish.y) < 125;
+        if (nearFish) playWithFish();
+        else feedFish(point.x);
         canvas.focus();
     });
     window.addEventListener("keydown", function (event) {

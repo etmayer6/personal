@@ -9,17 +9,22 @@
     const cellCount = columns * rows;
     const grid = new Uint8Array(cellCount);
     const nextGrid = new Uint8Array(cellCount);
+    const ages = new Uint8Array(cellCount);
+    const nextAges = new Uint8Array(cellCount);
     const state = {
         running: false,
         generation: 0,
         speed: 8,
         activePattern: "Custom seed",
+        lifecycle: "Seeded",
+        status: "Ready to evolve",
         pointerPainting: false,
         interactionMode: "idle",
         paintValue: null,
         lastFrame: 0,
         accumulator: 0,
-        hoveredCell: null
+        hoveredCell: null,
+        signatureHistory: new Map()
     };
 
     const runButton = document.querySelector("#run-button");
@@ -33,6 +38,8 @@
     const populationValue = document.querySelector("#population-value");
     const statusValue = document.querySelector("#life-status");
     const coordinateReadout = document.querySelector("#coordinate-readout");
+    const interactionReadout = document.querySelector("#interaction-readout");
+    const lifecycleValue = document.querySelector("#lifecycle-value");
     const canvasFooter = document.querySelector(".canvas-footer");
     const patternButtons = Array.from(document.querySelectorAll("[data-pattern]"));
 
@@ -40,14 +47,57 @@
         return y * columns + x;
     }
 
+    function signatureForGrid() {
+        return Array.from(grid).join("");
+    }
+
+    function resetHistory() {
+        state.signatureHistory = new Map();
+        state.signatureHistory.set(signatureForGrid(), state.generation);
+    }
+
+    function lifecycleMessage() {
+        if (state.lifecycle === "Extinct") return "Population extinct";
+        if (state.lifecycle === "Still life") return "Still life found";
+        if (state.lifecycle === "Cycle detected") return "Cycle detected";
+        return "Generation stepped";
+    }
+
+    function observeLifecycle() {
+        const population = countPopulation();
+        const signature = signatureForGrid();
+        if (population === 0) {
+            state.lifecycle = "Extinct";
+        } else if (state.signatureHistory.has(signature)) {
+            const previousGeneration = state.signatureHistory.get(signature);
+            state.lifecycle = state.generation - previousGeneration === 1 ? "Still life" : "Cycle detected";
+        } else {
+            state.lifecycle = "Evolving";
+        }
+        state.signatureHistory.set(signature, state.generation);
+        if (state.signatureHistory.size > 180) {
+            state.signatureHistory.delete(state.signatureHistory.keys().next().value);
+        }
+    }
+
+    function seedAges() {
+        for (let index = 0; index < cellCount; index += 1) {
+            ages[index] = grid[index] ? 4 : 0;
+        }
+    }
+
     function clearGrid(announce) {
         grid.fill(0);
+        ages.fill(0);
+        nextAges.fill(0);
         state.generation = 0;
         state.running = false;
         state.accumulator = 0;
         state.activePattern = "Empty board";
+        state.lifecycle = "Empty";
         state.pointerPainting = false;
         setInteractionMode("idle");
+        resetHistory();
         if (announce) setStatus("Board cleared");
         updateUi();
         render();
@@ -63,16 +113,22 @@
 
     function loadPattern(name) {
         grid.fill(0);
+        ages.fill(0);
+        nextAges.fill(0);
         state.generation = 0;
         state.running = false;
         state.accumulator = 0;
         state.activePattern = name === "random" ? "Random soup" : name[0].toUpperCase() + name.slice(1);
+        state.lifecycle = "Seeded";
         state.pointerPainting = false;
         setInteractionMode("idle");
 
         if (name === "glider") placePattern([[1, 0], [2, 1], [0, 2], [1, 2], [2, 2]], 8, 7);
         if (name === "blinker") placePattern([[0, 0], [1, 0], [2, 0]], 10, 8);
+        if (name === "beacon") placePattern([[0, 0], [1, 0], [0, 1], [1, 1], [2, 2], [3, 2], [2, 3], [3, 3]], 17, 11);
+        if (name === "toad") placePattern([[1, 0], [2, 0], [3, 0], [0, 1], [1, 1], [2, 1]], 18, 13);
         if (name === "r-pentomino") placePattern([[1, 0], [2, 0], [0, 1], [1, 1], [1, 2]], 20, 12);
+        if (name === "spaceship") placePattern([[1, 0], [2, 0], [3, 0], [4, 0], [0, 1], [4, 1], [4, 2], [0, 3], [3, 3]], 30, 12);
         if (name === "pulsar") {
             const pulsar = [
                 [2, 0], [3, 0], [4, 0], [8, 0], [9, 0], [10, 0],
@@ -87,6 +143,9 @@
         if (name === "random") {
             for (let i = 0; i < cellCount; i += 1) grid[i] = Math.random() > 0.76 ? 1 : 0;
         }
+
+        seedAges();
+        resetHistory();
 
         patternButtons.forEach(function (button) {
             button.classList.toggle("is-selected", button.dataset.pattern === name);
@@ -121,13 +180,17 @@
             for (let x = 0; x < columns; x += 1) {
                 const cellIndex = indexFor(x, y);
                 const neighbors = countNeighbors(x, y);
-                nextGrid[cellIndex] = grid[cellIndex] ? (neighbors === 2 || neighbors === 3 ? 1 : 0) : (neighbors === 3 ? 1 : 0);
+                const survives = grid[cellIndex] ? (neighbors === 2 || neighbors === 3) : neighbors === 3;
+                nextGrid[cellIndex] = survives ? 1 : 0;
+                nextAges[cellIndex] = survives ? (grid[cellIndex] ? Math.min(255, ages[cellIndex] + 1) : 1) : 0;
             }
         }
         grid.set(nextGrid);
+        ages.set(nextAges);
         state.generation += 1;
         state.activePattern = "Live simulation";
-        setStatus(state.running ? "Simulation running" : "Generation stepped");
+        observeLifecycle();
+        setStatus(state.running ? "Simulation running" : lifecycleMessage());
         updateUi();
         render();
     }
@@ -139,6 +202,7 @@
     }
 
     function setStatus(message) {
+        state.status = message;
         statusValue.textContent = message;
     }
 
@@ -147,6 +211,11 @@
         canvas.classList.toggle("is-placing", mode === "placing");
         canvas.classList.toggle("is-erasing", mode === "erasing");
         canvas.dataset.interactionMode = mode;
+        if (interactionReadout) {
+            interactionReadout.textContent = mode === "placing"
+                ? "Placing cells"
+                : mode === "erasing" ? "Erasing cells" : "Click a cell to paint or erase; drag to draw";
+        }
     }
 
     function updateUi() {
@@ -156,7 +225,9 @@
         generationValue.textContent = String(state.generation);
         populationValue.textContent = String(population);
         speedValue.textContent = state.speed + " gen/s";
-        if (!state.running && state.generation === 0 && population === 0) setStatus("Ready to evolve");
+        const notableLifecycle = ["Cycle detected", "Still life", "Extinct"].includes(state.lifecycle);
+        lifecycleValue.textContent = notableLifecycle ? state.lifecycle : state.running ? "Running" : state.lifecycle;
+        statusValue.textContent = state.status;
     }
 
     function resizeCanvas() {
@@ -211,7 +282,8 @@
             for (let x = 0; x < columns; x += 1) {
                 if (!grid[indexFor(x, y)]) continue;
                 const isHovered = state.hoveredCell && state.hoveredCell.x === x && state.hoveredCell.y === y;
-                context.fillStyle = isHovered ? "#f2cb3f" : ((x + y) % 5 === 0 ? "#e75438" : "#173e8f");
+                const cellAge = ages[indexFor(x, y)];
+                context.fillStyle = isHovered ? "#f2cb3f" : cellAge <= 1 ? "#f2cb3f" : cellAge <= 3 ? "#e75438" : "#173e8f";
                 context.fillRect(x * cellWidth + 1.5, y * cellHeight + 1.5, Math.max(1, cellWidth - 3), Math.max(1, cellHeight - 3));
             }
         }
@@ -221,6 +293,9 @@
             const y = state.hoveredCell.y;
             context.fillStyle = grid[indexFor(x, y)] ? "rgba(231, 84, 56, 0.2)" : "rgba(23, 62, 143, 0.12)";
             context.fillRect(x * cellWidth + 1.5, y * cellHeight + 1.5, Math.max(1, cellWidth - 3), Math.max(1, cellHeight - 3));
+            context.strokeStyle = state.interactionMode === "erasing" ? "rgba(231, 84, 56, 0.72)" : "rgba(23, 62, 143, 0.72)";
+            context.lineWidth = 2;
+            context.strokeRect(x * cellWidth + 1.5, y * cellHeight + 1.5, Math.max(1, cellWidth - 3), Math.max(1, cellHeight - 3));
         }
     }
 
@@ -239,6 +314,11 @@
         state.hoveredCell = cell;
         const cellIndex = indexFor(cell.x, cell.y);
         grid[cellIndex] = state.paintValue;
+        ages[cellIndex] = state.paintValue ? 1 : 0;
+        state.generation = 0;
+        state.accumulator = 0;
+        state.lifecycle = "Seeded";
+        resetHistory();
         state.activePattern = "Custom seed";
         setStatus(state.interactionMode === "erasing" ? "Erasing cells" : "Placing cells");
         updateUi();
@@ -306,6 +386,11 @@
     canvas.addEventListener("pointerdown", function (event) {
         const cell = cellFromPointer(event);
         if (!cell) return;
+        if (state.running) {
+            state.running = false;
+            state.lastFrame = 0;
+            setStatus("Simulation paused for editing");
+        }
         canvas.setPointerCapture(event.pointerId);
         state.pointerPainting = true;
         state.paintValue = grid[indexFor(cell.x, cell.y)] ? 0 : 1;
@@ -363,6 +448,8 @@
             board: { columns: columns, rows: rows, coordinateSystem: "origin top-left; x increases right; y increases down" },
             speed: state.speed,
             interactionMode: state.interactionMode,
+            lifecycle: state.lifecycle,
+            status: state.status,
             activePattern: state.activePattern,
             liveCells: liveCells
         });

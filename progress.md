@@ -592,3 +592,103 @@ Original prompt: Remove clutter from the games on the website. Right now they do
 ## Quiet site shortcuts TODO
 
 - None for this pass.
+
+## Gremlin Physics Lab
+
+- New request: implement a goofy physics sandbox game for the site.
+- Added a dependency-free `gremlin-lab/` canvas game with draggable elements, reactions, a chaos meter, prebuilt scenarios, pause/reset/clear/fullscreen controls, and deterministic game-state hooks.
+- Added the lab as game 07 and project 20, and included it in local visit reporting.
+
+## Gremlin Physics Lab verification
+
+- `node --check gremlin-lab/app.js`, `node --check site-play.js`, and `git diff --check` pass.
+- The bundled Playwright game client verifies the lab renders and advances without error artifacts; scenario runs cover storm, snack, oil, and moon reactions plus pause, clear, and reset states.
+- Captured QA states visibly show steam, fire, bubble, gremlin growth, confetti, and fan reactions.
+- Browser QA verifies a real drag path, pause/resume behavior, responsive layout at 390px with no horizontal overflow, and the Games/Projects integration links. Browser logs contain no warnings or errors.
+
+## Gremlin Physics Lab TODO
+
+- None for this pass.
+
+## Gremlin Physics Lab refinement
+
+- New request: improve the Gremlin Physics Lab's feel and feedback.
+- Added throw momentum and a short drag trail, animated reaction bursts, and a persistent seven-reaction discovery ledger that survives resets and scenario changes.
+- Clarified the objective in the instructions, expanded the lab manual with the full reaction set, and added discovery progress to the readout.
+
+## Gremlin Physics Lab refinement verification
+
+- `node --check gremlin-lab/app.js` and `git diff --check` pass.
+- The bundled Playwright game client verifies the free-play build and all four presets without error artifacts.
+- Browser QA verifies ledger progress across multiple scenarios, a real throw-to-reaction drag path, pause/resume behavior, responsive layout at 390px with no horizontal overflow, and no browser warnings or errors.
+
+## Gremlin Physics Lab refinement TODO
+
+- None for this pass.
+
+## Mola Mola behavior refresh
+
+- New request: improve the Mola Mola game's interaction and sense of life.
+- Added direct tap-to-play behavior, food-specific eating feedback, Momo's chase tilt, happy pulse, open-mouth eating animation, and three small moving reef companions.
+- Added a compact `0 / 3` food-variety goal that tracks Jellyfish, Krill, and Sea lettuce across the session, plus a full-menu message when all three have been tried.
+- Corrected the aquarium canvas sizing so the 8:5 drawing ratio is preserved on mobile and fullscreen instead of stretching the fish vertically.
+
+## Mola Mola behavior verification
+
+- `node --check aquarium/app.js` and `git diff --check` pass.
+- The bundled Playwright game client confirms a running aquarium, the new food-variety fields, and no error artifacts.
+- Browser QA verifies each food selection, food-specific messages, the `3 / 3` variety goal, direct tap-to-play behavior, the corrected 1.6:1 mobile canvas ratio, no horizontal overflow, and no browser warnings or errors.
+
+## Mola Mola behavior TODO
+
+- None for this pass.
+
+## Conway simulation refresh
+
+- New request: improve the Conway's Game of Life experience.
+- Added cell-age coloring so newborn cells read as yellow, young cells as coral, and established cells as blue; added visible board lifecycle states for seeded, evolving, extinct, still-life, and detected cycles.
+- Expanded the seed shelf with Beacon, Toad, and Spaceship, clarified the paint guidance, and made editing pause a running simulation before resetting the seed generation.
+
+## Conway simulation verification
+
+- `node --check conway/app.js` and `git diff --check` pass.
+- The bundled Playwright game client verifies a running glider, cycle detection for Blinker and Beacon, square-cell rendering, and no error artifacts.
+- Browser QA verifies idle startup, pattern selection, pause-on-edit behavior, board clearing, visible cycle state while running, responsive layout at 390px with no horizontal overflow, and no browser warnings or errors.
+
+## Conway simulation TODO
+
+- None for this pass.
+
+## Whiteboard refresh
+
+- New request: improve the Idea Whiteboard project.
+- Added compact board zoom controls with fit/reset behavior, keyboard shortcuts, wheel zoom, and internal canvas scrolling that does not expand the page.
+- Added a real sticky-note object with wrapped text, warm card styling, selection bounds, local persistence, and Select/Eraser support.
+- Smoothed freehand pen rendering with quadratic curves and filtered redundant pointer points; improved text-editor placement at zoom and Escape/tool keyboard behavior.
+
+## Whiteboard verification
+
+- `node --check whiteboard/app.js` and `git diff --check` pass.
+- The bundled Playwright client runs the updated route without error artifacts; browser QA verifies sticky-note placement, smooth pen drawing, selection/move, clear/undo, zoom/fit, and state persistence.
+- Desktop and 390px viewport checks show no page-level horizontal overflow; zoom overflow stays within the board viewport. Browser logs contain no warnings or errors.
+
+## Whiteboard TODO
+
+- None for this pass.
+
+## Pet creator refresh
+
+- New request: improve the Pet Studio creator.
+- Added miniature creature previews and personality cues to the species choices, visual accessory icons, and a lightweight Surprise me design generator.
+- Added explicit draft, ready-to-save, saved, and unsaved-design states; the primary action changes between creating and updating a companion, while Release pet only appears when a saved companion exists.
+- Improved the preview description, saved-state helper message, and cache-busted the creator assets.
+
+## Pet creator verification
+
+- `node --check pet-studio/app.js` and `git diff --check` pass.
+- Browser QA verifies name persistence across species changes, save/update state transitions, random design generation, release/reset behavior, local persistence after reload, and homepage companion integration.
+- Desktop and 390px viewport checks show no horizontal overflow; all species and accessory controls render distinct visuals. Browser logs contain no warnings or errors.
+
+## Pet creator TODO
+
+- None for this pass.

@@ -543,6 +543,7 @@
 .tone-flight-radar { --card-accent: #3f8f91; }
 .tone-whiteboard { --card-accent: #c55a32; }
 .tone-pet { --card-accent: #4d9c8a; }
+.tone-lab { --card-accent: #a967b8; }
 
 .projects-footer {
     padding: 80px 20px 36px;

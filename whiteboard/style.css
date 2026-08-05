@@ -287,6 +287,14 @@
     text-align: center;
 }
 
+.symbol-note {
+    width: 14px;
+    height: 14px;
+    border: 2px solid currentColor;
+    background: var(--whiteboard-gold);
+    box-shadow: 3px 3px 0 currentColor;
+}
+
 .symbol-eraser {
     width: 13px;
     height: 10px;
@@ -355,6 +363,34 @@
     padding: 7px 9px;
 }
 
+.toolbar-label {
+    color: rgba(255, 255, 255, 0.52);
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.tool-view {
+    flex-wrap: nowrap;
+}
+
+.zoom-button {
+    min-width: 30px;
+    padding-right: 6px;
+    padding-left: 6px;
+    font-size: 16px;
+    line-height: 1;
+}
+
+.zoom-output {
+    min-width: 40px;
+    color: var(--whiteboard-gold);
+    font-size: 11px;
+    font-weight: 800;
+    text-align: center;
+}
+
 .toolbar-action:disabled {
     cursor: not-allowed;
     opacity: 0.35;
@@ -418,6 +454,7 @@
     aspect-ratio: 16 / 9;
     overflow: hidden;
     background: var(--whiteboard-surface);
+    scrollbar-color: rgba(16, 43, 54, 0.5) rgba(16, 43, 54, 0.08);
 }
 
 #whiteboard-canvas {
@@ -426,6 +463,7 @@
     height: 100%;
     cursor: crosshair;
     touch-action: none;
+    transform-origin: 0 0;
 }
 
 #whiteboard-canvas[data-tool="select"] {
@@ -702,6 +740,7 @@
 
     .tool-list,
     .tool-settings,
+    .tool-view,
     .toolbar-actions {
         flex-basis: 100%;
     }
@@ -722,6 +761,7 @@
     }
 
     .tool-settings,
+    .tool-view,
     .toolbar-actions {
         justify-content: space-between;
     }
@@ -868,6 +908,7 @@ html {
     min-height: 0;
     flex: 1 1 auto;
     aspect-ratio: auto;
+    overflow: auto;
 }
 
 #whiteboard-canvas {

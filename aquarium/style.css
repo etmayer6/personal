@@ -353,6 +353,46 @@ kbd {
     background: linear-gradient(90deg, var(--aqua-gold), var(--aqua-coral));
 }
 
+.variety-goal {
+    margin-top: 18px;
+    padding-top: 14px;
+    border-top: 1px solid rgba(123, 224, 203, 0.18);
+}
+
+.variety-label {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    color: rgba(246, 241, 230, 0.54);
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.variety-label strong {
+    color: var(--aqua-mint);
+    font-family: Georgia, "Palatino Linotype", serif;
+    font-size: 16px;
+    letter-spacing: 0;
+}
+
+.variety-track {
+    height: 5px;
+    margin-top: 8px;
+    overflow: hidden;
+    background: rgba(123, 224, 203, 0.14);
+}
+
+.variety-track span {
+    display: block;
+    width: 0;
+    height: 100%;
+    background: var(--aqua-mint);
+    transition: width 180ms ease;
+}
+
 .event-message {
     min-height: 38px;
     margin: 17px 0 0;
@@ -412,13 +452,17 @@ kbd {
 }
 
 #aquarium-board:fullscreen .tank-canvas-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     height: calc(100vh - 142px);
 }
 
 #aquarium-board:fullscreen #aquarium-canvas {
     width: 100%;
-    height: 100%;
+    height: auto;
     min-height: 0;
+    max-height: 100%;
     object-fit: contain;
 }
 
@@ -485,7 +529,8 @@ kbd {
 @media (prefers-reduced-motion: reduce) {
     .care-button,
     .meter span,
-    .growth-track span {
+    .growth-track span,
+    .variety-track span {
         transition: none;
     }
 }
@@ -629,12 +674,16 @@ html {
 .tank-canvas-wrap {
     min-height: 0;
     flex: 1 1 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 #aquarium-canvas {
     width: 100%;
-    height: 100%;
+    height: auto;
     min-height: 0;
+    max-height: 100%;
 }
 
 .aquarium-controls {
@@ -664,8 +713,13 @@ html {
     }
 
     .tank-panel {
-        height: min(64dvh, 560px);
-        min-height: 420px;
+        height: auto;
+        min-height: 0;
+    }
+
+    .tank-canvas-wrap {
+        flex: 0 0 auto;
+        aspect-ratio: 8 / 5;
     }
 
     .aquarium-controls {
@@ -700,8 +754,8 @@ html {
     }
 
     .tank-panel {
-        height: 58dvh;
-        min-height: 380px;
+        height: auto;
+        min-height: 0;
     }
 
     .aquarium-controls {

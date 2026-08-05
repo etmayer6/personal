@@ -21,7 +21,7 @@
         <section class="aquarium-layout" aria-labelledby="tank-heading">
             <div class="tank-panel" id="aquarium-board">
                 <div class="tank-canvas-wrap">
-                    <canvas id="aquarium-canvas" width="960" height="600" tabindex="0" aria-label="Momo's aquarium. Click the water to feed the mola mola fish."></canvas>
+                    <canvas id="aquarium-canvas" width="960" height="600" tabindex="0" aria-label="Momo's aquarium. Click open water to feed the mola mola fish or tap Momo to play."></canvas>
                 </div>
             </div>
 
@@ -84,6 +84,10 @@
                     </div>
                     <div class="growth-track" aria-label="Growth progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
                         <span id="growth-fill"></span>
+                    </div>
+                    <div class="variety-goal">
+                        <div class="variety-label"><span>Food variety</span><strong id="food-variety-value">0 / 3</strong></div>
+                        <div class="variety-track" aria-hidden="true"><span id="food-variety-fill"></span></div>
                     </div>
                     <p id="event-message" class="event-message" aria-live="polite">Momo is floating peacefully.</p>
                 </section>

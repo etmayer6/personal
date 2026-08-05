@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Gremlin Physics Lab, a goofy browser sandbox where strange elements react in stranger ways.">
+    <title>Gremlin Physics Lab | Ethan Mayer</title>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="gremlin-lab-body">
+    <header class="lab-header">
+        <nav aria-label="Primary navigation">
+            <a class="nav-name" href="../index.html">Ethan Mayer</a>
+            <ul>
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="../resume/">Resume</a></li>
+                <li><a href="../projects/">Projects</a></li>
+                <li><a aria-current="page" href="../games/">Games</a></li>
+                <li><a href="../photos/">Photos</a></li>
+                <li><a href="../blog/">Blog</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="lab-shell">
+        <section class="lab-hero">
+            <div>
+                <p class="eyebrow">Playable experiment / 07</p>
+                <h1>Make a mess.</h1>
+            </div>
+            <p>Drop strange pieces into the lab, drag them together, and find out what reacts first.</p>
+        </section>
+
+        <section class="lab-panel" aria-labelledby="lab-title">
+            <div class="lab-panel-heading">
+                <div>
+                    <p class="lab-kicker">Gremlin Systems / Unsupervised testing</p>
+                    <h2 id="lab-title">Good ideas go here to get worse.</h2>
+                    <p class="lab-instructions">Click a palette piece to drop it in, then drag or throw pieces together. Discover all seven reactions. There is no safe combination.</p>
+                </div>
+                <div class="lab-actions" aria-label="Lab controls">
+                    <button id="pause-toggle" class="lab-button lab-button-primary" type="button">Pause lab</button>
+                    <button id="reset-lab" class="lab-button" type="button">Reset</button>
+                    <button id="clear-lab" class="lab-button" type="button">Clear</button>
+                    <button id="fullscreen-toggle" class="lab-button" type="button">Fullscreen</button>
+                </div>
+            </div>
+
+            <div class="lab-layout">
+                <div class="lab-stage" id="lab-stage">
+                    <div class="lab-stage-topline">
+                        <span>LAB FLOOR 07</span>
+                        <span id="scenario-label">FREE PLAY</span>
+                    </div>
+                    <div class="lab-canvas-wrap">
+                        <canvas id="lab-canvas" width="960" height="560" role="img" aria-label="Interactive physics sandbox. Drag colored elements around the lab floor to make them react."></canvas>
+                    </div>
+                    <div class="lab-stage-footer">
+                        <span id="lab-status" role="status" aria-live="polite">The lab is running.</span>
+                        <span>Drag pieces to test a reaction</span>
+                    </div>
+                </div>
+
+                <aside class="lab-sidebar" aria-label="Physics lab tools">
+                    <section class="lab-card lab-palette">
+                        <div class="lab-card-heading">
+                            <p class="lab-kicker">Ingredient rack</p>
+                            <h3>Drop a problem.</h3>
+                        </div>
+                        <div class="element-grid">
+                            <button class="element-button element-water" type="button" data-element="water">
+                                <span class="element-symbol" aria-hidden="true">W</span>
+                                <span><strong>Water</strong><small>Suspiciously conductive</small></span>
+                            </button>
+                            <button class="element-button element-spark" type="button" data-element="spark">
+                                <span class="element-symbol" aria-hidden="true">*</span>
+                                <span><strong>Spark</strong><small>Small, but confident</small></span>
+                            </button>
+                            <button class="element-button element-oil" type="button" data-element="oil">
+                                <span class="element-symbol" aria-hidden="true">O</span>
+                                <span><strong>Oil</strong><small>Definitely not a sauce</small></span>
+                            </button>
+                            <button class="element-button element-gremlin" type="button" data-element="gremlin">
+                                <span class="element-symbol" aria-hidden="true">G</span>
+                                <span><strong>Gremlin</strong><small>Hungry for consequences</small></span>
+                            </button>
+                            <button class="element-button element-snack" type="button" data-element="snack">
+                                <span class="element-symbol" aria-hidden="true">S</span>
+                                <span><strong>Snack</strong><small>Will be missed</small></span>
+                            </button>
+                            <button class="element-button element-fan" type="button" data-element="fan">
+                                <span class="element-symbol" aria-hidden="true">F</span>
+                                <span><strong>Fan</strong><small>Moves the problem</small></span>
+                            </button>
+                            <button class="element-button element-moon" type="button" data-element="moon">
+                                <span class="element-symbol" aria-hidden="true">M</span>
+                                <span><strong>Moon rock</strong><small>Gravity is optional</small></span>
+                            </button>
+                            <button class="element-button element-confetti" type="button" data-element="confetti">
+                                <span class="element-symbol" aria-hidden="true">+</span>
+                                <span><strong>Confetti</strong><small>Here to escalate</small></span>
+                            </button>
+                        </div>
+                    </section>
+
+                    <section class="lab-card lab-readout" aria-label="Lab readout">
+                        <div class="readout-row readout-chaos">
+                            <span>Weirdness</span>
+                            <strong id="chaos-value">00</strong>
+                        </div>
+                        <div class="chaos-meter" aria-hidden="true"><span id="chaos-fill"></span></div>
+                        <div class="readout-grid">
+                            <div><span>Objects</span><strong id="object-count">00</strong></div>
+                            <div><span>Reactions</span><strong id="reaction-count">00</strong></div>
+                        </div>
+                        <div class="discovery-progress">
+                            <div class="readout-row"><span>Reaction ledger</span><strong id="discovery-count">00 / 07</strong></div>
+                            <div class="discovery-bar" aria-hidden="true"><span id="discovery-fill"></span></div>
+                            <p id="discovery-note">Find seven weird combinations.</p>
+                        </div>
+                        <p class="reaction-label">Last incident</p>
+                        <p id="reaction-feed" class="reaction-feed" aria-live="polite">Drop a few pieces and see what happens.</p>
+                    </section>
+
+                    <section class="lab-card lab-scenarios">
+                        <div class="lab-card-heading">
+                            <p class="lab-kicker">Pre-approved disasters</p>
+                            <h3>Try a scenario.</h3>
+                        </div>
+                        <div class="scenario-list">
+                            <button type="button" data-scenario="storm"><span>01</span><strong>Storm cabinet</strong><small>Water + spark + fan</small></button>
+                            <button type="button" data-scenario="snack"><span>02</span><strong>Snack attack</strong><small>Gremlin + snack</small></button>
+                            <button type="button" data-scenario="oil"><span>03</span><strong>Bad fuel day</strong><small>Oil + spark + fan</small></button>
+                            <button type="button" data-scenario="moon"><span>04</span><strong>Moon soup</strong><small>Moon rock + water</small></button>
+                        </div>
+                    </section>
+                </aside>
+            </div>
+        </section>
+
+        <details class="lab-manual">
+            <summary>Open the unofficial lab manual</summary>
+            <div class="lab-manual-grid">
+                <p><strong>Water + spark</strong><span>Steam cloud. Probably fine.</span></p>
+                <p><strong>Oil + spark</strong><span>Fire. Much less fine.</span></p>
+                <p><strong>Gremlin + snack</strong><span>One fed gremlin. More confidence.</span></p>
+                <p><strong>Moon rock + water</strong><span>Bubbles with no respect for gravity.</span></p>
+                <p><strong>Fan + confetti</strong><span>A small breeze becomes a public event.</span></p>
+                <p><strong>Fire + gremlin</strong><span>One gremlin, suddenly elsewhere.</span></p>
+                <p><strong>Fire + water</strong><span>Steam again. Science repeats itself.</span></p>
+            </div>
+        </details>
+    </main>
+
+    <footer class="lab-footer"><p>&copy; 2026 Ethan Mayer</p></footer>
+    <script src="app.js"></script>
+    <script src="../site-play.js?v=pet-companion-2"></script>
+</body>
+</html>
