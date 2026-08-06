@@ -790,7 +790,9 @@
     function updateUi() {
         pauseButton.textContent = state.running ? "Pause lab" : "Resume lab";
         pauseButton.setAttribute("aria-pressed", String(!state.running));
-        statusText.textContent = state.running ? "The lab is running." : "The lab is paused.";
+        statusText.textContent = state.running
+            ? (state.entities.length ? "The lab is running." : "Fresh lab ready. Drop a piece to begin.")
+            : "The lab is paused.";
         scenarioLabel.textContent = scenarioNames[state.scenario].toUpperCase();
         chaosValue.textContent = pad(state.chaos);
         chaosFill.style.width = clamp(state.chaos, 0, 100) + "%";

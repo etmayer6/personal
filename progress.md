@@ -692,3 +692,21 @@ Original prompt: Remove clutter from the games on the website. Right now they do
 ## Pet creator TODO
 
 - None for this pass.
+
+## Scenario Lab split
+
+- New request: separate the engineering-facing Flight Scenario Lab from the casual Flight Sim game.
+- Added a standalone `/scenario-lab/` route with a public-safe engine-fault walkthrough covering scenario setup, deterministic fault injection, flight phases, normalized fixture telemetry, requirement assertions, pass/fail evidence, event timeline, architecture flow, and local JSON export.
+- Kept `/flight-sim/` as the playable game and removed the visible engineering monitor shell from that route; updated the Games and Projects positioning so each route has one clear identity.
+- Added explicit language that the demo uses fictional logic and contains no employer code, data, interfaces, or proprietary requirements, plus a truthful placeholder for future project-specific context.
+
+## Scenario Lab verification
+
+- `node --check scenario-lab/app.js`, `node --check flight-sim/scenario-monitor.js`, and `git diff --check` pass.
+- Browser QA verifies the guided run reaches `PASS`, the optional navigation-deviation variation reaches `FAIL` with retained evidence, keyboard `R` starts a run, and the export action reports a local download prepared.
+- Desktop, tablet at 768px, and 390px mobile checks show no horizontal overflow; the responsive architecture and phase layouts collapse cleanly.
+- Browser console checks for Scenario Lab and Flight Sim contain no warnings or errors; reduced-motion CSS and the no-animation run path are present.
+
+## Scenario Lab TODO
+
+- None for this pass.

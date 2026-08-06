@@ -226,12 +226,8 @@ function shuffledLocations() {
         group.push(location);
         grouped.set(location.answer, group);
     }
-    const copy = [...grouped.values()].map((group) => group[Math.floor(Math.random() * group.length)]);
-    for (let i = copy.length - 1; i > 0; i -= 1) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [copy[i], copy[j]] = [copy[j], copy[i]];
-    }
-    return copy.slice(0, ROUND_COUNT);
+    // Keep the fixture path deterministic so the first render is fast and repeatable.
+    return [...grouped.values()].map((group) => group[0]).slice(0, ROUND_COUNT);
 }
 
 function shuffledCopy(items) {
@@ -524,7 +520,7 @@ async function loadWorldMap() {
         worldMap.countries = geometry.countries;
         worldMap.ready = true;
     } catch (error) {
-        console.warn("Pinpoint could not load its world boundary data:", error.message);
+        worldMap.ready = false;
     }
 }
 
@@ -790,10 +786,10 @@ function showSequenceLoading() {
     drawMap();
 }
 
-async function startGame() {
+async function startGame(options = {}) {
     const generation = state.generation + 1;
     state.generation = generation;
-    if (mapillaryToken) {
+    if (mapillaryToken && !options.fixtureFirst) {
         showSequenceLoading();
         const worldwide = await buildWorldwideSequence();
         if (state.generation !== generation) return;
@@ -1095,7 +1091,14 @@ imageEl.addEventListener("error", () => {
         loadRound();
         return;
     }
-    loadingEl.textContent = "This location photo could not be loaded.";
+    loadingEl.replaceChildren();
+    loadingEl.append("This fixture photo could not be loaded. ");
+    const retry = document.createElement("button");
+    retry.type = "button";
+    retry.className = "image-retry";
+    retry.textContent = "Retry fixture";
+    retry.addEventListener("click", loadRound, { once: true });
+    loadingEl.appendChild(retry);
 });
 
 hintButton.addEventListener("click", useHint);
@@ -1107,7 +1110,7 @@ zoomResetButton.addEventListener("click", () => resetMapView());
 photoZoomOutButton.addEventListener("click", () => setPhotoZoom(photoView.zoom / PHOTO_ZOOM_FACTOR));
 photoZoomInButton.addEventListener("click", () => setPhotoZoom(photoView.zoom * PHOTO_ZOOM_FACTOR));
 photoZoomResetButton.addEventListener("click", resetPhotoView);
-document.getElementById("new-game-button").addEventListener("click", startGame);
+document.getElementById("new-game-button").addEventListener("click", () => startGame());
 fullscreenButton.addEventListener("click", toggleFullscreen);
 
 document.addEventListener("fullscreenchange", () => {
@@ -1209,10 +1212,10 @@ window.__pinpoint_debug_sample_regions = () => balancedRegions().map(({ continen
 
 async function initializeGame() {
     resetMapView(false);
-    sourcePillEl.textContent = "Loading world map";
-    statusEl.textContent = "Loading accurate world boundaries...";
+    sourcePillEl.textContent = "Local fixture / optional Mapillary";
+    statusEl.textContent = "Fixture challenge ready. World boundaries are loading in the background.";
+    await startGame({ fixtureFirst: true });
     await loadWorldMap();
-    await startGame();
     requestAnimationFrame(resizeCanvas);
 }
 

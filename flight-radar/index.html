@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="../style.css">
     <link rel="stylesheet" href="style.css">
 </head>
-<body class="flight-radar-body">
+<body class="flight-radar-body" data-demo-state="offline">
     <header class="flight-radar-header">
         <nav aria-label="Primary navigation">
             <a class="nav-name" href="../index.html">Ethan Mayer</a>
@@ -39,7 +39,7 @@
                     </a>
                 </div>
                 <div class="radar-hero-meta" aria-label="Feed details">
-                    <span class="radar-live-state"><i aria-hidden="true"></i>Live community feed</span>
+                    <span class="radar-live-state"><i aria-hidden="true"></i>Live feed + offline fixture</span>
                     <span>Central Iowa / 250 km view</span>
                 </div>
             </div>
@@ -52,8 +52,8 @@
                         <p class="panel-kicker">Airspace monitor</p>
                         <h2 id="sector-heading">Iowa sector</h2>
                     </div>
-                    <div class="feed-status" id="feed-status" data-state="loading" role="status" aria-live="polite">
-                        Scanning airspace
+                    <div class="feed-status" id="feed-status" data-state="offline" role="status" aria-live="polite">
+                        Fixture ready / checking live feed
                     </div>
                 </header>
 
@@ -101,7 +101,7 @@
                         <span><i class="legend-iowa" aria-hidden="true"></i>Iowa sector</span>
                         <span><i class="legend-airport" aria-hidden="true"></i>Airport</span>
                     </div>
-                    <p id="last-updated">Waiting for first snapshot</p>
+                    <p id="last-updated">Offline fixture ready; checking the community feed</p>
                 </footer>
             </div>
 
@@ -110,7 +110,7 @@
                     <div class="side-card-heading">
                         <div>
                             <p class="panel-kicker">Selected aircraft</p>
-                            <h2 id="selected-callsign">None selected</h2>
+                            <h2 id="selected-callsign">Fixture flight</h2>
                         </div>
                         <span class="selected-mark" aria-hidden="true">+</span>
                     </div>
@@ -126,7 +126,7 @@
         </section>
 
         <section class="radar-note" aria-label="Data note">
-            <p><span class="eyebrow">Community ADS-B / updated every 60 seconds</span> State outline from Iowa GIS. Informational only, not for navigation.</p>
+                    <p><span class="eyebrow">Community ADS-B / updated every 60 seconds</span> Live data is used when reachable; the visible fallback is a deterministic fixture and is never presented as live. Informational only, not for navigation.</p>
             <a href="https://airplanes.live/" target="_blank" rel="noopener noreferrer">Airplanes.live source <span aria-hidden="true">&nearr;</span></a>
         </section>
     </main>

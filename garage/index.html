@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="../style.css">
     <link rel="stylesheet" href="style.css?v=1">
 </head>
-<body class="garage-body">
+<body class="garage-body" data-demo-state="ready">
     <header class="garage-site-header">
         <nav aria-label="Primary navigation">
             <a class="nav-name" href="../index.html">Ethan Mayer</a>
@@ -60,7 +60,7 @@
                 <div><span>System voltage</span><strong>12.6 <small>V</small></strong></div>
                 <div><span>Estimated range</span><strong>318 <small>mi</small></strong></div>
                 <div><span>Next service</span><strong>1,240 <small>mi</small></strong></div>
-                <div class="telemetry-health"><span>Fleet health</span><strong id="health-score">--</strong></div>
+                <div class="telemetry-health"><span>Fleet health</span><strong id="health-score">76%</strong></div>
             </div>
 
             <div class="console-workspace">
@@ -101,10 +101,10 @@
                             </g>
                         </svg>
 
-                        <button class="system-hotspot hotspot-powertrain" type="button" data-system="powertrain" aria-label="Inspect powertrain"><span></span><strong>Powertrain</strong><small data-system-count="powertrain">0 findings</small></button>
-                        <button class="system-hotspot hotspot-electrical" type="button" data-system="electrical" aria-label="Inspect electrical system"><span></span><strong>Electrical</strong><small data-system-count="electrical">0 findings</small></button>
-                        <button class="system-hotspot hotspot-chassis" type="button" data-system="chassis" aria-label="Inspect chassis"><span></span><strong>Chassis</strong><small data-system-count="chassis">0 findings</small></button>
-                        <button class="system-hotspot hotspot-brakes" type="button" data-system="brakes" aria-label="Inspect brakes"><span></span><strong>Brakes</strong><small data-system-count="brakes">0 findings</small></button>
+                        <button class="system-hotspot hotspot-powertrain" type="button" data-system="powertrain" aria-label="Inspect powertrain"><span></span><strong>Powertrain</strong><small data-system-count="powertrain">1 finding</small></button>
+                        <button class="system-hotspot hotspot-electrical" type="button" data-system="electrical" aria-label="Inspect electrical system"><span></span><strong>Electrical</strong><small data-system-count="electrical">1 finding</small></button>
+                        <button class="system-hotspot hotspot-chassis" type="button" data-system="chassis" aria-label="Inspect chassis"><span></span><strong>Chassis</strong><small data-system-count="chassis">1 finding</small></button>
+                        <button class="system-hotspot hotspot-brakes" type="button" data-system="brakes" aria-label="Inspect brakes"><span></span><strong>Brakes</strong><small data-system-count="brakes">1 finding</small></button>
                         <button class="system-hotspot hotspot-safety" type="button" data-system="safety" aria-label="Inspect safety systems"><span></span><strong>Safety</strong><small data-system-count="safety">0 findings</small></button>
 
                         <div class="scan-overlay" id="scan-overlay" aria-live="polite" hidden>
@@ -127,7 +127,7 @@
                     <div class="panel-heading findings-heading">
                         <div>
                             <p class="panel-kicker">Service queue</p>
-                            <h2 id="findings-title">Findings <span id="open-count">0</span></h2>
+                            <h2 id="findings-title">Findings <span id="open-count">4</span></h2>
                         </div>
                         <button class="add-button" id="add-issue-button" type="button"><span aria-hidden="true">+</span>Add finding</button>
                     </div>
@@ -139,7 +139,7 @@
                         <label class="resolved-toggle"><input id="show-resolved" type="checkbox"><span></span>History</label>
                     </div>
 
-                    <div class="findings-list" id="findings-list" aria-live="polite"></div>
+                    <div class="findings-list" id="findings-list" aria-live="polite"><article class="finding-card preboot-finding" aria-hidden="true"><strong>Local diagnostic fixture</strong><p>Findings will appear as soon as the fictional vehicle state is indexed.</p></article></div>
                 </aside>
             </div>
 

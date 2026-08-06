@@ -58,6 +58,7 @@
     let gremlinMode = readMode();
     let nightShiftUnlocked = readNightUnlock() || progress >= hunt.length;
     let nightShiftMode = readNightMode() && nightShiftUnlocked;
+    let dialogTrigger = null;
     const page = identifyPage();
     const toast = isPetStudio ? null : createToast();
     const dialog = isPetStudio ? document.createElement("dialog") : createDialog();
@@ -147,6 +148,7 @@
             photos: "Photos",
             blog: "Blog",
             "flight-sim": "Flight Sim",
+            "scenario-lab": "Scenario Lab",
             pinpoint: "Pinpoint",
             "block-blast": "Block Blast",
             "word-sort": "Word Sort",
@@ -338,16 +340,51 @@
     function createDialog() {
         const element = document.createElement("dialog");
         element.className = "site-play-dialog";
+        element.setAttribute("aria-label", "Site interaction");
         element.addEventListener("click", function (event) {
             if (event.target === element) closeDialog();
+        });
+        element.addEventListener("keydown", function (event) {
+            if (event.key !== "Tab") return;
+            const focusable = [...element.querySelectorAll("a[href], button, input, select, textarea, [tabindex]:not([tabindex='-1'])")]
+                .filter((candidate) => !candidate.disabled && candidate.getAttribute("aria-hidden") !== "true");
+            if (!focusable.length) {
+                event.preventDefault();
+                return;
+            }
+            const currentIndex = focusable.indexOf(document.activeElement);
+            const nextIndex = event.shiftKey
+                ? (currentIndex <= 0 ? focusable.length - 1 : currentIndex - 1)
+                : (currentIndex === focusable.length - 1 ? 0 : currentIndex + 1);
+            event.preventDefault();
+            focusable[nextIndex].focus();
         });
         document.body.appendChild(element);
         return element;
     }
 
     function closeDialog() {
-        if (typeof dialog.close === "function") dialog.close();
-        else dialog.removeAttribute("open");
+        if (typeof dialog.close === "function" && dialog.open) dialog.close();
+        else {
+            dialog.removeAttribute("open");
+            restoreDialogFocus();
+        }
+    }
+
+    function rememberDialogTrigger(trigger) {
+        const candidate = trigger || document.activeElement;
+        dialogTrigger = candidate && candidate !== document.body && typeof candidate.focus === "function"
+            ? candidate
+            : null;
+    }
+
+    function restoreDialogFocus() {
+        const trigger = dialogTrigger;
+        dialogTrigger = null;
+        const fallback = document.querySelector("header nav a, main a, main button");
+        const target = trigger && trigger.isConnected ? trigger : fallback;
+        if (!target) return;
+        window.requestAnimationFrame(() => target.focus());
     }
 
     function addDialogButton(container, label, className, action) {
@@ -361,6 +398,7 @@
     }
 
     function showPetOptions(pet) {
+        rememberDialogTrigger();
         dialog.replaceChildren();
 
         const label = document.createElement("p");
@@ -416,7 +454,8 @@
         input.select();
     }
 
-    function showDialog(title, copy, nextPath, complete) {
+    function showDialog(title, copy, nextPath, complete, trigger) {
+        rememberDialogTrigger(trigger);
         dialog.replaceChildren();
 
         const label = document.createElement("p");
@@ -467,6 +506,8 @@
         dialog.append(label, heading, message, actions);
         if (typeof dialog.showModal === "function") dialog.showModal();
         else dialog.setAttribute("open", "");
+        const firstAction = actions.querySelector("a, button");
+        if (firstAction) firstAction.focus();
     }
 
     function createModeToggle() {
@@ -583,11 +624,11 @@
 
     function showProgressDialog() {
         if (progress >= hunt.length) {
-            showDialog(hunt[hunt.length - 1].title, hunt[hunt.length - 1].clue, null, true);
+            showDialog(hunt[hunt.length - 1].title, hunt[hunt.length - 1].clue, null, true, document.activeElement);
             return;
         }
         const lastFound = hunt[Math.max(0, progress - 1)];
-        showDialog(lastFound.title, lastFound.clue, lastFound.next, false);
+        showDialog(lastFound.title, lastFound.clue, lastFound.next, false, document.activeElement);
     }
 
     function renderHunt() {
@@ -634,15 +675,16 @@
         token.setAttribute("aria-label", "Open scavenger hunt clue " + (progress + 1));
         token.addEventListener("click", function () {
             const found = current;
+            const trigger = token;
             progress += 1;
             storageSet(huntKey, String(progress));
             if (progress >= hunt.length) unlockNightShift();
             renderHunt();
             if (progress >= hunt.length) {
                 setGremlinMode(true, false);
-                showDialog(found.title, found.clue, null, true);
+                showDialog(found.title, found.clue, null, true, trigger);
             } else {
-                showDialog(found.title, found.clue, found.next, false);
+                showDialog(found.title, found.clue, found.next, false, trigger);
             }
         });
         host.appendChild(token);
@@ -677,6 +719,7 @@
     });
 
     if (!isPetStudio) {
+        dialog.addEventListener("close", restoreDialogFocus);
         window.addEventListener("ethan-site-pet-updated", renderPetCompanion);
 
         if (progress >= hunt.length) unlockNightShift();

@@ -1,0 +1,18 @@
+{
+  "name": "ethan-personal-site",
+  "private": true,
+  "scripts": {
+    "check": "npm run check:syntax && npm run check:static && npm run test:first-render && npm run test:quality",
+    "check:syntax": "node tools/check-syntax.cjs",
+    "check:static": "node tools/check-static-site.cjs",
+    "audit:assets": "node tools/asset-audit.cjs",
+    "images:optimize": "node tools/optimize-images.cjs",
+    "photos:manifest": "node tools/build-photo-image-manifest.cjs",
+    "measure:performance": "node tools/measure-performance.cjs",
+    "test:first-render": "node tools/run-playwright.cjs tests/first-render.spec.js",
+    "test:quality": "node tools/run-playwright.cjs tests/site-quality.spec.js"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.62.1"
+  }
+}

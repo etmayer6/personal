@@ -324,6 +324,19 @@
     font-weight: 700;
 }
 
+.preboot-route {
+    min-height: 126px;
+    display: grid;
+    align-content: center;
+    gap: 8px;
+    border-style: dashed;
+}
+
+.preboot-route span {
+    color: #637a8d;
+    font-size: 13px;
+}
+
 .groggy-footer {
     padding: 22px 20px 34px;
     text-align: center;

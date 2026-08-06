@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="../style.css">
     <link rel="stylesheet" href="style.css">
 </head>
-<body class="groggy-body">
+<body class="groggy-body" data-demo-state="loading">
     <header class="groggy-header">
         <nav aria-label="Primary navigation">
             <a class="nav-name" href="../index.html">Ethan Mayer</a>
@@ -44,19 +44,19 @@
         <section class="groggy-stats" id="groggy-stats">
             <div class="groggy-stat-card">
                 <span>Routes</span>
-                <strong id="routes-count">0</strong>
+                <strong id="routes-count">--</strong>
             </div>
             <div class="groggy-stat-card">
                 <span>Peak Matches</span>
-                <strong id="peak-count">0</strong>
+                <strong id="peak-count">--</strong>
             </div>
             <div class="groggy-stat-card">
                 <span>Locations</span>
-                <strong id="locations-count">0</strong>
+                <strong id="locations-count">--</strong>
             </div>
             <div class="groggy-stat-card">
                 <span>12a Options</span>
-                <strong id="project-count">0</strong>
+                <strong id="project-count">--</strong>
             </div>
         </section>
 
@@ -95,9 +95,9 @@
                     <p class="eyebrow">Route Board</p>
                     <h2>Recommended Routes</h2>
                 </div>
-                <p id="results-status" class="results-status">Loading routes...</p>
+                <p id="results-status" class="results-status">Preparing the route fixture...</p>
             </div>
-            <div id="routes-list" class="routes-list"></div>
+            <div id="routes-list" class="routes-list"><article class="route-card preboot-route" aria-hidden="true"><strong>Route board preparing</strong><span>Local recommendations will appear here.</span></article></div>
             <div id="routes-empty" class="routes-empty" hidden>
                 No routes match that combination yet.
             </div>

@@ -13,7 +13,7 @@
         crossorigin=""
     >
 </head>
-<body class="travel-body">
+<body class="travel-body" data-demo-state="loading">
     <header class="travel-header">
         <nav aria-label="Primary navigation">
             <a class="nav-name" href="../index.html">Ethan Mayer</a>
@@ -40,19 +40,19 @@
         <section class="travel-stats" id="stats-strip">
             <div class="travel-stat-card">
                 <span>Places</span>
-                <strong id="places-count">0</strong>
+                <strong id="places-count">--</strong>
             </div>
             <div class="travel-stat-card">
                 <span>Photos</span>
-                <strong id="photos-count">0</strong>
+                <strong id="photos-count">--</strong>
             </div>
             <div class="travel-stat-card">
                 <span>Countries</span>
-                <strong id="countries-count">0</strong>
+                <strong id="countries-count">--</strong>
             </div>
             <div class="travel-stat-card">
                 <span>Regions</span>
-                <strong id="regions-count">0</strong>
+                <strong id="regions-count">--</strong>
             </div>
         </section>
 
@@ -65,19 +65,32 @@
                         <button type="button" data-view="places" aria-pressed="false">Places</button>
                     </div>
                 </div>
-                <div id="travel-map" class="travel-map" aria-label="Interactive map of gallery photos and visited places"></div>
+                <div id="travel-map" class="travel-map" aria-label="Interactive map of gallery photos and visited places">
+                    <div class="travel-map-fallback" id="travel-map-fallback">
+                        <strong>Travel map ready</strong>
+                        <span>Map tiles will appear when the map service is reachable.</span>
+                        <button type="button" id="travel-map-retry">Retry map tiles</button>
+                    </div>
+                </div>
             </div>
 
             <aside class="travel-list-panel">
                 <div class="travel-panel-header">
                     <h2 id="list-title">Gallery Photos</h2>
-                    <p id="travel-status">Loading travel data...</p>
+                    <p id="travel-status" data-state="loading">Preparing the local travel index...</p>
+                </div>
+                <div class="travel-recovery" id="travel-recovery" hidden role="status">
+                    <span>Live data is unavailable. A small fictional fixture is ready.</span>
+                    <button type="button" id="travel-retry-data">Retry data</button>
                 </div>
                 <label class="travel-search">
                     Search
                     <input id="search-input" type="search" placeholder="Search photos or locations">
                 </label>
-                <div id="places-list" class="places-list"></div>
+                <div id="places-list" class="places-list">
+                    <div class="place-card preboot-place" aria-hidden="true"><span></span><span></span></div>
+                    <div class="place-card preboot-place" aria-hidden="true"><span></span><span></span></div>
+                </div>
             </aside>
         </section>
     </main>

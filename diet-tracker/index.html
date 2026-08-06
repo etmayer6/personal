@@ -6,10 +6,10 @@
     <meta name="description" content="A lightweight interactive demo of the Gremlin Hub photo-first diet tracker using fictional local data.">
     <meta name="theme-color" content="#101a20">
     <title>Diet Tracker Demo | Ethan Mayer</title>
-    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="../style.css?v=quality-1">
     <link rel="stylesheet" href="style.css?v=2">
 </head>
-<body class="diet-body">
+<body class="diet-body" data-demo-state="ready">
     <header class="diet-site-header">
         <nav aria-label="Primary navigation">
             <a class="nav-name" href="../index.html">Ethan Mayer</a>
@@ -78,14 +78,14 @@
                         <div class="overview-grid">
                             <article class="calorie-card">
                                 <div class="calorie-ring" id="calorie-ring">
-                                    <div><strong id="calorie-total">0</strong><span>of 2,300 kcal</span></div>
+                                    <div><strong id="calorie-total">1,770</strong><span>of 2,300 kcal</span></div>
                                 </div>
-                                <div class="calorie-copy"><span class="status-dot"></span><div><strong id="calorie-remaining">2,300 remaining</strong><p>Daily energy target</p></div></div>
+                                <div class="calorie-copy"><span class="status-dot"></span><div><strong id="calorie-remaining">530 remaining</strong><p>Sample day in progress</p></div></div>
                             </article>
 
                             <article class="macro-card">
-                                <div class="card-heading"><div><p class="section-kicker">Macros</p><h3>Daily balance</h3></div><span id="meal-count">0 meals</span></div>
-                                <div class="macro-list" id="macro-list"></div>
+                                <div class="card-heading"><div><p class="section-kicker">Macros</p><h3>Daily balance</h3></div><span id="meal-count">3 meals</span></div>
+                                <div class="macro-list" id="macro-list"><div class="macro-row"><span>Protein</span><div class="macro-track"><i style="width:80%"></i></div><strong>127 / 160g</strong></div><div class="macro-row"><span>Carbs</span><div class="macro-track"><i style="width:68%"></i></div><strong>177 / 260g</strong></div><div class="macro-row"><span>Fat</span><div class="macro-track"><i style="width:83%"></i></div><strong>62 / 75g</strong></div></div>
                             </article>
 
                             <article class="week-card">

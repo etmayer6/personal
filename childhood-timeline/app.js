@@ -201,7 +201,7 @@
         filters.order = "asc";
         selectedId = events[events.length - 1].id;
         flagged = new Set();
-        localStorage.removeItem(STORAGE_KEY);
+        try { localStorage.removeItem(STORAGE_KEY); } catch (error) { /* In-memory reset is still safe. */ }
         render();
         showToast("Public-safe timeline view restored.");
     }

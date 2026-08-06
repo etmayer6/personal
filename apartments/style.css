@@ -183,6 +183,40 @@
     font-weight: 700;
 }
 
+.error-box {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.error-retry {
+    border: 1px solid currentColor;
+    border-radius: 999px;
+    padding: 7px 11px;
+    color: inherit;
+    background: transparent;
+    font: inherit;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.preboot-card {
+    min-height: 145px;
+    border-style: dashed;
+}
+
+.preboot-kicker {
+    display: block;
+    margin-bottom: 8px;
+    color: #58728a;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+}
+
 .apartment-footer {
     padding: 22px 20px 34px;
     text-align: center;

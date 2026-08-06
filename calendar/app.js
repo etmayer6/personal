@@ -23,7 +23,12 @@
         status.textContent = message;
     }
 
+    function setDemoState(value) {
+        document.body.dataset.demoState = value;
+    }
+
     function showConfiguredState() {
+        setDemoState("ready");
         placeholder.hidden = true;
         directLink.hidden = false;
         directLink.href = calendlyUrl;
@@ -31,6 +36,7 @@
     }
 
     function showLoadError() {
+        setDemoState("error");
         placeholder.hidden = false;
         placeholder.innerHTML = "<span class=\"placeholder-mark\" aria-hidden=\"true\">!</span><p class=\"eyebrow\">Booking page unavailable</p><h2>Open the calendar directly.</h2><p>Calendly could not load inside the page right now. Your scheduling link is still available in a new tab.</p><a href=\"" + calendlyUrl + "\" target=\"_blank\" rel=\"noopener noreferrer\">Open booking page <span aria-hidden=\"true\">&nearr;</span></a>";
         directLink.hidden = false;
@@ -51,6 +57,7 @@
     }
 
     function loadWidget() {
+        setDemoState("loading");
         if (document.querySelector("script[data-calendly-widget]")) {
             initWidget();
             return;
@@ -72,7 +79,8 @@
     });
 
     if (!calendlyUrl) {
-        setStatus("Waiting for a public Calendly link.");
+        setDemoState("empty");
+        setStatus("No public Calendly link configured.");
         return;
     }
 

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Root / Shift is a scroll-driven generative visual study by Ethan Mayer, following a seedling as it becomes an ape.">
+    <title>Root / Shift | Ethan Mayer</title>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="root-shift-body">
+    <header class="root-shift-header">
+        <nav aria-label="Primary navigation">
+            <a class="nav-name" href="../index.html">Ethan Mayer</a>
+            <ul>
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="../resume/">Resume</a></li>
+                <li><a href="../projects/">Projects</a></li>
+                <li><a href="../games/">Games</a></li>
+                <li><a href="../photos/">Photos</a></li>
+                <li><a href="../blog/">Blog</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="root-shift-shell">
+        <section class="root-shift-intro" aria-labelledby="project-title">
+            <div class="root-shift-intro-copy">
+                <p class="eyebrow">Generative visual study &middot; 2026</p>
+                <h1 id="project-title">Root <span aria-hidden="true">/</span> Shift</h1>
+                <p class="root-shift-summary">
+                    A scroll-driven metamorphosis built from nine generated frames: a small plant takes root,
+                    finds a body, and becomes something watchful.
+                </p>
+                <div class="root-shift-actions">
+                    <a class="root-shift-back" href="../projects/#workbench">&larr; Back to projects</a>
+                    <span class="root-shift-hint">Scroll the specimen</span>
+                </div>
+            </div>
+
+            <aside class="root-shift-specimen" aria-label="Root / Shift project details">
+                <span class="root-shift-specimen-number">09</span>
+                <span class="root-shift-specimen-label">frames / one continuous change</span>
+                <span class="root-shift-orbit root-shift-orbit-a"></span>
+                <span class="root-shift-orbit root-shift-orbit-b"></span>
+            </aside>
+        </section>
+
+        <section class="root-shift-sequence" aria-labelledby="sequence-title">
+            <div class="root-shift-sticky">
+                <div class="root-shift-sequence-heading">
+                    <p class="eyebrow">The sequence</p>
+                    <h2 id="sequence-title">Let the form change.</h2>
+                </div>
+
+                <div class="root-shift-stage">
+                    <canvas
+                        id="root-shift-canvas"
+                        class="root-shift-canvas"
+                        width="1536"
+                        height="1024"
+                        role="img"
+                        aria-label="A seedling gradually morphs into a calm ape as the page scrolls."
+                    ></canvas>
+                    <div class="root-shift-stage-overlay" aria-hidden="true">
+                        <div class="root-shift-stage-topline">
+                            <span id="root-shift-frame-count">01 / 09</span>
+                            <span>scroll-controlled study</span>
+                        </div>
+                        <div class="root-shift-stage-caption">
+                            <span id="root-shift-stage-index">01</span>
+                            <strong id="root-shift-stage-name">Seedling</strong>
+                            <span id="root-shift-stage-detail">small beginnings</span>
+                        </div>
+                        <div class="root-shift-progress" aria-hidden="true">
+                            <span id="root-shift-progress-bar"></span>
+                        </div>
+                    </div>
+                    <noscript>
+                        <div class="root-shift-noscript">
+                            <img src="assets/optimized/frame-00-seedling-1440.webp" width="1440" height="960" alt="A luminous seedling emerging from dark soil.">
+                            <p>Enable JavaScript to scroll through the full morphing sequence.</p>
+                        </div>
+                    </noscript>
+                </div>
+            </div>
+        </section>
+
+        <section class="root-shift-notes" aria-labelledby="notes-title">
+            <div class="root-shift-notes-heading">
+                <p class="eyebrow">A small experiment</p>
+                <h2 id="notes-title">Generated frames, deliberate motion.</h2>
+            </div>
+            <div class="root-shift-notes-grid">
+                <article>
+                    <span>01</span>
+                    <h3>Grow</h3>
+                    <p>The sequence starts with a simple seedling and keeps the same camera, soil, and warm halo through every stage.</p>
+                </article>
+                <article>
+                    <span>02</span>
+                    <h3>Drift</h3>
+                    <p>Each frame is a visual handoff between plant structure and primate anatomy, made to reward a slower scroll.</p>
+                </article>
+                <article>
+                    <span>03</span>
+                    <h3>Settle</h3>
+                    <p>The final ape keeps a few leaves and roots as a quiet reminder of where the form began.</p>
+                </article>
+            </div>
+        </section>
+    </main>
+
+    <footer class="root-shift-footer">
+        <p>&copy; 2026 Ethan Mayer</p>
+        <a href="../projects/">Project index</a>
+    </footer>
+
+    <script src="app.js" defer></script>
+    <script src="../site-play.js?v=pet-companion-2" defer></script>
+</body>
+</html>

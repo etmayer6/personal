@@ -1,12 +1,15 @@
-const map = L.map("travel-map", {
+const leaflet = window.L || null;
+const map = leaflet ? leaflet.map("travel-map", {
     worldCopyJump: true,
     minZoom: 2
-}).setView([20, 10], 2);
+}).setView([20, 10], 2) : null;
 
-L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-    maxZoom: 19,
-    attribution: "&copy; OpenStreetMap contributors"
-}).addTo(map);
+if (map) {
+    leaflet.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 19,
+        attribution: "&copy; OpenStreetMap contributors"
+    }).addTo(map);
+}
 
 const placesListEl = document.getElementById("places-list");
 const searchInputEl = document.getElementById("search-input");
@@ -17,6 +20,31 @@ const regionsCountEl = document.getElementById("regions-count");
 const statusEl = document.getElementById("travel-status");
 const listTitleEl = document.getElementById("list-title");
 const viewButtons = [...document.querySelectorAll("[data-view]")];
+const mapFallbackEl = document.getElementById("travel-map-fallback");
+const mapRetryEl = document.getElementById("travel-map-retry");
+const recoveryEl = document.getElementById("travel-recovery");
+const retryDataEl = document.getElementById("travel-retry-data");
+const transparentPixel = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==";
+
+const FALLBACK_DATA = {
+    count: 3,
+    places: [
+        { label: "Ames, Iowa, United States", lat: 42.0308, lon: -93.6319, addedAt: 1767225600000 },
+        { label: "Punta Sur, Isla Mujeres, Mexico", lat: 21.2018, lon: -86.7116, addedAt: 1767225600000 },
+        { label: "El Boqueron, El Salvador", lat: 13.734, lon: -89.286, addedAt: 1767225600000 }
+    ],
+    countries: [{ code: "US" }, { code: "MX" }, { code: "SV" }],
+    admin1: [{ label: "Iowa" }, { label: "Quintana Roo" }, { label: "San Salvador" }]
+};
+
+const FALLBACK_PHOTOS = {
+    count: 3,
+    photos: [
+        { id: "fixture-ames", title: "Winter campus walk", image: "../images/photos/optimized/P1020464-480.webp", fullImage: "../images/photos/optimized/P1020464-1440.webp", width: 1440, height: 1080, label: "Ames, Iowa, United States", lat: 42.0275, lon: -93.6464, countryCode: "US", region: "Iowa", coordinateSource: "inferred" },
+        { id: "fixture-isla", title: "Caribbean shoreline", image: "../images/photos/optimized/G0019814-480.webp", fullImage: "../images/photos/optimized/G0019814-1440.webp", width: 1440, height: 1080, label: "Punta Sur, Isla Mujeres, Mexico", lat: 21.2018, lon: -86.7116, countryCode: "MX", region: "Quintana Roo", coordinateSource: "inferred" },
+        { id: "fixture-volcano", title: "Volcanic highland", image: "../images/photos/optimized/P1020888-480.webp", fullImage: "../images/photos/optimized/P1020888-1440.webp", width: 1440, height: 1080, label: "El Boqueron, El Salvador", lat: 13.734, lon: -89.286, countryCode: "SV", region: "San Salvador", coordinateSource: "inferred" }
+    ]
+};
 
 let allPlaces = [];
 let allPhotos = [];
@@ -26,6 +54,34 @@ let markers = [];
 let activeIndex = -1;
 let activeView = "photos";
 let photoMarkerByLabel = new Map();
+let photoImageObserver = null;
+
+function loadDeferredPhotoImage(image) {
+    const source = image.dataset.src;
+    if (!source) return;
+    image.src = source;
+    delete image.dataset.src;
+}
+
+function observePhotoImages() {
+    photoImageObserver?.disconnect();
+    const deferredImages = [...placesListEl.querySelectorAll("img[data-src]")];
+    if (!deferredImages.length) return;
+
+    if (!("IntersectionObserver" in window)) {
+        deferredImages.forEach(loadDeferredPhotoImage);
+        return;
+    }
+
+    photoImageObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+            loadDeferredPhotoImage(entry.target);
+            observer.unobserve(entry.target);
+        });
+    }, { rootMargin: "240px 0px" });
+    deferredImages.forEach((image) => photoImageObserver.observe(image));
+}
 
 function escapeHtml(value) {
     return String(value)
@@ -80,7 +136,7 @@ function photoPopup(group, selectedId = null) {
     const previewPhotos = ordered.slice(0, 6);
     const previews = previewPhotos.map((photo) => `
         <a href="${escapeHtml(photo.fullImage)}" target="_blank" rel="noreferrer" title="Open ${escapeHtml(photo.title)}">
-            <img src="${escapeHtml(photo.image)}" alt="${escapeHtml(photo.title)}" loading="lazy">
+            <img src="${escapeHtml(photo.image)}" alt="${escapeHtml(photo.title)}" loading="lazy" width="${photo.width || 1440}" height="${photo.height || 1080}" sizes="86px">
         </a>
     `).join("");
     const remaining = Math.max(0, group.photos.length - previewPhotos.length);
@@ -95,9 +151,10 @@ function photoPopup(group, selectedId = null) {
 }
 
 function renderPhotoMarkers() {
+    if (!map) return [];
     const bounds = [];
     for (const group of groupedPhotos(filteredPhotos)) {
-        const marker = L.circleMarker([group.lat, group.lon], {
+        const marker = leaflet.circleMarker([group.lat, group.lon], {
             radius: Math.min(12, 6 + Math.sqrt(group.photos.length)),
             color: "#8f3f24",
             weight: 2,
@@ -114,10 +171,11 @@ function renderPhotoMarkers() {
 }
 
 function renderPlaceMarkers() {
+    if (!map) return [];
     const bounds = [];
 
     filteredPlaces.forEach((place, index) => {
-        const marker = L.circleMarker([place.lat, place.lon], {
+        const marker = leaflet.circleMarker([place.lat, place.lon], {
             radius: 6,
             color: "#143b63",
             weight: 2,
@@ -134,6 +192,11 @@ function renderPlaceMarkers() {
 }
 
 function renderMarkers() {
+    if (!map) {
+        mapFallbackEl.hidden = false;
+        return;
+    }
+    mapFallbackEl.hidden = true;
     clearMarkers();
     const bounds = activeView === "photos" ? renderPhotoMarkers() : renderPlaceMarkers();
 
@@ -163,7 +226,7 @@ function renderPhotosList() {
         card.type = "button";
         card.className = `place-card photo-card${index === activeIndex ? " active" : ""}`;
         card.innerHTML = `
-            <img src="${escapeHtml(photo.image)}" alt="" loading="lazy">
+            <img src="${transparentPixel}" data-src="${escapeHtml(photo.image)}" alt="" loading="lazy" width="${photo.width || 1440}" height="${photo.height || 1080}" sizes="86px">
             <span class="photo-card-copy">
                 <strong>${escapeHtml(photo.label)}</strong>
                 <span>${escapeHtml(photo.title)}</span>
@@ -179,11 +242,14 @@ function renderList() {
     placesListEl.innerHTML = "";
     const items = activeView === "photos" ? filteredPhotos : filteredPlaces;
     if (!items.length) {
-        placesListEl.innerHTML = `<div class="place-card">No ${activeView} matched your search.</div>`;
+        document.body.dataset.demoState = "empty";
+        statusEl.dataset.state = "empty";
+        placesListEl.innerHTML = `<div class="place-card">No ${activeView} matched your search. Try clearing the search or switching views.</div>`;
         return;
     }
     if (activeView === "photos") renderPhotosList();
     else renderPlacesList();
+    observePhotoImages();
 }
 
 function setActivePlace(index) {
@@ -191,7 +257,7 @@ function setActivePlace(index) {
     renderList();
     const place = filteredPlaces[index];
     const marker = markers[index];
-    if (!place || !marker) return;
+    if (!place || !marker || !map) return;
     map.flyTo([place.lat, place.lon], Math.max(map.getZoom(), 5), { duration: 0.8 });
     marker.openPopup();
 }
@@ -201,7 +267,7 @@ function setActivePhoto(index) {
     renderList();
     const photo = filteredPhotos[index];
     const markerEntry = photoMarkerByLabel.get(photo?.label);
-    if (!photo || !markerEntry) return;
+    if (!photo || !markerEntry || !map) return;
     const { marker, group } = markerEntry;
     marker.setPopupContent(photoPopup(group, photo.id));
     map.flyTo(marker.getLatLng(), Math.max(map.getZoom(), 7), { duration: 0.8 });
@@ -215,6 +281,8 @@ function updateStatus() {
     } else {
         statusEl.textContent = `${filteredPlaces.length} places loaded`;
     }
+    statusEl.dataset.state = "ready";
+    document.body.dataset.demoState = "ready";
 }
 
 function applySearch() {
@@ -244,7 +312,40 @@ function setView(view) {
     updateStatus();
 }
 
+function renderTravelData(data, photoData, offline = false) {
+    allPlaces = Array.isArray(data.places) ? data.places : [];
+    allPhotos = Array.isArray(photoData.photos) ? photoData.photos : [];
+    filteredPlaces = allPlaces.slice();
+    filteredPhotos = allPhotos.slice();
+
+    placesCountEl.textContent = String(data.count ?? allPlaces.length);
+    photosCountEl.textContent = String(photoData.count ?? allPhotos.length);
+    const countries = new Set([
+        ...(data.countries || []).map((country) => country.code),
+        ...allPhotos.map((photo) => photo.countryCode)
+    ]);
+    const regions = new Set([
+        ...(data.admin1 || []).map((region) => region.label),
+        ...allPhotos.map((photo) => photo.region)
+    ]);
+    countriesCountEl.textContent = String(countries.size);
+    regionsCountEl.textContent = String(regions.size);
+
+    recoveryEl.hidden = !offline;
+    statusEl.textContent = offline ? "Offline fixture ready" : "Travel data ready";
+    statusEl.dataset.state = offline ? "offline" : "ready";
+    renderMarkers();
+    renderList();
+    updateStatus();
+    if (offline) {
+        statusEl.textContent = "Offline fixture ready";
+        statusEl.dataset.state = "offline";
+    }
+}
+
 async function init() {
+    document.body.dataset.demoState = "loading";
+    statusEl.dataset.state = "loading";
     try {
         const [placesResponse, photosResponse] = await Promise.all([
             fetch("data/places.json"),
@@ -257,35 +358,15 @@ async function init() {
             photosResponse.json()
         ]);
 
-        allPlaces = Array.isArray(data.places) ? data.places : [];
-        allPhotos = Array.isArray(photoData.photos) ? photoData.photos : [];
-        filteredPlaces = allPlaces.slice();
-        filteredPhotos = allPhotos.slice();
-
-        placesCountEl.textContent = String(data.count ?? allPlaces.length);
-        photosCountEl.textContent = String(photoData.count ?? allPhotos.length);
-        const countries = new Set([
-            ...(data.countries || []).map((country) => country.code),
-            ...allPhotos.map((photo) => photo.countryCode)
-        ]);
-        const regions = new Set([
-            ...(data.admin1 || []).map((region) => region.label),
-            ...allPhotos.map((photo) => photo.region)
-        ]);
-        countriesCountEl.textContent = String(countries.size);
-        regionsCountEl.textContent = String(regions.size);
-
-        renderMarkers();
-        renderList();
-        updateStatus();
+        renderTravelData(data, photoData);
     } catch (err) {
-        console.error(err);
-        statusEl.textContent = "Could not load travel data";
-        placesListEl.innerHTML = `<div class="place-card">${String(err.message || err)}</div>`;
+        renderTravelData(FALLBACK_DATA, FALLBACK_PHOTOS, true);
     }
 }
 
 searchInputEl.addEventListener("input", applySearch);
 viewButtons.forEach((button) => button.addEventListener("click", () => setView(button.dataset.view)));
+retryDataEl.addEventListener("click", init);
+mapRetryEl.addEventListener("click", () => window.location.reload());
 
 init();

@@ -1,0 +1,9 @@
+node_modules/
+test-results/
+playwright-report/
+debug.log
+images/photos/source/
+images/source/
+performance-*.json
+plant-to-ape/assets/source/
+courseflow/assets/source/

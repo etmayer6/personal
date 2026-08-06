@@ -231,7 +231,7 @@
     });
 
     releaseButton.addEventListener("click", function () {
-        window.localStorage.removeItem(petKey);
+        try { window.localStorage.removeItem(petKey); } catch (error) { /* In-memory release is still safe. */ }
         committedPet = null;
         pet = { ...defaults };
         window.dispatchEvent(new CustomEvent("ethan-site-pet-updated"));

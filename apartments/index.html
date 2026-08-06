@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="../style.css">
     <link rel="stylesheet" href="style.css">
 </head>
-<body class="apartment-body">
+<body class="apartment-body" data-demo-state="loading">
     <header class="apartment-header">
         <nav aria-label="Primary navigation">
             <a class="nav-name" href="../index.html">Ethan Mayer</a>
@@ -39,7 +39,7 @@
         <section id="filters" class="container panel">
             <div class="panel-header">
                 <h2>Filters</h2>
-                <p id="status-text">Waiting for listing data...</p>
+                <p id="status-text">Preparing a local listing fixture...</p>
             </div>
 
             <div class="filter-grid">
@@ -66,13 +66,19 @@
             <div class="panel-header">
                 <h2>Shortlist</h2>
             </div>
-            <div id="ethan-top-picks" class="listing-grid"></div>
+            <div id="ethan-top-picks" class="listing-grid">
+                <article class="listing-card preboot-card" aria-hidden="true">
+                    <span class="preboot-kicker">Fixture preview</span>
+                    <h3>Shortlist is preparing</h3>
+                    <p>Local fit scoring will appear here before any listing data is requested.</p>
+                </article>
+            </div>
         </section>
 
         <section id="listings" class="container panel">
             <div class="panel-header">
                 <h2>Listings</h2>
-                <p id="listing-count-text">0 listings</p>
+                <p id="listing-count-text">-- listings</p>
             </div>
             <div id="error-box" class="error-box hidden"></div>
             <div id="listings-grid" class="listing-grid"></div>

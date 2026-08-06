@@ -157,6 +157,75 @@
     border: 1px solid rgba(29, 53, 87, 0.08);
 }
 
+.travel-map-fallback {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    display: grid;
+    place-content: center;
+    gap: 8px;
+    padding: 24px;
+    color: #33526c;
+    background:
+        linear-gradient(rgba(78, 124, 159, .1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(78, 124, 159, .1) 1px, transparent 1px),
+        #eaf2f7;
+    background-size: 42px 42px;
+    text-align: center;
+}
+
+.travel-map-fallback[hidden],
+.travel-recovery[hidden] {
+    display: none;
+}
+
+.travel-map-fallback strong { color: #173f5a; font-size: 20px; }
+.travel-map-fallback span { font-size: 13px; }
+.travel-map-fallback button,
+.travel-recovery button {
+    justify-self: center;
+    border: 1px solid #9cb4c8;
+    border-radius: 999px;
+    padding: 8px 12px;
+    color: #173f5a;
+    background: #fff;
+    font: inherit;
+    font-size: 12px;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.travel-recovery {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 14px;
+    padding: 11px 12px;
+    border: 1px solid #e6c79d;
+    border-radius: 14px;
+    color: #795122;
+    background: #fff8ed;
+    font-size: 12px;
+    line-height: 1.4;
+}
+
+.preboot-place {
+    display: grid;
+    gap: 8px;
+    cursor: default;
+}
+
+.preboot-place span {
+    width: 68%;
+    height: 12px;
+    margin: 0;
+    border-radius: 999px;
+    background: #dbe6f0;
+}
+
+.preboot-place span + span { width: 42%; height: 9px; }
+
 .travel-map .leaflet-pane,
 .travel-map .leaflet-top,
 .travel-map .leaflet-bottom,

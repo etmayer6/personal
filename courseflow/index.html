@@ -8,13 +8,13 @@
     <title>CourseFlow | Interactive Demo</title>
     <link rel="stylesheet" href="style.css?v=3">
 </head>
-<body>
+<body data-demo-state="loading">
     <header class="app-header">
         <button class="mobile-menu" id="mobile-menu" type="button" aria-label="Open navigation" aria-expanded="false">
             <span></span><span></span><span></span>
         </button>
         <button class="brand" type="button" data-route="home" aria-label="CourseFlow home">
-            <img src="assets/logo.png" alt="CourseFlow">
+            <img src="assets/logo-640.webp" width="1280" height="461" alt="CourseFlow">
         </button>
         <div class="header-actions">
             <button class="command-button" id="command-button" type="button" title="Search CourseFlow">
@@ -48,13 +48,27 @@
             </div>
         </aside>
 
-        <main class="app-main" id="app-main" tabindex="-1"></main>
+        <main class="app-main" id="app-main" tabindex="-1">
+            <section class="preboot-courseflow" aria-label="CourseFlow fixture preview">
+                <div class="preboot-courseflow-heading">
+                    <div><p class="eyebrow">CourseFlow / Portfolio demo</p><h1>Your degree plan, in one place.</h1><p>Loading the local dashboard shell with placeholder courses, requirements, and a weekly schedule.</p></div>
+                    <span class="pill red">Fixture ready</span>
+                </div>
+                <div class="preboot-courseflow-grid">
+                    <article><span>Current term</span><strong>Fall 2025</strong><small>4 courses in progress</small></article>
+                    <article><span>Degree progress</span><strong>62%</strong><small>Applied credits preview</small></article>
+                    <article><span>Next class</span><strong>11:00 AM</strong><small>SE 3290 / Atanasoff</small></article>
+                </div>
+                <div class="preboot-flow" aria-hidden="true"><span>Fall 2025</span><i></i><span>Spring 2026</span><i></i><span>Graduation plan</span></div>
+                <p class="preboot-note">The interactive CourseFlow workspace will replace this preview as soon as its local fixture data is ready.</p>
+            </section>
+        </main>
     </div>
 
     <div class="sidebar-scrim" id="sidebar-scrim"></div>
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-    <dialog class="app-dialog" id="app-dialog">
+    <dialog class="app-dialog" id="app-dialog" aria-labelledby="dialog-title">
         <form method="dialog" class="dialog-frame">
             <header>
                 <div><p id="dialog-kicker"></p><h2 id="dialog-title"></h2></div>
@@ -64,7 +78,7 @@
         </form>
     </dialog>
 
-    <dialog class="command-dialog" id="command-dialog">
+    <dialog class="command-dialog" id="command-dialog" aria-label="Search CourseFlow">
         <form method="dialog">
             <label for="command-search"><span aria-hidden="true">&#8981;</span><span class="sr-only">Search pages and courses</span></label>
             <input id="command-search" type="search" placeholder="Search pages and courses..." autocomplete="off">

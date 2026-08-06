@@ -366,7 +366,7 @@
         elements.planStyle.value = "quick";
         elements.notes.value = "";
         elements.recipeType.value = "all";
-        localStorage.removeItem(STORAGE_KEY);
+        try { localStorage.removeItem(STORAGE_KEY); } catch (error) { /* In-memory reset is still safe. */ }
         switchTab("overview");
         render();
         showToast("Sample receipt analyses restored.");

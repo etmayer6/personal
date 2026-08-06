@@ -93,3 +93,22 @@
 
 }
 
+@media (max-width: 430px) {
+    .blockblast-site-header nav {
+        min-height: 78px;
+    }
+
+    .blockblast-site-header nav ul {
+        gap: 1px;
+        flex-wrap: wrap;
+    }
+
+    .blockblast-site-header nav a {
+        padding-inline: 7px;
+    }
+
+    .blockblast-site-root canvas {
+        max-width: 100%;
+    }
+}
+

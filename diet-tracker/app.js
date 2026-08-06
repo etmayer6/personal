@@ -439,7 +439,7 @@
         state = createDefaultState();
         expandedId = null;
         pendingDeleteId = null;
-        localStorage.removeItem(STORAGE_KEY);
+        try { localStorage.removeItem(STORAGE_KEY); } catch (error) { /* In-memory reset is still safe. */ }
         elements.mealFilter.value = "today";
         elements.mealForm.reset();
         elements.mealType.value = "Lunch";

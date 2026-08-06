@@ -15,12 +15,15 @@ const photoViewerClose = document.getElementById("photo-viewer-close");
 const galleryItems = Array.isArray(window.PHOTOS_GALLERY) ? window.PHOTOS_GALLERY : [];
 const galleryChapters = Array.isArray(window.PHOTO_CHAPTERS) ? window.PHOTO_CHAPTERS : [];
 const fullDeckItems = Array.isArray(window.PHOTOS_FULL_DECK) ? window.PHOTOS_FULL_DECK : [];
-const curatedBySource = new Map(galleryItems.map((item) => [item.src, item]));
+const photoDimensions = window.PHOTO_IMAGE_DIMENSIONS || {};
+const transparentPixel = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==";
+const curatedBySource = new Map(galleryItems.map((item) => [getPhotoKey(item.src), item]));
 const eagerPhotoCount = 3;
 let activeViewerItems = [];
 let activeViewerIndex = 0;
 let lastViewerTrigger = null;
 let swipeStartX = null;
+let photoImageObserver = null;
 
 function shuffle(items) {
     const copy = [...items];
@@ -33,39 +36,94 @@ function shuffle(items) {
 
 function getOptimizedPhotoPath(source, width) {
     const filename = source.split("/").pop() || "";
-    const stem = filename.replace(/\.[^.]+$/, "");
+    const stem = filename.replace(/\.[^.]+$/, "").replace(/-(?:480|960|1440)$/, "");
     return `../images/photos/optimized/${stem}-${width}.webp`;
+}
+
+function getPhotoKey(source) {
+    const filename = source.split("/").pop() || source;
+    return filename.replace(/\.[^.]+$/, "").toLowerCase();
+}
+
+function getPhotoSize(source) {
+    return photoDimensions[getPhotoKey(source)] || { width: 1440, height: 1080 };
+}
+
+function loadDeferredPhotoImage(image) {
+    const source = image.dataset.photoSrc;
+    const sourceSet = image.dataset.photoSrcset;
+    const sizes = image.dataset.photoSizes;
+    if (!source) return;
+    if (sourceSet) image.srcset = sourceSet;
+    if (sizes) image.sizes = sizes;
+    image.src = source;
+    delete image.dataset.photoSrc;
+    delete image.dataset.photoSrcset;
+    delete image.dataset.photoSizes;
+}
+
+function observePhotoImages() {
+    photoImageObserver?.disconnect();
+    const deferredImages = [...photosGallery.querySelectorAll("img[data-photo-src]")];
+    if (!deferredImages.length) return;
+
+    if (!("IntersectionObserver" in window)) {
+        deferredImages.forEach(loadDeferredPhotoImage);
+        return;
+    }
+
+    photoImageObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+            loadDeferredPhotoImage(entry.target);
+            observer.unobserve(entry.target);
+        });
+    }, { rootMargin: "320px 0px" });
+    deferredImages.forEach((image) => photoImageObserver.observe(image));
 }
 
 function createResponsiveImage(item, index, isWide = false) {
     const image = document.createElement("img");
     const smallSource = getOptimizedPhotoPath(item.src, 480);
     const largeSource = getOptimizedPhotoPath(item.src, 960);
-
-    image.src = smallSource;
-    image.srcset = `${smallSource} 480w, ${largeSource} 960w`;
-    image.sizes = isWide
+    const previewSource = getOptimizedPhotoPath(item.src, 1440);
+    const sizes = isWide
         ? "(max-width: 700px) calc(100vw - 24px), (max-width: 1000px) calc(100vw - 40px), 1100px"
         : "(max-width: 700px) calc(100vw - 24px), (max-width: 900px) calc((100vw - 58px) / 2), 560px";
+    const dimensions = getPhotoSize(item.src);
+
+    image.dataset.photoSrc = smallSource;
+    image.dataset.photoSrcset = `${smallSource} 480w, ${largeSource} 960w, ${previewSource} 1440w`;
+    image.dataset.photoSizes = sizes;
     image.alt = item.alt || "Photograph from Ethan's collection";
+    image.width = dimensions.width;
+    image.height = dimensions.height;
     image.loading = index < eagerPhotoCount ? "eager" : "lazy";
     image.decoding = "async";
+
+    if (index < eagerPhotoCount) {
+        loadDeferredPhotoImage(image);
+    } else {
+        image.src = transparentPixel;
+    }
 
     if (index === 0) {
         image.fetchPriority = "high";
     }
 
     image.addEventListener("error", () => {
-        image.removeAttribute("srcset");
-        image.removeAttribute("sizes");
-        image.src = item.src;
+        if (image.src.endsWith("-480.webp")) {
+            image.removeAttribute("srcset");
+            image.sizes = sizes;
+            image.src = previewSource;
+        }
     }, { once: true });
 
     return image;
 }
 
 function getViewerRecord(item, index) {
-    const curated = curatedBySource.get(item.src);
+    const curated = curatedBySource.get(getPhotoKey(item.src));
     if (curated) {
         return { ...item, ...curated, src: item.src };
     }
@@ -101,6 +159,8 @@ function updatePhotoViewer() {
     const total = String(activeViewerItems.length).padStart(digits, "0");
     const smallSource = getOptimizedPhotoPath(item.src, 480);
     const largeSource = getOptimizedPhotoPath(item.src, 960);
+    const previewSource = getOptimizedPhotoPath(item.src, 1440);
+    const dimensions = getPhotoSize(item.src);
     const previousIndex = (activeViewerIndex - 1 + activeViewerItems.length) % activeViewerItems.length;
     const nextIndex = (activeViewerIndex + 1) % activeViewerItems.length;
 
@@ -109,15 +169,17 @@ function updatePhotoViewer() {
     photoViewerTitle.textContent = item.title || `Archive frame ${position}`;
     photoViewerNote.textContent = item.caption || "An uncaptioned frame from the complete photo archive.";
     photoViewerImage.alt = item.alt || "Photograph from Ethan's collection";
+    photoViewerImage.width = dimensions.width;
+    photoViewerImage.height = dimensions.height;
     photoViewerImage.onerror = () => {
         photoViewerImage.onerror = null;
         photoViewerImage.removeAttribute("srcset");
         photoViewerImage.removeAttribute("sizes");
-        photoViewerImage.src = item.src;
+        photoViewerImage.src = largeSource;
     };
-    photoViewerImage.srcset = `${smallSource} 480w, ${largeSource} 960w`;
+    photoViewerImage.srcset = `${smallSource} 480w, ${largeSource} 960w, ${previewSource} 1440w`;
     photoViewerImage.sizes = "100vw";
-    photoViewerImage.src = largeSource;
+    photoViewerImage.src = previewSource;
 
     photoViewerPrevious.setAttribute(
         "aria-label",
@@ -130,7 +192,7 @@ function updatePhotoViewer() {
 
     [previousIndex, nextIndex].forEach((index) => {
         const preload = new Image();
-        preload.src = getOptimizedPhotoPath(activeViewerItems[index].src, 960);
+        preload.src = getOptimizedPhotoPath(activeViewerItems[index].src, 1440);
     });
 }
 
@@ -150,10 +212,20 @@ function openPhotoViewer(index, trigger) {
     photoViewerClose.focus();
 }
 
+function restorePhotoViewerFocus() {
+    const trigger = lastViewerTrigger;
+    lastViewerTrigger = null;
+    const fallback = document.querySelector("header nav a, main a, main button");
+    const target = trigger && trigger.isConnected ? trigger : fallback;
+    if (!target) return;
+    window.requestAnimationFrame(() => target.focus());
+}
+
+photoViewer.addEventListener("close", restorePhotoViewerFocus);
+
 function closePhotoViewer() {
-    if (photoViewer.open) {
-        photoViewer.close();
-    }
+    if (photoViewer.open) photoViewer.close();
+    else restorePhotoViewerFocus();
 }
 
 function createPhotoCard(item, index, featured = false) {
@@ -255,6 +327,7 @@ function renderJournal() {
     });
 
     photosGallery.replaceChildren(fragment);
+    observePhotoImages();
     photosStatus.textContent = `${galleryItems.length} selected photographs across ${galleryChapters.length} chapters.`;
 }
 
@@ -278,6 +351,7 @@ function renderFullDeck(randomize = false) {
     items.forEach((item, index) => grid.appendChild(createArchiveCard(item, index)));
     section.append(heading, grid);
     photosGallery.replaceChildren(section);
+    observePhotoImages();
     photosStatus.textContent = randomize
         ? `${items.length} photographs in a fresh random order.`
         : `${items.length} photographs in the complete archive.`;
@@ -321,7 +395,21 @@ photoViewer.addEventListener("close", () => {
 });
 
 photoViewer.addEventListener("keydown", (event) => {
-    if (event.key === "ArrowLeft") {
+    if (event.key === "Tab") {
+        const focusable = [...photoViewer.querySelectorAll("button, a[href], input, select, textarea, [tabindex]:not([tabindex='-1'])")]
+            .filter((element) => !element.disabled && element.getAttribute("aria-hidden") !== "true");
+        if (!focusable.length) {
+            event.preventDefault();
+            photoViewerClose.focus();
+            return;
+        }
+        const currentIndex = focusable.indexOf(document.activeElement);
+        const nextIndex = event.shiftKey
+            ? (currentIndex <= 0 ? focusable.length - 1 : currentIndex - 1)
+            : (currentIndex === focusable.length - 1 ? 0 : currentIndex + 1);
+        event.preventDefault();
+        focusable[nextIndex].focus();
+    } else if (event.key === "ArrowLeft") {
         event.preventDefault();
         showPhotoViewerIndex(activeViewerIndex - 1);
     } else if (event.key === "ArrowRight") {

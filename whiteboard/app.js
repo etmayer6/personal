@@ -206,7 +206,9 @@
         applyZoom();
         undoButton.disabled = history.length === 0;
         redoButton.disabled = future.length === 0;
-        objectCount.textContent = state.shapes.length + (state.shapes.length === 1 ? " object" : " objects");
+        objectCount.textContent = state.shapes.length
+            ? state.shapes.length + (state.shapes.length === 1 ? " object" : " objects")
+            : "Blank board";
         emptyState.hidden = state.shapes.length > 0 || Boolean(drawing);
     }
 

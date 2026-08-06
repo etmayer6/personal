@@ -796,6 +796,12 @@
     gap: 9px;
 }
 
+.preboot-finding {
+    min-height: 110px;
+    border-style: dashed;
+    opacity: .8;
+}
+
 .finding-card {
     --finding-color: var(--garage-blue);
     position: relative;

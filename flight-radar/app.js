@@ -14,6 +14,13 @@
         minLon: -99.5,
         maxLon: -87.4
     };
+    const OFFLINE_AIRCRAFT = [
+        { hex: "fixture01", flight: "FIX101", desc: "Fictional regional jet", lat: 42.03, lon: -93.63, alt_baro: 18000, gs: 312, track: 82 },
+        { hex: "fixture02", flight: "FIX202", desc: "Fictional turboprop", lat: 41.74, lon: -94.21, alt_baro: 9200, gs: 188, track: 145 },
+        { hex: "fixture03", flight: "FIX303", desc: "Fictional business jet", lat: 42.62, lon: -92.45, alt_baro: 24000, gs: 368, track: 258 },
+        { hex: "fixture04", flight: "FIX404", desc: "Fictional training aircraft", lat: 41.32, lon: -93.05, alt_baro: 4200, gs: 104, track: 28 },
+        { hex: "fixture05", flight: "FIX505", desc: "Fictional cargo aircraft", lat: 43.24, lon: -96.12, alt_baro: 31000, gs: 425, track: 96 }
+    ];
 
     // Simplified from the official State of Iowa boundary service. Keeping the
     // geometry local makes the map accurate without adding a runtime map API.
@@ -227,6 +234,7 @@
         aircraft: [],
         selectedId: null,
         lastUpdated: null,
+        source: "fixture",
         requestInFlight: false,
         timer: null
     };
@@ -337,6 +345,13 @@
     function setFeedStatus(label, status) {
         elements.feedStatus.textContent = label;
         elements.feedStatus.dataset.state = status;
+        document.body.dataset.demoState = status === "loading"
+            ? "loading"
+            : status === "offline"
+                ? "offline"
+                : status === "error"
+                    ? "error"
+                    : "ready";
     }
 
     function renderSelected() {
@@ -441,14 +456,29 @@
                     return Number(second.overIowa) - Number(first.overIowa) || (second.altitude || 0) - (first.altitude || 0);
                 });
             state.aircraft = flights;
+            state.source = "live";
+            state.selectedId = flights[0] ? flights[0].id : null;
             state.lastUpdated = payload.now ? new Date(payload.now < 100000000000 ? payload.now * 1000 : payload.now) : new Date();
             setFeedStatus(flights.length ? "Live snapshot" : "Quiet sky", flights.length ? "success" : "quiet");
             elements.lastUpdated.textContent = "Updated " + formatUpdateTime(state.lastUpdated) + " local time";
             renderBoard();
             renderSelected();
         } catch (error) {
-            setFeedStatus(state.aircraft.length ? "Using last snapshot" : "Feed unavailable", "error");
-            elements.lastUpdated.textContent = state.lastUpdated ? "Last good snapshot " + formatUpdateTime(state.lastUpdated) : "The live feed could not be reached";
+            const hasLastSnapshot = state.aircraft.length > 0 && state.source === "live";
+            if (!hasLastSnapshot) {
+                state.aircraft = OFFLINE_AIRCRAFT.map(normalizeAircraft).filter(Boolean);
+                state.selectedId = state.aircraft[0] ? state.aircraft[0].id : null;
+            }
+            if (hasLastSnapshot) {
+                setFeedStatus("Using last live snapshot", "error");
+                elements.lastUpdated.textContent = "Live feed refresh failed; showing the last good snapshot";
+            } else {
+                state.source = "fixture";
+                setFeedStatus("Offline fixture / feed unavailable", "offline");
+                elements.lastUpdated.textContent = "Deterministic fixture shown; live feed could not be reached";
+            }
+            renderBoard();
+            renderSelected();
         } finally {
             state.requestInFlight = false;
             elements.refreshButton.disabled = false;
@@ -473,6 +503,10 @@
     });
 
     setMapBackdrop();
+    state.aircraft = OFFLINE_AIRCRAFT.map(normalizeAircraft).filter(Boolean);
+    state.selectedId = state.aircraft[0] ? state.aircraft[0].id : null;
+    setFeedStatus("Fixture ready / checking live feed", "offline");
+    renderBoard();
     renderSelected();
     scheduleRefresh();
     loadFlights();

@@ -1,4 +1,19 @@
-const climbs = Array.isArray(window.GROGGY_CLIMBS) ? [...window.GROGGY_CLIMBS] : [];
+const climbs = Array.isArray(window.GROGGY_CLIMBS) && window.GROGGY_CLIMBS.length
+    ? [...window.GROGGY_CLIMBS]
+    : [{
+        name: "Example route",
+        grade: "5.10a",
+        gradeRank: 18,
+        location: "Local fixture",
+        area: "Sample wall",
+        relevance: "Strong Match",
+        relevanceRank: 4,
+        note: "A fictional route keeps the recommendation interface understandable if the data script is unavailable.",
+        tags: ["Fixture"],
+        link: "#",
+        linkLabel: "Fixture route",
+        projectPick: false
+    }];
 
 const routesList = document.getElementById("routes-list");
 const routesEmpty = document.getElementById("routes-empty");
@@ -69,6 +84,7 @@ function render(items) {
     routesList.innerHTML = "";
     routesEmpty.hidden = items.length !== 0;
     resultsStatus.textContent = `${items.length} route${items.length === 1 ? "" : "s"} shown`;
+    document.body.dataset.demoState = items.length ? "ready" : "empty";
 
     items.forEach((item) => {
         const card = document.createElement("article");

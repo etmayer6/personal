@@ -6,11 +6,11 @@
     <meta name="description" content="A lightweight interactive demo of the Gremlin Hub receipt meal planner using fictional grocery data.">
     <meta name="theme-color" content="#101a20">
     <title>Receipt Meal Planner Demo | Ethan Mayer</title>
-    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="../style.css?v=quality-1">
     <link rel="stylesheet" href="../diet-tracker/style.css?v=2">
     <link rel="stylesheet" href="style.css?v=1">
 </head>
-<body class="diet-body planner-body">
+<body class="diet-body planner-body" data-demo-state="ready">
     <header class="diet-site-header">
         <nav aria-label="Primary navigation">
             <a class="nav-name" href="../index.html">Ethan Mayer</a>
@@ -93,18 +93,18 @@
                             </section>
 
                             <section class="saved-card" aria-labelledby="saved-title">
-                                <div class="planner-section-heading"><div><p class="section-kicker">Browser local</p><h3 id="saved-title">Saved analyses</h3></div><span id="saved-count">0</span></div>
-                                <div class="saved-list" id="saved-list"></div>
+                                <div class="planner-section-heading"><div><p class="section-kicker">Browser local</p><h3 id="saved-title">Saved analyses</h3></div><span id="saved-count">2</span></div>
+                                <div class="saved-list" id="saved-list"><button class="saved-entry is-active" type="button" aria-hidden="true"><strong>Fresh Market</strong><span>Sample run</span><small>12 ingredients &middot; 4 recipes</small></button><button class="saved-entry" type="button" aria-hidden="true"><strong>Neighborhood Grocer</strong><span>Sample run</span><small>10 ingredients &middot; 4 recipes</small></button></div>
                             </section>
                         </aside>
 
                         <section id="results" class="results-column" aria-labelledby="results-title">
                             <header class="result-header">
-                                <div><p class="section-kicker">Latest analysis</p><h3 id="results-title">A flexible weeknight haul</h3><p id="result-summary"></p></div>
+                                <div><p class="section-kicker">Latest analysis</p><h3 id="results-title">A flexible weeknight haul</h3><p id="result-summary">A prepared receipt fixture is ready to become pantry and recipe suggestions.</p></div>
                                 <div class="result-engine"><span class="engine-light"></span><div><strong>Static pipeline</strong><small id="result-timing">2.4s simulated</small></div></div>
                             </header>
 
-                            <div class="result-stats" id="result-stats"></div>
+                            <div class="result-stats" id="result-stats"><div class="result-stat"><span>Store</span><strong>Fresh Market</strong></div><div class="result-stat"><span>Receipt lines</span><strong>12</strong></div><div class="result-stat"><span>Ingredients</span><strong>12</strong></div><div class="result-stat"><span>Recipe ideas</span><strong>4</strong></div></div>
 
                             <div class="result-tabs" role="tablist" aria-label="Analysis details">
                                 <button class="is-active" id="tab-overview" type="button" role="tab" aria-selected="true" aria-controls="panel-overview" data-tab="overview">Ingredients & recipes</button>
@@ -115,7 +115,7 @@
                             <div class="result-panel" id="panel-overview" role="tabpanel" aria-labelledby="tab-overview">
                                 <section class="ingredient-section" aria-labelledby="ingredients-title">
                                     <div class="planner-section-heading"><div><p class="section-kicker">Inferred pantry</p><h3 id="ingredients-title">Usable ingredients</h3></div><span id="ingredient-count"></span></div>
-                                    <div class="ingredient-shelf" id="ingredient-shelf"></div>
+                                    <div class="ingredient-shelf" id="ingredient-shelf"><div class="ingredient-chip"><span>chicken breast</span><small>95%</small></div><div class="ingredient-chip"><span>brown rice</span><small>94%</small></div><div class="ingredient-chip"><span>avocado</span><small>94%</small></div></div>
                                 </section>
 
                                 <section id="recipes" class="recipe-section" aria-labelledby="recipes-title">

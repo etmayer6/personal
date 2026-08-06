@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="../style.css">
     <link rel="stylesheet" href="style.css?v=1">
 </head>
-<body class="life-body">
+<body class="life-body" data-demo-state="ready">
     <header class="life-header">
         <div class="life-header-inner">
             <a class="life-brand" href="../games/">&larr; Games</a>
@@ -44,8 +44,8 @@
 
                     <div class="control-cluster">
                         <div class="control-label"><span>Generations</span><strong id="generation-value">0</strong></div>
-                        <div class="control-label"><span>Living cells</span><strong id="population-value">0</strong></div>
-                        <div class="control-label"><span>Board state</span><strong id="lifecycle-value">Seeded</strong></div>
+                        <div class="control-label"><span>Living cells</span><strong id="population-value">5</strong></div>
+                        <div class="control-label"><span>Board state</span><strong id="lifecycle-value">Glider seeded</strong></div>
                         <label class="speed-label" for="speed-input"><span>Simulation speed</span><output id="speed-value" for="speed-input">8 gen/s</output></label>
                         <input id="speed-input" type="range" min="1" max="20" value="8">
                     </div>

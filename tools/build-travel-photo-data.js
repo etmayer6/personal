@@ -2,7 +2,9 @@ const fs = require("fs");
 const path = require("path");
 
 const root = path.resolve(__dirname, "..");
-const sourceDirectory = path.join(root, "images", "photos");
+const sourceDirectory = fs.existsSync(path.join(root, "images", "photos", "source"))
+    ? path.join(root, "images", "photos", "source")
+    : path.join(root, "images", "photos");
 const filenames = fs.readdirSync(sourceDirectory)
     .filter((filename) => /\.(?:jpe?g|png)$/i.test(filename))
     .sort((left, right) => left.localeCompare(right, undefined, { numeric: true }));
@@ -144,14 +146,21 @@ const photos = filenames.map((filename) => {
     const exact = exactCoordinates[filename];
     const stem = path.parse(filename).name;
     const thumbnail = path.join(root, "images", "photos", "optimized", `${stem}-480.webp`);
+    const preview = path.join(root, "images", "photos", "optimized", `${stem}-1440.webp`);
     if (!fs.existsSync(thumbnail)) throw new Error(`Missing optimized thumbnail for ${filename}`);
+    if (!fs.existsSync(preview)) throw new Error(`Missing optimized preview for ${filename}`);
+
+    const dimensions = require("./image-dimensions.cjs").imageDimensions(path.join(sourceDirectory, filename));
+    if (!dimensions) throw new Error(`Could not read dimensions for ${filename}`);
 
     return {
         id: stem,
         filename,
         title: stem.replaceAll("_", " "),
         image: `../images/photos/optimized/${stem}-480.webp`,
-        fullImage: `../images/photos/${filename}`,
+        fullImage: `../images/photos/optimized/${stem}-1440.webp`,
+        width: dimensions.width,
+        height: dimensions.height,
         label: location.label,
         lat: exact ? exact[0] : location.lat,
         lon: exact ? exact[1] : location.lon,

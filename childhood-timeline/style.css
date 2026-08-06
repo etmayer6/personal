@@ -108,6 +108,7 @@
 .timeline-list::before { position: absolute; top: 21px; bottom: 21px; left: 25px; width: 1px; background: #3d5055; content: ""; }
 .timeline-event { position: relative; display: grid; width: 100%; gap: 6px; padding: 13px 13px 13px 46px; border: 0; border-left: 2px solid transparent; background: transparent; color: inherit; cursor: pointer; text-align: left; }
 .timeline-event:hover { background: rgba(255, 255, 255, 0.025); }
+.preboot-timeline { cursor: wait; opacity: .78; }
 .timeline-event.is-active { border-left-color: var(--mint); background: var(--mint-soft); }
 .timeline-dot { position: absolute; z-index: 1; top: 17px; left: 19px; width: 13px; height: 13px; border: 3px solid var(--hub-panel); border-radius: 50%; background: var(--event-color, var(--mint)); box-shadow: 0 0 0 1px #415459; }
 .timeline-event.is-active .timeline-dot { box-shadow: 0 0 0 2px var(--mint); }

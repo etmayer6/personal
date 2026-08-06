@@ -57,7 +57,7 @@
         foodType: "jellyfish",
         pellets: [],
         bubbles: [],
-        message: "Momo is floating peacefully.",
+        message: "New tank ready. Feed Momo to start the growth log.",
         messageTimer: 0,
         eventTimer: 0,
         feedCooldown: 0,

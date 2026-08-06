@@ -30,12 +30,15 @@
         puzzleSolved: false
     };
     const saved = loadState();
+    const validTerms = Array.isArray(saved.terms) && saved.terms.every(function (term) {
+        return term && typeof term.id === "string" && typeof term.label === "string" && Array.isArray(term.courses);
+    });
     const state = {
         route: routeFromHash(),
-        terms: saved.terms || defaults.terms,
-        settings: Object.assign({}, defaults.settings, saved.settings || {}),
-        customCourseReviews: saved.customCourseReviews || [],
-        customProfessorReviews: saved.customProfessorReviews || [],
+        terms: validTerms ? saved.terms : clone(defaults.terms),
+        settings: Object.assign({}, defaults.settings, saved.settings && typeof saved.settings === "object" ? saved.settings : {}),
+        customCourseReviews: Array.isArray(saved.customCourseReviews) ? saved.customCourseReviews : [],
+        customProfessorReviews: Array.isArray(saved.customProfessorReviews) ? saved.customProfessorReviews : [],
         puzzleSolved: Boolean(saved.puzzleSolved),
         flowPanel: "",
         showInsights: false,
@@ -67,13 +70,19 @@
     }
 
     function saveState() {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify({
-            terms: state.terms,
-            settings: state.settings,
-            customCourseReviews: state.customCourseReviews,
-            customProfessorReviews: state.customProfessorReviews,
-            puzzleSolved: state.puzzleSolved
-        }));
+        try {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify({
+                terms: state.terms,
+                settings: state.settings,
+                customCourseReviews: state.customCourseReviews,
+                customProfessorReviews: state.customProfessorReviews,
+                puzzleSolved: state.puzzleSolved
+            }));
+            return true;
+        } catch (error) {
+            showToast("This change is active for this visit, but browser storage is unavailable.");
+            return false;
+        }
     }
 
     function routeFromHash() {
@@ -188,6 +197,7 @@
             dining: renderDining, profile: renderProfile, settings: renderSettings
         };
         main.innerHTML = renderers[state.route]();
+        document.body.dataset.demoState = "ready";
         main.focus({ preventScroll: true });
         closeSidebar();
     }
@@ -539,7 +549,7 @@
         state.customCourseReviews = [];
         state.customProfessorReviews = [];
         state.puzzleSolved = false;
-        localStorage.removeItem(STORAGE_KEY);
+        try { localStorage.removeItem(STORAGE_KEY); } catch (error) { /* In-memory reset is still safe. */ }
         if (dialog.open) dialog.close();
         showToast("CourseFlow demo restored.");
         render();

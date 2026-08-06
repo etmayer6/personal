@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A public-safe, deterministic systems-testing demonstration by Ethan Mayer.">
+    <title>Scenario Lab | Ethan Mayer</title>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="./style.css?v=scenario-lab-1">
+</head>
+<body class="scenario-lab-body" data-demo-state="standby">
+    <header class="scenario-site-header">
+        <nav aria-label="Primary navigation">
+            <a class="nav-name" href="../index.html">Ethan Mayer</a>
+            <ul>
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="../resume/">Resume</a></li>
+                <li><a aria-current="page" href="../projects/">Projects</a></li>
+                <li><a href="../games/">Games</a></li>
+                <li><a href="../photos/">Photos</a></li>
+                <li><a href="../blog/">Blog</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="scenario-shell">
+        <section class="lab-hero" aria-labelledby="scenario-lab-title">
+            <div class="lab-hero-copy">
+                <div class="hero-stamp"><span class="stamp-dot" aria-hidden="true"></span> Engineering portfolio / public-safe demo</div>
+                <p class="eyebrow">Scenario Lab</p>
+                <h1 id="scenario-lab-title">Make the evidence <em>traceable.</em></h1>
+                <p class="hero-lede">Turn a deterministic flight scenario into normalized telemetry, rule checks, and an evidence trail that a visitor can inspect from setup to result.</p>
+                <div class="hero-actions">
+                    <button class="button button-primary" type="button" data-action="run" aria-keyshortcuts="R">Run guided example <span class="key-hint">R</span></button>
+                    <a class="text-link" href="../projects/">Back to projects <span aria-hidden="true">&rarr;</span></a>
+                </div>
+            </div>
+
+            <aside class="safety-card" aria-labelledby="safety-title">
+                <p class="card-kicker">Demo boundary</p>
+                <h2 id="safety-title">Fictional flight logic.</h2>
+                <p>This is a public-safe portfolio demonstration. It contains no Collins Aerospace code, data, interfaces, or proprietary requirements.</p>
+                <div class="safety-rule"><span aria-hidden="true">+</span><span>Fixture values below are invented for this page, not aircraft measurements.</span></div>
+            </aside>
+        </section>
+
+        <section class="lab-layout" aria-label="Scenario Lab workspace">
+            <div class="lab-primary">
+                <section class="lab-card definition-card" aria-labelledby="definition-title">
+                    <div class="section-heading">
+                        <div>
+                            <p class="section-number">01 / Scenario definition</p>
+                            <h2 id="definition-title">Engine fault on climb</h2>
+                        </div>
+                        <span class="status-chip">Guided example</span>
+                    </div>
+                    <p class="section-lede">A small, deterministic run shows how a fault becomes a normalized signal, how the flight phase changes, and how a rule engine records evidence.</p>
+                    <div class="definition-grid">
+                        <article>
+                            <span>Scenario ID</span>
+                            <strong>SCN-ENG-03</strong>
+                            <p>Engine power-loss response</p>
+                        </article>
+                        <article>
+                            <span>Setup</span>
+                            <strong>Climb profile</strong>
+                            <p>Fictional twin-engine test vehicle</p>
+                        </article>
+                        <article>
+                            <span>Fault injection</span>
+                            <strong>Sample 03</strong>
+                            <p>Left-engine health changes at a fixed step</p>
+                        </article>
+                    </div>
+                    <div class="setup-callout">
+                        <span class="callout-mark" aria-hidden="true">01</span>
+                        <p><strong>Objective:</strong> detect the injected fault, preserve phase order, and produce evidence that keeps the source context attached.</p>
+                    </div>
+                </section>
+
+                <section class="lab-card phase-card" aria-labelledby="phase-title">
+                    <div class="section-heading compact-heading">
+                        <div>
+                            <p class="section-number">02 / Flight-phase tracking</p>
+                            <h2 id="phase-title">Follow the run, one state at a time.</h2>
+                        </div>
+                        <span class="shortcut-note">Arrow right to step</span>
+                    </div>
+                    <ol class="phase-track" data-role="phase-track" aria-label="Scenario phases"></ol>
+                </section>
+
+                <section class="lab-card architecture-card" aria-labelledby="architecture-title">
+                    <div class="section-heading compact-heading">
+                        <div>
+                            <p class="section-number">03 / Architecture</p>
+                            <h2 id="architecture-title">A short path from stimulus to proof.</h2>
+                        </div>
+                    </div>
+                    <ol class="architecture-flow" aria-label="Scenario Lab architecture">
+                        <li><span class="architecture-index">01</span><strong>Scenario runner</strong><small>Loads fixed setup and steps</small></li>
+                        <li><span class="architecture-index">02</span><strong>Simulated aircraft</strong><small>Emits fictional state</small></li>
+                        <li><span class="architecture-index">03</span><strong>Telemetry adapter</strong><small>Normalizes signals</small></li>
+                        <li><span class="architecture-index">04</span><strong>Rule engine</strong><small>Evaluates assertions</small></li>
+                        <li><span class="architecture-index">05</span><strong>Evidence reporter</strong><small>Packages the result</small></li>
+                    </ol>
+                    <p class="architecture-caption">The adapter is the seam: it keeps the rule engine independent from the shape of the simulated aircraft state.</p>
+                </section>
+
+                <section class="lab-card export-card" aria-labelledby="export-title">
+                    <div class="export-copy">
+                        <p class="section-number">04 / Evidence package</p>
+                        <h2 id="export-title">Take the run with you.</h2>
+                        <p>Export the current fixture run as a local JSON evidence summary. It includes setup, normalized samples, assertions, and the event timeline.</p>
+                    </div>
+                    <div class="export-action">
+                        <button class="button button-dark" type="button" data-action="export">Export evidence summary</button>
+                        <span class="export-status" data-role="export-status" role="status">Ready for a run.</span>
+                    </div>
+                </section>
+            </div>
+
+            <aside class="lab-sidebar">
+                <section class="lab-card run-card" aria-labelledby="run-title">
+                    <div class="run-card-top">
+                        <div>
+                            <p class="section-number">Live run</p>
+                            <h2 id="run-title">Evidence desk</h2>
+                        </div>
+                        <span class="run-status" data-role="run-status" data-status="standby">STANDBY</span>
+                    </div>
+                    <p class="run-description">The highlighted example is ready. Run it automatically or move through each deterministic sample yourself.</p>
+                    <div class="run-controls">
+                        <button class="button button-primary button-wide" type="button" data-action="run" aria-keyshortcuts="R">Run guided example <span class="key-hint">R</span></button>
+                        <div class="control-pair">
+                            <button class="button button-light" type="button" data-action="step" aria-keyshortcuts="ArrowRight">Advance step <span class="key-hint">&rarr;</span></button>
+                            <button class="button button-light" type="button" data-action="reset" aria-keyshortcuts="Escape">Reset</button>
+                        </div>
+                    </div>
+                    <label class="variation-toggle">
+                        <input type="checkbox" data-role="variation">
+                        <span><strong>Show a failed assertion</strong><small>Add a deterministic navigation deviation to the next run.</small></span>
+                    </label>
+                    <div class="run-progress" aria-label="Run progress">
+                        <div class="progress-label"><span data-role="run-step">Awaiting run</span><strong data-role="run-progress-label">0 / 5</strong></div>
+                        <div class="progress-track"><span data-role="run-progress"></span></div>
+                    </div>
+                </section>
+
+                <section class="lab-card telemetry-card" aria-labelledby="telemetry-title">
+                    <div class="card-heading-row">
+                        <div>
+                            <p class="section-number">Normalized telemetry</p>
+                            <h2 id="telemetry-title">Fixture packet</h2>
+                        </div>
+                        <span class="fixture-label">SIM / LOCAL</span>
+                    </div>
+                    <p class="card-note">Static samples are shaped like a telemetry adapter output. They are not real aircraft data.</p>
+                    <dl class="telemetry-grid">
+                        <div><dt>Phase</dt><dd data-telemetry="phase">Awaiting run</dd></div>
+                        <div><dt>Time</dt><dd data-telemetry="time">--</dd></div>
+                        <div><dt>Altitude</dt><dd data-telemetry="altitude">--</dd></div>
+                        <div><dt>Airspeed</dt><dd data-telemetry="airspeed">--</dd></div>
+                        <div><dt>Heading</dt><dd data-telemetry="heading">--</dd></div>
+                        <div><dt>Nav offset</dt><dd data-telemetry="navDeviation">--</dd></div>
+                        <div><dt>Engine health</dt><dd data-telemetry="engineHealth">--</dd></div>
+                        <div><dt>Fault flag</dt><dd data-telemetry="fault">--</dd></div>
+                    </dl>
+                </section>
+
+                <section class="lab-card assertion-card" aria-labelledby="assertion-title">
+                    <div class="card-heading-row">
+                        <div>
+                            <p class="section-number">Requirement assertions</p>
+                            <h2 id="assertion-title">Pass / fail evidence</h2>
+                        </div>
+                        <strong class="evidence-count" data-role="evidence-count">0 / 4</strong>
+                    </div>
+                    <div class="assertion-list" data-role="assertion-list"></div>
+                </section>
+
+                <section class="lab-card timeline-card" aria-labelledby="timeline-title">
+                    <div class="card-heading-row">
+                        <div>
+                            <p class="section-number">Event timeline</p>
+                            <h2 id="timeline-title">What happened.</h2>
+                        </div>
+                    </div>
+                    <ol class="event-list" data-role="event-list" aria-live="polite"></ol>
+                </section>
+            </aside>
+        </section>
+
+        <section class="portfolio-note" aria-labelledby="portfolio-note-title">
+            <p class="section-number">Portfolio note</p>
+            <h2 id="portfolio-note-title">A demonstration, not a product claim.</h2>
+            <p>This page illustrates the separation between simulation, telemetry normalization, assertions, and evidence reporting using fictional public-safe logic. Ethan can add a project-specific engineering lesson here later if there is context that is appropriate to share publicly.</p>
+        </section>
+    </main>
+
+    <script src="./app.js?v=scenario-lab-1"></script>
+    <script src="../site-play.js?v=scenario-lab-1"></script>
+</body>
+</html>

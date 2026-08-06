@@ -17,7 +17,7 @@ const mime = {
     ".webp": "image/webp"
 };
 
-http.createServer((req, res) => {
+const server = http.createServer((req, res) => {
     let reqPath = decodeURIComponent((req.url || "/").split("?")[0]);
     if (reqPath === "/") reqPath = "/index.html";
 
@@ -36,6 +36,15 @@ http.createServer((req, res) => {
         res.setHeader("Content-Type", mime[path.extname(filePath).toLowerCase()] || "application/octet-stream");
         res.end(data);
     });
-}).listen(port, "127.0.0.1");
+});
+
+server.listen(port, "127.0.0.1");
+
+function shutdown() {
+    server.close(() => process.exit(0));
+}
+
+process.once("SIGINT", shutdown);
+process.once("SIGTERM", shutdown);
 
 console.log(`Static server listening on http://127.0.0.1:${port}`);

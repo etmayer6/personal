@@ -219,6 +219,11 @@
     background: #d5e4de;
 }
 
+.feed-status[data-state="offline"] {
+    color: var(--radar-amber);
+    border-color: rgba(242, 203, 63, 0.4);
+}
+
 #radar-map {
     display: block;
     width: 100%;

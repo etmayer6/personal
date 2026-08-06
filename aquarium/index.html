@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="../style.css">
     <link rel="stylesheet" href="style.css">
 </head>
-<body class="aquarium-body">
+<body class="aquarium-body" data-demo-state="reset">
     <header class="aquarium-header">
         <div class="aquarium-header-inner">
             <a class="aquarium-brand" href="../games/">&larr; Games</a>
@@ -25,18 +25,18 @@
                 </div>
             </div>
 
-            <aside class="aquarium-controls" aria-label="Momo care controls">
+            <aside class="aquarium-controls" aria-labelledby="tank-heading">
                 <section class="care-card fish-card">
                     <div class="care-heading">
                         <div>
                             <p class="tank-kicker">Your mola mola</p>
-                            <h2 id="fish-name">Momo</h2>
+                            <h2 id="tank-heading"><span id="fish-name">Momo</span>'s tank</h2>
                         </div>
                         <span class="fish-badge" id="fish-stage">Tiny pancake</span>
                     </div>
                     <div class="fish-stats">
                         <div><span>Size</span><strong id="size-value">0.4 m</strong></div>
-                        <div><span>Age</span><strong id="age-value">Day 01</strong></div>
+                        <div><span>Age</span><strong id="age-value">New tank</strong></div>
                         <div><span>Mood</span><strong id="mood-value">Curious</strong></div>
                     </div>
                     <div class="meter-group">
@@ -89,7 +89,7 @@
                         <div class="variety-label"><span>Food variety</span><strong id="food-variety-value">0 / 3</strong></div>
                         <div class="variety-track" aria-hidden="true"><span id="food-variety-fill"></span></div>
                     </div>
-                    <p id="event-message" class="event-message" aria-live="polite">Momo is floating peacefully.</p>
+                    <p id="event-message" class="event-message" aria-live="polite">New tank ready. Feed Momo to start the growth log.</p>
                 </section>
             </aside>
         </section>

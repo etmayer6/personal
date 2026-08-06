@@ -49,7 +49,77 @@
         requirePetFriendly: false
     };
 
+    const FALLBACK_ROWS = [
+        {
+            id: "fixture-hiawatha-one",
+            title: "Example one-bedroom near Hiawatha",
+            source: "Local fixture",
+            url: "",
+            location: "Hiawatha, Iowa",
+            price: 1140,
+            beds: 1,
+            baths: 1,
+            sqft: 752,
+            commuteMin: 15,
+            washerDryer: 1,
+            dishwasher: 1,
+            parking: 1,
+            petFriendly: null,
+            monthlyFees: 0,
+            deposit: null,
+            applicationFee: null,
+            availableAt: null,
+            status: "fixture",
+            updatedAt: 1780000000000
+        },
+        {
+            id: "fixture-marion-two",
+            title: "Example two-bedroom in Marion",
+            source: "Local fixture",
+            url: "",
+            location: "Marion, Iowa",
+            price: 1280,
+            beds: 2,
+            baths: 1,
+            sqft: 980,
+            commuteMin: 18,
+            washerDryer: 1,
+            dishwasher: 1,
+            parking: 1,
+            petFriendly: 1,
+            monthlyFees: 0,
+            deposit: null,
+            applicationFee: null,
+            availableAt: null,
+            status: "fixture",
+            updatedAt: 1780000000000
+        },
+        {
+            id: "fixture-cedar-rapids-loft",
+            title: "Example loft with flexible commute",
+            source: "Local fixture",
+            url: "",
+            location: "Cedar Rapids, Iowa",
+            price: 1050,
+            beds: 1,
+            baths: 1,
+            sqft: 710,
+            commuteMin: 25,
+            washerDryer: 1,
+            dishwasher: null,
+            parking: 1,
+            petFriendly: 1,
+            monthlyFees: 0,
+            deposit: null,
+            applicationFee: null,
+            availableAt: null,
+            status: "fixture",
+            updatedAt: 1780000000000
+        }
+    ];
+
     let rows = [];
+    let bootInFlight = false;
 
     function fmtMoney(n) {
         if (n == null) return "-";
@@ -298,15 +368,27 @@
         listingCountText.textContent = visible.length + " listings";
         renderCards(ethanTopPicks, curatedPicks, "Top picks are unavailable right now.");
         renderCards(listingsGrid, visible);
+        document.body.dataset.demoState = visible.length ? "ready" : "empty";
     }
 
-    function showError(message) {
-        errorBox.textContent = message;
+    function showError(message, actionLabel, action) {
+        errorBox.replaceChildren();
+        const copy = document.createElement("span");
+        copy.textContent = message;
+        errorBox.appendChild(copy);
+        if (actionLabel && action) {
+            const retry = document.createElement("button");
+            retry.type = "button";
+            retry.className = "error-retry";
+            retry.textContent = actionLabel;
+            retry.addEventListener("click", action);
+            errorBox.appendChild(retry);
+        }
         errorBox.classList.remove("hidden");
     }
 
     function clearError() {
-        errorBox.textContent = "";
+        errorBox.replaceChildren();
         errorBox.classList.add("hidden");
     }
 
@@ -318,11 +400,16 @@
     }
 
     async function boot() {
-        attachEvents();
+        if (bootInFlight) return;
+        bootInFlight = true;
+        document.body.dataset.demoState = "loading";
 
         if (!dataUrl) {
             statusText.textContent = "Listing data not configured";
-            showError("This page is ready, but apartments/config.js still has a blank dataUrl.");
+            rows = FALLBACK_ROWS.slice();
+            render();
+            showError("The live listing source is not configured. Showing a fictional local fixture.", "Retry live data", boot);
+            bootInFlight = false;
             return;
         }
 
@@ -339,10 +426,15 @@
             statusText.textContent = "Listings loaded";
             render();
         } catch (error) {
-            statusText.textContent = "Listings unavailable";
-            showError(String(error && error.message ? error.message : error));
+            rows = FALLBACK_ROWS.slice();
+            statusText.textContent = "Offline fixture ready";
+            render();
+            showError("Live listing data is unavailable, so this page is using a fictional offline fixture.", "Retry live data", boot);
+        } finally {
+            bootInFlight = false;
         }
     }
 
+    attachEvents();
     boot();
 })();
