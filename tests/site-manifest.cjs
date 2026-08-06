@@ -40,7 +40,7 @@ const interactiveMetadata = {
 // Keeping it beside the checks lets tests catch stale project totals and links.
 const projectRegistry = [
     { name: "CourseFlow", path: "/courseflow/", featured: true },
-    { name: "Scenario Lab", path: "/scenario-lab/", featured: true },
+    { name: "Flight Scenario Lab", path: "/flight-sim/", featured: true },
     { name: "Word Sort Solitaire", path: "/word-sort/", featured: true },
     { name: "Apartment Hunt", path: "/apartments/" },
     { name: "Travel Map", path: "/travel/" },

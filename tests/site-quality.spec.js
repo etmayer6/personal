@@ -242,6 +242,21 @@ test("project counts match the centralized registry", async ({ browser }) => {
     await context.close();
 });
 
+test("project tiles navigate from their open area", async ({ browser }) => {
+    const context = await browser.newContext({ reducedMotion: "reduce", serviceWorkers: "block" });
+    await installOfflineRoutes(context);
+    const page = await context.newPage();
+    await page.goto("/projects/", { waitUntil: "domcontentloaded" });
+
+    await page.locator(".feature-primary .courseflow-visual").click();
+    expect(new URL(page.url()).pathname).toBe("/courseflow/");
+
+    await page.goto("/projects/", { waitUntil: "domcontentloaded" });
+    await page.locator(".archive-card").first().locator(".archive-top").click();
+    expect(new URL(page.url()).pathname).toBe("/apartments/");
+    await context.close();
+});
+
 test("featured demos support their primary interaction", async ({ browser }) => {
     const context = await browser.newContext({ reducedMotion: "reduce", serviceWorkers: "block" });
     await installOfflineRoutes(context);
