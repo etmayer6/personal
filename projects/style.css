@@ -458,6 +458,41 @@
     gap: 16px;
 }
 
+.archive-break {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(260px, 0.72fr);
+    align-items: end;
+    gap: 36px;
+    margin: 86px 0 24px;
+    padding-top: 26px;
+    border-top: 1px solid rgba(16, 43, 54, 0.2);
+}
+
+.archive-break .eyebrow {
+    margin: 0 0 12px;
+}
+
+.archive-break h3 {
+    margin: 0;
+    font-family: Georgia, "Palatino Linotype", serif;
+    font-size: clamp(30px, 4vw, 46px);
+    font-weight: 400;
+    line-height: 1;
+    letter-spacing: -0.04em;
+}
+
+.archive-break > p {
+    max-width: 420px;
+    margin: 0;
+    color: #4c636a;
+    line-height: 1.65;
+}
+
+.archive-grid-reference .archive-card {
+    min-height: 270px;
+    background: rgba(255, 253, 248, 0.72);
+}
+
 .archive-card {
     --card-accent: #c55a32;
     min-width: 0;
@@ -737,6 +772,12 @@
     .feature-stack,
     .archive-grid {
         grid-template-columns: 1fr;
+    }
+
+    .archive-break {
+        grid-template-columns: 1fr;
+        gap: 14px;
+        margin-top: 64px;
     }
 
     .archive-card {

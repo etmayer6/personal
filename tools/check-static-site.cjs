@@ -1,6 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 const { SITE_ROOT, projectRegistry, publicRoutes } = require("../tests/site-manifest.cjs");
+const { SITE_URL } = require("./seo-config.cjs");
 
 const errors = [];
 const ignoredDirectories = new Set([".git", "node_modules", "output"]);
@@ -117,6 +118,30 @@ function checkDuplicateIds(filePath, source) {
     }
 }
 
+function checkSeoMetadata(filePath, source) {
+    const relativePath = display(filePath);
+    const isNotFound = relativePath === "404.html";
+    if (!source.includes("<!-- SEO:START -->") || !source.includes("<!-- SEO:END -->")) {
+        report(filePath, "missing generated SEO metadata block");
+    }
+    if (!isNotFound && !/<link\s+rel=["']canonical["']/i.test(source)) {
+        report(filePath, "missing canonical URL");
+    }
+    if (!/<link\s+rel=["']icon["']/i.test(source)) report(filePath, "missing favicon link");
+    if (!/<meta\s+property=["']og:title["']/i.test(source)) report(filePath, "missing Open Graph title");
+    if (!/<meta\s+property=["']og:description["']/i.test(source)) report(filePath, "missing Open Graph description");
+    if (!/<meta\s+property=["']og:image["']/i.test(source)) report(filePath, "missing Open Graph image");
+}
+
+function checkDiscoveryFiles() {
+    const sitemapPath = path.join(SITE_ROOT, "sitemap.xml");
+    const robotsPath = path.join(SITE_ROOT, "robots.txt");
+    if (!fs.existsSync(sitemapPath)) report(sitemapPath, "missing sitemap.xml");
+    else if (!fs.readFileSync(sitemapPath, "utf8").includes(`<loc>${SITE_URL}/</loc>`)) report(sitemapPath, "sitemap is missing the homepage");
+    if (!fs.existsSync(robotsPath)) report(robotsPath, "missing robots.txt");
+    else if (!fs.readFileSync(robotsPath, "utf8").includes(`Sitemap: ${SITE_URL}/sitemap.xml`)) report(robotsPath, "robots.txt is missing the sitemap location");
+}
+
 function checkCssReferences(filePath, source) {
     for (const match of source.matchAll(/url\(\s*(["']?)(.*?)\1\s*\)/gi)) {
         const reference = match[2].trim();
@@ -136,12 +161,14 @@ function checkJavaScriptFetches(filePath, source) {
 }
 
 walk(SITE_ROOT);
+checkDiscoveryFiles();
 
 const idsByFile = new Map();
 for (const filePath of htmlFiles) {
     const source = fs.readFileSync(filePath, "utf8");
     idsByFile.set(filePath, new Set(extractIds(source)));
     checkDuplicateIds(filePath, source);
+    checkSeoMetadata(filePath, source);
 }
 
 for (const filePath of htmlFiles) {

@@ -204,6 +204,7 @@ function sharedHead(title, description, sharedStylesheetPath, blogStylesheetPath
 function navigation(prefix, current) {
     const links = [
         ["Home", "index.html"],
+        ["About", "about/"],
         ["Resume", "resume/"],
         ["Projects", "projects/"],
         ["Games", "games/"],

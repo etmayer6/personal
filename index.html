@@ -6,6 +6,24 @@
     <meta name="description" content="Ethan Mayer is a Software Engineer I at Collins Aerospace focused on automated testing, verification, and practical engineering tools.">
     <title>Ethan Mayer | Software Engineer</title>
     <link rel="stylesheet" href="style.css">
+    <!-- SEO:START -->
+        <link rel="canonical" href="https://etmayer6.github.io/personal/">
+        <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+        <meta property="og:type" content="website">
+        <meta property="og:site_name" content="Ethan Mayer">
+        <meta property="og:title" content="Ethan Mayer | Software Engineer">
+        <meta property="og:description" content="Ethan Mayer is a Software Engineer I at Collins Aerospace focused on automated testing, verification, and practical engineering tools.">
+        <meta property="og:url" content="https://etmayer6.github.io/personal/">
+        <meta property="og:image" content="https://etmayer6.github.io/personal/assets/social-card.png">
+        <meta property="og:image:type" content="image/png">
+        <meta property="og:image:width" content="1200">
+        <meta property="og:image:height" content="630">
+        <meta property="og:image:alt" content="Ethan Mayer - software engineer and personal projects">
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:title" content="Ethan Mayer | Software Engineer">
+        <meta name="twitter:description" content="Ethan Mayer is a Software Engineer I at Collins Aerospace focused on automated testing, verification, and practical engineering tools.">
+        <meta name="twitter:image" content="https://etmayer6.github.io/personal/assets/social-card.png">
+    <!-- SEO:END -->
 </head>
 <body class="home-body">
     <header class="site-header">
@@ -13,6 +31,7 @@
             <a class="nav-name" href="index.html">Ethan Mayer</a>
             <ul>
                 <li><a aria-current="page" href="index.html">Home</a></li>
+                <li><a href="about/">About</a></li>
                 <li><a href="resume/">Resume</a></li>
                 <li><a href="projects/">Projects</a></li>
                 <li><a href="games/">Games</a></li>
@@ -50,6 +69,28 @@
                     alt="Ethan Mayer outdoors"
                 >
             </aside>
+        </section>
+
+        <section class="home-flight" aria-label="Airbus A220 takeoff sequence">
+            <div class="home-flight-sequence">
+                <div class="home-flight-sticky">
+                    <div class="home-flight-stage">
+                        <canvas
+                            id="home-flight-canvas"
+                            class="home-flight-canvas"
+                            width="1536"
+                            height="1024"
+                            role="img"
+                            aria-label="An Airbus A220 progresses from a runway takeoff into a calm cruise above the clouds as the page scrolls."
+                        ></canvas>
+                        <noscript>
+                            <div class="home-flight-noscript">
+                                <img src="assets/home-flight-25-jpg/frame-00-runway.jpg" alt="An Airbus A220 waiting on a runway at dawn.">
+                            </div>
+                        </noscript>
+                    </div>
+                </div>
+            </div>
         </section>
 
         <section class="home-section" aria-labelledby="focus-heading">
@@ -113,6 +154,7 @@
                 <h2 id="off-clock-heading">AI field notes, photos, and browser games.</h2>
             </div>
             <div class="off-clock-links">
+                <a href="about/">Meet Ethan <span aria-hidden="true">&rarr;</span></a>
                 <a href="blog/">Read Codex's notes <span aria-hidden="true">&rarr;</span></a>
                 <a href="photos/">Browse photos <span aria-hidden="true">&rarr;</span></a>
                 <a href="games/">Play games <span aria-hidden="true">&rarr;</span></a>
@@ -125,6 +167,7 @@
         <p>&copy; 2026 Ethan Mayer</p>
         <a href="https://www.linkedin.com/in/ethan-mayer/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
     </footer>
-    <script src="site-play.js?v=pet-companion-2"></script>
+    <script src="home-flight.js?v=a220-scroll-25" defer></script>
+    <script src="site-play.js?v=pet-companion-2" defer></script>
 </body>
 </html>

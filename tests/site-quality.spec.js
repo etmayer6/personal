@@ -228,6 +228,32 @@ test("primary navigation reaches every public top-level section", async ({ brows
     await context.close();
 });
 
+test("primary navigation keeps a visible header surface", async ({ browser }) => {
+    const context = await browser.newContext({ reducedMotion: "reduce", serviceWorkers: "block" });
+    await installOfflineRoutes(context);
+    const page = await context.newPage();
+
+    for (const route of publicRoutes) {
+        await page.goto(route.path, { waitUntil: "domcontentloaded" });
+        const navigation = page.locator('header nav[aria-label="Primary navigation"]').first();
+        if (await navigation.count() === 0) continue;
+
+        const headerState = await navigation.evaluate((nav) => {
+            const header = nav.closest("header");
+            const style = header ? getComputedStyle(header) : null;
+            return {
+                background: style?.backgroundColor || "transparent",
+                visible: Boolean(header && header.getBoundingClientRect().height > 0)
+            };
+        });
+
+        expect(headerState.visible, `${route.path} has a collapsed primary header`).toBe(true);
+        expect(headerState.background, `${route.path} has no visible primary header surface`).not.toBe("rgba(0, 0, 0, 0)");
+    }
+
+    await context.close();
+});
+
 test("project counts match the centralized registry", async ({ browser }) => {
     const context = await browser.newContext({ reducedMotion: "reduce", serviceWorkers: "block" });
     await installOfflineRoutes(context);
@@ -252,8 +278,30 @@ test("project tiles navigate from their open area", async ({ browser }) => {
     expect(new URL(page.url()).pathname).toBe("/courseflow/");
 
     await page.goto("/projects/", { waitUntil: "domcontentloaded" });
-    await page.locator(".archive-card").first().locator(".archive-top").click();
+    await page.locator(".feature-flight .flight-visual").click();
+    expect(new URL(page.url()).pathname).toBe("/flight-sim/");
+
+    await page.goto("/projects/", { waitUntil: "domcontentloaded" });
+    await page.locator(".archive-grid-reference .archive-card").first().locator(".archive-top").click();
     expect(new URL(page.url()).pathname).toBe("/apartments/");
+    await context.close();
+});
+
+test("projects lead with interactive work and finish with reference projects", async ({ browser }) => {
+    const context = await browser.newContext({ reducedMotion: "reduce", serviceWorkers: "block" });
+    await installOfflineRoutes(context);
+    const page = await context.newPage();
+    await page.goto("/projects/", { waitUntil: "domcontentloaded" });
+
+    const names = await page.locator(".archive-card h3").allTextContents();
+    expect(names.slice(-5)).toEqual([
+        "Apartment Hunt",
+        "Groggy Climbs",
+        "Zulip",
+        "SE / COM S 319",
+        "Garage Diagnostic Bay"
+    ]);
+    await expect(page.locator(".archive-break")).toContainText("Reference shelf");
     await context.close();
 });
 
@@ -270,8 +318,8 @@ test("featured demos support their primary interaction", async ({ browser }) => 
     await expect(page.locator('[data-action="toggle-insights"]')).toContainText("Hide");
 
     await page.goto("/scenario-lab/", { waitUntil: "domcontentloaded" });
-    await page.locator('[data-action="run"]').first().click();
-    await expect(page.locator('[data-role="run-status"]')).toHaveAttribute("data-status", "pass");
+    await page.waitForURL("**/flight-sim/");
+    expect(new URL(page.url()).pathname).toBe("/flight-sim/");
 
     await page.goto("/word-sort/", { waitUntil: "domcontentloaded" });
     await expect(page.locator("#wordsort-start")).toBeVisible();

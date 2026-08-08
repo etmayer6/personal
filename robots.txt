@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://etmayer6.github.io/personal/sitemap.xml

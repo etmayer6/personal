@@ -160,6 +160,61 @@ footer {
     align-items: stretch;
 }
 
+.home-body {
+    overflow-x: clip;
+}
+
+.home-flight {
+    position: relative;
+    margin: 0 calc(50% - 50vw);
+    overflow: clip;
+    background: #06131a;
+}
+
+.home-flight-sequence {
+    position: relative;
+    height: 500vh;
+}
+
+.home-flight-sticky {
+    position: sticky;
+    top: 0;
+    width: 100%;
+    height: 100vh;
+    min-height: 100svh;
+    display: grid;
+    place-items: center;
+}
+
+.home-flight-stage {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    min-height: 100svh;
+    overflow: hidden;
+    background: #06131a;
+}
+
+.home-flight-canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    background: #06131a;
+}
+
+.home-flight-noscript {
+    position: absolute;
+    inset: 0;
+    background: #06131a;
+}
+
+.home-flight-noscript img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
 .hero-copy {
     min-width: 0;
     display: flex;
@@ -556,7 +611,8 @@ body:is(
     .flight-site-body,
     .wordsort-site-body,
     .blog-body,
-    .gremlindex-body
+    .gremlindex-body,
+    .gremlin-lab-body
 ) {
     background:
         linear-gradient(90deg, rgba(16, 43, 54, 0.035) 1px, transparent 1px),
@@ -577,7 +633,8 @@ body :is(
     .flight-site-header,
     .wordsort-site-header,
     .blog-header,
-    .gremlindex-header
+    .gremlindex-header,
+    .lab-header
 ) {
     position: sticky;
     top: 0;
@@ -598,7 +655,8 @@ body :is(
     .flight-site-header,
     .wordsort-site-header,
     .blog-header,
-    .gremlindex-header
+    .gremlindex-header,
+    .lab-header
 ) nav {
     width: min(1160px, calc(100% - 40px));
     min-height: 68px;
@@ -755,7 +813,8 @@ body.apartment-body :is(
         .flight-site-header,
         .wordsort-site-header,
         .blog-header,
-        .gremlindex-header
+        .gremlindex-header,
+        .lab-header
     ) nav,
     body :is(
         .resume-shell,

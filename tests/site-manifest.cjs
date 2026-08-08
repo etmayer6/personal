@@ -5,6 +5,7 @@ const SITE_ROOT = path.resolve(__dirname, "..");
 
 const primaryNavigation = [
     { label: "Home", path: "/" },
+    { label: "About", path: "/about/" },
     { label: "Resume", path: "/resume/" },
     { label: "Projects", path: "/projects/" },
     { label: "Games", path: "/games/" },
@@ -14,7 +15,6 @@ const primaryNavigation = [
 
 const interactiveMetadata = {
     "/courseflow/": { name: "CourseFlow", marker: "CourseFlow", ready: ".page" },
-    "/scenario-lab/": { name: "Scenario Lab", marker: "Scenario Lab", ready: '[data-role="run-status"]', featured: true },
     "/word-sort/": { name: "Word Sort", marker: "Word Sort", ready: "#word-sort-root", featured: true },
     "/apartments/": { name: "Apartment Hunt", marker: "Apartment Hunt", ready: ".listing-card" },
     "/travel/": { name: "Travel Map", marker: "Places I Have Been", ready: ".place-card" },
@@ -36,22 +36,21 @@ const interactiveMetadata = {
     "/night-shift/": { name: "Night Shift", marker: "The doors stay locked", ready: "main" }
 };
 
+const redirectMetadata = {
+    "/scenario-lab/": { name: "Scenario Lab", target: "/flight-sim/" }
+};
+
 // This is the small registry the portfolio page currently expresses in HTML.
 // Keeping it beside the checks lets tests catch stale project totals and links.
 const projectRegistry = [
     { name: "CourseFlow", path: "/courseflow/", featured: true },
     { name: "Flight Scenario Lab", path: "/flight-sim/", featured: true },
     { name: "Word Sort Solitaire", path: "/word-sort/", featured: true },
-    { name: "Apartment Hunt", path: "/apartments/" },
     { name: "Travel Map", path: "/travel/" },
     { name: "Block Blast", path: "/block-blast/" },
-    { name: "Groggy Climbs", path: "/groggy-climbs/" },
-    { name: "Zulip", href: "https://github.com/etmayer6/zulip", external: true },
-    { name: "SE / COM S 319", href: "https://github.com/etmayer6/secoms319", external: true },
     { name: "Diet Tracker", path: "/diet-tracker/" },
     { name: "Receipt Meal Planner", path: "/meal-planner/" },
     { name: "Childhood Timeline", path: "/childhood-timeline/" },
-    { name: "Garage Diagnostic Bay", path: "/garage/" },
     { name: "Iowa Skywatch", path: "/flight-radar/" },
     { name: "Idea Whiteboard", path: "/whiteboard/" },
     { name: "Pet Studio", path: "/pet-studio/" },
@@ -59,7 +58,12 @@ const projectRegistry = [
     { name: "Conway's Game of Life", path: "/conway/" },
     { name: "Mola Mola", path: "/aquarium/" },
     { name: "Gremlin Physics Lab", path: "/gremlin-lab/" },
-    { name: "Root / Shift", path: "/plant-to-ape/" }
+    { name: "Root / Shift", path: "/plant-to-ape/" },
+    { name: "Apartment Hunt", path: "/apartments/" },
+    { name: "Groggy Climbs", path: "/groggy-climbs/" },
+    { name: "Zulip", href: "https://github.com/etmayer6/zulip", external: true },
+    { name: "SE / COM S 319", href: "https://github.com/etmayer6/secoms319", external: true },
+    { name: "Garage Diagnostic Bay", path: "/garage/" }
 ];
 
 function routeFromIndex(filePath) {
@@ -99,12 +103,21 @@ function routeName(routePath) {
         .join(" ");
 }
 
-const publicRoutes = discoverIndexRoutes().concat("/404.html").map((routePath) => ({
+const redirectRoutes = Object.entries(redirectMetadata).map(([routePath, metadata]) => ({
+    path: routePath,
+    ...metadata,
+    redirect: true
+}));
+
+const publicRoutes = discoverIndexRoutes()
+    .concat("/404.html")
+    .filter((routePath) => !redirectMetadata[routePath])
+    .map((routePath) => ({
     path: routePath,
     name: interactiveMetadata[routePath]?.name || routeName(routePath),
     ...(interactiveMetadata[routePath] || {}),
     interactive: Boolean(interactiveMetadata[routePath])
-}));
+    }));
 
 const interactiveRoutes = Object.entries(interactiveMetadata).map(([routePath, metadata]) => ({
     path: routePath,
@@ -117,6 +130,7 @@ module.exports = {
     primaryNavigation,
     interactiveMetadata,
     interactiveRoutes,
+    redirectRoutes,
     projectRegistry,
     publicRoutes,
     discoverIndexRoutes

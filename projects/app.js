@@ -11,7 +11,13 @@
         card.setAttribute("role", "link");
         if (heading) card.setAttribute("aria-label", `Open ${heading.textContent.trim()}`);
 
-        const openDestination = () => destination.click();
+        const openDestination = () => {
+            if (destination.target === "_blank") {
+                destination.click();
+                return;
+            }
+            window.location.assign(destination.href);
+        };
 
         card.addEventListener("click", (event) => {
             if (event.target.closest(interactiveSelector)) return;

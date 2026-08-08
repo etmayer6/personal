@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">Ethan Mayer - Software Engineer</title>
+  <desc id="desc">Software for systems that have to work.</desc>
+  <defs>
+    <pattern id="grid" width="42" height="42" patternUnits="userSpaceOnUse">
+      <path d="M42 0H0V42" fill="none" stroke="#f8f1e6" stroke-opacity=".08"/>
+    </pattern>
+    <radialGradient id="glow" cx="85%" cy="15%" r="75%">
+      <stop offset="0" stop-color="#efad84" stop-opacity=".36"/>
+      <stop offset=".46" stop-color="#c55a32" stop-opacity=".12"/>
+      <stop offset="1" stop-color="#102b36" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1200" height="630" fill="#102b36"/>
+  <rect width="1200" height="630" fill="url(#grid)"/>
+  <rect width="1200" height="630" fill="url(#glow)"/>
+  <circle cx="1010" cy="118" r="98" fill="none" stroke="#efad84" stroke-opacity=".45" stroke-width="2"/>
+  <circle cx="1010" cy="118" r="132" fill="none" stroke="#efad84" stroke-opacity=".17" stroke-width="2"/>
+  <path d="M760 630 1050 0h150L910 630z" fill="#c55a32" fill-opacity=".11"/>
+  <rect x="76" y="72" width="10" height="114" fill="#c55a32"/>
+  <text x="112" y="101" fill="#efad84" font-family="Arial, sans-serif" font-size="22" font-weight="700" letter-spacing="5">ETHAN MAYER / SOFTWARE ENGINEER</text>
+  <text x="76" y="286" fill="#f8f1e6" font-family="Georgia, serif" font-size="76" font-weight="700">Software for</text>
+  <text x="76" y="372" fill="#f8f1e6" font-family="Georgia, serif" font-size="76" font-weight="700">systems that work.</text>
+  <text x="80" y="465" fill="#d5e1df" font-family="Arial, sans-serif" font-size="25">Automated testing / browser experiments / field notes</text>
+  <line x1="80" y1="532" x2="1120" y2="532" stroke="#f8f1e6" stroke-opacity=".22"/>
+  <text x="80" y="574" fill="#efad84" font-family="Arial, sans-serif" font-size="20" font-weight="700" letter-spacing="3">ETMAYER6.GITHUB.IO/PERSONAL</text>
+  <text x="1120" y="574" text-anchor="end" fill="#f8f1e6" fill-opacity=".62" font-family="Arial, sans-serif" font-size="18">IA / USA</text>
+</svg>

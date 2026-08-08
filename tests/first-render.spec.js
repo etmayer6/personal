@@ -128,7 +128,7 @@ for (const route of routes) {
     });
 }
 
-test("representative demos stay usable across viewports and keyboard input", async ({ browser }) => {
+test("legacy scenario route redirects across viewports", async ({ browser }) => {
     const viewports = [
         { name: "desktop", width: 1440, height: 900 },
         { name: "tablet", width: 834, height: 1112 },
@@ -151,18 +151,8 @@ test("representative demos stay usable across viewports and keyboard input", asy
             page.on("pageerror", (error) => consoleErrors.push(String(error)));
 
             await page.goto(`${BASE_URL}/scenario-lab/`, { waitUntil: "domcontentloaded" });
-            await expect(page.locator("#scenario-lab-title")).toBeVisible();
-            await expect(page.locator('[data-role="run-status"]')).toHaveAttribute("data-status", "standby");
-            const layout = await page.evaluate(() => ({
-                reducedMotion: window.matchMedia("(prefers-reduced-motion: reduce)").matches,
-                viewportWidth: window.innerWidth,
-                documentWidth: document.documentElement.scrollWidth
-            }));
-            expect(layout.reducedMotion).toBe(true);
-            expect(layout.documentWidth).toBeLessThanOrEqual(layout.viewportWidth + 1);
-
-            await page.keyboard.press("r");
-            await expect(page.locator('[data-role="run-status"]')).toHaveAttribute("data-status", /^(running|pass)$/);
+            await page.waitForURL(`${BASE_URL}/flight-sim/`);
+            expect(new URL(page.url()).pathname).toBe("/flight-sim/");
             expect(consoleErrors, `${viewport.name} console output`).toEqual([]);
         } finally {
             await context.close();

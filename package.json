@@ -6,6 +6,8 @@
     "check:syntax": "node tools/check-syntax.cjs",
     "check:static": "node tools/check-static-site.cjs",
     "audit:assets": "node tools/asset-audit.cjs",
+    "seo:build": "node tools/build-seo.cjs",
+    "social:build": "node tools/build-social-card.cjs",
     "images:optimize": "node tools/optimize-images.cjs",
     "photos:manifest": "node tools/build-photo-image-manifest.cjs",
     "measure:performance": "node tools/measure-performance.cjs",

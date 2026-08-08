@@ -1365,3 +1365,9 @@
         transition: none;
     }
 }
+
+@media (max-width: 360px) {
+    .flight-site-header nav ul {
+        flex-wrap: wrap;
+    }
+}
