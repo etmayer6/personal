@@ -207,8 +207,7 @@
     margin-bottom: 42px;
 }
 
-.about-section-heading h2,
-.about-contact h2 {
+.about-section-heading h2 {
     margin: 14px 0 0;
     font-family: Georgia, "Palatino Linotype", serif;
     font-size: clamp(38px, 5vw, 64px);
@@ -262,8 +261,7 @@
     background: var(--aero);
 }
 
-.thread-number,
-.path-label {
+.thread-number {
     color: var(--accent-dark);
     font-family: Consolas, "Courier New", monospace;
     font-size: 11px;
@@ -289,8 +287,7 @@
     line-height: 1.65;
 }
 
-.thread-link,
-.path-link {
+.thread-link {
     display: inline-flex;
     align-items: center;
     gap: 8px;
@@ -303,143 +300,10 @@
 }
 
 .thread-link:hover,
-.thread-link:focus-visible,
-.path-card:hover .path-link,
-.path-card:focus-visible .path-link {
+.thread-link:focus-visible {
     color: var(--accent-dark);
     text-decoration: underline;
     text-underline-offset: 4px;
-}
-
-.about-paths {
-    margin-bottom: 0;
-    padding: 72px 44px 78px;
-    color: #f8f1e6;
-    background: var(--ink);
-}
-
-.about-section-heading-light {
-    margin-bottom: 34px;
-}
-
-.about-section-heading-light .eyebrow {
-    color: #efad84;
-}
-
-.about-section-heading-light h2 {
-    color: #fffaf1;
-}
-
-.about-section-heading-light > p:last-child {
-    max-width: 480px;
-    margin: 18px 0 0;
-    color: rgba(255, 255, 255, 0.66);
-    line-height: 1.6;
-}
-
-.path-grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 10px;
-}
-
-.path-card {
-    min-height: 210px;
-    padding: 22px;
-    display: flex;
-    flex-direction: column;
-    color: #fffaf1;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    text-decoration: none;
-    transition: background-color 180ms ease, transform 180ms ease, border-color 180ms ease;
-}
-
-.path-card:hover,
-.path-card:focus-visible {
-    border-color: #efad84;
-    background: rgba(255, 255, 255, 0.08);
-    transform: translateY(-3px);
-}
-
-.path-number {
-    color: #efad84;
-    font-family: Georgia, "Palatino Linotype", serif;
-    font-size: 30px;
-}
-
-.path-label {
-    margin-top: 18px;
-    color: rgba(255, 255, 255, 0.6);
-}
-
-.path-card h3 {
-    margin: 8px 0 0;
-    font-family: Georgia, "Palatino Linotype", serif;
-    font-size: 29px;
-    font-weight: 400;
-    line-height: 1;
-}
-
-.path-card .path-link {
-    padding-top: 18px;
-    color: #fffaf1;
-}
-
-.about-contact {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 32px;
-    margin: 0 0 92px;
-    padding: 44px;
-    color: #fffaf1;
-    background: var(--accent);
-}
-
-.about-contact .eyebrow {
-    color: #2d1c16;
-}
-
-.about-contact h2 {
-    color: #fffaf1;
-}
-
-.about-contact > div:first-child > p:last-child {
-    max-width: 560px;
-    margin: 18px 0 0;
-    color: rgba(255, 250, 241, 0.82);
-    line-height: 1.6;
-}
-
-.contact-actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    flex-shrink: 0;
-}
-
-.contact-button {
-    min-width: 118px;
-    padding: 14px 18px;
-    color: var(--ink);
-    background: #fffaf1;
-    font-size: 13px;
-    font-weight: 800;
-    text-align: center;
-    text-decoration: none;
-}
-
-.contact-button:hover,
-.contact-button:focus-visible {
-    background: #ffffff;
-    box-shadow: 4px 4px 0 rgba(16, 43, 54, 0.24);
-    transform: translate(-1px, -1px);
-}
-
-.contact-button-quiet {
-    color: #fffaf1;
-    background: transparent;
-    border: 1px solid rgba(255, 250, 241, 0.6);
 }
 
 @media (max-width: 920px) {
@@ -452,10 +316,6 @@
         font-size: clamp(54px, 8vw, 88px);
     }
 
-    .about-contact {
-        align-items: flex-start;
-        flex-direction: column;
-    }
 }
 
 @media (max-width: 700px) {
@@ -491,8 +351,7 @@
         padding: 72px 0;
     }
 
-    .about-thread-grid,
-    .path-grid {
+    .about-thread-grid {
         grid-template-columns: 1fr;
     }
 
@@ -500,14 +359,6 @@
         min-height: 280px;
     }
 
-    .about-paths {
-        padding: 48px 22px 54px;
-    }
-
-    .about-contact {
-        margin-bottom: 58px;
-        padding: 32px 22px;
-    }
 }
 
 @media (max-width: 430px) {
@@ -520,14 +371,11 @@
     }
 
     .about-actions,
-    .about-actions .button,
-    .contact-actions,
-    .contact-button {
+    .about-actions .button {
         width: 100%;
     }
 
-    .about-actions .button,
-    .contact-button {
+    .about-actions .button {
         justify-content: center;
     }
 
@@ -542,9 +390,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .about-thread,
-    .path-card,
-    .contact-button {
+    .about-thread {
         transition: none;
     }
 }
