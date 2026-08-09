@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="A lightweight live ADS-B view of aircraft around Iowa by Ethan Mayer.">
+    <meta name="description" content="A lightweight live ADS-B view of aircraft over Iowa by Ethan Mayer.">
     <title>Iowa Skywatch | Ethan Mayer</title>
     <link rel="stylesheet" href="../style.css">
     <link rel="stylesheet" href="style.css">
@@ -13,7 +13,7 @@
         <meta property="og:type" content="website">
         <meta property="og:site_name" content="Ethan Mayer">
         <meta property="og:title" content="Iowa Skywatch | Ethan Mayer">
-        <meta property="og:description" content="A lightweight live ADS-B view of aircraft around Iowa by Ethan Mayer.">
+        <meta property="og:description" content="A lightweight live ADS-B view of aircraft over Iowa by Ethan Mayer.">
         <meta property="og:url" content="https://etmayer6.github.io/personal/flight-radar/">
         <meta property="og:image" content="https://etmayer6.github.io/personal/assets/social-card.png">
         <meta property="og:image:type" content="image/png">
@@ -22,7 +22,7 @@
         <meta property="og:image:alt" content="Ethan Mayer - software engineer and personal projects">
         <meta name="twitter:card" content="summary_large_image">
         <meta name="twitter:title" content="Iowa Skywatch | Ethan Mayer">
-        <meta name="twitter:description" content="A lightweight live ADS-B view of aircraft around Iowa by Ethan Mayer.">
+        <meta name="twitter:description" content="A lightweight live ADS-B view of aircraft over Iowa by Ethan Mayer.">
         <meta name="twitter:image" content="https://etmayer6.github.io/personal/assets/social-card.png">
     <!-- SEO:END -->
 </head>
@@ -42,43 +42,25 @@
     </header>
 
     <main class="flight-radar-shell">
-        <section class="radar-hero" aria-labelledby="radar-title">
-            <div class="radar-hero-copy">
-                <p class="eyebrow">Live airspace / Iowa</p>
-                <h1 id="radar-title">Watch the sky move.</h1>
-                <p class="radar-summary">
-                    A live view of the airspace around Iowa. Click a marker to inspect its callsign, altitude, speed,
-                    and direction.
-                </p>
-                <div class="radar-actions">
-                    <button class="radar-button" id="refresh-button" type="button">Refresh feed</button>
-                    <a class="radar-text-link" href="https://globe.airplanes.live/?lat=42.03&lon=-93.5&zoom=7" target="_blank" rel="noopener noreferrer">
-                        Open full radar <span aria-hidden="true">&nearr;</span>
-                    </a>
-                </div>
-                <div class="radar-hero-meta" aria-label="Feed details">
-                    <span class="radar-live-state"><i aria-hidden="true"></i>Live feed + offline fixture</span>
-                    <span>Central Iowa / 250 km view</span>
-                </div>
-            </div>
-        </section>
-
         <section class="radar-workspace" aria-labelledby="sector-heading">
             <div class="radar-board-panel">
                 <header class="radar-panel-header">
                     <div>
-                        <p class="panel-kicker">Airspace monitor</p>
-                        <h2 id="sector-heading">Iowa sector</h2>
+                        <p class="panel-kicker">Live airspace / Iowa</p>
+                        <h1 id="sector-heading">Iowa Skywatch</h1>
                     </div>
-                    <div class="feed-status" id="feed-status" data-state="offline" role="status" aria-live="polite">
-                        Fixture ready / checking live feed
+                    <div class="radar-panel-tools">
+                        <div class="feed-status" id="feed-status" data-state="offline" role="status" aria-live="polite">
+                            Fixture ready / checking live feed
+                        </div>
+                        <button class="radar-button" id="refresh-button" type="button">Refresh</button>
                     </div>
                 </header>
 
                 <div class="radar-board" id="radar-board">
                     <svg id="radar-map" viewBox="0 0 1000 640" role="img" aria-labelledby="map-title map-description">
-                        <title id="map-title">Live aircraft around Iowa</title>
-                        <desc id="map-description">A geographic map of Iowa and the surrounding states with live aircraft positions from the Airplanes.live ADS-B feed.</desc>
+                        <title id="map-title">Live aircraft over Iowa</title>
+                        <desc id="map-description">A geographic map of Iowa with aircraft positions from the Airplanes.live ADS-B feed.</desc>
                         <defs>
                             <pattern id="radar-grid" width="56" height="56" patternUnits="userSpaceOnUse">
                                 <path d="M 56 0 L 0 0 0 56" fill="none" stroke="#86a59e" stroke-width="1" opacity="0.28"></path>
@@ -90,69 +72,18 @@
                         </defs>
                         <rect class="map-surface" width="1000" height="640" fill="url(#radar-wash)"></rect>
                         <rect class="map-grid" width="1000" height="640" fill="url(#radar-grid)"></rect>
-                        <g class="regional-states" aria-hidden="true">
-                            <path class="neighbor-state" d="M 0 0 H 236 V 187 L 174 197 L 92 214 L 0 228 Z"></path>
-                            <path class="neighbor-state" d="M 236 0 H 830 V 78 L 792 126 L 742 187 H 236 Z"></path>
-                            <path class="neighbor-state" d="M 830 0 H 1000 V 272 L 932 316 L 820 252 L 742 187 L 792 126 Z"></path>
-                            <path class="neighbor-state" d="M 0 228 L 236 187 V 455 L 0 478 Z"></path>
-                            <path class="neighbor-state" d="M 0 478 L 236 455 H 730 L 760 640 H 0 Z"></path>
-                            <path class="neighbor-state" d="M 730 455 L 742 187 L 820 252 L 932 316 L 1000 272 V 640 H 760 Z"></path>
-                            <text x="102" y="112">SOUTH DAKOTA</text>
-                            <text x="500" y="72">MINNESOTA</text>
-                            <text x="900" y="142">WISCONSIN</text>
-                            <text x="104" y="360">NEBRASKA</text>
-                            <text x="870" y="500">ILLINOIS</text>
-                            <text x="470" y="570">MISSOURI</text>
-                        </g>
                         <path id="iowa-shape" class="iowa-shape" aria-hidden="true"></path>
                         <text id="iowa-label" class="iowa-label" aria-hidden="true">IOWA</text>
                         <g id="airport-layer" class="airport-layer" aria-hidden="true"></g>
                         <g id="aircraft-layer" class="aircraft-layer"></g>
                     </svg>
                     <div class="map-corner map-corner-top">ADS-B / MLAT</div>
-                    <div class="map-corner map-corner-bottom">N 43.5&deg; &middot; W 96.6&deg;</div>
+                    <div class="map-corner map-corner-bottom">IOWA / STATE BOUNDS</div>
+                    <p class="radar-map-hint" id="selected-status" role="status" aria-live="polite">Click an aircraft marker for details</p>
                 </div>
-
-                <footer class="radar-board-footer">
-                    <div class="radar-legend" aria-label="Map legend">
-                        <span><i class="legend-plane" aria-hidden="true"></i>Aircraft</span>
-                        <span><i class="legend-iowa" aria-hidden="true"></i>Iowa sector</span>
-                        <span><i class="legend-airport" aria-hidden="true"></i>Airport</span>
-                    </div>
-                    <p id="last-updated">Offline fixture ready; checking the community feed</p>
-                </footer>
             </div>
-
-            <aside class="radar-sidebar" aria-label="Flight details">
-                <section class="radar-side-card selected-card" aria-live="polite">
-                    <div class="side-card-heading">
-                        <div>
-                            <p class="panel-kicker">Selected aircraft</p>
-                            <h2 id="selected-callsign">Fixture flight</h2>
-                        </div>
-                        <span class="selected-mark" aria-hidden="true">+</span>
-                    </div>
-                    <p class="selected-type" id="selected-type">Click a marker on the map to see its details.</p>
-                    <dl class="selected-data">
-                        <div><dt>Position</dt><dd id="selected-position">--</dd></div>
-                        <div><dt>Altitude</dt><dd id="selected-altitude">--</dd></div>
-                        <div><dt>Speed</dt><dd id="selected-speed">--</dd></div>
-                        <div><dt>Track</dt><dd id="selected-track">--</dd></div>
-                    </dl>
-                </section>
-            </aside>
-        </section>
-
-        <section class="radar-note" aria-label="Data note">
-                    <p><span class="eyebrow">Community ADS-B / updated every 60 seconds</span> Live data is used when reachable; the visible fallback is a deterministic fixture and is never presented as live. Informational only, not for navigation.</p>
-            <a href="https://airplanes.live/" target="_blank" rel="noopener noreferrer">Airplanes.live source <span aria-hidden="true">&nearr;</span></a>
         </section>
     </main>
-
-    <footer class="flight-radar-footer">
-        <p>&copy; 2026 Ethan Mayer</p>
-        <a href="../index.html">Back home</a>
-    </footer>
 
     <script src="../site-play.js?v=pet-companion-2"></script>
     <script src="app.js?v=1"></script>

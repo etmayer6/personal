@@ -3,16 +3,15 @@
 
     const API_URL = "https://api.airplanes.live/v2/point/42.03/-93.5/250";
     const REFRESH_MS = 60000;
-    const MAP_AIRCRAFT_LIMIT = 64;
     const MAP_IOWA_LIMIT = 48;
     const SVG_NS = "http://www.w3.org/2000/svg";
     const MAP_WIDTH = 1000;
     const MAP_HEIGHT = 640;
     const MAP_BOUNDS = {
-        minLat: 38.2,
-        maxLat: 45.7,
-        minLon: -99.5,
-        maxLon: -87.4
+        minLat: 40.25,
+        maxLat: 43.62,
+        minLon: -96.8,
+        maxLon: -90.0
     };
     const OFFLINE_AIRCRAFT = [
         { hex: "fixture01", flight: "FIX101", desc: "Fictional regional jet", lat: 42.03, lon: -93.63, alt_baro: 18000, gs: 312, track: 82 },
@@ -217,13 +216,7 @@
     const elements = {
         refreshButton: document.getElementById("refresh-button"),
         feedStatus: document.getElementById("feed-status"),
-        lastUpdated: document.getElementById("last-updated"),
-        selectedCallsign: document.getElementById("selected-callsign"),
-        selectedType: document.getElementById("selected-type"),
-        selectedPosition: document.getElementById("selected-position"),
-        selectedAltitude: document.getElementById("selected-altitude"),
-        selectedSpeed: document.getElementById("selected-speed"),
-        selectedTrack: document.getElementById("selected-track"),
+        selectedStatus: document.getElementById("selected-status"),
         iowaShape: document.getElementById("iowa-shape"),
         iowaLabel: document.getElementById("iowa-label"),
         airportLayer: document.getElementById("airport-layer"),
@@ -233,7 +226,6 @@
     const state = {
         aircraft: [],
         selectedId: null,
-        lastUpdated: null,
         source: "fixture",
         requestInFlight: false,
         timer: null
@@ -338,10 +330,6 @@
         return String(Math.round(aircraft.track)).padStart(3, "0") + " deg";
     }
 
-    function formatPosition(aircraft) {
-        return aircraft.lat.toFixed(2) + ", " + aircraft.lon.toFixed(2);
-    }
-
     function setFeedStatus(label, status) {
         elements.feedStatus.textContent = label;
         elements.feedStatus.dataset.state = status;
@@ -358,27 +346,15 @@
         const aircraft = state.aircraft.find(function (item) { return item.id === state.selectedId; });
         if (!aircraft) {
             state.selectedId = null;
-            elements.selectedCallsign.textContent = "None selected";
-            elements.selectedType.textContent = "Click a marker on the map to see its details.";
-            elements.selectedPosition.textContent = "--";
-            elements.selectedAltitude.textContent = "--";
-            elements.selectedSpeed.textContent = "--";
-            elements.selectedTrack.textContent = "--";
+            elements.selectedStatus.textContent = "Click an aircraft marker for details";
             return;
         }
 
-        elements.selectedCallsign.textContent = aircraft.callsign;
-        elements.selectedType.textContent = aircraft.type + (aircraft.overIowa ? " / over Iowa" : " / regional view");
-        elements.selectedPosition.textContent = formatPosition(aircraft);
-        elements.selectedAltitude.textContent = formatAltitude(aircraft);
-        elements.selectedSpeed.textContent = formatSpeed(aircraft);
-        elements.selectedTrack.textContent = formatTrack(aircraft);
+        elements.selectedStatus.textContent = aircraft.callsign + " / " + formatAltitude(aircraft) + " / " + formatSpeed(aircraft) + " / heading " + formatTrack(aircraft);
     }
 
     function aircraftForMap() {
-        const overIowa = state.aircraft.filter(function (aircraft) { return aircraft.overIowa; }).slice(0, MAP_IOWA_LIMIT);
-        const nearby = state.aircraft.filter(function (aircraft) { return !aircraft.overIowa; }).slice(0, MAP_AIRCRAFT_LIMIT - overIowa.length);
-        return overIowa.concat(nearby);
+        return state.aircraft.filter(function (aircraft) { return aircraft.overIowa; }).slice(0, MAP_IOWA_LIMIT);
     }
 
     function selectAircraft(id) {
@@ -425,10 +401,6 @@
         });
     }
 
-    function formatUpdateTime(date) {
-        return new Intl.DateTimeFormat(undefined, { hour: "numeric", minute: "2-digit" }).format(date);
-    }
-
     async function loadFlights() {
         if (state.requestInFlight) {
             return;
@@ -452,15 +424,14 @@
             const flights = (Array.isArray(payload.ac) ? payload.ac : [])
                 .map(normalizeAircraft)
                 .filter(Boolean)
+                .filter(function (aircraft) { return aircraft.overIowa; })
                 .sort(function (first, second) {
                     return Number(second.overIowa) - Number(first.overIowa) || (second.altitude || 0) - (first.altitude || 0);
                 });
             state.aircraft = flights;
             state.source = "live";
             state.selectedId = flights[0] ? flights[0].id : null;
-            state.lastUpdated = payload.now ? new Date(payload.now < 100000000000 ? payload.now * 1000 : payload.now) : new Date();
             setFeedStatus(flights.length ? "Live snapshot" : "Quiet sky", flights.length ? "success" : "quiet");
-            elements.lastUpdated.textContent = "Updated " + formatUpdateTime(state.lastUpdated) + " local time";
             renderBoard();
             renderSelected();
         } catch (error) {
@@ -471,18 +442,16 @@
             }
             if (hasLastSnapshot) {
                 setFeedStatus("Using last live snapshot", "error");
-                elements.lastUpdated.textContent = "Live feed refresh failed; showing the last good snapshot";
             } else {
                 state.source = "fixture";
                 setFeedStatus("Offline fixture / feed unavailable", "offline");
-                elements.lastUpdated.textContent = "Deterministic fixture shown; live feed could not be reached";
             }
             renderBoard();
             renderSelected();
         } finally {
             state.requestInFlight = false;
             elements.refreshButton.disabled = false;
-            elements.refreshButton.textContent = "Refresh feed";
+            elements.refreshButton.textContent = "Refresh";
         }
     }
 

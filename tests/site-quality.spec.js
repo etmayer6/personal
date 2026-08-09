@@ -254,6 +254,34 @@ test("primary navigation keeps a visible header surface", async ({ browser }) =>
     await context.close();
 });
 
+test("homepage portrait opens the About page", async ({ browser }) => {
+    const context = await browser.newContext({ reducedMotion: "reduce", serviceWorkers: "block" });
+    await installOfflineRoutes(context);
+    const page = await context.newPage();
+    await page.goto("/", { waitUntil: "domcontentloaded" });
+
+    const portrait = page.locator("a.hero-portrait-link");
+    await expect(portrait).toHaveAttribute("href", "about/");
+    await portrait.click();
+    expect(new URL(page.url()).pathname).toBe("/about/");
+    await context.close();
+});
+
+test("Iowa Skywatch stays scoped to Iowa", async ({ browser }) => {
+    const context = await browser.newContext({ reducedMotion: "reduce", serviceWorkers: "block" });
+    await installOfflineRoutes(context);
+    const page = await context.newPage();
+    await page.goto("/flight-radar/", { waitUntil: "domcontentloaded" });
+    await page.waitForTimeout(350);
+
+        await expect(page.locator(".regional-states")).toHaveCount(0);
+        await expect(page.locator(".radar-hero, .radar-sidebar, .radar-note, .flight-radar-footer")).toHaveCount(0);
+        await expect(page.locator(".radar-board")).toHaveCount(1);
+        await expect(page.locator(".aircraft-marker:not(.is-over-iowa)")).toHaveCount(0);
+    await expect(page.locator("#map-description")).not.toContainText("surrounding states");
+    await context.close();
+});
+
 test("project counts match the centralized registry", async ({ browser }) => {
     const context = await browser.newContext({ reducedMotion: "reduce", serviceWorkers: "block" });
     await installOfflineRoutes(context);

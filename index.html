@@ -57,39 +57,19 @@
                 </div>
             </div>
 
-            <aside class="hero-portrait" aria-label="Portrait of Ethan Mayer">
-                <img
-                    src="images/photos/optimized/P1020473-960.webp"
-                    srcset="images/photos/optimized/P1020473-480.webp 480w, images/photos/optimized/P1020473-960.webp 960w, images/photos/optimized/P1020473-1440.webp 1440w"
-                    sizes="(max-width: 700px) calc(100vw - 48px), 520px"
-                    width="1440"
-                    height="1080"
-                    fetchpriority="high"
-                    decoding="async"
-                    alt="Ethan Mayer outdoors"
-                >
-            </aside>
-        </section>
-
-        <section class="home-flight" aria-label="Airbus A220 takeoff sequence">
-            <div class="home-flight-sequence">
-                <div class="home-flight-sticky">
-                    <div class="home-flight-stage">
-                        <canvas
-                            id="home-flight-canvas"
-                            class="home-flight-canvas"
-                            width="1536"
-                            height="1024"
-                            role="img"
-                            aria-label="An Airbus A220 progresses from a runway takeoff into a calm cruise above the clouds as the page scrolls."
-                        ></canvas>
-                        <noscript>
-                            <div class="home-flight-noscript">
-                                <img src="assets/home-flight-25-jpg/frame-00-runway.jpg" alt="An Airbus A220 waiting on a runway at dawn.">
-                            </div>
-                        </noscript>
-                    </div>
-                </div>
+            <div class="hero-portrait">
+                <a class="hero-portrait-link" href="about/" aria-label="Learn more about Ethan Mayer">
+                    <img
+                        src="images/photos/optimized/P1020473-960.webp"
+                        srcset="images/photos/optimized/P1020473-480.webp 480w, images/photos/optimized/P1020473-960.webp 960w, images/photos/optimized/P1020473-1440.webp 1440w"
+                        sizes="(max-width: 700px) calc(100vw - 48px), 520px"
+                        width="1440"
+                        height="1080"
+                        fetchpriority="high"
+                        decoding="async"
+                        alt="Ethan Mayer outdoors"
+                    >
+                </a>
             </div>
         </section>
 
@@ -167,7 +147,6 @@
         <p>&copy; 2026 Ethan Mayer</p>
         <a href="https://www.linkedin.com/in/ethan-mayer/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
     </footer>
-    <script src="home-flight.js?v=a220-scroll-25" defer></script>
     <script src="site-play.js?v=pet-companion-2" defer></script>
 </body>
 </html>

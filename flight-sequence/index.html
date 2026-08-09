@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A scroll-driven Airbus A220 takeoff sequence by Ethan Mayer.">
+    <title>Flight Sequence | Ethan Mayer</title>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="style.css">
+    <!-- SEO:START -->
+        <link rel="canonical" href="https://etmayer6.github.io/personal/flight-sequence/">
+        <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+        <meta property="og:type" content="website">
+        <meta property="og:site_name" content="Ethan Mayer">
+        <meta property="og:title" content="Flight Sequence | Ethan Mayer">
+        <meta property="og:description" content="A scroll-driven Airbus A220 takeoff sequence by Ethan Mayer.">
+        <meta property="og:url" content="https://etmayer6.github.io/personal/flight-sequence/">
+        <meta property="og:image" content="https://etmayer6.github.io/personal/assets/social-card.png">
+        <meta property="og:image:type" content="image/png">
+        <meta property="og:image:width" content="1200">
+        <meta property="og:image:height" content="630">
+        <meta property="og:image:alt" content="Ethan Mayer - software engineer and personal projects">
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:title" content="Flight Sequence | Ethan Mayer">
+        <meta name="twitter:description" content="A scroll-driven Airbus A220 takeoff sequence by Ethan Mayer.">
+        <meta name="twitter:image" content="https://etmayer6.github.io/personal/assets/social-card.png">
+    <!-- SEO:END -->
+</head>
+<body class="flight-sequence-body">
+    <header class="site-header">
+        <nav aria-label="Primary navigation">
+            <a class="nav-name" href="../">Ethan Mayer</a>
+            <ul>
+                <li><a href="../">Home</a></li>
+                <li><a href="../about/">About</a></li>
+                <li><a href="../resume/">Resume</a></li>
+                <li><a aria-current="page" href="../projects/">Projects</a></li>
+                <li><a href="../games/">Games</a></li>
+                <li><a href="../photos/">Photos</a></li>
+                <li><a href="../blog/">Blog</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="flight-sequence-intro" aria-labelledby="flight-sequence-title">
+            <p class="eyebrow">Visual experiment</p>
+            <h1 id="flight-sequence-title">Flight sequence.</h1>
+            <p>Scroll through an Airbus A220 takeoff, from runway roll to open sky.</p>
+        </section>
+
+        <section class="flight-sequence-track" aria-label="Airbus A220 takeoff sequence">
+            <div class="flight-sequence-sticky">
+                <div class="flight-sequence-stage">
+                    <canvas
+                        id="flight-sequence-canvas"
+                        class="flight-sequence-canvas"
+                        width="1536"
+                        height="1024"
+                        role="img"
+                        aria-label="An Airbus A220 progresses from a runway takeoff into a calm cruise above the clouds as the page scrolls."
+                    ></canvas>
+                    <noscript>
+                        <div class="flight-sequence-noscript">
+                            <img src="../assets/home-flight-49-jpg/frame-00.jpg" alt="An Airbus A220 waiting on a runway at dawn." width="1536" height="1024">
+                        </div>
+                    </noscript>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <p>&copy; 2026 Ethan Mayer</p>
+        <a href="https://www.linkedin.com/in/ethan-mayer/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+    </footer>
+    <script src="app.js?v=a220-stable-cadence-25" defer></script>
+</body>
+</html>

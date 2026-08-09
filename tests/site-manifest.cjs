@@ -24,7 +24,7 @@ const interactiveMetadata = {
     "/meal-planner/": { name: "Receipt Meal Planner", marker: "Receipt Meal Planner", ready: "#recipe-list" },
     "/childhood-timeline/": { name: "Childhood Timeline", marker: "Childhood Timeline", ready: ".timeline-event" },
     "/garage/": { name: "Garage", marker: "Put the whole machine", ready: ".finding-card" },
-    "/flight-radar/": { name: "Iowa Skywatch", marker: "Watch the sky move.", ready: ".aircraft-marker" },
+    "/flight-radar/": { name: "Iowa Skywatch", marker: "Iowa Skywatch", ready: ".aircraft-marker" },
     "/whiteboard/": { name: "Idea Whiteboard", marker: "Idea Whiteboard", ready: "#whiteboard-canvas" },
     "/pet-studio/": { name: "Pet Studio", marker: "Pet Studio", ready: "#pet-form" },
     "/pinpoint/": { name: "Pinpoint", marker: "Pinpoint", ready: "#location-image" },
@@ -32,6 +32,7 @@ const interactiveMetadata = {
     "/aquarium/": { name: "Mola Mola", marker: "mola mola", ready: "#aquarium-canvas" },
     "/gremlin-lab/": { name: "Gremlin Physics Lab", marker: "Make a mess.", ready: "#lab-canvas" },
     "/flight-sim/": { name: "Flight Sim", marker: "Choose a flight condition", ready: "#flight-sim-root" },
+    "/flight-sequence/": { name: "Flight Sequence", marker: "Flight sequence.", ready: "#flight-sequence-canvas" },
     "/calendar/": { name: "Calendar", marker: "Make a little time.", ready: "main" },
     "/night-shift/": { name: "Night Shift", marker: "The doors stay locked", ready: "main" }
 };

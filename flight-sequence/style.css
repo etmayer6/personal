@@ -1,0 +1,130 @@
+.flight-sequence-body {
+    min-height: 100vh;
+    overflow-x: clip;
+    color: var(--ink);
+    background:
+        linear-gradient(90deg, rgba(16, 43, 54, 0.035) 1px, transparent 1px),
+        linear-gradient(rgba(16, 43, 54, 0.035) 1px, transparent 1px),
+        var(--paper);
+    background-size: 42px 42px;
+}
+
+.flight-sequence-intro {
+    width: min(1160px, calc(100% - 40px));
+    margin: 0 auto;
+    padding: clamp(72px, 10vw, 126px) 0 52px;
+    border-bottom: 1px solid var(--line);
+}
+
+.flight-sequence-intro h1 {
+    max-width: 780px;
+    margin: 0;
+    font-size: clamp(64px, 10vw, 118px);
+    line-height: 0.86;
+    letter-spacing: -0.065em;
+}
+
+.flight-sequence-intro > p:last-child {
+    max-width: 540px;
+    margin: 30px 0 0;
+    color: var(--ink-soft);
+    font-size: 19px;
+    line-height: 1.65;
+}
+
+.flight-sequence-track {
+    position: relative;
+    height: 250vh;
+    margin: 0 calc(50% - 50vw);
+    overflow: clip;
+    background: var(--paper);
+}
+
+.flight-sequence-sticky {
+    position: sticky;
+    top: 0;
+    width: 100%;
+    height: 100vh;
+    min-height: 100svh;
+    display: grid;
+    place-items: center;
+}
+
+.flight-sequence-stage {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    min-height: 100svh;
+    overflow: hidden;
+    background: var(--paper);
+}
+
+.flight-sequence-canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    background: var(--paper);
+}
+
+.flight-sequence-noscript {
+    position: absolute;
+    inset: 0;
+    background: var(--paper);
+}
+
+.flight-sequence-noscript img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.site-footer {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    width: min(1160px, calc(100% - 40px));
+    margin: 0 auto;
+    padding: 28px 0 40px;
+    color: var(--ink-soft);
+    font-size: 13px;
+}
+
+.site-footer p {
+    margin: 0;
+}
+
+.site-footer a {
+    color: var(--ink);
+    font-weight: 700;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 4px;
+}
+
+@media (max-width: 700px) {
+    .flight-sequence-intro {
+        padding: 62px 0 38px;
+    }
+
+    .flight-sequence-intro h1 {
+        font-size: clamp(58px, 17vw, 86px);
+    }
+
+    .flight-sequence-intro > p:last-child {
+        margin-top: 22px;
+        font-size: 17px;
+    }
+
+    .site-footer {
+        flex-direction: column;
+        gap: 8px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+}
