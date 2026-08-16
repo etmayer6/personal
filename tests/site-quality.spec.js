@@ -321,13 +321,16 @@ test("projects lead with interactive work and finish with reference projects", a
     const page = await context.newPage();
     await page.goto("/projects/", { waitUntil: "domcontentloaded" });
 
-    const names = await page.locator(".archive-card h3").allTextContents();
-    expect(names.slice(-5)).toEqual([
+    const referenceNames = await page.locator(".archive-grid-reference .archive-card h3").allTextContents();
+    expect(referenceNames).toEqual([
         "Apartment Hunt",
         "Groggy Climbs",
         "Zulip",
         "SE / COM S 319",
-        "Garage Diagnostic Bay"
+        "Garage Diagnostic Bay",
+        "Diet Tracker",
+        "Receipt Meal Planner",
+        "Childhood Timeline"
     ]);
     await expect(page.locator(".archive-break")).toContainText("Reference shelf");
     await context.close();

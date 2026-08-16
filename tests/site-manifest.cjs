@@ -49,9 +49,6 @@ const projectRegistry = [
     { name: "Word Sort Solitaire", path: "/word-sort/", featured: true },
     { name: "Travel Map", path: "/travel/" },
     { name: "Block Blast", path: "/block-blast/" },
-    { name: "Diet Tracker", path: "/diet-tracker/" },
-    { name: "Receipt Meal Planner", path: "/meal-planner/" },
-    { name: "Childhood Timeline", path: "/childhood-timeline/" },
     { name: "Iowa Skywatch", path: "/flight-radar/" },
     { name: "Idea Whiteboard", path: "/whiteboard/" },
     { name: "Pet Studio", path: "/pet-studio/" },
@@ -64,7 +61,10 @@ const projectRegistry = [
     { name: "Groggy Climbs", path: "/groggy-climbs/" },
     { name: "Zulip", href: "https://github.com/etmayer6/zulip", external: true },
     { name: "SE / COM S 319", href: "https://github.com/etmayer6/secoms319", external: true },
-    { name: "Garage Diagnostic Bay", path: "/garage/" }
+    { name: "Garage Diagnostic Bay", path: "/garage/" },
+    { name: "Diet Tracker", path: "/diet-tracker/" },
+    { name: "Receipt Meal Planner", path: "/meal-planner/" },
+    { name: "Childhood Timeline", path: "/childhood-timeline/" }
 ];
 
 function routeFromIndex(filePath) {
