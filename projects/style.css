@@ -30,7 +30,7 @@
     align-items: end;
     min-height: 560px;
     padding: 88px 0 72px;
-    border-bottom: 1px solid rgba(16, 43, 54, 0.18);
+    border-top: 1px solid rgba(16, 43, 54, 0.18);
 }
 
 .projects-hero-copy {

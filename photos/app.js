@@ -6,9 +6,7 @@ const photoViewer = document.getElementById("photo-viewer");
 const photoViewerStage = document.getElementById("photo-viewer-stage");
 const photoViewerImage = document.getElementById("photo-viewer-image");
 const photoViewerPosition = document.getElementById("photo-viewer-position");
-const photoViewerMetadata = document.getElementById("photo-viewer-metadata");
 const photoViewerTitle = document.getElementById("photo-viewer-title");
-const photoViewerNote = document.getElementById("photo-viewer-note");
 const photoViewerPrevious = document.getElementById("photo-viewer-previous");
 const photoViewerNext = document.getElementById("photo-viewer-next");
 const photoViewerClose = document.getElementById("photo-viewer-close");
@@ -130,9 +128,7 @@ function getViewerRecord(item, index) {
 
     return {
         ...item,
-        title: `Archive frame ${String(index + 1).padStart(2, "0")}`,
-        caption: "An uncaptioned frame from the complete photo archive.",
-        location: "Full archive"
+        title: `Archive frame ${String(index + 1).padStart(2, "0")}`
     };
 }
 
@@ -165,9 +161,7 @@ function updatePhotoViewer() {
     const nextIndex = (activeViewerIndex + 1) % activeViewerItems.length;
 
     photoViewerPosition.textContent = `${position} / ${total}`;
-    photoViewerMetadata.textContent = [item.location, item.date].filter(Boolean).join(" / ");
     photoViewerTitle.textContent = item.title || `Archive frame ${position}`;
-    photoViewerNote.textContent = item.caption || "An uncaptioned frame from the complete photo archive.";
     photoViewerImage.alt = item.alt || "Photograph from Ethan's collection";
     photoViewerImage.width = dimensions.width;
     photoViewerImage.height = dimensions.height;
@@ -233,10 +227,7 @@ function createPhotoCard(item, index, featured = false) {
     const media = document.createElement("div");
     const caption = document.createElement("figcaption");
     const sequence = document.createElement("span");
-    const captionCopy = document.createElement("div");
-    const metadata = document.createElement("p");
     const title = document.createElement("h3");
-    const note = document.createElement("p");
 
     figure.className = featured ? "photo-card photo-card--featured" : "photo-card";
     media.className = "photo-media";
@@ -245,14 +236,9 @@ function createPhotoCard(item, index, featured = false) {
     caption.className = "photo-caption";
     sequence.className = "photo-sequence";
     sequence.textContent = String(index + 1).padStart(2, "0");
-    metadata.className = "photo-metadata";
-    metadata.textContent = [item.location, item.date].filter(Boolean).join(" / ");
     title.textContent = item.title;
-    note.className = "photo-note";
-    note.textContent = item.caption;
 
-    captionCopy.append(metadata, title, note);
-    caption.append(sequence, captionCopy);
+    caption.append(sequence, title);
     figure.append(media, caption);
     return figure;
 }
