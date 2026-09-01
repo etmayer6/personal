@@ -1,0 +1,971 @@
+:root {
+    --project-ease: cubic-bezier(0.22, 1, 0.36, 1);
+    --project-shadow: 0 18px 48px rgba(16, 43, 54, 0.12);
+    --project-ring: 0 0 0 3px rgba(115, 211, 205, 0.3);
+}
+
+/* Shared project rhythm --------------------------------------------------- */
+
+:is(
+    .courseflow-body,
+    .flight-site-body,
+    .wordsort-site-body,
+    .blockblast-site-body,
+    .travel-body,
+    .flight-radar-body,
+    .whiteboard-body,
+    .pet-studio-body,
+    .pinpoint-body,
+    .life-body,
+    .aquarium-body,
+    .gremlin-lab-body,
+    .root-shift-body,
+    .apartment-body,
+    .groggy-body,
+    .garage-body,
+    .diet-body
+) {
+    scrollbar-gutter: stable;
+}
+
+:is(
+    .courseflow-body,
+    .flight-site-body,
+    .wordsort-site-body,
+    .blockblast-site-body,
+    .travel-body,
+    .flight-radar-body,
+    .whiteboard-body,
+    .pet-studio-body,
+    .pinpoint-body,
+    .life-body,
+    .aquarium-body,
+    .gremlin-lab-body,
+    .root-shift-body,
+    .apartment-body,
+    .groggy-body,
+    .garage-body,
+    .diet-body
+) main {
+    animation: project-enter 520ms var(--project-ease) both;
+}
+
+:is(
+    .courseflow-body,
+    .flight-site-body,
+    .wordsort-site-body,
+    .blockblast-site-body,
+    .travel-body,
+    .flight-radar-body,
+    .whiteboard-body,
+    .pet-studio-body,
+    .pinpoint-body,
+    .life-body,
+    .aquarium-body,
+    .gremlin-lab-body,
+    .root-shift-body,
+    .apartment-body,
+    .groggy-body,
+    .garage-body,
+    .diet-body
+) :is(button, a, input, select):focus-visible {
+    outline: none;
+    box-shadow: var(--project-ring);
+}
+
+@keyframes project-enter {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.project-switchboard {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 14px 22px;
+    align-items: center;
+    margin: -4px 0 28px;
+    padding: 18px;
+    border: 1px solid rgba(16, 43, 54, 0.18);
+    background: rgba(255, 253, 248, 0.82);
+    box-shadow: 8px 8px 0 rgba(25, 79, 97, 0.08);
+}
+
+.project-filter-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.project-filter,
+.project-surprise {
+    min-height: 42px;
+    padding: 10px 15px;
+    color: #194f61;
+    border: 1px solid rgba(16, 43, 54, 0.18);
+    border-radius: 999px;
+    background: #fffdf8;
+    font: inherit;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    cursor: pointer;
+    transition: color 180ms ease, background-color 180ms ease, transform 180ms var(--project-ease), box-shadow 180ms ease;
+}
+
+.project-filter:hover,
+.project-filter:focus-visible,
+.project-surprise:hover,
+.project-surprise:focus-visible {
+    transform: translateY(-2px);
+    box-shadow: 0 7px 18px rgba(16, 43, 54, 0.12);
+}
+
+.project-filter.is-active {
+    color: #fffdf8;
+    border-color: #194f61;
+    background: #194f61;
+}
+
+.project-surprise {
+    color: #fffdf8;
+    border-color: #c55a32;
+    border-radius: 0;
+    background: #c55a32;
+}
+
+.project-surprise span {
+    display: inline-block;
+    margin-left: 8px;
+    font-size: 17px;
+    transition: transform 360ms var(--project-ease);
+}
+
+.project-surprise:hover span,
+.project-surprise:focus-visible span {
+    transform: rotate(150deg);
+}
+
+.project-filter-status {
+    grid-column: 1 / -1;
+    margin: 0;
+    color: #6b7b7f;
+    font-size: 12px;
+}
+
+.archive-card[hidden],
+.feature-card[hidden] {
+    display: none !important;
+}
+
+.projects-body .archive-card.has-card-image {
+    padding-top: 164px;
+}
+
+.projects-body .archive-card.has-card-image::after {
+    z-index: 0;
+    top: 5px;
+    right: 0;
+    left: 0;
+    width: auto;
+    height: 132px;
+    border: 0;
+    border-radius: 0;
+    background:
+        linear-gradient(180deg, transparent 45%, rgba(7, 29, 36, 0.74)),
+        var(--card-image) center / cover no-repeat;
+    box-shadow: none;
+    opacity: 1;
+    transform: scale(1.01);
+    transition: transform 420ms var(--project-ease), filter 240ms ease;
+}
+
+.projects-body .archive-card.has-card-image:hover::after,
+.projects-body .archive-card.has-card-image:focus-within::after {
+    filter: saturate(1.08) contrast(1.03);
+    transform: scale(1.06);
+}
+
+.projects-body .archive-card.has-card-image .archive-top {
+    position: absolute;
+    z-index: 3;
+    top: 18px;
+    right: 18px;
+    left: 18px;
+}
+
+.projects-body .archive-card.has-card-image .archive-number,
+.projects-body .archive-card.has-card-image .archive-type {
+    color: #fffdf8;
+    border-color: rgba(255, 255, 255, 0.42);
+    background: rgba(7, 29, 36, 0.58);
+    backdrop-filter: blur(8px);
+}
+
+.projects-body .archive-card h3 {
+    margin-top: 28px;
+}
+
+.projects-body .projects-hero {
+    min-height: 470px;
+}
+
+.projects-body :is(.feature-card, .archive-card, .project-switchboard) {
+    transition-timing-function: var(--project-ease);
+}
+
+/* Interaction-first route framing --------------------------------------- */
+
+.courseflow-body .app-main {
+    padding-top: 24px;
+}
+
+.courseflow-body .preboot-courseflow {
+    box-shadow: var(--project-shadow);
+}
+
+.flight-site-body .flight-site-shell,
+.wordsort-site-body .wordsort-site-shell,
+.blockblast-site-body .blockblast-site-shell {
+    width: min(1500px, calc(100% - 24px));
+    padding-top: 12px;
+}
+
+.flight-site-body .scenario-library {
+    margin-bottom: 8px;
+    padding-block: 20px;
+}
+
+.flight-site-body .scenario-option {
+    min-height: 126px;
+}
+
+.wordsort-site-body .wordsort-site-app,
+.blockblast-site-body .blockblast-site-app {
+    box-shadow: 0 22px 60px rgba(5, 31, 42, 0.18);
+}
+
+.travel-body .travel-shell,
+.groggy-body .groggy-shell {
+    padding-top: 24px;
+}
+
+.travel-body .travel-hero,
+.groggy-body .groggy-hero-copy {
+    padding: 30px 34px;
+}
+
+.travel-body .travel-hero h1,
+.groggy-body .groggy-hero-copy h1 {
+    font-size: clamp(40px, 5.5vw, 64px);
+}
+
+.travel-body :is(.travel-hero, .travel-map-panel, .travel-list-panel, .travel-stat-card),
+.groggy-body :is(.groggy-hero-copy, .groggy-fit-card, .groggy-stat-card, .groggy-controls, .groggy-list-wrap) {
+    border-radius: 20px;
+    box-shadow: 0 16px 38px rgba(20, 50, 79, 0.08);
+}
+
+.groggy-body .routes-list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.groggy-body .route-card {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+}
+
+.groggy-body .route-link {
+    align-self: flex-start;
+    margin-top: auto;
+}
+
+.flight-radar-body .flight-radar-shell,
+.whiteboard-body .whiteboard-shell,
+.pinpoint-body .pinpoint-shell,
+.life-body .life-shell,
+.aquarium-body .aquarium-shell,
+.pet-studio-body .pet-studio-shell {
+    width: min(1440px, calc(100% - 24px));
+    padding-top: 12px;
+}
+
+.flight-radar-body .radar-board-panel,
+.whiteboard-body .whiteboard-layout,
+.pinpoint-body .pinpoint-game,
+.life-body .life-game,
+.aquarium-body .aquarium-layout,
+.pet-studio-body .pet-studio-layout {
+    box-shadow: 0 20px 58px rgba(6, 31, 40, 0.14);
+}
+
+.pet-studio-body .pet-preview-art {
+    filter: drop-shadow(0 18px 24px rgba(3, 28, 34, 0.28));
+}
+
+.pet-studio-body .pet-preview-spark {
+    animation: project-spark 2.8s ease-in-out infinite alternate;
+}
+
+.pet-studio-body .spark-two {
+    animation-delay: -1.2s;
+}
+
+@keyframes project-spark {
+    from { opacity: 0.45; transform: scale(0.88) rotate(-8deg); }
+    to { opacity: 1; transform: scale(1.12) rotate(8deg); }
+}
+
+.life-body .life-game,
+.aquarium-body .aquarium-layout {
+    border-color: rgba(16, 43, 54, 0.16);
+}
+
+.life-body .life-cell {
+    transition: background-color 120ms ease, transform 120ms var(--project-ease);
+}
+
+.life-body .life-cell:hover {
+    transform: scale(0.88);
+}
+
+/* Big-intro projects: put the thing itself closer to the top. */
+
+.gremlin-lab-body .lab-shell {
+    padding-top: 32px;
+}
+
+.gremlin-lab-body .lab-hero {
+    gap: 32px;
+    padding: 0 0 26px;
+}
+
+.gremlin-lab-body .lab-hero h1 {
+    font-size: clamp(54px, 7vw, 88px);
+}
+
+.gremlin-lab-body .lab-panel {
+    margin-top: 28px;
+    box-shadow: 0 24px 70px rgba(16, 43, 54, 0.14);
+}
+
+.root-shift-body .root-shift-intro {
+    min-height: 0;
+    gap: clamp(32px, 6vw, 72px);
+    padding: 46px 0 50px;
+}
+
+.root-shift-body .root-shift-intro h1 {
+    font-size: clamp(54px, 8vw, 98px);
+}
+
+.root-shift-body .root-shift-sequence {
+    padding-top: 46px;
+}
+
+.root-shift-body .root-shift-stage {
+    box-shadow: 0 26px 70px rgba(42, 24, 15, 0.2);
+}
+
+.garage-body .project-intro,
+.diet-body .project-intro {
+    min-height: 0;
+    gap: clamp(28px, 5vw, 64px);
+    padding: 42px 0 30px;
+}
+
+.garage-body .project-intro h1 {
+    font-size: clamp(48px, 6.6vw, 82px);
+}
+
+.diet-body .project-intro h1 {
+    font-size: clamp(42px, 5.6vw, 68px);
+}
+
+.garage-body .garage-console,
+.diet-body .tracker-frame {
+    box-shadow: 0 25px 70px rgba(16, 43, 54, 0.13);
+}
+
+.planner-body .project-intro,
+.childhood-body .project-intro {
+    padding-bottom: 26px;
+}
+
+.diet-body {
+    overflow-x: clip;
+}
+
+/* Apartment board: results, not a landing page. */
+
+.apartment-body .apartments-page {
+    padding-bottom: 36px;
+}
+
+.apartment-body .hero {
+    padding: 38px 0 28px;
+}
+
+.apartment-body .hero h1 {
+    font-size: clamp(42px, 6vw, 68px);
+}
+
+.apartment-body .hero-actions {
+    margin-top: 18px;
+}
+
+.apartment-body .panel {
+    box-shadow: 0 16px 44px rgba(20, 50, 79, 0.08);
+}
+
+.apartment-body #filters {
+    margin-top: 6px;
+}
+
+@media (max-width: 960px) {
+    .groggy-body .routes-list {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 700px) {
+    header nav,
+    body :is(
+        .projects-header,
+        .resume-header,
+        .photos-header,
+        .games-header,
+        .apartment-header,
+        .travel-header,
+        .groggy-header,
+        .blockblast-site-header,
+        .flight-site-header,
+        .wordsort-site-header,
+        .blog-header
+    ) nav {
+        width: 100%;
+        min-height: 58px;
+        padding: 0;
+    }
+
+    body header nav ul {
+        width: 100%;
+        justify-content: flex-start;
+        flex-wrap: nowrap !important;
+        gap: 2px;
+        padding: 8px 12px;
+        overflow-x: auto;
+        overscroll-behavior-inline: contain;
+        scrollbar-width: none;
+        scroll-snap-type: x proximity;
+    }
+
+    header nav ul::-webkit-scrollbar {
+        display: none;
+    }
+
+    header nav li {
+        flex: 0 0 auto;
+        scroll-snap-align: center;
+    }
+
+    header nav a:not(.nav-name) {
+        min-height: 38px;
+        padding: 8px 11px;
+        font-size: 10px;
+    }
+
+    .project-switchboard {
+        grid-template-columns: 1fr;
+        margin-bottom: 22px;
+        padding: 14px;
+    }
+
+    .project-filter-group {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .project-filter,
+    .project-surprise {
+        width: 100%;
+    }
+
+    .projects-body .archive-card.has-card-image {
+        padding-top: 182px;
+    }
+
+    .projects-body .archive-card.has-card-image::after {
+        height: 150px;
+    }
+
+    .projects-body .projects-hero {
+        min-height: 0;
+        padding-block: 52px;
+    }
+
+    .projects-body .section-heading h2 {
+        font-size: 42px;
+    }
+
+    .projects-body .featured-layout {
+        display: flex;
+        gap: 12px;
+        margin-inline: -12px;
+        padding: 2px 12px 18px;
+        overflow-x: auto;
+        overscroll-behavior-inline: contain;
+        scroll-snap-type: x mandatory;
+        scrollbar-width: none;
+    }
+
+    .projects-body .featured-layout::-webkit-scrollbar {
+        display: none;
+    }
+
+    .projects-body .feature-stack {
+        display: contents;
+    }
+
+    .projects-body .feature-card,
+    .projects-body .feature-stack .feature-card {
+        flex: 0 0 min(86vw, 336px);
+        min-height: 570px;
+        grid-template-columns: 1fr;
+        grid-template-rows: auto minmax(190px, 1fr);
+        scroll-snap-align: center;
+    }
+
+    .projects-body .feature-card p {
+        display: -webkit-box;
+        overflow: hidden;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 4;
+    }
+
+    .projects-body .feature-card h3,
+    .projects-body .feature-stack .feature-card h3 {
+        font-size: 34px;
+    }
+
+    .projects-body .courseflow-visual,
+    .projects-body :is(.flight-visual, .word-visual) {
+        min-height: 210px;
+    }
+
+    .projects-body .courseflow-visual {
+        margin: 0 18px 18px;
+    }
+
+    .projects-body .archive-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+    }
+
+    .projects-body .archive-card,
+    .projects-body .archive-grid-reference .archive-card {
+        min-height: 238px;
+        padding: 16px;
+    }
+
+    .projects-body .archive-card p {
+        display: none;
+    }
+
+    .projects-body .archive-card h3 {
+        margin-top: 28px;
+        font-size: clamp(21px, 6.2vw, 27px);
+    }
+
+    .projects-body .archive-footer {
+        gap: 8px;
+        padding-top: 18px;
+        font-size: 9px;
+    }
+
+    .projects-body .archive-footer a {
+        flex-basis: 34px;
+        width: 34px;
+        height: 34px;
+    }
+
+    .projects-body .archive-number {
+        width: 30px;
+        height: 30px;
+        font-size: 14px;
+    }
+
+    .projects-body .archive-type {
+        max-width: 88px;
+        padding: 6px 7px;
+        overflow: hidden;
+        font-size: 8px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .projects-body .archive-card.has-card-image {
+        min-height: 268px;
+        padding-top: 130px;
+    }
+
+    .projects-body .archive-card.has-card-image::after {
+        height: 112px;
+    }
+
+    .projects-body .archive-card.has-card-image .archive-top {
+        top: 12px;
+        right: 12px;
+        left: 12px;
+    }
+
+    .projects-body .archive-break {
+        margin-top: 46px;
+    }
+
+    :is(
+        .courseflow-body,
+        .flight-site-body,
+        .wordsort-site-body,
+        .blockblast-site-body,
+        .travel-body,
+        .flight-radar-body,
+        .whiteboard-body,
+        .pet-studio-body,
+        .pinpoint-body,
+        .life-body,
+        .aquarium-body,
+        .gremlin-lab-body,
+        .root-shift-body,
+        .apartment-body,
+        .groggy-body,
+        .garage-body,
+        .diet-body
+    ) main {
+        animation-duration: 380ms;
+    }
+
+    .courseflow-body .app-main,
+    .flight-site-body .flight-site-shell,
+    .wordsort-site-body .wordsort-site-shell,
+    .blockblast-site-body .blockblast-site-shell,
+    .flight-radar-body .flight-radar-shell,
+    .whiteboard-body .whiteboard-shell,
+    .pinpoint-body .pinpoint-shell,
+    .life-body .life-shell,
+    .aquarium-body .aquarium-shell,
+    .pet-studio-body .pet-studio-shell {
+        width: calc(100% - 12px);
+        padding-top: 6px;
+    }
+
+    .flight-site-body .scenario-library {
+        max-height: none;
+        padding: 12px 10px;
+    }
+
+    .flight-site-body .scenario-library-copy > p:last-child {
+        display: none;
+    }
+
+    .flight-site-body .scenario-options {
+        display: flex;
+        gap: 8px;
+        overflow-x: auto;
+        overscroll-behavior-inline: contain;
+        scroll-snap-type: x mandatory;
+        scrollbar-width: none;
+    }
+
+    .flight-site-body .scenario-options::-webkit-scrollbar {
+        display: none;
+    }
+
+    .flight-site-body .scenario-option {
+        min-width: min(78vw, 270px);
+        scroll-snap-align: start;
+    }
+
+    .travel-body .travel-shell,
+    .groggy-body .groggy-shell {
+        width: calc(100% - 20px);
+        padding-top: 12px;
+    }
+
+    .travel-body .travel-hero,
+    .groggy-body .groggy-hero-copy {
+        padding: 24px;
+    }
+
+    .travel-body .travel-stats,
+    .groggy-body .groggy-stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+    }
+
+    .travel-body .travel-stat-card,
+    .groggy-body .groggy-stat-card {
+        min-width: 0;
+        padding: 16px;
+    }
+
+    .flight-radar-body .radar-board-panel {
+        min-height: 58svh;
+    }
+
+    .pet-studio-body .pet-preview-stage {
+        min-height: 330px;
+    }
+
+    .pet-studio-body .pet-preview-art,
+    .pet-studio-body .pet-preview-art .site-pet-svg {
+        width: 210px;
+        height: 210px;
+    }
+
+    .gremlin-lab-body .lab-shell,
+    .root-shift-body .root-shift-shell,
+    .garage-body .garage-page-shell,
+    .diet-body .diet-page-shell {
+        width: calc(100% - 20px);
+    }
+
+    .gremlin-lab-body .lab-shell {
+        padding-top: 18px;
+    }
+
+    .gremlin-lab-body .lab-hero {
+        gap: 14px;
+        padding-bottom: 18px;
+    }
+
+    .gremlin-lab-body .lab-hero h1 {
+        font-size: clamp(44px, 14vw, 64px);
+    }
+
+    .gremlin-lab-body .lab-hero > p {
+        font-size: 14px;
+        line-height: 1.5;
+    }
+
+    .gremlin-lab-body .lab-panel {
+        margin-top: 16px;
+    }
+
+    .root-shift-body .root-shift-intro {
+        display: block;
+        gap: 22px;
+        padding: 28px 0 30px;
+    }
+
+    .root-shift-body .root-shift-specimen {
+        display: none;
+    }
+
+    .root-shift-body .root-shift-intro h1 {
+        font-size: clamp(48px, 17vw, 72px);
+    }
+
+    .root-shift-body .root-shift-sequence {
+        padding-top: 30px;
+    }
+
+    .root-shift-body .root-shift-sticky {
+        top: 58px;
+        min-height: calc(100svh - 58px);
+        gap: 0;
+        padding: 6px 0;
+    }
+
+    .root-shift-body .root-shift-sequence-heading {
+        display: none;
+    }
+
+    .root-shift-body .root-shift-stage {
+        height: calc(100svh - 70px);
+        min-height: 0;
+    }
+
+    .root-shift-body .root-shift-canvas {
+        width: 100%;
+        height: 100%;
+        aspect-ratio: auto;
+        object-fit: cover;
+        object-position: center;
+    }
+
+    .garage-body .project-intro,
+    .diet-body .project-intro {
+        gap: 18px;
+        padding: 28px 0 20px;
+    }
+
+    .garage-body .project-intro h1,
+    .diet-body .project-intro h1,
+    .planner-body .project-intro h1,
+    .childhood-body .project-intro h1 {
+        font-size: clamp(40px, 13vw, 58px);
+    }
+
+    .garage-body .intro-copy,
+    .diet-body .intro-copy {
+        font-size: 15px;
+        line-height: 1.55;
+    }
+
+    .apartment-body .apartments-page {
+        padding-top: 0;
+    }
+
+    .apartment-body .hero {
+        padding: 24px 0 18px;
+    }
+
+    .apartment-body .hero h1 {
+        font-size: 46px;
+    }
+
+    .apartment-body .hero-copy {
+        margin-top: 10px;
+    }
+
+    .apartment-body .hero-actions {
+        display: none;
+    }
+
+    .apartment-body .filter-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .apartment-body .filter-grid label:first-child,
+    .apartment-body .filter-grid .checkbox-row {
+        grid-column: 1 / -1;
+    }
+
+    .apartment-body .listing-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+    }
+
+    .apartment-body .listing-card {
+        min-width: 0;
+        padding: 14px;
+    }
+
+    .apartment-body .listing-card h3 {
+        width: 100%;
+        font-size: 18px;
+        overflow-wrap: anywhere;
+    }
+
+    .apartment-body .listing-card > * {
+        min-width: 0;
+        max-width: 100%;
+    }
+
+    .apartment-body .listing-card .pill {
+        display: block;
+        max-width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .apartment-body .listing-card > div:not(.listing-meta):not(.listing-links) {
+        display: none;
+    }
+
+    .apartment-body .listing-meta {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .apartment-body .listing-links {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .groggy-body .routes-list {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+    }
+
+    .groggy-body .route-card {
+        min-width: 0;
+        padding: 15px;
+    }
+
+    .groggy-body .route-card-top {
+        align-items: flex-start;
+        flex-direction: column-reverse;
+        gap: 10px;
+    }
+
+    .groggy-body .route-card h3 {
+        font-size: 22px;
+        overflow-wrap: anywhere;
+    }
+
+    .groggy-body .route-grade-box {
+        width: 100%;
+    }
+
+    .groggy-body .route-note,
+    .groggy-body .route-chip-row,
+    .groggy-body .route-area,
+    .groggy-body .route-flag {
+        display: none;
+    }
+
+    .groggy-body .route-meta {
+        margin-top: 10px;
+    }
+
+    .groggy-body .route-link {
+        margin-top: auto;
+    }
+
+    .diet-body .tracker-frame {
+        width: 100%;
+        margin-left: 0;
+        border-right: 1px solid rgba(16, 43, 54, 0.2);
+        border-left: 1px solid rgba(16, 43, 54, 0.2);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    :is(
+        .courseflow-body,
+        .flight-site-body,
+        .wordsort-site-body,
+        .blockblast-site-body,
+        .travel-body,
+        .flight-radar-body,
+        .whiteboard-body,
+        .pet-studio-body,
+        .pinpoint-body,
+        .life-body,
+        .aquarium-body,
+        .gremlin-lab-body,
+        .root-shift-body,
+        .apartment-body,
+        .groggy-body,
+        .garage-body,
+        .diet-body
+    ) main,
+    .pet-studio-body .pet-preview-spark {
+        animation: none;
+    }
+
+    .project-surprise span,
+    .projects-body .archive-card.has-card-image::after {
+        transition: none;
+    }
+}

@@ -444,7 +444,7 @@
                 setFeedStatus("Using last live snapshot", "error");
             } else {
                 state.source = "fixture";
-                setFeedStatus("Offline fixture / feed unavailable", "offline");
+                setFeedStatus("Practice traffic / live sky is resting", "offline");
             }
             renderBoard();
             renderSelected();
@@ -474,7 +474,7 @@
     setMapBackdrop();
     state.aircraft = OFFLINE_AIRCRAFT.map(normalizeAircraft).filter(Boolean);
     state.selectedId = state.aircraft[0] ? state.aircraft[0].id : null;
-    setFeedStatus("Fixture ready / checking live feed", "offline");
+    setFeedStatus("Practice traffic ready / scanning live sky", "offline");
     renderBoard();
     renderSelected();
     scheduleRefresh();

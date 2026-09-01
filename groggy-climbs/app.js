@@ -4,14 +4,14 @@ const climbs = Array.isArray(window.GROGGY_CLIMBS) && window.GROGGY_CLIMBS.lengt
         name: "Example route",
         grade: "5.10a",
         gradeRank: 18,
-        location: "Local fixture",
-        area: "Sample wall",
+        location: "Cedar Rapids, IA",
+        area: "Training wall",
         relevance: "Strong Match",
         relevanceRank: 4,
-        note: "A fictional route keeps the recommendation interface understandable if the data script is unavailable.",
-        tags: ["Fixture"],
+        note: "A fictional warm-up route keeps the board fun even when the full route list is taking a break.",
+        tags: ["Warm-up"],
         link: "#",
-        linkLabel: "Fixture route",
+        linkLabel: "Route beta",
         projectPick: false
     }];
 

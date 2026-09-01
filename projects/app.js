@@ -1,6 +1,10 @@
 (() => {
     const cards = document.querySelectorAll(".feature-card, .archive-card");
     const interactiveSelector = "a, button, input, select, textarea, [contenteditable='true']";
+    const filterButtons = [...document.querySelectorAll("[data-project-filter]")];
+    const filterStatus = document.querySelector("[data-project-filter-status]");
+    const surpriseButton = document.querySelector("[data-project-surprise]");
+    const filterableCards = [...document.querySelectorAll("[data-project-kind]")];
 
     cards.forEach((card) => {
         const destination = card.querySelector("a[href]");
@@ -29,5 +33,37 @@
             event.preventDefault();
             openDestination();
         });
+    });
+
+    const applyFilter = (filter) => {
+        let visibleCount = 0;
+        filterableCards.forEach((card) => {
+            const visible = filter === "all" || card.dataset.projectKind === filter;
+            card.hidden = !visible;
+            if (visible) visibleCount += 1;
+        });
+
+        filterButtons.forEach((button) => {
+            const active = button.dataset.projectFilter === filter;
+            button.classList.toggle("is-active", active);
+            button.setAttribute("aria-pressed", String(active));
+        });
+
+        if (filterStatus) {
+            filterStatus.textContent = filter === "all"
+                ? "All 21 doors are open."
+                : `${visibleCount} ${filter} project${visibleCount === 1 ? "" : "s"} ready.`;
+        }
+    };
+
+    filterButtons.forEach((button) => {
+        button.addEventListener("click", () => applyFilter(button.dataset.projectFilter));
+    });
+
+    surpriseButton?.addEventListener("click", () => {
+        const visibleCards = filterableCards.filter((card) => !card.hidden);
+        const card = visibleCards[Math.floor(Math.random() * visibleCards.length)];
+        const destination = card?.querySelector("a[href]");
+        destination?.click();
     });
 })();

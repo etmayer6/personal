@@ -12,13 +12,29 @@
     const context = canvas.getContext("2d");
     const manifest = [
         { file: "assets/optimized/frame-00-seedling-1440.webp", name: "Seedling", detail: "small beginnings" },
+        { file: "assets/optimized/frame-01-seedling-unfurling-a-1440.webp", name: "New leaf", detail: "the first unfurl" },
+        { file: "assets/optimized/frame-02-seedling-unfurling-b-1440.webp", name: "Reaching", detail: "the stem opens" },
         { file: "assets/optimized/frame-01-unfurling-1440.webp", name: "Unfurling", detail: "the first shift" },
+        { file: "assets/optimized/frame-04-unfurling-sapling-a-1440.webp", name: "Small branch", detail: "a new direction" },
+        { file: "assets/optimized/frame-05-unfurling-sapling-b-1440.webp", name: "Young sapling", detail: "height and curl" },
         { file: "assets/optimized/frame-02-sapling-1440.webp", name: "Sapling", detail: "finding a shape" },
+        { file: "assets/optimized/frame-07-sapling-branching-a-1440.webp", name: "Branching", detail: "limbs begin" },
+        { file: "assets/optimized/frame-08-sapling-branching-b-1440.webp", name: "Canopy figure", detail: "a shape in leaves" },
         { file: "assets/optimized/frame-03-branching-form-1440.webp", name: "Branching form", detail: "arms from the stem" },
+        { file: "assets/optimized/frame-10-branching-rooted-a-1440.webp", name: "Rooted limbs", detail: "arms take weight" },
+        { file: "assets/optimized/frame-11-branching-rooted-b-1440.webp", name: "Standing figure", detail: "a body from bark" },
         { file: "assets/optimized/frame-04-rooted-figure-1440.webp", name: "Rooted figure", detail: "a body takes hold" },
+        { file: "assets/optimized/frame-13-rooted-emerging-a-1440.webp", name: "First face", detail: "features surface" },
+        { file: "assets/optimized/frame-14-rooted-emerging-b-1440.webp", name: "Awakening", detail: "the plant watches back" },
         { file: "assets/optimized/frame-05-emerging-ape-1440.webp", name: "Emerging ape", detail: "the face appears" },
+        { file: "assets/optimized/frame-16-emerging-guardian-a-1440.webp", name: "Broadening", detail: "shoulders settle" },
+        { file: "assets/optimized/frame-17-emerging-guardian-b-1440.webp", name: "Guardian form", detail: "fur joins leaves" },
         { file: "assets/optimized/frame-06-leafy-guardian-1440.webp", name: "Leafy guardian", detail: "plant and animal overlap" },
+        { file: "assets/optimized/frame-19-guardian-settling-a-1440.webp", name: "Lowering", detail: "roots become hands" },
+        { file: "assets/optimized/frame-20-guardian-settling-b-1440.webp", name: "Grounded", detail: "the guardian kneels" },
         { file: "assets/optimized/frame-07-settling-ape-1440.webp", name: "Settling", detail: "the roots let go" },
+        { file: "assets/optimized/frame-22-settling-ape-a-1440.webp", name: "Receding leaves", detail: "fur takes over" },
+        { file: "assets/optimized/frame-23-settling-ape-b-1440.webp", name: "Almost ape", detail: "the last green traces" },
         { file: "assets/optimized/frame-08-ape-1440.webp", name: "Ape", detail: "the form settles" }
     ];
 

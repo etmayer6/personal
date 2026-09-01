@@ -53,7 +53,7 @@
         {
             id: "fixture-hiawatha-one",
             title: "Example one-bedroom near Hiawatha",
-            source: "Local fixture",
+            source: "Sample listing",
             url: "",
             location: "Hiawatha, Iowa",
             price: 1140,
@@ -75,7 +75,7 @@
         {
             id: "fixture-marion-two",
             title: "Example two-bedroom in Marion",
-            source: "Local fixture",
+            source: "Sample listing",
             url: "",
             location: "Marion, Iowa",
             price: 1280,
@@ -97,7 +97,7 @@
         {
             id: "fixture-cedar-rapids-loft",
             title: "Example loft with flexible commute",
-            source: "Local fixture",
+            source: "Sample listing",
             url: "",
             location: "Cedar Rapids, Iowa",
             price: 1050,
@@ -405,10 +405,10 @@
         document.body.dataset.demoState = "loading";
 
         if (!dataUrl) {
-            statusText.textContent = "Listing data not configured";
+            statusText.textContent = "Sample shortlist ready";
             rows = FALLBACK_ROWS.slice();
             render();
-            showError("The live listing source is not configured. Showing a fictional local fixture.", "Retry live data", boot);
+            showError("Live listings are taking the day off, so here are three fictional places to test the board with.", "Try live listings again", boot);
             bootInFlight = false;
             return;
         }
@@ -427,9 +427,9 @@
             render();
         } catch (error) {
             rows = FALLBACK_ROWS.slice();
-            statusText.textContent = "Offline fixture ready";
+            statusText.textContent = "Sample shortlist ready";
             render();
-            showError("Live listing data is unavailable, so this page is using a fictional offline fixture.", "Retry live data", boot);
+            showError("Live listings are out of reach right now, so the board is using three fictional places instead.", "Try live listings again", boot);
         } finally {
             bootInFlight = false;
         }

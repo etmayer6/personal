@@ -332,13 +332,13 @@ function renderTravelData(data, photoData, offline = false) {
     regionsCountEl.textContent = String(regions.size);
 
     recoveryEl.hidden = !offline;
-    statusEl.textContent = offline ? "Offline fixture ready" : "Travel data ready";
+    statusEl.textContent = offline ? "Saved travel board ready" : "Travel board ready";
     statusEl.dataset.state = offline ? "offline" : "ready";
     renderMarkers();
     renderList();
     updateStatus();
     if (offline) {
-        statusEl.textContent = "Offline fixture ready";
+        statusEl.textContent = "Saved travel board ready";
         statusEl.dataset.state = "offline";
     }
 }

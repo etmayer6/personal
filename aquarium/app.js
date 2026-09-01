@@ -10,11 +10,11 @@
     const TAU = Math.PI * 2;
 
     const STAGES = [
-        { name: "Tiny pancake", threshold: 0, size: 0.62, color: "#f7c94a", accent: "#e77952", title: "Tiny fins, big plans." },
-        { name: "Snack-sized sunfish", threshold: 32, size: 0.78, color: "#f4b84e", accent: "#ef8e57", title: "Momo found a rhythm." },
-        { name: "Reef regular", threshold: 85, size: 0.96, color: "#e5a34c", accent: "#db7253", title: "A familiar face in the reef." },
-        { name: "Ocean pancake", threshold: 160, size: 1.16, color: "#d98d4c", accent: "#c85f57", title: "Momo is getting enormous." },
-        { name: "Gentle giant", threshold: MAX_GROWTH, size: 1.34, color: "#c97b50", accent: "#b84d5c", title: "The tank has a legend." }
+        { name: "Tiny pancake", threshold: 0, size: 0.82, color: "#f7c94a", accent: "#e77952", title: "Tiny fins, big plans." },
+        { name: "Snack-sized sunfish", threshold: 32, size: 0.98, color: "#f4b84e", accent: "#ef8e57", title: "Momo found a rhythm." },
+        { name: "Reef regular", threshold: 85, size: 1.16, color: "#e5a34c", accent: "#db7253", title: "A familiar face in the reef." },
+        { name: "Ocean pancake", threshold: 160, size: 1.36, color: "#d98d4c", accent: "#c85f57", title: "Momo is getting enormous." },
+        { name: "Gentle giant", threshold: MAX_GROWTH, size: 1.56, color: "#c97b50", accent: "#b84d5c", title: "The tank has a legend." }
     ];
 
     const FOOD_TYPES = {

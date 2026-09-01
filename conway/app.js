@@ -460,7 +460,7 @@
         render();
     };
 
-    loadPattern("glider");
+    loadPattern("pulsar");
     resizeCanvas();
     requestAnimationFrame(animate);
 }());

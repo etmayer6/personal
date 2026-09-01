@@ -729,7 +729,7 @@ function loadRound() {
     } else {
         imageEl.srcset = `${location.imageSmall} 480w, ${location.image} 960w`;
         imageEl.sizes = "(max-width: 980px) 100vw, 58vw";
-        sourcePillEl.textContent = mapillaryToken ? "Local fallback" : "Local collection";
+        sourcePillEl.textContent = mapillaryToken ? "Curated backup" : "Curated set";
     }
     imageEl.src = location.image;
     imageEl.alt = "Location challenge photo";
@@ -1092,11 +1092,11 @@ imageEl.addEventListener("error", () => {
         return;
     }
     loadingEl.replaceChildren();
-    loadingEl.append("This fixture photo could not be loaded. ");
+    loadingEl.append("This location photo could not be loaded. ");
     const retry = document.createElement("button");
     retry.type = "button";
     retry.className = "image-retry";
-    retry.textContent = "Retry fixture";
+    retry.textContent = "Try photo again";
     retry.addEventListener("click", loadRound, { once: true });
     loadingEl.appendChild(retry);
 });
@@ -1212,8 +1212,8 @@ window.__pinpoint_debug_sample_regions = () => balancedRegions().map(({ continen
 
 async function initializeGame() {
     resetMapView(false);
-    sourcePillEl.textContent = "Local fixture / optional Mapillary";
-    statusEl.textContent = "Fixture challenge ready. World boundaries are loading in the background.";
+    sourcePillEl.textContent = "Curated set / optional Mapillary";
+    statusEl.textContent = "Challenge ready. World boundaries are drawing in the background.";
     await startGame({ fixtureFirst: true });
     await loadWorldMap();
     requestAnimationFrame(resizeCanvas);
