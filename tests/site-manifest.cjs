@@ -34,7 +34,8 @@ const interactiveMetadata = {
     "/flight-sim/": { name: "Flight Sim", marker: "Choose a flight condition", ready: "#flight-sim-root" },
     "/flight-sequence/": { name: "Flight Sequence", marker: "Flight sequence.", ready: "#flight-sequence-canvas" },
     "/calendar/": { name: "Calendar", marker: "Make a little time.", ready: "main" },
-    "/night-shift/": { name: "Night Shift", marker: "The doors stay locked", ready: "main" }
+    "/night-shift/": { name: "Night Shift", marker: "The doors stay locked", ready: "main" },
+    "/tier-lab/": { name: "Tier Lab", marker: "Rank irresponsibly", ready: ".tier-board" }
 };
 
 const redirectMetadata = {
@@ -57,6 +58,7 @@ const projectRegistry = [
     { name: "Mola Mola", path: "/aquarium/" },
     { name: "Gremlin Physics Lab", path: "/gremlin-lab/" },
     { name: "Root / Shift", path: "/plant-to-ape/" },
+    { name: "Tier Lab", path: "/tier-lab/" },
     { name: "Apartment Hunt", path: "/apartments/" },
     { name: "Groggy Climbs", path: "/groggy-climbs/" },
     { name: "Zulip", href: "https://github.com/etmayer6/zulip", external: true },

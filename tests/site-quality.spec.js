@@ -359,6 +359,38 @@ test("featured demos support their primary interaction", async ({ browser }) => 
     await context.close();
 });
 
+test("Tier Lab creates, ranks, and shares a public list", async ({ browser }) => {
+    const context = await browser.newContext({ reducedMotion: "reduce", serviceWorkers: "block" });
+    await context.grantPermissions(["clipboard-read", "clipboard-write"], { origin: "http://127.0.0.1:4175" });
+    await installOfflineRoutes(context);
+    const page = await context.newPage();
+
+    await page.goto("/tier-lab/", { waitUntil: "domcontentloaded" });
+    await page.getByLabel("Title").fill("Best UFOs");
+    await expect(page.locator("#board-title")).toHaveText("Best UFOs");
+
+    await page.getByLabel("Name or emoji").fill("🛸 Saucer");
+    await page.getByRole("button", { name: "Add to the pile" }).click();
+    await expect(page.locator("#pool-count")).toHaveText("3");
+
+    await page.getByRole("button", { name: "🛸 Saucer", exact: true }).click();
+    await page.getByRole("button", { name: "S", exact: true }).click();
+    await expect(page.locator('[data-tier-id="tier-s"] .tier-items')).toContainText("🛸 Saucer");
+    await expect(page.locator("#pool-count")).toHaveText("2");
+
+    await page.getByRole("button", { name: "Copy public link" }).click();
+    await expect(page.locator("#tier-status")).toContainText("Public link copied");
+    const publicLink = await page.evaluate(() => navigator.clipboard.readText());
+    expect(publicLink).toContain("/tier-lab/?view=1#list=");
+
+    await page.goto(publicLink, { waitUntil: "domcontentloaded" });
+    await expect(page.locator("body")).toHaveAttribute("data-mode", "view");
+    await expect(page.locator(".tier-sidebar")).toBeHidden();
+    await expect(page.locator("#board-title")).toHaveText("Best UFOs");
+    await expect(page.locator(".tier-board")).toContainText("🛸 Saucer");
+    await context.close();
+});
+
 test("keyboard focus is visible on every public route", async ({ browser }) => {
     const context = await browser.newContext({ viewport: { width: 1440, height: 900 }, reducedMotion: "reduce", serviceWorkers: "block" });
     await installOfflineRoutes(context);

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Build, import, and share playful tier lists with friends in Ethan Mayer's Tier Lab.">
+    <title>Tier Lab | Ethan Mayer</title>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../project-polish.css?v=2">
+    <link rel="canonical" href="https://etmayer6.github.io/personal/tier-lab/">
+    <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Ethan Mayer">
+    <meta property="og:title" content="Tier Lab | Ethan Mayer">
+    <meta property="og:description" content="Build, import, and share playful tier lists with friends.">
+    <meta property="og:url" content="https://etmayer6.github.io/personal/tier-lab/">
+    <meta property="og:image" content="https://etmayer6.github.io/personal/assets/social-card.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <!-- SEO:START -->
+        <link rel="canonical" href="https://etmayer6.github.io/personal/tier-lab/">
+        <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+        <meta property="og:type" content="website">
+        <meta property="og:site_name" content="Ethan Mayer">
+        <meta property="og:title" content="Tier Lab | Ethan Mayer">
+        <meta property="og:description" content="Build, import, and share playful tier lists with friends in Ethan Mayer's Tier Lab.">
+        <meta property="og:url" content="https://etmayer6.github.io/personal/tier-lab/">
+        <meta property="og:image" content="https://etmayer6.github.io/personal/assets/social-card.png">
+        <meta property="og:image:type" content="image/png">
+        <meta property="og:image:width" content="1200">
+        <meta property="og:image:height" content="630">
+        <meta property="og:image:alt" content="Ethan Mayer - software engineer and personal projects">
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:title" content="Tier Lab | Ethan Mayer">
+        <meta name="twitter:description" content="Build, import, and share playful tier lists with friends in Ethan Mayer's Tier Lab.">
+        <meta name="twitter:image" content="https://etmayer6.github.io/personal/assets/social-card.png">
+    <!-- SEO:END -->
+</head>
+<body class="tier-lab-body" data-mode="edit">
+    <header class="tier-lab-header">
+        <div class="tier-lab-header-inner">
+            <a class="tier-lab-brand" href="../projects/">&larr; Projects</a>
+            <span class="tier-lab-header-title">Tier Lab</span>
+            <span class="tier-lab-save-state" id="save-state">Saved locally</span>
+        </div>
+    </header>
+
+    <main class="tier-lab-shell">
+        <section class="tier-lab-intro">
+            <div>
+                <p class="tier-eyebrow">Rank irresponsibly.</p>
+                <h1>Tier Lab</h1>
+                <p class="tier-intro-copy">Make the definitive list, send it to the group chat, then defend every questionable decision.</p>
+            </div>
+            <div class="tier-intro-stamp" aria-hidden="true">
+                <span>Public opinion</span>
+                <strong>Highly<br>scientific</strong>
+            </div>
+        </section>
+
+        <section class="tier-toolbar" aria-label="Tier list actions">
+            <div class="tier-toolbar-primary">
+                <button class="tier-button tier-button-accent" id="share-button" type="button">Copy public link</button>
+                <button class="tier-button" id="export-button" type="button">Export JSON</button>
+                <label class="tier-button tier-import-button editor-only" for="import-input">Import JSON</label>
+                <input id="import-input" type="file" accept="application/json,.json" hidden>
+                <button class="tier-button tier-button-quiet editor-only" id="new-button" type="button">New list</button>
+            </div>
+            <p class="tier-status" id="tier-status" role="status" aria-live="polite">Drag a card, or tap one and choose its new tier.</p>
+            <a class="tier-button tier-button-accent viewer-only" href="./">Remix this list</a>
+        </section>
+
+        <section class="tier-workspace">
+            <aside class="tier-sidebar editor-only" aria-label="Tier list editor">
+                <div class="tier-panel">
+                    <p class="tier-panel-label">The list</p>
+                    <label for="list-title">Title</label>
+                    <input id="list-title" type="text" maxlength="70" autocomplete="off">
+                    <label for="list-subtitle">One-line argument</label>
+                    <input id="list-subtitle" type="text" maxlength="120" autocomplete="off">
+                </div>
+
+                <form class="tier-panel tier-add-form" id="add-item-form">
+                    <p class="tier-panel-label">Add a contender</p>
+                    <label for="item-label">Name or emoji</label>
+                    <input id="item-label" type="text" maxlength="42" placeholder="Gas-station pretzel" required autocomplete="off">
+                    <label for="item-image">Image URL <span>optional</span></label>
+                    <input id="item-image" type="url" placeholder="https://..." autocomplete="off">
+                    <button class="tier-button tier-button-dark" type="submit">Add to the pile</button>
+                </form>
+
+                <div class="tier-panel">
+                    <p class="tier-panel-label">Board controls</p>
+                    <button class="tier-button tier-button-wide" id="add-tier-button" type="button">+ Add a tier</button>
+                    <p class="tier-help">Tier names are editable. Use the arrows to rearrange them. Everything autosaves in this browser.</p>
+                </div>
+            </aside>
+
+            <div class="tier-board-wrap">
+                <article class="tier-board" aria-labelledby="board-title">
+                    <header class="tier-board-heading">
+                        <div>
+                            <p>Official ruling / subject to argument</p>
+                            <h2 id="board-title"></h2>
+                            <span id="board-subtitle"></span>
+                        </div>
+                        <div class="tier-board-count"><strong id="item-count">0</strong><span>contenders</span></div>
+                    </header>
+
+                    <div class="tier-rows" id="tier-rows"></div>
+
+                    <section class="tier-pool" data-dropzone="pool">
+                        <div class="tier-pool-heading">
+                            <div><span>Unranked</span><small>the waiting room</small></div>
+                            <span id="pool-count">0</span>
+                        </div>
+                        <div class="tier-items tier-pool-items" id="tier-pool" data-dropzone="pool"></div>
+                    </section>
+                </article>
+
+                <div class="tier-selection editor-only" id="selection-tools" hidden>
+                    <span>Move <strong id="selected-name"></strong> to</span>
+                    <div id="move-buttons"></div>
+                    <button class="tier-selection-delete" id="delete-item-button" type="button">Delete</button>
+                </div>
+            </div>
+        </section>
+
+        <p class="tier-fine-print">Public links contain the list itself—no account, database, or sign-in required.</p>
+    </main>
+
+    <script src="app.js?v=1"></script>
+    <script src="../site-play.js?v=pet-companion-2"></script>
+</body>
+</html>

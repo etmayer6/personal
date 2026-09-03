@@ -23,7 +23,8 @@
     .apartment-body,
     .groggy-body,
     .garage-body,
-    .diet-body
+    .diet-body,
+    .tier-lab-body
 ) {
     scrollbar-gutter: stable;
 }
@@ -45,7 +46,8 @@
     .apartment-body,
     .groggy-body,
     .garage-body,
-    .diet-body
+    .diet-body,
+    .tier-lab-body
 ) main {
     animation: project-enter 520ms var(--project-ease) both;
 }
