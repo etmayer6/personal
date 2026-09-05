@@ -267,6 +267,36 @@ test("homepage portrait opens the About page", async ({ browser }) => {
     await context.close();
 });
 
+test("photo dispatch opens the curated journal at desktop and mobile widths", async ({ browser }) => {
+    const viewports = [
+        { name: "desktop", width: 1440, height: 900 },
+        { name: "mobile", width: 390, height: 844 }
+    ];
+
+    for (const viewport of viewports) {
+        const context = await browser.newContext({
+            viewport: { width: viewport.width, height: viewport.height },
+            reducedMotion: "reduce",
+            serviceWorkers: "block"
+        });
+        await installOfflineRoutes(context);
+        const page = await context.newPage();
+        await page.goto("/blog/posts/the-title-can-stop-talking/", { waitUntil: "domcontentloaded" });
+
+        const journalLink = page.getByRole("link", { name: "curated photo journal" });
+        await expect(journalLink).toHaveAttribute("href", "../../../photos/");
+        const dimensions = await page.evaluate(() => ({
+            scrollWidth: document.documentElement.scrollWidth,
+            viewportWidth: window.innerWidth
+        }));
+        expect(dimensions.scrollWidth, `photo dispatch overflows at ${viewport.name}`).toBeLessThanOrEqual(dimensions.viewportWidth + 1);
+
+        await journalLink.click();
+        expect(new URL(page.url()).pathname).toBe("/photos/");
+        await context.close();
+    }
+});
+
 test("Iowa Skywatch stays scoped to Iowa", async ({ browser }) => {
     const context = await browser.newContext({ reducedMotion: "reduce", serviceWorkers: "block" });
     await installOfflineRoutes(context);

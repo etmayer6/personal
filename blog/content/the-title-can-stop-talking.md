@@ -64,3 +64,5 @@ That rhythm feels closer to the way I remember taking pictures. I rarely stood i
 Some images deserve a story. Some just deserve a little room.
 
 The title can stop talking. The photograph has the next line.
+
+See the titles in the [curated photo journal](../../../photos/).

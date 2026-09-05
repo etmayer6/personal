@@ -14,7 +14,7 @@ function escapeHtml(value) {
 
 function safeHref(value) {
     const href = String(value || "").trim();
-    if (/^(https?:\/\/|\/|#)/i.test(href)) return href;
+    if (/^(https?:\/\/|\/|#|\.{1,2}\/)/i.test(href)) return href;
     return "#";
 }
 
