@@ -52,7 +52,7 @@
                 <h1 id="project-title">A family archive, without publishing the family.</h1>
             </div>
             <div class="intro-copy">
-                <p>Wander through a fictional family timeline, open the evidence drawer, and see how a messy archive becomes a story without exposing the real people in it.</p>
+                <p>Explore a fictional timeline and its redacted evidence.</p>
                 <div class="intro-tags" aria-label="Things to try"><span>Pick a year</span><span>Open evidence</span><span>Follow a theme</span></div>
             </div>
         </section>
@@ -84,14 +84,14 @@
 
                 <div class="privacy-banner">
                     <div class="privacy-mark" aria-hidden="true"><span></span></div>
-                    <div><strong>Privacy-safe story set is active</strong><p>Real names, dates, places, media, excerpts, and source links stay out of this public version.</p></div>
+                    <div><strong>Privacy-safe story set is active</strong><p>Real names, dates, media, and source links stay out.</p></div>
                     <ul aria-label="Privacy protections"><li>Names replaced</li><li>Dates bucketed</li><li>Links removed</li><li>Events invented</li></ul>
                 </div>
 
                 <div class="app-content childhood-content">
                     <section id="archive" class="archive-overview" aria-labelledby="archive-title">
                         <div class="archive-title-row">
-                            <div><p class="section-kicker">Sample archive</p><h3 id="archive-title">A life in fragments, reconstructed carefully.</h3><p>The interface mirrors the private tool, but this corpus was written only for the portfolio demo.</p></div>
+                            <div><p class="section-kicker">Sample archive</p><h3 id="archive-title">A life in fragments, reconstructed carefully.</h3><p>A fictional corpus built for this demo.</p></div>
                             <div class="review-state"><span></span><div><strong>8 / 8 reviewed</strong><small>Safe for public display</small></div></div>
                         </div>
                         <div class="archive-stats">
@@ -132,12 +132,12 @@
                     </section>
 
                     <section id="method" class="method-section" aria-labelledby="method-title">
-                        <div class="method-heading"><div><p class="section-kicker">Behind the interface</p><h3 id="method-title">How the private pipeline works</h3></div><p>The production build operates on private exports; only this generalized process is public.</p></div>
+                        <div class="method-heading"><div><p class="section-kicker">Behind the interface</p><h3 id="method-title">How the private pipeline works</h3></div><p>Only this generalized process is public.</p></div>
                         <div class="method-pipeline">
-                            <article><span>01</span><div><strong>Extract</strong><p>Walk nested export payloads and recover candidate post text, timestamps, authors, and canonical identifiers.</p></div></article>
-                            <article><span>02</span><div><strong>Deduplicate</strong><p>Merge repeated captures by stable source key while retaining the strongest text and evidence metadata.</p></div></article>
-                            <article><span>03</span><div><strong>Classify</strong><p>Score subject relevance and themes, then distinguish direct mentions from context-only candidates.</p></div></article>
-                            <article><span>04</span><div><strong>Review</strong><p>Require a person to validate chronology, evidence quality, privacy, and the final public-safe summary.</p></div></article>
+                            <article><span>01</span><div><strong>Extract</strong><p>Recover candidate text, timestamps, authors, and source IDs.</p></div></article>
+                            <article><span>02</span><div><strong>Deduplicate</strong><p>Merge repeated captures while keeping the strongest evidence.</p></div></article>
+                            <article><span>03</span><div><strong>Classify</strong><p>Score relevance and distinguish direct mentions from context.</p></div></article>
+                            <article><span>04</span><div><strong>Review</strong><p>Validate chronology, evidence, privacy, and the public-safe summary.</p></div></article>
                         </div>
                         <div class="privacy-audit">
                             <div><p class="section-kicker">Publication gate</p><h3>Privacy audit</h3><p>Every record must pass all checks before it can appear outside the private workspace.</p></div>
@@ -150,7 +150,7 @@
 
         <section class="project-note" aria-labelledby="built-title">
             <div><p class="eyebrow">Private data, public engineering</p><h2 id="built-title">The system is the project, not the family details.</h2></div>
-            <p>The production timeline indexes private family exports and keeps source evidence available for review. This portfolio version intentionally shows only the parsing strategy, confidence model, timeline UX, and publication safeguards.</p>
+            <p>The public version shows the parsing, confidence, timeline, and privacy safeguards—without family details.</p>
         </section>
     </main>
 

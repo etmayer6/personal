@@ -356,6 +356,8 @@ footer {
 }
 
 .work-card {
+    position: relative;
+    overflow: hidden;
     min-width: 0;
     min-height: 330px;
     display: flex;
@@ -366,6 +368,24 @@ footer {
     border: 1px solid var(--line);
     background: var(--surface);
     transition: transform 180ms ease, box-shadow 180ms ease;
+}
+
+.work-card-image {
+    display: block;
+    flex: 0 0 148px;
+    min-height: 148px;
+    margin: -28px -28px 28px;
+    border-bottom: 1px solid rgba(16, 43, 54, 0.14);
+    background:
+        linear-gradient(180deg, transparent 42%, rgba(16, 43, 54, 0.32)),
+        var(--work-image) center / cover no-repeat;
+}
+
+.work-card-featured .work-card-image {
+    border-bottom-color: rgba(255, 255, 255, 0.18);
+    background:
+        linear-gradient(180deg, transparent 35%, rgba(16, 43, 54, 0.56)),
+        var(--work-image) center / cover no-repeat;
 }
 
 .work-card-featured {
@@ -537,6 +557,11 @@ footer {
 
     .hero-portrait {
         min-height: 460px;
+    }
+
+    .work-card-image {
+        flex-basis: 126px;
+        min-height: 126px;
     }
 
     .home-section {

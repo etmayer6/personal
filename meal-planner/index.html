@@ -52,7 +52,7 @@
                 <h1 id="project-title">From grocery tape to dinner plans.</h1>
             </div>
             <div class="intro-copy">
-                <p>Feed it a sample grocery receipt and watch the long paper strip turn into ingredients, pantry guesses, and dinner ideas.</p>
+                <p>Pick a sample grocery haul, check what you still have, and find dinner ideas with a clear list of anything missing.</p>
                 <div class="intro-tags" aria-label="Things to try"><span>Pick a receipt</span><span>Inspect the haul</span><span>Choose dinner</span></div>
             </div>
         </section>
@@ -83,11 +83,11 @@
                 </header>
 
                 <div class="planner-pipeline" aria-label="Receipt processing pipeline">
-                    <div data-phase="prepare"><span>01</span><strong>Prepare image</strong><small>Crop and segment</small></div>
+                    <div data-phase="prepare"><span>01</span><strong>Choose a basket</strong><small>Sample receipts</small></div>
                     <i aria-hidden="true"></i>
-                    <div data-phase="ocr"><span>02</span><strong>Read receipt</strong><small>Clean OCR lines</small></div>
+                    <div data-phase="ocr"><span>02</span><strong>Check your kitchen</strong><small>Keep what you have</small></div>
                     <i aria-hidden="true"></i>
-                    <div data-phase="ingredients"><span>03</span><strong>Build pantry</strong><small>Infer ingredients</small></div>
+                    <div data-phase="ingredients"><span>03</span><strong>Build pantry</strong><small>Add pantry staples</small></div>
                     <i aria-hidden="true"></i>
                     <div data-phase="recipes"><span>04</span><strong>Plan meals</strong><small>Rank recipe fits</small></div>
                 </div>
@@ -101,13 +101,15 @@
                                     <img id="receipt-image" src="assets/fresh-market-receipt.svg" alt="Fictional Fresh Market grocery receipt">
                                     <div class="receipt-scan" aria-hidden="true"></div>
                                 </div>
-                                <input id="receipt-file" type="file" accept="image/*" hidden>
-                                <div class="receipt-actions"><button class="light-button" id="choose-receipt" type="button">Choose receipt</button><button class="light-button" id="sample-receipt" type="button">Switch sample</button></div>
+                                <p class="estimate-note">Two sample receipts. No image scanning here.</p>
+                                <div class="receipt-actions"><button class="light-button" id="choose-receipt" type="button">Try another basket</button><button class="light-button" id="sample-receipt" type="button" hidden>Switch sample</button></div>
                                 <div class="receipt-fields">
-                                    <label>Planning style<select id="plan-style"><option value="quick">Quick weeknights</option><option value="protein">Higher protein</option><option value="vegetarian">Vegetarian ideas</option></select></label>
-                                    <label>Pantry notes<textarea id="planner-notes" maxlength="180" placeholder="e.g. I already have garlic, olive oil, and hot sauce"></textarea></label>
-                                    <button class="analyze-button" id="analyze-receipt" type="button"><span>Run demo pipeline</span><span aria-hidden="true">&rarr;</span></button>
-                                    <p class="estimate-note">The public demo uses deterministic sample results, not live OCR or recipe advice.</p>
+                                    <label>Planning style<select id="plan-style"><option value="quick">Fewest shopping gaps</option><option value="protein">Higher protein</option><option value="vegetarian">Vegetarian ideas</option></select></label>
+                                    <fieldset class="pantry-picker"><legend>Still in your kitchen</legend><div id="available-items"></div></fieldset>
+                                    <label>Extra pantry ingredients<textarea id="planner-notes" maxlength="180" placeholder="garlic, olive oil, salt, pepper"></textarea></label>
+                                    <p class="estimate-note">Separate ingredients with commas.</p>
+                                    <button class="analyze-button" id="analyze-receipt" type="button"><span>Find dinner ideas</span><span aria-hidden="true">&rarr;</span></button>
+                                    <p class="estimate-note">Coverage counts ingredients present, not portions or cooking time.</p>
                                 </div>
                             </section>
 
@@ -119,8 +121,8 @@
 
                         <section id="results" class="results-column" aria-labelledby="results-title">
                             <header class="result-header">
-                                <div><p class="section-kicker">Latest analysis</p><h3 id="results-title">A flexible weeknight haul</h3><p id="result-summary">A prepared receipt fixture is ready to become pantry and recipe suggestions.</p></div>
-                                <div class="result-engine"><span class="engine-light"></span><div><strong>Static pipeline</strong><small id="result-timing">2.4s simulated</small></div></div>
+                                <div><p class="section-kicker">Latest analysis</p><h3 id="results-title">A flexible weeknight haul</h3><p id="result-summary">A sample receipt is ready for planning.</p></div>
+                                <div class="result-engine"><span class="engine-light"></span><div><strong>Ingredient matching</strong><small id="result-timing">Sample basket</small></div></div>
                             </header>
 
                             <div class="result-stats" id="result-stats"><div class="result-stat"><span>Store</span><strong>Fresh Market</strong></div><div class="result-stat"><span>Receipt lines</span><strong>12</strong></div><div class="result-stat"><span>Ingredients</span><strong>12</strong></div><div class="result-stat"><span>Recipe ideas</span><strong>4</strong></div></div>
@@ -128,12 +130,12 @@
                             <div class="result-tabs" role="tablist" aria-label="Analysis details">
                                 <button class="is-active" id="tab-overview" type="button" role="tab" aria-selected="true" aria-controls="panel-overview" data-tab="overview">Ingredients & recipes</button>
                                 <button id="tab-items" type="button" role="tab" aria-selected="false" aria-controls="panel-items" data-tab="items">Purchased items</button>
-                                <button id="tab-ocr" type="button" role="tab" aria-selected="false" aria-controls="panel-ocr" data-tab="ocr">Parsed receipt text</button>
+                                <button id="tab-ocr" type="button" role="tab" aria-selected="false" aria-controls="panel-ocr" data-tab="ocr">Sample receipt text</button>
                             </div>
 
                             <div class="result-panel" id="panel-overview" role="tabpanel" aria-labelledby="tab-overview">
                                 <section class="ingredient-section" aria-labelledby="ingredients-title">
-                                    <div class="planner-section-heading"><div><p class="section-kicker">Inferred pantry</p><h3 id="ingredients-title">Usable ingredients</h3></div><span id="ingredient-count"></span></div>
+                                    <div class="planner-section-heading"><div><p class="section-kicker">Available basket</p><h3 id="ingredients-title">Usable ingredients</h3></div><span id="ingredient-count"></span></div>
                                     <div class="ingredient-shelf" id="ingredient-shelf"><div class="ingredient-chip"><span>chicken breast</span><small>95%</small></div><div class="ingredient-chip"><span>brown rice</span><small>94%</small></div><div class="ingredient-chip"><span>avocado</span><small>94%</small></div></div>
                                 </section>
 
@@ -144,11 +146,11 @@
                             </div>
 
                             <div class="result-panel" id="panel-items" role="tabpanel" aria-labelledby="tab-items" hidden>
-                                <section class="items-section"><div class="planner-section-heading"><div><p class="section-kicker">OCR cleanup</p><h3>Purchased items</h3></div><span id="item-count"></span></div><div class="item-table" id="item-table"></div></section>
+                                <section class="items-section"><div class="planner-section-heading"><div><p class="section-kicker">Sample receipt</p><h3>Purchased items</h3></div><span id="item-count"></span></div><div class="item-table" id="item-table"></div></section>
                             </div>
 
                             <div class="result-panel" id="panel-ocr" role="tabpanel" aria-labelledby="tab-ocr" hidden>
-                                <section class="ocr-section"><div class="planner-section-heading"><div><p class="section-kicker">Audit trail</p><h3>Parsed receipt text</h3></div><button class="quiet-button" id="copy-ocr" type="button">Copy text</button></div><pre id="ocr-text"></pre></section>
+                                <section class="ocr-section"><div class="planner-section-heading"><div><p class="section-kicker">Audit trail</p><h3>Sample receipt text</h3></div><button class="quiet-button" id="copy-ocr" type="button">Copy text</button></div><pre id="ocr-text"></pre></section>
                             </div>
                         </section>
                     </div>
@@ -164,8 +166,8 @@
         </section>
 
         <section class="project-note" aria-labelledby="built-title">
-            <div><p class="eyebrow">What the production version adds</p><h2 id="built-title">Local vision models, inspectable output.</h2></div>
-            <p>The private Gremlin Hub version prepares unusually tall receipt photos, runs OCR through local vision models or Codex CLI, normalizes noisy product lines, and saves every analysis. This static version uses fictional fixtures while preserving the explainable output structure.</p>
+            <div><p class="eyebrow">Behind the demo</p><h2 id="built-title">Sample inputs, inspectable output.</h2></div>
+            <p>This public version uses fictional receipts and browser-local matching. It keeps the useful loop without private uploads or server processing.</p>
         </section>
     </main>
 

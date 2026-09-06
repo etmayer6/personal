@@ -218,3 +218,8 @@
     .recipe-section .planner-section-heading { display: grid; }
     .recipe-filter { justify-self: start; }
 }
+.pantry-picker { border: 1px solid rgba(255,255,255,.2); padding: 12px; margin: 0; min-width: 0; }
+.pantry-picker legend { padding: 0 6px; font-weight: 700; }
+#available-items { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; }
+#available-items label { display: flex; align-items: center; gap: 7px; font-size: 12px; cursor: pointer; }
+#available-items input { width: auto; margin: 0; accent-color: #e4bd61; }

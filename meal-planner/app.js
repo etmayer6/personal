@@ -52,7 +52,7 @@
     const elements = {
         receiptImage: document.getElementById("receipt-image"),
         receiptReady: document.getElementById("receipt-ready"),
-        receiptFile: document.getElementById("receipt-file"),
+        availability: document.getElementById("available-items"),
         chooseReceipt: document.getElementById("choose-receipt"),
         sampleReceipt: document.getElementById("sample-receipt"),
         planStyle: document.getElementById("plan-style"),
@@ -100,8 +100,8 @@
     function createDefaultState() {
         return {
             entries: [
-                entry("sample-fresh", "fresh", 0, "quick", "I have garlic, hot sauce, and olive oil."),
-                entry("sample-neighborhood", "neighborhood", -6, "protein", "Prefer dinners that also make good leftovers.")
+                entry("sample-fresh", "fresh", 0, "quick", "garlic, hot sauce, olive oil, salt, pepper"),
+                entry("sample-neighborhood", "neighborhood", -6, "protein", "oil, salt, pepper")
             ]
         };
     }
@@ -130,18 +130,46 @@
 
     function buildAnalysis(saved) {
         const fixture = fixtures[saved.fixtureId] || fixtures.fresh;
-        let recipes = fixture.recipes.slice();
+        const items = fixture.items.filter(function (purchased) {
+            return !(saved.excluded || []).includes(purchased.ingredient);
+        });
+        const normalize = function (value) { return value.trim().toLowerCase(); };
+        const pantry = (saved.notes || "").split(/[,;\n]/).map(normalize).filter(Boolean);
+        const available = new Set(items.map(function (purchased) { return normalize(purchased.ingredient); }).concat(pantry));
+        if (available.has("olive oil")) available.add("oil");
+        let recipes = Object.values(fixtures).flatMap(function (source) { return source.recipes; }).map(function (candidate) {
+            const required = [...new Set(candidate.used.concat(candidate.missing, candidate.staples))];
+            const missing = required.filter(function (ingredient) { return !available.has(normalize(ingredient)); });
+            const used = candidate.used.filter(function (ingredient) { return available.has(normalize(ingredient)); });
+            return Object.assign({}, candidate, {
+                used: used,
+                staples: candidate.staples.filter(function (ingredient) { return available.has(normalize(ingredient)); }),
+                missing: missing,
+                confidence: Math.round(100 * (required.length - missing.length) / required.length)
+            });
+        });
         if (saved.style === "vegetarian") recipes = recipes.filter(function (candidate) { return candidate.vegetarian; });
-        if (saved.style === "protein") recipes.sort(function (a, b) { return Number(b.highProtein) - Number(a.highProtein) || b.confidence - a.confidence; });
-        if (saved.style === "quick") recipes.sort(function (a, b) { return a.steps.length - b.steps.length || b.confidence - a.confidence; });
+        recipes.sort(function (a, b) {
+            return (saved.style === "protein" ? Number(b.highProtein) - Number(a.highProtein) : 0) ||
+                b.confidence - a.confidence || a.missing.length - b.missing.length;
+        });
         return {
             fixture: fixture,
-            title: saved.style === "vegetarian" ? "Vegetarian ideas from this haul" : saved.style === "protein" ? "Protein-forward meal options" : "A flexible weeknight haul",
-            summary: fixture.summary + (saved.notes ? " Pantry context: " + saved.notes : ""),
+            title: saved.style === "vegetarian" ? "Vegetarian ideas from this haul" : saved.style === "protein" ? "Protein-forward meal options" : "What can you make tonight?",
+            summary: "Matches from eight built-in recipes. Coverage counts listed ingredients, including pantry staples; it does not check quantities. Uncheck anything you have used up, then plan again.",
             items: fixture.items,
-            ingredients: fixture.items.map(function (purchased) { return { name: purchased.ingredient, quantity: purchased.quantity, confidence: Math.max(72, purchased.confidence - 2) }; }),
+            ingredients: items.map(function (purchased) { return { name: purchased.ingredient, quantity: purchased.quantity }; }),
             recipes: recipes
         };
+    }
+
+    function renderAvailability(excluded) {
+        const fixture = fixtures[pendingFixtureId] || fixtures.fresh;
+        elements.availability.innerHTML = fixture.items.map(function (purchased) {
+            return '<label><input type="checkbox" value="' + escapeHtml(purchased.ingredient) + '" ' +
+                ((excluded || []).includes(purchased.ingredient) ? "" : "checked") +
+                '> ' + escapeHtml(purchased.ingredient) + '</label>';
+        }).join("");
     }
 
     function render() {
@@ -149,13 +177,13 @@
         const analysis = buildAnalysis(saved);
         elements.resultTitle.textContent = analysis.title;
         elements.resultSummary.textContent = analysis.summary;
-        elements.resultTiming.textContent = saved.id.indexOf("sample-") === 0 ? "2.4s simulated" : "New browser-local run";
+        elements.resultTiming.textContent = saved.id.indexOf("sample-") === 0 ? "Sample basket" : "Saved in this browser";
         elements.resultStats.innerHTML = [
             ["Store", analysis.fixture.store], ["Receipt lines", analysis.items.length], ["Ingredients", analysis.ingredients.length], ["Recipe ideas", analysis.recipes.length]
         ].map(function (stat) { return "<div class=\"result-stat\"><span>" + escapeHtml(stat[0]) + "</span><strong>" + escapeHtml(stat[1]) + "</strong></div>"; }).join("");
-        elements.ingredientCount.textContent = analysis.ingredients.length + " inferred";
+        elements.ingredientCount.textContent = analysis.ingredients.length + " available";
         elements.ingredientShelf.innerHTML = analysis.ingredients.map(function (ingredient) {
-            return "<div class=\"ingredient-chip\"><span>" + escapeHtml(ingredient.name) + "</span><small>" + ingredient.confidence + "%</small></div>";
+            return "<div class=\"ingredient-chip\"><span>" + escapeHtml(ingredient.name) + "</span><small>" + escapeHtml(ingredient.quantity) + "</small></div>";
         }).join("");
         elements.itemCount.textContent = analysis.items.length + " lines";
         elements.itemTable.innerHTML = "<div class=\"item-row is-header\"><span>Product</span><span>Ingredient</span><span>Quantity</span><span>Confidence</span></div>" + analysis.items.map(function (purchased) {
@@ -176,8 +204,8 @@
         }
         elements.recipeList.innerHTML = visible.map(function (candidate, index) {
             const expanded = expandedRecipe === candidate.title;
-            const usedLabel = candidate.used.length + " receipt ingredients";
-            return "<article class=\"recipe-card " + (expanded ? "is-expanded" : "") + "\"><div class=\"recipe-summary\"><span class=\"recipe-rank\">0" + (index + 1) + "</span><div class=\"recipe-copy\"><h4>" + escapeHtml(candidate.title) + "</h4><p>" + escapeHtml(candidate.summary) + "</p></div><div class=\"recipe-score\"><strong>" + candidate.confidence + "% fit</strong><span>" + escapeHtml(candidate.type) + "</span></div></div>" +
+            const usedLabel = candidate.used.length + " main ingredients available";
+            return "<article class=\"recipe-card " + (expanded ? "is-expanded" : "") + "\"><div class=\"recipe-summary\"><span class=\"recipe-rank\">0" + (index + 1) + "</span><div class=\"recipe-copy\"><h4>" + escapeHtml(candidate.title) + "</h4><p>" + escapeHtml(candidate.summary) + "</p></div><div class=\"recipe-score\"><strong>" + candidate.confidence + "% coverage</strong><span>" + escapeHtml(candidate.type) + "</span></div></div>" +
                 "<div class=\"recipe-meta\"><span>" + usedLabel + "</span>" + candidate.staples.map(function (staple) { return "<span>Pantry: " + escapeHtml(staple) + "</span>"; }).join("") + candidate.missing.map(function (missing) { return "<span class=\"missing\">Need: " + escapeHtml(missing) + "</span>"; }).join("") + "</div>" +
                 "<div class=\"recipe-actions\"><button class=\"recipe-toggle\" type=\"button\" data-recipe=\"" + escapeHtml(candidate.title) + "\">" + (expanded ? "Hide steps" : "View steps") + "</button></div><div class=\"recipe-steps\">" + candidate.steps.map(function (step, stepIndex) { return "<div class=\"recipe-step\"><span>" + (stepIndex + 1) + "</span><p>" + escapeHtml(step) + "</p></div>"; }).join("") + "</div></article>";
         }).join("");
@@ -203,62 +231,14 @@
     }
 
     function switchSample() {
-        sampleIndex += 1;
-        const fixture = sampleIndex % 2 ? fixtures.neighborhood : fixtures.fresh;
+        const fixture = pendingFixtureId === "fresh" ? fixtures.neighborhood : fixtures.fresh;
         pendingFixtureId = fixture.id;
         pendingImage = fixture.image;
         elements.receiptImage.src = fixture.image;
         elements.receiptImage.alt = "Fictional " + fixture.store + " grocery receipt";
         elements.receiptReady.textContent = fixture.store;
-        showToast(fixture.store + " sample receipt selected.");
-    }
-
-    async function handleReceipt(file) {
-        if (!file || !file.type.startsWith("image/")) {
-            showToast("Choose an image file to continue.");
-            return;
-        }
-        elements.chooseReceipt.disabled = true;
-        elements.chooseReceipt.textContent = "Preparing...";
-        try {
-            pendingImage = await resizeImage(file);
-            pendingFixtureId = null;
-            elements.receiptImage.src = pendingImage;
-            elements.receiptImage.alt = "Selected grocery receipt preview";
-            elements.receiptReady.textContent = "Custom image";
-            showToast("Receipt prepared for the demo OCR pipeline.");
-        } catch (error) {
-            showToast("That receipt image could not be opened.");
-        } finally {
-            elements.chooseReceipt.disabled = false;
-            elements.chooseReceipt.textContent = "Choose receipt";
-        }
-    }
-
-    function resizeImage(file) {
-        return new Promise(function (resolve, reject) {
-            const reader = new FileReader();
-            reader.onerror = reject;
-            reader.onload = function () {
-                const image = new Image();
-                image.onerror = reject;
-                image.onload = function () {
-                    const maxWidth = 900;
-                    const maxHeight = 1400;
-                    const scale = Math.min(1, maxWidth / image.width, maxHeight / image.height);
-                    const canvas = document.createElement("canvas");
-                    canvas.width = Math.max(1, Math.round(image.width * scale));
-                    canvas.height = Math.max(1, Math.round(image.height * scale));
-                    const context = canvas.getContext("2d");
-                    context.fillStyle = "#ffffff";
-                    context.fillRect(0, 0, canvas.width, canvas.height);
-                    context.drawImage(image, 0, 0, canvas.width, canvas.height);
-                    resolve(canvas.toDataURL("image/jpeg", 0.78));
-                };
-                image.src = String(reader.result);
-            };
-            reader.readAsDataURL(file);
-        });
+        renderAvailability([]);
+        showToast(fixture.store + " sample receipt selected. Choose what is still available.");
     }
 
     async function runPipeline() {
@@ -266,30 +246,14 @@
             showToast("Choose a receipt or sample first.");
             return;
         }
-        const phases = [
-            { key: "prepare", label: "Preparing receipt image...", detail: "Checking orientation and receipt length" },
-            { key: "ocr", label: "Reading grocery lines...", detail: "Separating products from totals and store metadata" },
-            { key: "ingredients", label: "Building a usable pantry...", detail: "Normalizing products into cooking ingredients" },
-            { key: "recipes", label: "Ranking realistic recipes...", detail: "Scoring overlap, missing items, and planning style" }
-        ];
-        elements.pipelineCurtain.hidden = false;
-        elements.analyze.disabled = true;
-        document.querySelector(".receipt-preview").classList.add("is-scanning");
-        resetPipelineMarks();
-        for (let index = 0; index < phases.length; index += 1) {
-            setPipelinePhase(phases[index].key, index);
-            elements.pipelineLabel.textContent = phases[index].label;
-            elements.pipelineDetail.textContent = phases[index].detail;
-            await delay(index === 0 ? 420 : 520);
-        }
-
-        const fixtureId = pendingFixtureId || customFixtureFromContext();
+        const fixtureId = pendingFixtureId;
         const saved = {
             id: "analysis-" + Date.now(),
             fixtureId: fixtureId,
             createdAt: Date.now(),
             style: elements.planStyle.value,
-            notes: elements.notes.value.trim()
+            notes: elements.notes.value.trim(),
+            excluded: Array.from(elements.availability.querySelectorAll("input:not(:checked)")).map(function (input) { return input.value; })
         };
         state.entries.unshift(saved);
         selectedEntryId = saved.id;
@@ -300,14 +264,8 @@
         expandedRecipe = null;
         switchTab("overview");
         render();
-        showToast("Receipt parsed and meal ideas saved locally.");
+        showToast("Recipes ranked against your available ingredients and saved locally.");
         document.getElementById("results").scrollIntoView({ behavior: "smooth", block: "start" });
-    }
-
-    function customFixtureFromContext() {
-        const source = elements.notes.value + elements.receiptImage.alt;
-        const hash = Array.from(source).reduce(function (sum, char) { return sum + char.charCodeAt(0); }, 0);
-        return hash % 2 ? "neighborhood" : "fresh";
     }
 
     function resetPipelineMarks() {
@@ -369,6 +327,7 @@
         try { localStorage.removeItem(STORAGE_KEY); } catch (error) { /* In-memory reset is still safe. */ }
         switchTab("overview");
         render();
+        renderAvailability([]);
         showToast("Sample receipt analyses restored.");
     }
 
@@ -379,9 +338,8 @@
         toastTimer = window.setTimeout(function () { elements.toast.classList.remove("is-visible"); }, 2800);
     }
 
-    elements.chooseReceipt.addEventListener("click", function () { elements.receiptFile.click(); });
+    elements.chooseReceipt.addEventListener("click", switchSample);
     elements.sampleReceipt.addEventListener("click", switchSample);
-    elements.receiptFile.addEventListener("change", function (event) { handleReceipt(event.target.files && event.target.files[0]); event.target.value = ""; });
     elements.analyze.addEventListener("click", runPipeline);
     elements.recipeType.addEventListener("change", function () { renderRecipes(buildAnalysis(selectedEntry()).recipes); });
     elements.copyOcr.addEventListener("click", copyOcrText);
@@ -396,7 +354,16 @@
         elements.recipeType.value = "all";
         switchTab("overview");
         render();
-        showToast("Saved analysis loaded.");
+        const saved = selectedEntry();
+        pendingFixtureId = fixtures[saved.fixtureId] ? saved.fixtureId : "fresh";
+        pendingImage = fixtures[pendingFixtureId].image;
+        elements.receiptImage.src = pendingImage;
+        elements.receiptImage.alt = "Fictional " + fixtures[pendingFixtureId].store + " grocery receipt";
+        elements.receiptReady.textContent = fixtures[pendingFixtureId].store;
+        elements.planStyle.value = saved.style;
+        elements.notes.value = saved.notes;
+        renderAvailability(saved.excluded);
+        showToast("Saved plan loaded. Edit ingredients to try another dinner.");
     });
 
     elements.recipeList.addEventListener("click", function (event) {
@@ -414,16 +381,12 @@
         });
     });
 
-    ["dragenter", "dragover"].forEach(function (name) {
-        document.querySelector(".receipt-preview").addEventListener(name, function (event) { event.preventDefault(); event.currentTarget.classList.add("is-scanning"); });
-    });
-    ["dragleave", "drop"].forEach(function (name) {
-        document.querySelector(".receipt-preview").addEventListener(name, function (event) { event.preventDefault(); event.currentTarget.classList.remove("is-scanning"); });
-    });
-    document.querySelector(".receipt-preview").addEventListener("drop", function (event) {
-        const file = event.dataTransfer && event.dataTransfer.files && event.dataTransfer.files[0];
-        handleReceipt(file);
-    });
-
+    pendingFixtureId = fixtures[selectedEntry().fixtureId] ? selectedEntry().fixtureId : "fresh";
+    pendingImage = fixtures[pendingFixtureId].image;
+    elements.receiptImage.src = pendingImage;
+    elements.receiptImage.alt = "Fictional " + fixtures[pendingFixtureId].store + " grocery receipt";
+    elements.planStyle.value = selectedEntry().style;
+    elements.notes.value = selectedEntry().notes;
+    renderAvailability(selectedEntry().excluded);
     render();
 }());

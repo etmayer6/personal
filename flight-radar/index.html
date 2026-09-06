@@ -34,7 +34,7 @@
             <ul>
                 <li><a href="../index.html">Home</a></li><li><a href="../about/">About</a></li>
                 <li><a href="../resume/">Resume</a></li>
-                <li><a href="../projects/">Projects</a></li>
+                <li><a aria-current="page" href="../projects/">Projects</a></li>
                 <li><a href="../games/">Games</a></li>
                 <li><a href="../photos/">Photos</a></li>
                 <li><a href="../blog/">Blog</a></li>
@@ -47,12 +47,12 @@
             <div class="radar-board-panel">
                 <header class="radar-panel-header">
                     <div>
-                        <p class="panel-kicker">Live airspace / Iowa</p>
+                        <p class="panel-kicker">Practice airspace / Iowa</p>
                         <h1 id="sector-heading">Iowa Skywatch</h1>
                     </div>
                     <div class="radar-panel-tools">
                         <div class="feed-status" id="feed-status" data-state="offline" role="status" aria-live="polite">
-                            Practice traffic ready / scanning live sky
+                            Fictional practice aircraft / checking live feed
                         </div>
                         <button class="radar-button" id="refresh-button" type="button">Refresh</button>
                     </div>
@@ -60,8 +60,8 @@
 
                 <div class="radar-board" id="radar-board">
                     <svg id="radar-map" viewBox="0 0 1000 640" role="img" aria-labelledby="map-title map-description">
-                        <title id="map-title">Live aircraft over Iowa</title>
-                        <desc id="map-description">A geographic map of Iowa with aircraft positions from the Airplanes.live ADS-B feed.</desc>
+                        <title id="map-title">Fictional practice aircraft over Iowa</title>
+                        <desc id="map-description">Fictional examples are shown until a live aircraft snapshot is received.</desc>
                         <defs>
                             <pattern id="radar-grid" width="56" height="56" patternUnits="userSpaceOnUse">
                                 <path d="M 56 0 L 0 0 0 56" fill="none" stroke="#86a59e" stroke-width="1" opacity="0.28"></path>
@@ -78,9 +78,9 @@
                         <g id="airport-layer" class="airport-layer" aria-hidden="true"></g>
                         <g id="aircraft-layer" class="aircraft-layer"></g>
                     </svg>
-                    <div class="map-corner map-corner-top">ADS-B / MLAT</div>
+                    <div class="map-corner map-corner-top">Fictional aircraft / practice mode</div>
                     <div class="map-corner map-corner-bottom">IOWA / STATE BOUNDS</div>
-                    <p class="radar-map-hint" id="selected-status" role="status" aria-live="polite">Click an aircraft marker for details</p>
+            <p class="radar-map-hint" id="selected-status" role="status" aria-live="polite">Select an aircraft.</p>
                 </div>
             </div>
         </section>

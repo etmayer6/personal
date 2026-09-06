@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Photos | Ethan Mayer</title>
+    <title>Photos / The light I kept | Ethan Mayer</title>
     <link rel="stylesheet" href="../style.css?v=theme-6">
-    <link rel="stylesheet" href="style.css?v=titles-only-1">
+    <link rel="stylesheet" href="style.css?v=editorial-gallery-1">
     <!-- SEO:START -->
         <link rel="canonical" href="https://etmayer6.github.io/personal/photos/">
         <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
@@ -41,13 +41,25 @@
     </header>
 
     <main class="photos-shell">
+        <section class="photos-hero" aria-labelledby="photos-title">
+            <div class="photos-hero-copy">
+                <p class="eyebrow">Image journal / 2026</p>
+                <h1 id="photos-title">The light<br><em>I kept.</em></h1>
+            </div>
+            <div class="photos-hero-side">
+                <span class="photos-hero-mark" aria-hidden="true">01</span>
+                <span class="photos-hero-side-label">Journal / archive / shuffle</span>
+                <a class="photos-map-link" href="../travel/">Open the travel map <span aria-hidden="true">&nearr;</span></a>
+            </div>
+        </section>
         <section class="photos-toolbar" aria-label="Gallery controls">
+            <span class="photos-toolbar-label">Browse</span>
             <div class="view-control" role="group" aria-label="Photo order">
                 <button class="view-button is-active" type="button" data-gallery-mode="journal" aria-pressed="true">Curated journal</button>
                 <button class="view-button" type="button" data-gallery-mode="archive" aria-pressed="false">Full archive</button>
                 <button class="view-button" type="button" data-gallery-mode="shuffle" aria-pressed="false">Shuffle all</button>
             </div>
-            <p id="photos-status" aria-live="polite">27 selected photographs across four chapters.</p>
+            <p id="photos-status" class="photos-status-hidden" aria-live="polite">Gallery ready.</p>
         </section>
         <div id="photos-gallery" class="photos-gallery"></div>
         <section id="photos-empty" class="photos-empty" hidden>
@@ -88,7 +100,7 @@
     <script src="image-manifest.js?v=dimensions-1"></script>
     <script src="data.js?v=curated-4"></script>
     <script src="full-data.js?v=archive-1"></script>
-    <script src="app.js?v=titles-only-1"></script>
+    <script src="app.js?v=editorial-gallery-1"></script>
     <script src="../site-play.js?v=pet-companion-2"></script>
 </body>
 </html>

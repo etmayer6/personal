@@ -270,8 +270,8 @@
 
 .travel-body :is(.travel-hero, .travel-map-panel, .travel-list-panel, .travel-stat-card),
 .groggy-body :is(.groggy-hero-copy, .groggy-fit-card, .groggy-stat-card, .groggy-controls, .groggy-list-wrap) {
-    border-radius: 20px;
-    box-shadow: 0 16px 38px rgba(20, 50, 79, 0.08);
+    border-radius: 0;
+    box-shadow: none;
 }
 
 .groggy-body .routes-list {

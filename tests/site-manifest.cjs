@@ -46,7 +46,7 @@ const redirectMetadata = {
 // Keeping it beside the checks lets tests catch stale project totals and links.
 const projectRegistry = [
     { name: "CourseFlow", path: "/courseflow/", featured: true },
-    { name: "Flight Scenario Lab", path: "/flight-sim/", featured: true },
+    { name: "Flight Sim", path: "/flight-sim/", featured: true },
     { name: "Word Sort Solitaire", path: "/word-sort/", featured: true },
     { name: "Travel Map", path: "/travel/" },
     { name: "Block Blast", path: "/block-blast/" },

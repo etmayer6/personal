@@ -511,6 +511,20 @@
     transition: transform 180ms ease, box-shadow 180ms ease, background-color 180ms ease, border-color 180ms ease;
 }
 
+.archive-card.has-card-image {
+    padding-top: 204px;
+    background-image:
+        linear-gradient(180deg, rgba(16, 43, 54, 0.05), rgba(16, 43, 54, 0.02)),
+        var(--card-image);
+    background-position: center, center top;
+    background-repeat: no-repeat;
+    background-size: 100% 100%, 100% 180px;
+}
+
+.archive-card.has-card-image::after {
+    display: none;
+}
+
 .archive-card::before {
     content: "";
     position: absolute;
@@ -547,7 +561,7 @@
     z-index: 2;
     transform: translateY(-6px);
     border-color: color-mix(in srgb, var(--card-accent) 48%, rgba(16, 43, 54, 0.17));
-    background: color-mix(in srgb, var(--card-accent) 11%, #fffdf8);
+    background-color: color-mix(in srgb, var(--card-accent) 11%, #fffdf8);
     box-shadow: 0 5px 0 rgba(16, 43, 54, 0.045), 0 24px 46px rgba(16, 43, 54, 0.13);
 }
 
@@ -592,6 +606,10 @@
     line-height: 0.98;
     letter-spacing: -0.025em;
     text-wrap: balance;
+}
+
+.archive-card.has-card-image h3 {
+    margin-top: 22px;
 }
 
 .archive-card p {
@@ -651,60 +669,6 @@
 .tone-pet { --card-accent: #4d9c8a; }
 .tone-lab { --card-accent: #a967b8; }
 .tone-tier { --card-accent: #d95d45; }
-
-.archive-card.has-tier-preview {
-    padding-top: 148px;
-}
-
-.tier-card-preview {
-    position: absolute;
-    z-index: 1;
-    top: 24px;
-    right: 26px;
-    left: 26px;
-    display: grid;
-    gap: 4px;
-    padding: 8px;
-    border: 1px solid rgba(16, 43, 54, 0.14);
-    background: #102b36;
-    box-shadow: 6px 6px 0 rgba(217, 93, 69, 0.16);
-    transform: rotate(-1deg);
-    transition: transform 220ms ease;
-}
-
-.archive-card.has-tier-preview:hover .tier-card-preview,
-.archive-card.has-tier-preview:focus-within .tier-card-preview {
-    transform: rotate(0deg) translateY(-2px);
-}
-
-.tier-card-preview span {
-    min-height: 22px;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    background: rgba(255, 255, 255, 0.06);
-}
-
-.tier-card-preview b {
-    width: 28px;
-    align-self: stretch;
-    display: grid;
-    place-items: center;
-    color: #102b36;
-    background: #ef7667;
-    font-family: Georgia, "Palatino Linotype", serif;
-    font-size: 11px;
-}
-
-.tier-card-preview span:nth-child(2) b { background: #efbd4f; }
-.tier-card-preview span:nth-child(3) b { background: #76c7ae; }
-
-.tier-card-preview i {
-    width: 18px;
-    height: 16px;
-    background: #fffdf8;
-    opacity: 0.82;
-}
 
 .projects-footer {
     padding: 80px 20px 36px;

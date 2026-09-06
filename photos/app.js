@@ -76,7 +76,7 @@ function observePhotoImages() {
             loadDeferredPhotoImage(entry.target);
             observer.unobserve(entry.target);
         });
-    }, { rootMargin: "320px 0px" });
+    }, { rootMargin: "720px 0px" });
     deferredImages.forEach((image) => photoImageObserver.observe(image));
 }
 
@@ -262,7 +262,6 @@ function createChapterHeading(chapter, count) {
     const copy = document.createElement("div");
     const eyebrow = document.createElement("p");
     const title = document.createElement("h2");
-    const note = document.createElement("p");
     const countLabel = document.createElement("span");
 
     heading.className = "photo-chapter-heading";
@@ -270,13 +269,11 @@ function createChapterHeading(chapter, count) {
     eyebrow.textContent = chapter.eyebrow;
     title.id = `chapter-${chapter.id}`;
     title.textContent = chapter.title;
-    note.className = "chapter-note";
-    note.textContent = chapter.note;
     countLabel.className = "chapter-count";
     countLabel.textContent = `${String(count).padStart(2, "0")} frames`;
 
     copy.append(eyebrow, title);
-    heading.append(copy, note, countLabel);
+    heading.append(copy, countLabel);
     return heading;
 }
 
@@ -325,9 +322,6 @@ function renderFullDeck(randomize = false) {
         id: randomize ? "shuffle" : "archive",
         eyebrow: randomize ? "Playful mode" : "Every original frame",
         title: randomize ? "The shuffled archive" : "The full archive",
-        note: randomize
-            ? "All 97 photographs, remixed into a different route each time."
-            : "The complete deck in stable file order, including the quieter and stranger frames."
     }, items.length);
 
     section.className = "photo-chapter photo-deck";

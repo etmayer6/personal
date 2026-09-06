@@ -9,27 +9,16 @@
     background-size: 42px 42px;
 }
 
-.flight-sequence-intro {
-    width: min(1160px, calc(100% - 40px));
-    margin: 0 auto;
-    padding: clamp(72px, 10vw, 126px) 0 52px;
-    border-bottom: 1px solid var(--line);
-}
-
-.flight-sequence-intro h1 {
-    max-width: 780px;
-    margin: 0;
-    font-size: clamp(64px, 10vw, 118px);
-    line-height: 0.86;
-    letter-spacing: -0.065em;
-}
-
-.flight-sequence-intro > p:last-child {
-    max-width: 540px;
-    margin: 30px 0 0;
-    color: var(--ink-soft);
-    font-size: 19px;
-    line-height: 1.65;
+.flight-sequence-title-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
 }
 
 .flight-sequence-track {
@@ -104,19 +93,6 @@
 }
 
 @media (max-width: 700px) {
-    .flight-sequence-intro {
-        padding: 62px 0 38px;
-    }
-
-    .flight-sequence-intro h1 {
-        font-size: clamp(58px, 17vw, 86px);
-    }
-
-    .flight-sequence-intro > p:last-child {
-        margin-top: 22px;
-        font-size: 17px;
-    }
-
     .site-footer {
         flex-direction: column;
         gap: 8px;

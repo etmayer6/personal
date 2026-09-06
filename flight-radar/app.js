@@ -401,6 +401,16 @@
         });
     }
 
+    function describeSource() {
+        const live = state.source === "live";
+        document.getElementById("map-title").textContent = live ? "Aircraft snapshot over Iowa" : "Fictional practice aircraft over Iowa";
+        document.getElementById("map-description").textContent = live
+            ? "Positions from Airplanes.live. " + (state.lastUpdated ? "Last received " + new Date(state.lastUpdated).toLocaleTimeString() + "." : "")
+            : "These five aircraft are fictional examples, not current flights.";
+        document.querySelector(".map-corner-top").textContent = live ? "ADS-B / MLAT snapshot" : "Fictional aircraft / practice mode";
+        document.querySelector(".panel-kicker").textContent = live ? "Airspace snapshot / Iowa" : "Practice airspace / Iowa";
+    }
+
     async function loadFlights() {
         if (state.requestInFlight) {
             return;
@@ -421,7 +431,8 @@
                 throw new Error("Feed returned " + response.status);
             }
             const payload = await response.json();
-            const flights = (Array.isArray(payload.ac) ? payload.ac : [])
+            if (!Array.isArray(payload.ac)) throw new Error("Invalid aircraft feed");
+            const flights = payload.ac
                 .map(normalizeAircraft)
                 .filter(Boolean)
                 .filter(function (aircraft) { return aircraft.overIowa; })
@@ -430,6 +441,7 @@
                 });
             state.aircraft = flights;
             state.source = "live";
+            state.lastUpdated = Date.now();
             state.selectedId = flights[0] ? flights[0].id : null;
             setFeedStatus(flights.length ? "Live snapshot" : "Quiet sky", flights.length ? "success" : "quiet");
             renderBoard();
@@ -441,10 +453,10 @@
                 state.selectedId = state.aircraft[0] ? state.aircraft[0].id : null;
             }
             if (hasLastSnapshot) {
-                setFeedStatus("Using last live snapshot", "error");
+                setFeedStatus("Live feed unavailable / last received " + new Date(state.lastUpdated).toLocaleTimeString(), "error");
             } else {
                 state.source = "fixture";
-                setFeedStatus("Practice traffic / live sky is resting", "offline");
+                setFeedStatus("Live feed unavailable / showing fictional aircraft", "offline");
             }
             renderBoard();
             renderSelected();
@@ -474,7 +486,9 @@
     setMapBackdrop();
     state.aircraft = OFFLINE_AIRCRAFT.map(normalizeAircraft).filter(Boolean);
     state.selectedId = state.aircraft[0] ? state.aircraft[0].id : null;
-    setFeedStatus("Practice traffic ready / scanning live sky", "offline");
+    state.source = "fixture";
+    describeSource();
+    setFeedStatus("Fictional practice aircraft / checking live feed", "offline");
     renderBoard();
     renderSelected();
     scheduleRefresh();

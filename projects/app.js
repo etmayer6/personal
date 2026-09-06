@@ -4,7 +4,7 @@
     const filterButtons = [...document.querySelectorAll("[data-project-filter]")];
     const filterStatus = document.querySelector("[data-project-filter-status]");
     const surpriseButton = document.querySelector("[data-project-surprise]");
-    const filterableCards = [...document.querySelectorAll("[data-project-kind]")];
+    const filterableCards = [...document.querySelectorAll(".archive-grid:not(.archive-grid-reference) .archive-card")];
 
     cards.forEach((card) => {
         const destination = card.querySelector("a[href]");
@@ -51,7 +51,7 @@
 
         if (filterStatus) {
             filterStatus.textContent = filter === "all"
-                ? "All 21 doors are open."
+                ? `All ${filterableCards.length} interactive doors are open.`
                 : `${visibleCount} ${filter} project${visibleCount === 1 ? "" : "s"} ready.`;
         }
     };

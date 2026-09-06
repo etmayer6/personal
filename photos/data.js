@@ -3,28 +3,24 @@ window.PHOTO_CHAPTERS = [
         id: "isla-mujeres",
         eyebrow: "Mexico / Caribbean",
         title: "Coast & water",
-        note: "Rocky shorelines, open water, and a few frames from below the surface.",
         feature: "../images/photos/GOPR9752.JPG"
     },
     {
         id: "ames-winter",
         eyebrow: "Iowa / Winter",
         title: "Winter in Iowa",
-        note: "Creek trails, quiet paths, and a campus transformed by snow.",
         feature: "../images/photos/P1020407.JPG"
     },
     {
         id: "ames",
         eyebrow: "Iowa / Around home",
         title: "Campus & garden paths",
-        note: "Architecture, spring color, and quieter corners around Ames.",
         feature: "../images/photos/P1020776.JPG"
     },
     {
         id: "el-salvador",
         eyebrow: "Central America",
         title: "Across El Salvador",
-        note: "Green ridges, painted streets, gardens, and open water.",
         feature: "../images/photos/P1020888.JPG"
     }
 ];
