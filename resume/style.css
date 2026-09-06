@@ -348,6 +348,12 @@
     }
 }
 
+@media (max-width: 340px) {
+    .resume-header nav ul {
+        flex-wrap: wrap;
+    }
+}
+
 @media (prefers-reduced-motion: reduce) {
     .primary-action,
     .secondary-action {
