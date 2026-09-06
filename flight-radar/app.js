@@ -1,7 +1,8 @@
 (function () {
     "use strict";
 
-    const API_URL = "https://api.airplanes.live/v2/point/42.03/-93.5/250";
+    const SNAPSHOT_URL = "./live.json";
+    const SNAPSHOT_MAX_AGE_MS = 15 * 60 * 1000;
     const REFRESH_MS = 60000;
     const MAP_IOWA_LIMIT = 48;
     const SVG_NS = "http://www.w3.org/2000/svg";
@@ -227,6 +228,8 @@
         aircraft: [],
         selectedId: null,
         source: "fixture",
+        provider: null,
+        lastUpdated: null,
         requestInFlight: false,
         timer: null
     };
@@ -403,11 +406,12 @@
 
     function describeSource() {
         const live = state.source === "live";
+        const provider = state.provider || "ADS-B network";
         document.getElementById("map-title").textContent = live ? "Aircraft snapshot over Iowa" : "Fictional practice aircraft over Iowa";
         document.getElementById("map-description").textContent = live
-            ? "Positions from Airplanes.live. " + (state.lastUpdated ? "Last received " + new Date(state.lastUpdated).toLocaleTimeString() + "." : "")
+            ? "Positions from " + provider + ". " + (state.lastUpdated ? "Last received " + new Date(state.lastUpdated).toLocaleTimeString() + "." : "")
             : "These five aircraft are fictional examples, not current flights.";
-        document.querySelector(".map-corner-top").textContent = live ? "ADS-B / MLAT snapshot" : "Fictional aircraft / practice mode";
+        document.querySelector(".map-corner-top").textContent = live ? "ADS-B / " + provider + " snapshot" : "Fictional aircraft / practice mode";
         document.querySelector(".panel-kicker").textContent = live ? "Airspace snapshot / Iowa" : "Practice airspace / Iowa";
     }
 
@@ -423,15 +427,19 @@
         }
 
         try {
-            const response = await fetch(API_URL, {
+            const response = await fetch(SNAPSHOT_URL + "?t=" + Date.now(), {
                 cache: "no-store",
                 headers: { Accept: "application/json" }
             });
             if (!response.ok) {
-                throw new Error("Feed returned " + response.status);
+                throw new Error("Snapshot returned " + response.status);
             }
             const payload = await response.json();
             if (!Array.isArray(payload.ac)) throw new Error("Invalid aircraft feed");
+            const snapshotTime = payload.updatedAt ? Date.parse(payload.updatedAt) : Date.now();
+            if (!Number.isFinite(snapshotTime) || Date.now() - snapshotTime > SNAPSHOT_MAX_AGE_MS) {
+                throw new Error("Snapshot is stale");
+            }
             const flights = payload.ac
                 .map(normalizeAircraft)
                 .filter(Boolean)
@@ -441,9 +449,11 @@
                 });
             state.aircraft = flights;
             state.source = "live";
-            state.lastUpdated = Date.now();
+            state.provider = String(payload.provider || "ADS-B network");
+            state.lastUpdated = snapshotTime;
             state.selectedId = flights[0] ? flights[0].id : null;
             setFeedStatus(flights.length ? "Live snapshot" : "Quiet sky", flights.length ? "success" : "quiet");
+            describeSource();
             renderBoard();
             renderSelected();
         } catch (error) {
@@ -451,6 +461,7 @@
             if (!hasLastSnapshot) {
                 state.aircraft = OFFLINE_AIRCRAFT.map(normalizeAircraft).filter(Boolean);
                 state.selectedId = state.aircraft[0] ? state.aircraft[0].id : null;
+                state.provider = null;
             }
             if (hasLastSnapshot) {
                 setFeedStatus("Live feed unavailable / last received " + new Date(state.lastUpdated).toLocaleTimeString(), "error");
@@ -458,6 +469,7 @@
                 state.source = "fixture";
                 setFeedStatus("Live feed unavailable / showing fictional aircraft", "offline");
             }
+            describeSource();
             renderBoard();
             renderSelected();
         } finally {

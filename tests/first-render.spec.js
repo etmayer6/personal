@@ -40,7 +40,7 @@ function installOfflineRoutes(context) {
             });
             return;
         }
-        if (url.includes("api.airplanes.live") || url.includes("graph.mapillary.com") || url.includes("assets.calendly.com")) {
+        if (url.includes("graph.mapillary.com") || url.includes("assets.calendly.com")) {
             await route.fulfill({ status: 204 });
             return;
         }

@@ -27,9 +27,14 @@ test('meal plans reflect selected ingredients, pantry additions, and survive rel
 
 test('Skywatch labels fictional fallback and recovers to a validated live snapshot', async ({ page }) => {
     let live = false;
-    await page.route('https://api.airplanes.live/**', route => route.fulfill({
+    await page.route('**/flight-radar/live.json*', route => route.fulfill({
+        status: live ? 200 : 503,
         contentType: 'application/json',
-        body: JSON.stringify(live ? { ac: [{ hex: 'abc123', flight: 'TEST123', lat: 42.03, lon: -93.63, alt_baro: 18000, gs: 312, track: 82 }] } : { error: 'unavailable' })
+        body: JSON.stringify(live ? {
+            provider: 'ADSB.lol',
+            updatedAt: new Date().toISOString(),
+            ac: [{ hex: 'abc123', flight: 'TEST123', lat: 42.03, lon: -93.63, alt_baro: 18000, gs: 312, track: 82 }]
+        } : { error: 'unavailable' })
     }));
     await page.goto('/flight-radar/');
     await expect(page.locator('#feed-status')).toContainText('showing fictional aircraft');

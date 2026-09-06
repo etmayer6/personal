@@ -710,3 +710,21 @@ Original prompt: Remove clutter from the games on the website. Right now they do
 ## Scenario Lab TODO
 
 - None for this pass.
+
+## Game visual and playability pass
+
+- New request: replace the game-hub artwork, audit the playable pages, and remove friction from Block Blast and Word Sort Solitaire.
+- Generated and integrated a new seven-image card set: Pinpoint, Flight Sim, Block Blast, Word Sort Solitaire, Conway's Game of Life, Mola Mola, and Gremlin Physics Lab. The set shares a tactile teal / ivory / coral visual language while giving each game its own subject.
+- Removed the large canvas instruction/game-over overlays from Block Blast and Word Sort. Their boards now stay visible, while the DOM status rail and primary action own the start, retry, and help states.
+- Reordered the two game shells so the status and action rail appears before the tall canvas. Starting a run no longer scrolls the player away from the controls or the top of the board.
+
+## Game visual and playability verification
+
+- `node --check` passes for both edited exports; `npm run check:syntax`, `npm run check:static`, and `npm run test:first-render` pass.
+- The bundled game Playwright client renders the hub and all seven game routes without error artifacts. Visual captures confirm the refreshed card set and unobstructed Block Blast / Word Sort boards.
+- Browser interaction QA confirms a real Block Blast tap-to-place flow records a placement and a real Word Sort clue-to-crown flow places the clue, updates the score, and decrements moves.
+- The site-quality suite passes all game and project checks; its only failure is the pre-existing `/resume/` 320px overflow, which remains intentionally out of scope.
+
+## Game visual and playability TODO
+
+- None for this pass.

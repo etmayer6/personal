@@ -1,0 +1,109 @@
+/* Public game workspace: controls stay beside the board on wide screens. */
+.blockblast-site-body.block-blast-export-body,
+.wordsort-site-body.word-sort-export-body {
+  background: var(--paper, #f3f0e9);
+  color: var(--ink, #102b36);
+}
+:is(#block-blast-root, #word-sort-root) section:has(canvas) {
+  display: grid !important;
+  grid-template-columns: minmax(240px, 310px) minmax(0, 1fr);
+  gap: 18px 28px !important;
+  align-items: start;
+  max-width: 1100px !important;
+  margin-inline: auto;
+}
+:is(#block-blast-root, #word-sort-root) section:has(canvas) > * {
+  order: initial !important;
+  min-width: 0;
+}
+:is(#block-blast-root, #word-sort-root) section:has(canvas) > header {
+  grid-column: 1;
+  grid-row: 1;
+  display: flex !important;
+  flex-direction: column;
+  align-items: stretch !important;
+  gap: 18px !important;
+}
+:is(#block-blast-root, #word-sort-root) section:has(canvas) > div {
+  grid-column: 1;
+}
+:is(#block-blast-root, #word-sort-root) section:has(canvas) > div:has(> canvas) {
+  grid-column: 2;
+  grid-row: 1 / span 4;
+  justify-self: center;
+  align-self: start !important;
+  width: auto !important;
+  height: min(720px, calc(100dvh - 140px));
+  max-width: 100%;
+}
+@media (min-width: 761px) {
+  #block-blast-root section:has(canvas) > div:has(> canvas) {
+    width: min(100%, 652px, calc((100dvh - 140px) * .90566)) !important;
+    height: auto;
+  }
+  #word-sort-root section:has(canvas) > div:has(> canvas) {
+    width: min(100%, 751px, calc((100dvh - 140px) * 1.043478)) !important;
+    height: auto;
+  }
+}
+:is(#block-blast-root, #word-sort-root) section:has(canvas) > div:has(button) {
+  width: 100% !important;
+  align-self: start !important;
+}
+:is(#block-blast-root, #word-sort-root) [role="status"] {
+  box-sizing: border-box;
+  min-height: 62px !important;
+}
+:is(#block-blast-root, #word-sort-root) button {
+  min-height: 44px;
+  transition: background-color 120ms ease, box-shadow 120ms ease;
+}
+:is(#block-blast-root, #word-sort-root) button:focus-visible {
+  outline: 3px solid #168393;
+  outline-offset: 3px;
+}
+#word-sort-root section:has(canvas) > div:has(button) > div:has(> button) {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+}
+#word-sort-root section:has(canvas) > div:has(button) button {
+  min-width: 0;
+  grid-column: auto !important;
+}
+:is(#block-blast-root, #word-sort-root) section:fullscreen {
+  max-width: none !important;
+  align-content: center;
+}
+@media (max-width: 760px) {
+  :is(#block-blast-root, #word-sort-root) section:has(canvas) {
+    display: flex !important;
+    flex-direction: column;
+    gap: 10px !important;
+  }
+  :is(#block-blast-root, #word-sort-root) section:has(canvas) > header {
+    order: 0 !important;
+    width: 100%;
+    gap: 8px !important;
+  }
+  :is(#block-blast-root, #word-sort-root) section:has(canvas) > header p {
+    display: none;
+  }
+  :is(#block-blast-root, #word-sort-root) section:has(canvas) > div:not(:has(canvas)):not(:has(button)) {
+    display: none !important;
+  }
+  :is(#block-blast-root, #word-sort-root) section:has(canvas) > div:has(button) > p {
+    display: none;
+  }
+  #word-sort-root section:has(canvas) > div:has(button) > div:has(> button) {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  }
+  :is(#block-blast-root, #word-sort-root) section:has(canvas) > div:has(button) {
+    order: 1 !important;
+  }
+  :is(#block-blast-root, #word-sort-root) section:has(canvas) > div:has(> canvas) {
+    order: 2 !important;
+    width: 100% !important;
+    height: auto;
+    align-self: center !important;
+  }
+}

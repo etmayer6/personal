@@ -54,6 +54,28 @@
     font-weight: 800;
 }
 
+/* Keep the action rail in the first screenful; the board is the destination, not the gate. */
+#block-blast-root section {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr);
+}
+
+#block-blast-root section > header {
+    order: 1;
+}
+
+#block-blast-root section > div:nth-of-type(1) {
+    order: 2;
+}
+
+#block-blast-root section > div:nth-of-type(3) {
+    order: 3;
+}
+
+#block-blast-root section > div:nth-of-type(2) {
+    order: 4;
+}
+
 @media (max-width: 900px) {
     .blockblast-site-shell {
         width: min(100% - 18px, 1480px);
