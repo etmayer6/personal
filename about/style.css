@@ -332,7 +332,11 @@
     .about-header nav ul {
         width: 100%;
         justify-content: center;
-        flex-wrap: wrap;
+        flex-wrap: nowrap;
+    }
+
+    .about-header nav a:not(.nav-name) {
+        padding-inline: 4px;
     }
 
     .about-hero {
