@@ -13,15 +13,24 @@ const mime = {
     ".jpg": "image/jpeg",
     ".jpeg": "image/jpeg",
     ".png": "image/png",
+    ".pdf": "application/pdf",
     ".svg": "image/svg+xml",
     ".webp": "image/webp"
 };
 
 const server = http.createServer((req, res) => {
-    let reqPath = decodeURIComponent((req.url || "/").split("?")[0]);
+    const [rawPath, query = ""] = (req.url || "/").split("?");
+    let reqPath = decodeURIComponent(rawPath);
     if (reqPath === "/") reqPath = "/index.html";
 
     let filePath = path.join(root, reqPath);
+    if (reqPath !== "/index.html" && !reqPath.endsWith("/") && !path.extname(reqPath)
+        && fs.existsSync(path.join(filePath, "index.html"))) {
+        res.statusCode = 301;
+        res.setHeader("Location", `${reqPath}/${query ? `?${query}` : ""}`);
+        res.end();
+        return;
+    }
     if (reqPath.endsWith("/")) filePath = path.join(root, reqPath, "index.html");
     if (!path.extname(filePath) && fs.existsSync(path.join(filePath, "index.html"))) {
         filePath = path.join(filePath, "index.html");

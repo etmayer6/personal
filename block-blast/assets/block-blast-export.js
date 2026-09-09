@@ -10927,6 +10927,17 @@ function Wr(i, m) {
       vt(i, y.boardX + T * y.cell, y.boardY, y.cell, y.boardSize, 12), i.fill();
     i.restore();
   }
+  if (m.selectedPieceId && !m.preview) {
+    i.save();
+    i.globalAlpha = 0.34 + Math.sin(m.time * 0.006) * 0.08;
+    i.strokeStyle = "rgba(166,225,255,0.92)";
+    i.lineWidth = 2;
+    i.setLineDash([6, 10]);
+    vt(i, y.boardX + 7, y.boardY + 7, y.boardSize - 14, y.boardSize - 14, 18);
+    i.stroke();
+    i.setLineDash([]);
+    i.restore();
+  }
   for (let T = 0; T < yl; T += 1)
     for (let M = 0; M < yl; M += 1) {
       const U = y.boardX + M * y.cell + 3, j = y.boardY + T * y.cell + 3;

@@ -511,11 +511,20 @@ footer {
 
     nav ul {
         width: 100%;
-        justify-content: center;
+        min-width: 0;
+        justify-content: flex-start;
         flex-wrap: nowrap;
+        overflow-x: auto;
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    nav ul::-webkit-scrollbar {
+        display: none;
     }
 
     nav a:not(.nav-name) {
+        flex: 0 0 auto;
         padding: 8px 9px;
         font-size: 10px;
     }
@@ -582,12 +591,12 @@ footer {
 
 @media (max-width: 430px) {
     header nav {
-        min-height: 78px;
+        min-height: 62px;
     }
 
     nav ul {
         gap: 1px;
-        flex-wrap: wrap;
+        flex-wrap: nowrap;
     }
 
     nav a:not(.nav-name) {

@@ -441,6 +441,58 @@
         context.restore();
     }
 
+    function drawTankHud() {
+        const surfaceY = 154;
+        const hudColor = "rgba(214, 255, 239, 0.72)";
+        const quietColor = "rgba(214, 255, 239, 0.42)";
+        context.save();
+        context.fillStyle = "rgba(4, 31, 42, 0.2)";
+        context.fillRect(0, 0, WIDTH, surfaceY);
+
+        context.strokeStyle = "rgba(183, 245, 223, 0.34)";
+        context.lineWidth = 1;
+        context.beginPath();
+        context.moveTo(34, surfaceY);
+        context.quadraticCurveTo(WIDTH * 0.28, surfaceY - 8, WIDTH * 0.5, surfaceY);
+        context.quadraticCurveTo(WIDTH * 0.72, surfaceY + 8, WIDTH - 34, surfaceY);
+        context.stroke();
+
+        context.fillStyle = hudColor;
+        context.font = "800 11px Trebuchet MS, sans-serif";
+        context.letterSpacing = "2px";
+        context.fillText("MOMO / REEF HABITAT", 36, 43);
+        context.textAlign = "right";
+        context.fillStyle = "#f2cb3f";
+        context.fillText("TANK 01", WIDTH - 36, 43);
+
+        context.textAlign = "left";
+        context.fillStyle = quietColor;
+        context.font = "800 9px Trebuchet MS, sans-serif";
+        context.fillText("OPEN WATER", 36, 82);
+        context.fillText("DAY " + String(ageDay()).padStart(2, "0"), 36, 104);
+
+        const indicators = [
+            { label: "HUNGER", value: state.hunger, color: state.hunger < 30 ? "#e77952" : "#f2cb3f" },
+            { label: "WATER", value: state.cleanliness, color: state.cleanliness < 30 ? "#e77952" : "#7be0cb" },
+            { label: "MOOD", value: state.mood, color: state.mood < 30 ? "#e77952" : "#b4f1a1" }
+        ];
+        indicators.forEach(function (indicator, index) {
+            const x = WIDTH - 198 + index * 58;
+            const y = 74;
+            context.fillStyle = quietColor;
+            context.font = "800 7px Trebuchet MS, sans-serif";
+            context.fillText(indicator.label, x, y);
+            context.fillStyle = "rgba(183, 245, 223, 0.14)";
+            context.fillRect(x, y + 9, 42, 3);
+            context.fillStyle = indicator.color;
+            context.fillRect(x, y + 9, 42 * indicator.value / 100, 3);
+            context.beginPath();
+            context.arc(x + 47, y + 10.5, 3, 0, TAU);
+            context.fill();
+        });
+        context.restore();
+    }
+
     function drawReefFriends() {
         reefFriends.forEach(function (friend) {
             context.save();
@@ -688,6 +740,7 @@
     function render() {
         context.clearRect(0, 0, WIDTH, HEIGHT);
         drawWater();
+        drawTankHud();
         drawReefFriends();
         drawPlants();
         drawBubbles();

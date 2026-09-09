@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Signal Grove Defense is a browser tower-defense game about placing, targeting, and upgrading signal towers.">
+    <title>Signal Grove Defense | Ethan Mayer</title>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="style.css">
+    <!-- SEO:START -->
+        <link rel="canonical" href="https://etmayer6.github.io/personal/tower-defense/">
+        <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+        <meta property="og:type" content="website">
+        <meta property="og:site_name" content="Ethan Mayer">
+        <meta property="og:title" content="Signal Grove Defense | Ethan Mayer">
+        <meta property="og:description" content="A browser tower-defense game about placing, targeting, and upgrading signal towers.">
+        <meta property="og:url" content="https://etmayer6.github.io/personal/tower-defense/">
+        <meta property="og:image" content="https://etmayer6.github.io/personal/assets/social-card.png">
+        <meta property="og:image:type" content="image/png">
+        <meta property="og:image:width" content="1200">
+        <meta property="og:image:height" content="630">
+        <meta property="og:image:alt" content="Ethan Mayer - Signal Grove tower defense game">
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:title" content="Signal Grove Defense | Ethan Mayer">
+        <meta name="twitter:description" content="A browser tower-defense game about placing, targeting, and upgrading signal towers.">
+        <meta name="twitter:image" content="https://etmayer6.github.io/personal/assets/social-card.png">
+    <!-- SEO:END -->
+</head>
+<body class="tower-defense-site-body">
+    <header class="tower-defense-header">
+        <nav aria-label="Primary navigation">
+            <a class="nav-name" href="../index.html">Ethan Mayer</a>
+            <ul>
+                <li><a href="../index.html">Home</a></li><li><a href="../about/">About</a></li>
+                <li><a href="../resume/">Resume</a></li>
+                <li><a href="../projects/">Projects</a></li>
+                <li><a aria-current="page" href="../games/">Games</a></li>
+                <li><a href="../photos/">Photos</a></li>
+                <li><a href="../blog/">Blog</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="tower-defense-shell">
+        <section class="tower-defense-intro" aria-labelledby="tower-defense-title">
+            <div>
+                <p class="tower-defense-eyebrow">Game 08 / Signal Grove</p>
+                <h1 id="tower-defense-title">Hold the line.</h1>
+            </div>
+            <p>Place a few clever towers, survive the rush, and spend every scrap of signal credit wisely.</p>
+        </section>
+
+        <section id="tower-defense-root" class="tower-defense-app" aria-label="Signal Grove Defense game">
+            <header class="tower-defense-appbar">
+                <div class="tower-defense-brand">
+                    <span class="tower-defense-mark" aria-hidden="true">+</span>
+                    <div>
+                        <p class="tower-defense-app-kicker">Signal Grove</p>
+                        <h2>Defense grid</h2>
+                    </div>
+                </div>
+                <div class="tower-defense-metrics" aria-label="Game status">
+                    <div class="tower-metric"><span>Credits</span><strong id="tower-credits">220</strong></div>
+                    <div class="tower-metric"><span>Core</span><strong id="tower-lives">12</strong></div>
+                    <div class="tower-metric"><span>Wave</span><strong id="tower-wave">0 / 8</strong></div>
+                </div>
+            </header>
+
+            <div class="tower-defense-layout">
+                <div class="tower-defense-stage">
+                    <div class="tower-stage-toolbar">
+                        <span><i class="tower-live-dot" aria-hidden="true"></i><span id="tower-wave-label">Build phase</span></span>
+                        <span id="tower-enemy-count">No incoming signals</span>
+                    </div>
+                    <div class="tower-canvas-wrap">
+                        <canvas id="tower-defense-canvas" width="960" height="600" aria-label="Signal Grove battlefield. Click an empty grid cell to place the selected tower." tabindex="0"></canvas>
+                        <div id="tower-overlay" class="tower-overlay" data-visible="true">
+                            <div class="tower-overlay-card">
+                                <span class="tower-overlay-mark" aria-hidden="true">SG / 08</span>
+                                <h3 id="tower-overlay-title">A quiet grove. For now.</h3>
+                                <p id="tower-overlay-copy">Build a small network of signal towers, then launch the first wave before the static reaches the core.</p>
+                                <button id="tower-start-btn" class="tower-button tower-button-primary" type="button">Enter the grove <span aria-hidden="true">&rarr;</span></button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tower-stage-footer">
+                        <p id="tower-status" class="tower-status" role="status" aria-live="polite">Choose Enter the grove to begin building.</p>
+                        <span class="tower-coordinate-readout" id="tower-coordinate-readout">grid / waiting</span>
+                    </div>
+                </div>
+
+                <aside class="tower-defense-controls" aria-label="Tower controls">
+                    <section class="tower-control-block">
+                        <div class="tower-control-heading">
+                            <div>
+                                <p class="tower-control-kicker">01 / Build</p>
+                                <h3>Choose a signal</h3>
+                            </div>
+                            <span class="tower-key-hint">1—3</span>
+                        </div>
+                        <div class="tower-picker" role="group" aria-label="Choose tower type">
+                            <button class="tower-choice is-selected" type="button" data-tower-type="pulse" aria-pressed="true">
+                                <span class="tower-choice-icon tower-icon-pulse" aria-hidden="true"></span>
+                                <span class="tower-choice-copy"><strong>Pulse</strong><small>Fast / focused</small></span>
+                                <span class="tower-choice-cost">55</span>
+                            </button>
+                            <button class="tower-choice" type="button" data-tower-type="ember" aria-pressed="false">
+                                <span class="tower-choice-icon tower-icon-ember" aria-hidden="true"></span>
+                                <span class="tower-choice-copy"><strong>Ember</strong><small>Heavy / splash</small></span>
+                                <span class="tower-choice-cost">80</span>
+                            </button>
+                            <button class="tower-choice" type="button" data-tower-type="lattice" aria-pressed="false">
+                                <span class="tower-choice-icon tower-icon-lattice" aria-hidden="true"></span>
+                                <span class="tower-choice-copy"><strong>Lattice</strong><small>Slow / control</small></span>
+                                <span class="tower-choice-cost">110</span>
+                            </button>
+                        </div>
+                        <p class="tower-control-note">Click an empty cell to place the selected tower.</p>
+                    </section>
+
+                    <section class="tower-control-block tower-wave-block">
+                        <div class="tower-control-heading">
+                            <div>
+                                <p class="tower-control-kicker">02 / Survive</p>
+                                <h3>Control the rush</h3>
+                            </div>
+                            <span class="tower-key-hint">Space</span>
+                        </div>
+                        <button id="tower-wave-btn" class="tower-button tower-button-wave" type="button" disabled>Launch wave 1 <span aria-hidden="true">&rarr;</span></button>
+                        <div class="tower-wave-actions">
+                            <button id="tower-pause-btn" class="tower-button tower-button-quiet" type="button" disabled>Pause <span aria-hidden="true">P</span></button>
+                            <button id="tower-speed-btn" class="tower-button tower-button-quiet" type="button" disabled>Speed 1x</button>
+                            <button id="tower-reset-btn" class="tower-button tower-button-quiet" type="button">Reset <span aria-hidden="true">R</span></button>
+                        </div>
+                    </section>
+
+                    <section id="tower-inspector" class="tower-control-block tower-inspector" aria-live="polite">
+                        <div class="tower-control-heading">
+                            <div>
+                                <p class="tower-control-kicker">03 / Tune</p>
+                                <h3>Selected tower</h3>
+                            </div>
+                        </div>
+                        <div id="tower-inspector-empty" class="tower-inspector-empty">Place or select a tower to inspect its range and upgrades.</div>
+                        <div id="tower-inspector-card" class="tower-inspector-card" hidden>
+                            <div class="tower-inspector-title"><span id="tower-inspector-name">Pulse</span><span id="tower-inspector-level">LV 1</span></div>
+                            <p id="tower-inspector-copy">Fast single-target signal.</p>
+                            <dl class="tower-stats">
+                                <div><dt>Damage</dt><dd id="tower-stat-damage">18</dd></div>
+                                <div><dt>Range</dt><dd id="tower-stat-range">2.1</dd></div>
+                                <div><dt>Rate</dt><dd id="tower-stat-rate">0.72s</dd></div>
+                            </dl>
+                            <div class="tower-inspector-actions">
+                                <button id="tower-upgrade-btn" class="tower-button tower-button-primary" type="button">Upgrade · 50</button>
+                                <button id="tower-sell-btn" class="tower-button tower-button-quiet" type="button">Sell</button>
+                            </div>
+                        </div>
+                    </section>
+
+                    <div class="tower-hud-tip"><span aria-hidden="true">⌘</span><span><strong>Tip:</strong> towers target the signal furthest along the path.</span></div>
+                </aside>
+            </div>
+
+            <div id="tower-live-summary" class="tower-sr-only" aria-live="polite"></div>
+        </section>
+
+        <div class="tower-defense-backlink"><a href="../games/">Back to all games <span aria-hidden="true">&rarr;</span></a><span>Keep the grove quiet.</span></div>
+    </main>
+
+    <footer class="tower-defense-footer"><p>&copy; 2026 Ethan Mayer</p></footer>
+    <script src="app.js?v=signal-grove-1"></script>
+    <script src="../site-play.js?v=pet-companion-2"></script>
+</body>
+</html>

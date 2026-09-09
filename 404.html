@@ -707,6 +707,22 @@
                 return "/" + segments.slice(0, repositoryIndex + 1).join("/") + "/";
             }
 
+            function recoverDirectoryRoute() {
+                const root = siteRoot();
+                const pathname = window.location.pathname;
+                if (pathname === root || /\.html$/i.test(pathname)) return;
+
+                const relative = pathname.slice(root.length).replace(/^\/+|\/+$/g, "");
+                if (!relative || relative.includes("..") || /\.[^/]+$/.test(relative)) return;
+
+                const indexPath = root + relative + "/index.html";
+                fetch(indexPath, { method: "HEAD", cache: "no-store" }).then(function (response) {
+                    if (!response.ok) return;
+                    const target = pathname.endsWith("/") ? indexPath : root + relative + "/";
+                    if (target !== pathname) window.location.replace(target);
+                }).catch(function () {});
+            }
+
             function wireRoutes() {
                 const root = siteRoot();
                 document.querySelectorAll("[data-route]").forEach(function (link) {
@@ -791,6 +807,7 @@
             target.addEventListener("click", catchGremlin);
             resetButton.addEventListener("click", resetGame);
             wireRoutes();
+            recoverDirectoryRoute();
             resetGame();
 
             window.render_404_to_text = function () {

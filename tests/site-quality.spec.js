@@ -228,6 +228,20 @@ test("primary navigation reaches every public top-level section", async ({ brows
     await context.close();
 });
 
+test("directory routes normalize to trailing-slash entry points", async ({ browser }) => {
+    const context = await browser.newContext({ reducedMotion: "reduce", serviceWorkers: "block" });
+    const page = await context.newPage();
+
+    for (const route of ["/about", "/projects", "/games", "/photos", "/blog"]) {
+        const response = await page.goto(route, { waitUntil: "domcontentloaded" });
+        expect(response, `${route} returned no response`).not.toBeNull();
+        expect(response.status(), `${route} returned an error`).toBeLessThan(400);
+        expect(new URL(page.url()).pathname).toBe(`${route}/`);
+    }
+
+    await context.close();
+});
+
 test("primary navigation keeps a visible header surface", async ({ browser }) => {
     const context = await browser.newContext({ reducedMotion: "reduce", serviceWorkers: "block" });
     await installOfflineRoutes(context);
@@ -264,6 +278,24 @@ test("homepage portrait opens the About page", async ({ browser }) => {
     await expect(portrait).toHaveAttribute("href", "about/");
     await portrait.click();
     expect(new URL(page.url()).pathname).toBe("/about/");
+    await context.close();
+});
+
+test("resume exposes a downloadable PDF", async ({ browser, request }) => {
+    const context = await browser.newContext({ reducedMotion: "reduce", serviceWorkers: "block" });
+    await installOfflineRoutes(context);
+    const page = await context.newPage();
+    await page.goto("/resume/", { waitUntil: "domcontentloaded" });
+
+    const download = page.getByRole("link", { name: "Download PDF" });
+    await expect(download).toHaveAttribute("download", "Ethan-Mayer-Resume.pdf");
+    await expect(page.getByRole("link", { name: "GitHub" })).toHaveAttribute("href", "https://github.com/etmayer6");
+    const href = await download.getAttribute("href");
+    const pdfResponse = await request.get(new URL(href, page.url()).toString());
+    expect(pdfResponse.status()).toBe(200);
+    expect(pdfResponse.headers()["content-type"]).toContain("application/pdf");
+    expect((await pdfResponse.body()).byteLength).toBeGreaterThan(1000);
+
     await context.close();
 });
 
@@ -323,6 +355,24 @@ test("project counts match the centralized registry", async ({ browser }) => {
     }));
     expect(counts.cards).toBe(projectRegistry.length);
     expect(counts.tally).toBe(projectRegistry.length);
+    await context.close();
+});
+
+test("project and game card images have descriptive alternative text", async ({ browser }) => {
+    const context = await browser.newContext({ reducedMotion: "reduce", serviceWorkers: "block" });
+    await installOfflineRoutes(context);
+    const page = await context.newPage();
+
+    for (const route of ["/projects/", "/games/"]) {
+        await page.goto(route, { waitUntil: "domcontentloaded" });
+        const images = page.locator(".project-visual-image, .game-poster-image");
+        const alts = await images.evaluateAll((nodes) => nodes.map((node) => node.getAttribute("alt")?.trim() || ""));
+        expect(alts.length, `${route} has no card images`).toBeGreaterThan(0);
+        expect(alts.every((alt) => alt.length > 12), `${route} has an empty or vague card alt`).toBe(true);
+        const hiddenImages = await images.evaluateAll((nodes) => nodes.filter((node) => node.closest("[aria-hidden=\"true\"]")).length);
+        expect(hiddenImages, `${route} hides descriptive card images from assistive technology`).toBe(0);
+    }
+
     await context.close();
 });
 

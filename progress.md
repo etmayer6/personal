@@ -728,3 +728,197 @@ Original prompt: Remove clutter from the games on the website. Right now they do
 ## Game visual and playability TODO
 
 - None for this pass.
+
+## Flight Sim realism model pass
+
+- New request: improve the playable Flight Sim so it behaves more like a small trainer aircraft.
+- Added a standalone `flight-sim/flight-model.js` step model and wired the existing WebGL game to it.
+- Replaced direct attitude-to-position motion with dynamic-pressure lift, parasite and induced drag, propeller efficiency, gravity through the flight path, flap lift/drag, stall degradation and buffet, trim, control authority, coordinated turns, sideslip, and wind-relative ground velocity.
+- Added telemetry for stall margin, lift/drag coefficients, thrust/drag force, vertical acceleration, ground effect, and buffet so the model is inspectable through the existing deterministic test hook.
+- Tuned the initial sortie to a more believable 124 kt trainer-aircraft entry speed and added the new energy/stall readouts to the flight deck HUD.
+
+## Flight Sim realism verification
+
+- `node --check flight-sim/flight-model.js`, `node --check flight-sim/assets/flight-sim-export.js`, and `git diff --check` pass.
+- The bundled game Playwright client renders stabilized and crosswind starts plus the timed engine-out condition with stable IAS/GS, near-1 G flight, positive stall margin before the fault, and no error artifacts.
+- Browser QA verifies throttle increases modeled thrust, flaps increase lift coefficient, and a sustained power-off nose-high input produces negative stall margin and buffet.
+- Repository syntax/static checks, all 23 first-render scenarios, and all 62 site-quality checks pass.
+
+## Flight Sim realism TODO
+
+- None for this pass.
+
+## Flight Sim realism iteration 2
+
+- New request: continue improving the playable Flight Sim's realism without making the sortie harder to understand or control.
+- Added a standard-atmosphere approximation so pressure, temperature, and air density change with altitude instead of using a fixed sea-level value.
+- Split true airspeed from indicated airspeed, exposed the modeled stall speed, and made stall margin account for flaps and maneuvering load factor so banked flight has a higher stall speed.
+- Reworked propulsive power so throttle spools the engine toward an RPM target and thrust follows RPM, engine health, and propeller efficiency; the rendered propeller now spins at the modeled RPM.
+- Added compact power, TAS, stall-speed, density, and IAS telemetry to the flight-data panel.
+
+## Flight Sim realism iteration 2 verification
+
+- `node --check` passes for the flight model and WebGL export, and `git diff --check` passes.
+- The bundled web-game client passes stabilized-approach, crosswind-correction, and timed engine-power-loss runs without error artifacts; crosswind telemetry remains 14.8 kt and engine-out thrust falls to idle-level output.
+- Browser behavior QA passes the original power/flap/stall checks plus engine spool, air-density, IAS/TAS, and banked-stall-speed assertions.
+- Repository syntax and static checks pass; all 23 first-render scenarios and all 62 site-quality checks pass.
+
+## Flight Sim realism iteration 2 TODO
+
+- None for this pass.
+
+## Resume testimonial privacy pass
+
+- New request: avoid publishing a colleague's identifiable name and portrait without confirmed consent while keeping the human warmth of the testimonial.
+- Generated an anonymous, non-identifying editorial portrait, optimized it to `images/optimized/anonymous-manager-480.webp`, and replaced the Kyle-specific asset and alt text.
+- Changed the visible attribution to “Former manager,” retained the quote, and removed the old Kyle image from the public asset tree.
+
+## Resume testimonial privacy verification
+
+- Rendered the resume route and visually checked the testimonial card, image source, alt text, and attribution.
+- `npm run check:syntax`, `npm run check:static`, and all 62 `npm run test:quality` checks pass.
+
+## Resume testimonial privacy TODO
+
+- None for this pass.
+
+## Tower Defense build
+
+- New goal: create a polished tower-defense upgrading game that feels like a natural companion to the site's existing browser games.
+- First feature goal: establish the playable loop with clear tower placement, wave spawning, targeting, damage, rewards, and a meaningful upgrade decision.
+- Built the single-canvas Signal Grove Defense prototype with three tower roles (fast Pulse, splash Ember, and slowing Lattice), eight escalating waves, path-following enemies, projectiles, core damage, rewards, tower upgrades, selling, pause, speed control, reset, and fullscreen support.
+- Added `window.render_game_to_text` and deterministic `window.advanceTime(ms)` hooks so the simulation is inspectable and repeatable in browser QA.
+- Generated a dedicated Signal Grove poster and added the game as Game 08 on the Games page.
+
+## Tower Defense verification
+
+- Browser QA confirms a tower can be placed on an empty grid cell, acquire and damage incoming signals, earn credits, upgrade through the inspector, pause without advancing enemy state, and reset to the ready screen.
+- The generated poster appears correctly on the Games and Projects cards after lazy loading, and the new route is included in first-render coverage.
+- `node --check tower-defense/app.js`, `npm run check:syntax`, `npm run check:static`, `npm run test:first-render`, `npm run test:quality`, the focused project behavior suite, and `git diff --check` all pass.
+
+## Tower Defense TODO
+
+- None for this pass.
+
+## Games visual cohesion pass
+
+- New feature goal: make the existing games feel like one intentional collection while preserving each game's personality and play loop.
+- Added a compact in-canvas HUD to Mola Mola Aquarium with tank identity, day readout, waterline, and live care indicators so the large desktop tank frame has a clear visual anchor.
+- Rebalanced the aquarium desktop layout so the tank starts beneath the header instead of floating in the center of an oversized column, and kept the surrounding shell dark so the negative space reads as part of the game frame.
+- Changed the shared mobile navigation to a clean, touch-scrollable strip instead of clipping the last game links at narrow widths.
+- Tightened the Signal Grove Defense mobile launch card so its primary action remains visible on a 390px viewport.
+
+## Games visual cohesion verification
+
+- The bundled game Playwright client passes the Aquarium interaction run and the Pinpoint interaction run with no error artifacts; Aquarium state still updates through feeding and time advancement.
+- Desktop and narrow viewport screenshots were reviewed for Aquarium, Signal Grove Defense, and Pinpoint. The new Aquarium HUD, anchored canvas, mobile launch card, and scrollable mobile navigation are visible and coherent.
+- `node --check aquarium/app.js`, `node --check tower-defense/app.js`, and `git diff --check` pass.
+
+## Games visual cohesion TODO
+
+- None for this pass.
+
+## Games visual cohesion final verification
+
+- `npm run check:syntax` passes for 67 JavaScript and JSON files, and `npm run check:static` passes for 45 HTML files, 39 stylesheets, 47 scripts, and 23 projects.
+- All 24 first-render scenarios pass, including Signal Grove Defense; the focused project behavior suite passes all 8 interaction tests.
+- All 63 site-quality checks pass, including responsive overflow at 320px, 390px, 768px, and 1440px, primary navigation, project/game image alternative text, featured-game interactions, and keyboard focus coverage.
+
+## Games visual cohesion iteration 2
+
+- New request: continue improving the look and feel of the games without flattening their individual identities.
+- Made the Games index load and decode all eight generated poster illustrations up front so lower cards do not appear as blank procedural placeholders while scrolling.
+- Refined Mola Mola's desktop frame so the complete care rail remains visible beside the anchored tank, and moved the focused route to a consistent dark shell background on every viewport.
+- Re-audited the Games hub plus all eight playable routes at desktop and 390px widths; the strongest remaining layout issues were addressed without changing the games' core loops.
+
+## Games visual cohesion iteration 2 TODO
+
+- None for this pass.
+
+## Games visual cohesion iteration 2 verification
+
+- `npm run check:syntax` passes for 65 JavaScript and JSON files, `npm run check:static` passes for 45 HTML files, 39 stylesheets, 47 scripts, and 23 projects, and `git diff --check` passes.
+- The required game client passes the Aquarium and Signal Grove Defense runs with synchronized state and no error artifacts; focused browser behavior passes all 8 project interaction tests.
+- All 24 first-render scenarios and all 63 site-quality checks pass, including responsive overflow, navigation, game-card alternative text, and featured-game interactions.
+- Desktop and 390px screenshots were inspected for the refreshed Games index, Aquarium frame, Signal Grove Defense launch state, and the full playable-game set.
+
+## Games visual cohesion iteration 3
+
+- New feature goal: make live gameplay communicate state with the same care as the surrounding game UI.
+- Added lightweight combat feedback to Signal Grove Defense: floating damage, slow, reward, and core-charge labels, plus a target lock that connects the selected tower to its current target.
+- Kept the feedback cosmetic and transient so tower costs, wave pacing, targeting, and upgrade balance remain unchanged.
+
+## Games visual cohesion iteration 3 TODO
+
+- None for this pass.
+
+## Games visual cohesion iteration 3 verification
+
+- `node --check tower-defense/app.js` passes, the bundled game Playwright client completes without error artifacts, and the focused Signal Grove Defense behavior test passes.
+- The live viewport was checked after scrolling into the game; the site header stays above the app and does not cover the battlefield.
+
+## Games visual cohesion iteration 4
+
+- New feature goal: make Conway's Game of Life feel as considered as the newer games while keeping the simulation readable at a glance.
+- Compressed the desktop control rail into a two-action toolbar, a four-column pattern picker, and a compact utility row so every important control is visible without an awkward hidden lower section.
+- Shortened only the visual labels that need to fit the compact rail, preserving full names through accessible labels and tooltips.
+- Added a soft board light, rounded live-cell modules, subtle birth highlights, and age-based glow so evolving generations have more visual life without changing Conway's rules.
+
+## Games visual cohesion iteration 4 TODO
+
+- None for this pass.
+
+## Games visual cohesion iteration 4 verification
+
+- The bundled game Playwright client passes three Conway interaction iterations with generation, population, lifecycle, and running-state output intact and no error artifact.
+- The refreshed desktop screenshot was inspected; all pattern and utility controls are visible in the first frame, while the board remains the dominant visual surface.
+
+## Games visual cohesion iteration 5
+
+- New feature goal: make Gremlin Physics Lab's invisible forces discoverable before a collision occurs.
+- Added restrained animated field overlays around fans and moon rocks, including range rings and directional airflow cues that sit behind the draggable objects.
+- Kept the physics untouched; the overlays explain existing force ranges and disappear naturally with the source object.
+
+## Games visual cohesion iteration 5 TODO
+
+- None for this pass.
+
+## Games visual cohesion iteration 5 verification
+
+- The bundled game Playwright client completes three Gremlin iterations with stable state output and no error artifact.
+- Browser QA confirms the Moon soup scenario still produces its reaction and that the live screenshot exposes the moon field without obscuring the play surface.
+
+## Games visual cohesion final verification 2
+
+- `node --check` passes for Conway and Gremlin, `npm run check:syntax` passes for 59 JavaScript and JSON files, `npm run check:static` passes for 45 HTML files, 39 stylesheets, 47 scripts, and 23 projects, and `git diff --check` passes.
+- All 24 first-render scenarios, all 63 site-quality checks, and all 8 focused project behavior tests pass.
+- Temporary browser screenshots and QA test files were removed after visual inspection; no local server remains running.
+
+## Games visual cohesion iteration 6
+
+- New feature goal: make Block Blast's next action obvious before a piece reaches the board.
+- Added a subtle animated dashed drop-zone frame whenever a tray piece is selected but the pointer has not reached the board yet; the existing valid/blocked preview and puzzle rules stay unchanged.
+
+## Games visual cohesion iteration 6 TODO
+
+- None for this pass.
+
+## Games visual cohesion iteration 6 verification
+
+- The bundled game Playwright client completes the Block Blast start/advance run without error artifacts.
+- Browser QA confirms the selected-piece armed state and the existing board preview state render cleanly in the live game.
+
+## Games visual cohesion iteration 7
+
+- New feature goal: make Signal Grove Defense placement decisions readable before a tower is committed.
+- Added a soft range glow, dashed coverage radius, and tower ghost to valid build-cell hover states; the placement preview is cosmetic and does not change tower costs, targeting, or wave balance.
+- Added the current placement preview to `render_game_to_text` so the visual affordance and deterministic state report stay aligned during QA.
+
+## Games visual cohesion iteration 7 TODO
+
+- None for this pass.
+
+## Games visual cohesion iteration 7 verification
+
+- The bundled web-game client passes ready-to-wave, pre-placement hover, and place-tower/launch-wave scenarios without error artifacts.
+- Browser QA confirms a valid hover reports the expected cell and range, the range ghost is visible on the battlefield, and placement still spends credits while preserving the existing wave loop.

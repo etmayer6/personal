@@ -3,19 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="An interactive, privacy-safe Garage Diagnostic Bay demo adapted from Gremlin Hub with fictional vehicle data.">
-    <meta name="theme-color" content="#111c20">
-    <title>Garage Diagnostic Bay | Ethan Mayer</title>
+    <meta name="description" content="An interactive car visualizer for composing the fictional Apex GT across paint, wheels, stance, and light.">
+    <meta name="theme-color" content="#0b1215">
+    <title>Garage Bay | Apex GT Visualizer | Ethan Mayer</title>
     <link rel="stylesheet" href="../style.css">
-    <link rel="stylesheet" href="style.css?v=1">
+    <link rel="stylesheet" href="style.css?v=2">
     <link rel="stylesheet" href="../project-polish.css?v=2">
     <!-- SEO:START -->
         <link rel="canonical" href="https://etmayer6.github.io/personal/garage/">
         <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
         <meta property="og:type" content="website">
         <meta property="og:site_name" content="Ethan Mayer">
-        <meta property="og:title" content="Garage Diagnostic Bay | Ethan Mayer">
-        <meta property="og:description" content="An interactive, privacy-safe Garage Diagnostic Bay demo adapted from Gremlin Hub with fictional vehicle data.">
+        <meta property="og:title" content="Garage Bay | Apex GT Visualizer | Ethan Mayer">
+        <meta property="og:description" content="Compose a fictional Apex GT across paint, wheels, stance, and light in an interactive browser-based car visualizer.">
         <meta property="og:url" content="https://etmayer6.github.io/personal/garage/">
         <meta property="og:image" content="https://etmayer6.github.io/personal/assets/social-card.png">
         <meta property="og:image:type" content="image/png">
@@ -23,8 +23,8 @@
         <meta property="og:image:height" content="630">
         <meta property="og:image:alt" content="Ethan Mayer - software engineer and personal projects">
         <meta name="twitter:card" content="summary_large_image">
-        <meta name="twitter:title" content="Garage Diagnostic Bay | Ethan Mayer">
-        <meta name="twitter:description" content="An interactive, privacy-safe Garage Diagnostic Bay demo adapted from Gremlin Hub with fictional vehicle data.">
+        <meta name="twitter:title" content="Garage Bay | Apex GT Visualizer | Ethan Mayer">
+        <meta name="twitter:description" content="Compose a fictional Apex GT across paint, wheels, stance, and light in an interactive browser-based car visualizer.">
         <meta name="twitter:image" content="https://etmayer6.github.io/personal/assets/social-card.png">
     <!-- SEO:END -->
 </head>
@@ -44,181 +44,169 @@
     </header>
 
     <main class="garage-page-shell">
-        <section class="project-intro" aria-labelledby="project-title">
-            <div>
+        <section class="garage-hero" aria-labelledby="project-title">
+            <div class="hero-copy">
                 <a class="back-link" href="../projects/"><span aria-hidden="true">&larr;</span> Project index</a>
-                <p class="eyebrow">Gremlin Hub / Garage toy</p>
-                <h1 id="project-title">Put the whole machine on the lift.</h1>
+                <p class="eyebrow">Garage Bay / Visualizer 04</p>
+                <h1 id="project-title">Put the whole machine <em>on the lift.</em></h1>
+                <p class="hero-lede">Build a look, orbit the car, and see the numbers move with it. A fictional studio for the details that make a machine feel like yours.</p>
+                <div class="hero-meta" aria-label="Visualizer details"><span>Interactive vehicle studio</span><span>Local / no account</span></div>
             </div>
-            <div class="intro-copy">
-                <p>Pick a symptom, run a scan, and inspect the fictional vehicle.</p>
-                <div class="intro-tags" aria-label="Things to try"><span>Run a scan</span><span>Toggle systems</span><span>Log a fix</span></div>
+            <div class="hero-index" aria-label="Project index number">
+                <span>04</span>
+                <small>APEX GT<br>PROTOTYPE</small>
             </div>
         </section>
 
-        <section class="garage-console" aria-label="Interactive Garage Diagnostic Bay demo">
-            <header class="console-header">
-                <div class="console-identity">
-                    <span class="brand-mark" aria-hidden="true">
-                        <svg viewBox="0 0 48 48"><path d="M10 15 5 7l12 4M38 15l5-8-12 4"/><path class="brand-face" d="M9 23c0-9 6-14 15-14s15 5 15 14v5c0 8-6 13-15 13S9 36 9 28z"/><circle cx="18" cy="24" r="2.5"/><circle cx="30" cy="24" r="2.5"/><path d="M18 32c4 3 8 3 12 0"/></svg>
-                    </span>
-                    <span><strong>Gremlin Garage</strong><small>Diagnostic Bay 04</small></span>
+        <section class="visualizer-shell" aria-labelledby="studio-title">
+            <header class="studio-bar">
+                <div class="studio-brand">
+                    <span class="studio-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+                    <div><strong id="studio-title">Apex GT / Studio build</strong><small>Garage Bay 04 · design mode</small></div>
                 </div>
-                <div class="vehicle-identity">
-                    <span class="status-lamp" aria-hidden="true"></span>
-                    <span><small>Connected vehicle</small><strong>Apex GT / Prototype 04</strong></span>
-                </div>
-                <div class="console-actions">
-                    <button class="secondary-button" id="export-button" type="button">Export log</button>
-                    <button class="scan-button" id="scan-button" type="button"><span aria-hidden="true"></span>Run full scan</button>
+                <div class="studio-actions">
+                    <span class="save-state" id="save-state" role="status" aria-live="polite">Unsaved build</span>
+                    <button class="ghost-button" id="reset-button" type="button">Reset</button>
+                    <button class="accent-button" id="save-button" type="button">Save build <span aria-hidden="true">&rarr;</span></button>
                 </div>
             </header>
 
-            <div class="telemetry-strip" aria-label="Vehicle telemetry">
-                <div><span>Odometer</span><strong>42,806 <small>mi</small></strong></div>
-                <div><span>System voltage</span><strong>12.6 <small>V</small></strong></div>
-                <div><span>Estimated range</span><strong>318 <small>mi</small></strong></div>
-                <div><span>Next service</span><strong>1,240 <small>mi</small></strong></div>
-                <div class="telemetry-health"><span>Fleet health</span><strong id="health-score">76%</strong></div>
-            </div>
-
-            <div class="console-workspace">
-                <section class="vehicle-panel" aria-labelledby="vehicle-panel-title">
-                    <div class="panel-heading">
-                        <div>
-                            <p class="panel-kicker">Live schematic</p>
-                            <h2 id="vehicle-panel-title">Vehicle systems</h2>
-                        </div>
-                        <button class="clear-filter" id="clear-system" type="button" hidden>Show all systems</button>
+            <div class="visualizer-layout">
+                <section class="viewport-panel" aria-labelledby="viewport-title">
+                    <div class="viewport-heading">
+                        <div><p class="panel-kicker">Live viewport</p><h2 id="viewport-title">Shape, light, stance.</h2></div>
+                        <div class="viewport-readout"><span id="viewport-label">Front three-quarter</span><strong id="orbit-readout">Yaw +18&deg;</strong></div>
                     </div>
 
-                    <div class="vehicle-stage" id="vehicle-stage">
+                    <div class="vehicle-stage" id="vehicle-stage" data-view="three-quarter" data-scene="golden" data-wheel="street" tabindex="0" aria-describedby="stage-help">
+                        <div class="stage-stars" aria-hidden="true"></div>
                         <div class="stage-grid" aria-hidden="true"></div>
-                        <div class="scan-beam" id="scan-beam" aria-hidden="true"></div>
-                        <div class="orientation-mark" aria-hidden="true"><span>Front</span><i></i></div>
-                        <svg class="vehicle-schematic" viewBox="0 0 620 860" role="img" aria-label="Top-down technical schematic of the fictional Apex GT">
-                            <defs>
-                                <linearGradient id="body-sheen" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#d8e0dc"/><stop offset="0.48" stop-color="#809096"/><stop offset="1" stop-color="#3b4d54"/></linearGradient>
-                                <linearGradient id="glass-sheen" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#7093a0"/><stop offset="1" stop-color="#1c3038"/></linearGradient>
-                                <filter id="vehicle-shadow"><feDropShadow dx="0" dy="20" stdDeviation="20" flood-color="#020708" flood-opacity=".8"/></filter>
-                            </defs>
-                            <g filter="url(#vehicle-shadow)">
-                                <path class="car-shadow" d="M173 77c46-36 228-36 274 0l38 122 38 107-6 322-45 143c-39 36-285 36-324 0l-45-143-6-322 38-107z"/>
-                                <path class="car-body" d="M188 67c42-31 202-31 244 0l35 121 46 122-9 298-47 152c-35 29-259 29-294 0l-47-152-9-298 46-122z"/>
-                                <path class="body-center" d="M251 58h118l42 132 33 122-10 296-32 139H218l-32-139-10-296 33-122z"/>
-                                <path class="hood-line" d="M188 196c73 27 171 27 244 0M178 317c88-34 176-34 264 0M186 600c82 35 166 35 248 0M218 747c60-23 124-23 184 0"/>
-                                <path class="windshield" d="m221 315 37-104h104l37 104-23 75H244z"/>
-                                <path class="roof" d="M244 408h132l24 183c-57 24-123 24-180 0z"/>
-                                <path class="rear-glass" d="m224 613 176-1-33 98H253z"/>
-                                <path class="glass-line" d="M310 212v496M246 404h128M230 590h160"/>
-                                <path class="headlight left" d="m153 188 62-74 17 55-62 45z"/>
-                                <path class="headlight right" d="m467 188-62-74-17 55 62 45z"/>
-                                <path class="taillight left" d="m170 710 67 47-58 7-27-54z"/>
-                                <path class="taillight right" d="m450 710-67 47 58 7 27-54z"/>
-                                <g class="wheel"><rect x="78" y="228" width="74" height="150" rx="25"/><rect x="468" y="228" width="74" height="150" rx="25"/><rect x="78" y="560" width="74" height="150" rx="25"/><rect x="468" y="560" width="74" height="150" rx="25"/></g>
-                                <g class="wheel-detail"><path d="M92 251h46M92 273h46M92 295h46M92 317h46M92 339h46M482 251h46M482 273h46M482 295h46M482 317h46M482 339h46M92 583h46M92 605h46M92 627h46M92 649h46M92 671h46M482 583h46M482 605h46M482 627h46M482 649h46M482 671h46"/></g>
-                            </g>
-                        </svg>
-
-                        <button class="system-hotspot hotspot-powertrain" type="button" data-system="powertrain" aria-label="Inspect powertrain"><span></span><strong>Powertrain</strong><small data-system-count="powertrain">1 finding</small></button>
-                        <button class="system-hotspot hotspot-electrical" type="button" data-system="electrical" aria-label="Inspect electrical system"><span></span><strong>Electrical</strong><small data-system-count="electrical">1 finding</small></button>
-                        <button class="system-hotspot hotspot-chassis" type="button" data-system="chassis" aria-label="Inspect chassis"><span></span><strong>Chassis</strong><small data-system-count="chassis">1 finding</small></button>
-                        <button class="system-hotspot hotspot-brakes" type="button" data-system="brakes" aria-label="Inspect brakes"><span></span><strong>Brakes</strong><small data-system-count="brakes">1 finding</small></button>
-                        <button class="system-hotspot hotspot-safety" type="button" data-system="safety" aria-label="Inspect safety systems"><span></span><strong>Safety</strong><small data-system-count="safety">0 findings</small></button>
-
-                        <div class="scan-overlay" id="scan-overlay" aria-live="polite" hidden>
-                            <span class="scan-spinner" aria-hidden="true"></span>
-                            <strong id="scan-title">Initializing scan</strong>
-                            <p id="scan-status">Connecting to vehicle systems...</p>
-                            <div class="scan-progress"><i id="scan-progress"></i></div>
+                        <div class="stage-horizon" aria-hidden="true"></div>
+                        <div class="stage-floor" aria-hidden="true"></div>
+                        <div class="stage-corner stage-corner-top"><span class="live-dot"></span> LIVE VIEWPORT</div>
+                        <div class="stage-corner stage-corner-bottom">APEX / 04 &middot; <span id="scene-label">GOLDEN HOUR</span></div>
+                        <div class="orbit-hint" id="stage-help"><span aria-hidden="true">&harr;</span> Drag to orbit <kbd>Shift</kbd> + drag to tilt</div>
+                        <div class="vehicle-render" id="vehicle-render">
+                            <svg class="car-visual" viewBox="0 0 800 470" role="img" aria-labelledby="car-title car-description">
+                                <title id="car-title">Apex GT configurable concept car</title>
+                                <desc id="car-description">A stylized three-quarter view of a fictional performance coupe with configurable paint, wheels, lights, and stance.</desc>
+                                <defs>
+                                    <linearGradient id="car-paint" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="var(--paint-hi)"></stop><stop offset="0.47" stop-color="var(--paint-base)"></stop><stop offset="1" stop-color="var(--paint-shadow)"></stop></linearGradient>
+                                    <linearGradient id="car-glass" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#a8d8d6" stop-opacity=".78"></stop><stop offset="1" stop-color="#0b1b22" stop-opacity=".96"></stop></linearGradient>
+                                    <linearGradient id="car-chrome" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#d9e8e0"></stop><stop offset=".5" stop-color="#6b8585"></stop><stop offset="1" stop-color="#edf9ef"></stop></linearGradient>
+                                    <filter id="car-drop-shadow" x="-20%" y="-30%" width="140%" height="170%"><feDropShadow dx="0" dy="25" stdDeviation="18" flood-color="#000" flood-opacity=".8"></feDropShadow></filter>
+                                    <filter id="neon-glow"><feGaussianBlur stdDeviation="5" result="blur"></feGaussianBlur><feMerge><feMergeNode in="blur"></feMergeNode><feMergeNode in="SourceGraphic"></feMerge></filter>
+                                </defs>
+                                <g class="car-model" filter="url(#car-drop-shadow)">
+                                    <ellipse class="car-shadow" cx="413" cy="371" rx="288" ry="32"></ellipse>
+                                    <path class="under-glow" d="M150 334c91 30 420 35 548-2l-48 40c-132 30-370 30-496-4z"></path>
+                                    <g class="far-wheels" aria-hidden="true"><ellipse cx="210" cy="296" rx="32" ry="68"></ellipse><ellipse cx="608" cy="289" rx="30" ry="65"></ellipse></g>
+                                    <path class="car-body" d="M106 310c8-45 38-69 93-78l69-19 48-70c29-39 68-53 130-53 72 0 118 20 149 66l39 58c38 12 61 34 67 72l9 42-21 30-60 4c-11 31-34 48-67 48-35 0-58-17-67-50l-224-2c-10 33-33 50-69 50-35 0-58-18-68-52l-69-6z"></path>
+                                    <path class="body-shoulder" d="M201 233c101 18 302 23 435-6l65 36c-106 31-373 38-508 9z"></path>
+                                    <path class="roof-line" d="M266 213l48-64c27-33 58-45 113-45 63 0 99 15 125 53l39 61c-100 20-225 20-325-5z"></path>
+                                    <path class="windshield" d="M328 153c21-27 47-36 88-37l17 91-107-2z"></path>
+                                    <path class="side-glass" d="M447 116c46 1 72 15 96 47l24 37-99 4z"></path>
+                                    <path class="glass-divider" d="m432 116 19 91"></path>
+                                    <path class="hood-highlight" d="M162 252c133 25 360 26 507-4"></path>
+                                    <path class="door-line" d="M435 212c-6 34-8 67-6 108M228 226l-12 103M610 215l31 116"></path>
+                                    <path class="front-bumper" d="M106 310c85 21 185 25 286 25 114 0 221-6 318-30l-4 30c-110 34-479 43-588 4z"></path>
+                                    <path class="front-grille" d="M102 322c47 13 101 17 163 18l-24 20-117-7z"></path>
+                                    <path class="headlight" d="M116 270c31-13 64-20 100-22l-42 37-61 10z"></path>
+                                    <path class="headlight-glow" d="M119 271c28-10 54-15 80-17l-33 23-47 8z"></path>
+                                    <path class="tail-light" d="M666 237c27 6 47 17 64 31l-4 27-75-16z"></path>
+                                    <path class="tail-light-glow" d="M679 246c20 5 33 11 45 20l-1 12-48-12z"></path>
+                                    <path class="side-skirt" d="M229 334c90 7 298 9 407-2l-23 31c-115 17-290 14-407-4z"></path>
+                                    <path class="mirror" d="M558 198c17-15 32-15 43-7l-6 17-32 7z"></path>
+                                    <path class="door-handle" d="M482 237h26"></path>
+                                    <g class="wheel wheel-front" transform="translate(656 329)"><circle class="tire" r="44"></circle><circle class="rim" r="29"></circle><circle class="hub" r="7"></circle><g class="wheel-spokes"><path d="M0-25V-8M0 8v17M-25 0h17M8 0h17M-18-18l13 13M5 5l13 13M18-18 5-5M-5 5l-13 13"></path></g><path class="caliper" d="M-22-20c13-9 25-5 29 7l-13 16c-13-2-20-10-16-23z"></path></g>
+                                    <g class="wheel wheel-rear" transform="translate(228 337)"><circle class="tire" r="42"></circle><circle class="rim" r="28"></circle><circle class="hub" r="7"></circle><g class="wheel-spokes"><path d="M0-24V-8M0 8v16M-24 0h16M8 0h16M-17-17l12 12M5 5l12 12M17-17 5-5M-5 5l-12 12"></path></g><path class="caliper" d="M-21-19c12-9 24-5 28 7l-12 16c-12-2-19-10-16-23z"></path></g>
+                                    <g class="spec-overlay" aria-hidden="true"><path d="M250 113 170 74H72"></path><text x="18" y="69">AERO ROOF</text><path d="M659 327h93"></path><text x="624" y="361">FORGED 19</text><path d="M429 334v50"></path><text x="389" y="409">LOW / 132 MM</text></g>
+                                </g>
+                            </svg>
                         </div>
+                        <div class="stage-caption"><span id="build-code">APX-04 / OBSIDIAN</span><span id="build-status">Ready to configure</span></div>
                     </div>
 
-                    <div class="schematic-legend" aria-label="Schematic legend">
-                        <span><i class="legend-nominal"></i>Nominal</span>
-                        <span><i class="legend-watch"></i>Watch</span>
-                        <span><i class="legend-critical"></i>Critical</span>
-                        <p>Choose a marker to isolate that system.</p>
+                    <div class="viewport-controls">
+                        <div class="view-tabs" role="group" aria-label="Camera view">
+                            <button type="button" class="view-tab is-active" data-view="three-quarter" aria-pressed="true">3/4 view</button>
+                            <button type="button" class="view-tab" data-view="side" aria-pressed="false">Side</button>
+                            <button type="button" class="view-tab" data-view="front" aria-pressed="false">Front</button>
+                            <button type="button" class="view-tab" data-view="rear" aria-pressed="false">Rear</button>
+                        </div>
+                        <label class="range-control" for="orbit-range"><span>Orbit</span><input id="orbit-range" type="range" min="-72" max="180" value="18"><output id="orbit-output">+18&deg;</output></label>
+                        <button class="orbit-button" id="orbit-button" type="button" aria-pressed="false"><span aria-hidden="true">&circlearrowright;</span> Auto orbit</button>
                     </div>
                 </section>
 
-                <aside class="findings-panel" aria-labelledby="findings-title">
-                    <div class="panel-heading findings-heading">
-                        <div>
-                            <p class="panel-kicker">Service queue</p>
-                            <h2 id="findings-title">Findings <span id="open-count">4</span></h2>
+                <aside class="build-panel" aria-labelledby="build-title">
+                    <div class="build-panel-heading"><p class="panel-kicker">Build controls</p><h2 id="build-title">Compose the look.</h2><p>Every choice updates the car, the code, and the readout.</p></div>
+
+                    <fieldset class="control-group">
+                        <legend>Paint <span id="paint-label">Obsidian</span></legend>
+                        <div class="paint-options" role="group" aria-label="Paint color">
+                            <button class="paint-swatch is-active" type="button" data-paint="obsidian" aria-label="Obsidian black" aria-pressed="true"><i></i><span>Obsidian</span></button>
+                            <button class="paint-swatch" type="button" data-paint="signal" aria-label="Signal orange" aria-pressed="false"><i></i><span>Signal</span></button>
+                            <button class="paint-swatch" type="button" data-paint="mineral" aria-label="Mineral mint" aria-pressed="false"><i></i><span>Mineral</span></button>
+                            <button class="paint-swatch" type="button" data-paint="cobalt" aria-label="Cobalt blue" aria-pressed="false"><i></i><span>Cobalt</span></button>
                         </div>
-                        <button class="add-button" id="add-issue-button" type="button"><span aria-hidden="true">+</span>Add finding</button>
+                    </fieldset>
+
+                    <fieldset class="control-group">
+                        <legend>Wheel package <span id="wheel-label">Street forged</span></legend>
+                        <div class="choice-list" role="group" aria-label="Wheel package">
+                            <button class="choice-button is-active" type="button" data-wheel="street" aria-pressed="true"><span class="choice-icon wheel-icon wheel-icon-street" aria-hidden="true"></span><span><strong>Street forged</strong><small>19 in / satin graphite</small></span><b>+0</b></button>
+                            <button class="choice-button" type="button" data-wheel="aero" aria-pressed="false"><span class="choice-icon wheel-icon wheel-icon-aero" aria-hidden="true"></span><span><strong>Aero disc</strong><small>19 in / efficiency spec</small></span><b>-4</b></button>
+                            <button class="choice-button" type="button" data-wheel="track" aria-pressed="false"><span class="choice-icon wheel-icon wheel-icon-track" aria-hidden="true"></span><span><strong>Track mesh</strong><small>20 in / heat-ready</small></span><b>+12</b></button>
+                        </div>
+                    </fieldset>
+
+                    <fieldset class="control-group">
+                        <legend>Scene light <span id="scene-label-control">Golden hour</span></legend>
+                        <div class="scene-options" role="group" aria-label="Scene lighting">
+                            <button class="scene-button is-active" type="button" data-scene="golden" aria-pressed="true"><i></i><span>Golden</span></button>
+                            <button class="scene-button" type="button" data-scene="studio" aria-pressed="false"><i></i><span>Studio</span></button>
+                            <button class="scene-button" type="button" data-scene="night" aria-pressed="false"><i></i><span>Night</span></button>
+                        </div>
+                    </fieldset>
+
+                    <div class="toggle-grid" aria-label="Viewport layers">
+                        <label class="toggle-control"><input id="lights-toggle" type="checkbox" checked><span class="toggle-ui"></span><span>Headlights</span></label>
+                        <label class="toggle-control"><input id="grid-toggle" type="checkbox" checked><span class="toggle-ui"></span><span>Floor grid</span></label>
+                        <label class="toggle-control"><input id="overlay-toggle" type="checkbox"><span class="toggle-ui"></span><span>Spec overlay</span></label>
+                        <label class="toggle-control"><input id="lower-toggle" type="checkbox"><span class="toggle-ui"></span><span>Lower stance</span></label>
                     </div>
 
-                    <div class="filter-row" aria-label="Finding filters">
-                        <button class="filter-button is-active" type="button" data-severity="all">All</button>
-                        <button class="filter-button" type="button" data-severity="critical">Critical</button>
-                        <button class="filter-button" type="button" data-severity="warn">Watch</button>
-                        <label class="resolved-toggle"><input id="show-resolved" type="checkbox"><span></span>History</label>
-                    </div>
-
-                    <div class="findings-list" id="findings-list" aria-live="polite"><article class="finding-card preboot-finding" aria-hidden="true"><strong>Local diagnostic fixture</strong><p>Findings will appear as soon as the fictional vehicle state is indexed.</p></article></div>
+                    <button class="check-button" id="scan-button" type="button"><span class="check-icon" aria-hidden="true">&check;</span><span><strong>Run configuration check</strong><small id="check-label">Validate the current build</small></span><b aria-hidden="true">&rarr;</b></button>
                 </aside>
             </div>
 
-            <div class="console-lower">
-                <section class="health-panel" aria-labelledby="health-title">
-                    <div class="panel-heading">
-                        <div><p class="panel-kicker">Subsystem health</p><h2 id="health-title">Five buses, one view</h2></div>
-                        <span class="data-note">Simulated readings</span>
-                    </div>
-                    <div class="health-grid" id="health-grid"></div>
+            <div class="build-deck">
+                <section class="spec-panel" aria-labelledby="spec-title">
+                    <div class="deck-heading"><div><p class="panel-kicker">Build sheet</p><h2 id="spec-title">The numbers behind the look.</h2></div><span class="deck-code" id="deck-code">APX-04</span></div>
+                    <div class="spec-grid" id="spec-grid"></div>
                 </section>
-
-                <section class="service-panel" aria-labelledby="service-title">
-                    <div class="panel-heading">
-                        <div><p class="panel-kicker">Maintenance record</p><h2 id="service-title">Recent work</h2></div>
-                        <button class="text-button" id="reset-button" type="button">Reset demo</button>
-                    </div>
-                    <div class="service-timeline">
-                        <article><time>42,120 mi</time><span></span><div><strong>Oil and filter service</strong><p>Inspection complete / no leaks found</p></div></article>
-                        <article><time>39,804 mi</time><span></span><div><strong>Brake inspection</strong><p>Front pads measured at 7 mm</p></div></article>
-                        <article><time>36,200 mi</time><span></span><div><strong>Tire rotation</strong><p>Pressure calibrated to test specification</p></div></article>
-                    </div>
+                <section class="systems-panel" aria-labelledby="systems-title">
+                    <div class="deck-heading"><div><p class="panel-kicker">Engineering readout</p><h2 id="systems-title">What changed?</h2></div><span class="system-state" id="system-state">Nominal</span></div>
+                    <div class="system-list" id="system-list"></div>
                 </section>
             </div>
         </section>
 
         <section class="build-note" aria-labelledby="build-note-title">
-            <p class="eyebrow">Behind the demo</p>
-            <h2 id="build-note-title">A fictional vehicle, fully local.</h2>
-            <div>
-                <p>The diagnostic workflow, simulated telemetry, filters, export, and service queue all run in the browser.</p>
-            </div>
+            <div><p class="eyebrow">Behind the build</p><h2 id="build-note-title">A small car studio, fully local.</h2></div>
+            <p>There is no configurator account or remote vehicle data here. The model, controls, spec math, and saved build all run in the browser.</p>
         </section>
     </main>
-
-    <dialog class="finding-dialog" id="finding-dialog">
-        <form id="finding-form" method="dialog">
-            <div class="dialog-heading">
-                <div><p class="panel-kicker">New service record</p><h2>Add a finding</h2></div>
-                <button class="dialog-close" id="dialog-close" type="button" aria-label="Close dialog">&times;</button>
-            </div>
-            <label>Finding title<input id="finding-title" name="title" maxlength="70" required placeholder="e.g. Steering vibration above 60 mph"></label>
-            <div class="dialog-grid">
-                <label>System<select id="finding-system" name="system"><option value="powertrain">Powertrain</option><option value="electrical">Electrical</option><option value="chassis">Chassis</option><option value="brakes">Brakes</option><option value="safety">Safety</option></select></label>
-                <label>Priority<select id="finding-severity" name="severity"><option value="info">Monitor</option><option value="warn" selected>Watch</option><option value="critical">Critical</option></select></label>
-            </div>
-            <label>Technician notes<textarea id="finding-notes" name="notes" maxlength="180" rows="4" placeholder="Add symptoms, conditions, or next steps"></textarea></label>
-            <p class="dialog-note">Demo records are stored only in this browser.</p>
-            <button class="save-button" type="submit">Add to service queue <span aria-hidden="true">&rarr;</span></button>
-        </form>
-    </dialog>
 
     <div class="garage-toast" id="garage-toast" role="status" aria-live="polite"></div>
 
     <footer class="garage-footer">
-        <span>Gremlin Garage / Fictional static demonstration</span>
+        <span>Garage Bay / Fictional vehicle studio</span>
         <a href="../projects/">Return to project index</a>
     </footer>
 
-    <script src="app.js?v=1"></script>
+    <script src="app.js?v=2"></script>
     <script src="../site-play.js?v=pet-companion-2"></script>
 </body>
 </html>

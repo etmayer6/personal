@@ -543,6 +543,47 @@
         context.fillText("DRAG / DROP / OBSERVE", WIDTH - 154, 28);
     }
 
+    function drawFieldOverlays() {
+        state.entities.forEach(function (entity) {
+            if (!entity.alive || (entity.type !== "fan" && entity.type !== "moon")) return;
+            const definition = definitionFor(entity.type);
+            context.save();
+            context.translate(entity.x, entity.y);
+            context.setLineDash([5, 8]);
+            context.lineWidth = 1.5;
+            context.strokeStyle = entity.type === "fan"
+                ? "rgba(76, 154, 151, 0.26)"
+                : "rgba(185, 165, 223, 0.3)";
+            for (let ring = 1; ring <= 3; ring += 1) {
+                const baseRadius = entity.type === "fan" ? 42 + ring * 47 : 54 + ring * 45;
+                const breathing = Math.sin(state.time * 2.2 + ring * 0.9) * 4;
+                context.beginPath();
+                context.arc(0, 0, baseRadius + breathing, 0, TAU);
+                context.stroke();
+            }
+            context.setLineDash([]);
+            context.globalAlpha = 0.24;
+            context.strokeStyle = definition.color;
+            context.lineWidth = 2;
+            if (entity.type === "fan") {
+                for (let ray = 0; ray < 5; ray += 1) {
+                    const angle = -0.85 + ray * 0.42 + state.time * 0.08;
+                    const start = 42;
+                    const end = 142;
+                    context.beginPath();
+                    context.moveTo(Math.cos(angle) * start, Math.sin(angle) * start);
+                    context.lineTo(Math.cos(angle) * end, Math.sin(angle) * end);
+                    context.stroke();
+                }
+            } else {
+                context.beginPath();
+                context.arc(0, 0, 30 + Math.sin(state.time * 1.8) * 2, 0, TAU);
+                context.stroke();
+            }
+            context.restore();
+        });
+    }
+
     function drawBursts() {
         state.bursts.forEach(function (burst) {
             const progress = clamp(burst.age / burst.life, 0, 1);
@@ -766,6 +807,7 @@
         context.setTransform(state.dpr, 0, 0, state.dpr, 0, 0);
         context.clearRect(0, 0, WIDTH, HEIGHT);
         drawBackground();
+        drawFieldOverlays();
         drawBursts();
         drawDragTrail();
         state.entities.slice().sort(function (first, second) {

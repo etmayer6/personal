@@ -663,3 +663,72 @@ html {
         font-size: clamp(34px, 10vw, 48px);
     }
 }
+
+@media (min-width: 901px) {
+    .life-controls {
+        gap: 8px;
+        padding-right: 4px;
+        scrollbar-color: rgba(242, 203, 63, 0.65) rgba(255, 250, 240, 0.08);
+        scrollbar-width: thin;
+    }
+
+    .life-controls .control-cluster {
+        padding: 10px;
+    }
+
+    .primary-controls {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .control-button {
+        min-height: 34px;
+        padding: 7px 6px;
+        font-size: 9px;
+        letter-spacing: 0.05em;
+    }
+
+    .control-label {
+        margin-bottom: 7px;
+    }
+
+    .speed-label {
+        margin-top: 12px;
+        margin-bottom: 7px;
+    }
+
+    .pattern-list {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 4px;
+    }
+
+    .pattern-list button {
+        min-width: 0;
+        min-height: 29px;
+        padding: 6px 3px;
+        overflow: hidden;
+        font-size: 8px;
+        letter-spacing: 0.02em;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .pattern-list button:last-child {
+        grid-column: auto;
+    }
+
+    .utility-controls {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 4px;
+    }
+
+    .utility-controls .control-button {
+        padding-right: 3px;
+        padding-left: 3px;
+        font-size: 8px;
+        letter-spacing: 0.02em;
+    }
+
+    .utility-controls .control-button span {
+        display: none;
+    }
+}

@@ -669,6 +669,7 @@
 .tone-pet { --card-accent: #4d9c8a; }
 .tone-lab { --card-accent: #a967b8; }
 .tone-tier { --card-accent: #d95d45; }
+.tone-defense { --card-accent: #55a890; }
 
 .projects-footer {
     padding: 80px 20px 36px;

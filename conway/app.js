@@ -262,7 +262,17 @@
         const cellWidth = width / columns;
         const cellHeight = height / rows;
         context.clearRect(0, 0, width, height);
-        context.fillStyle = "#efe5d2";
+        const backdrop = context.createLinearGradient(0, 0, width, height);
+        backdrop.addColorStop(0, "#f6eddb");
+        backdrop.addColorStop(0.52, "#efe5d2");
+        backdrop.addColorStop(1, "#e8dcc5");
+        context.fillStyle = backdrop;
+        context.fillRect(0, 0, width, height);
+
+        const centerWash = context.createRadialGradient(width * 0.5, height * 0.44, 0, width * 0.5, height * 0.44, Math.max(width, height) * 0.72);
+        centerWash.addColorStop(0, "rgba(255, 250, 240, 0.2)");
+        centerWash.addColorStop(1, "rgba(255, 250, 240, 0)");
+        context.fillStyle = centerWash;
         context.fillRect(0, 0, width, height);
 
         context.strokeStyle = "rgba(23, 32, 20, 0.14)";
@@ -283,8 +293,27 @@
                 if (!grid[indexFor(x, y)]) continue;
                 const isHovered = state.hoveredCell && state.hoveredCell.x === x && state.hoveredCell.y === y;
                 const cellAge = ages[indexFor(x, y)];
-                context.fillStyle = isHovered ? "#f2cb3f" : cellAge <= 1 ? "#f2cb3f" : cellAge <= 3 ? "#e75438" : "#173e8f";
-                context.fillRect(x * cellWidth + 1.5, y * cellHeight + 1.5, Math.max(1, cellWidth - 3), Math.max(1, cellHeight - 3));
+                const cellColor = isHovered ? "#f2cb3f" : cellAge <= 1 ? "#f2cb3f" : cellAge <= 3 ? "#e75438" : "#173e8f";
+                const inset = Math.max(1.5, Math.min(3, cellWidth * 0.12));
+                const cellX = x * cellWidth + inset;
+                const cellY = y * cellHeight + inset;
+                const drawnWidth = Math.max(1, cellWidth - inset * 2);
+                const drawnHeight = Math.max(1, cellHeight - inset * 2);
+                context.fillStyle = cellColor;
+                context.shadowColor = cellColor;
+                context.shadowBlur = cellAge <= 1 || isHovered ? Math.min(8, cellWidth * 0.24) : 0;
+                if (typeof context.roundRect === "function") {
+                    context.beginPath();
+                    context.roundRect(cellX, cellY, drawnWidth, drawnHeight, Math.min(3, cellWidth * 0.16));
+                    context.fill();
+                } else {
+                    context.fillRect(cellX, cellY, drawnWidth, drawnHeight);
+                }
+                context.shadowBlur = 0;
+                if (cellAge <= 1 && drawnWidth > 5) {
+                    context.fillStyle = "rgba(255, 250, 240, 0.5)";
+                    context.fillRect(cellX + 2, cellY + 2, Math.min(drawnWidth * 0.28, 6), 1.5);
+                }
             }
         }
 

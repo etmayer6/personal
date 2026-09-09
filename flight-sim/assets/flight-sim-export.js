@@ -1,3 +1,5 @@
+import { stepFlightModel } from "../flight-model.js";
+
 var X0 = { exports: {} }, lu = {};
 var Vr;
 function h8() {
@@ -11353,10 +11355,10 @@ function lv() {
     scenarioFaultActive: !1,
     cameraMode: "chase",
     position: { ...uP },
-    speed: 84,
-    groundSpeed: 84,
-    engineRpm: 2140,
-    throttle: 0.64,
+    speed: 64,
+    groundSpeed: 64,
+    engineRpm: 2100,
+    throttle: 0.58,
     trim: 0,
     flightDirector: !1,
     autopilot: !1,
@@ -11370,7 +11372,7 @@ function lv() {
     flaps: 0,
     terrainRunTime: 0,
     heading: 0,
-    pitch: -0.03,
+    pitch: -0.01,
     roll: 0,
     pitchRate: 0,
     rollRate: 0,
@@ -11378,7 +11380,23 @@ function lv() {
     slip: 0,
     angleOfAttack: 0.03,
     gLoad: 1,
-    verticalVelocity: -2.8,
+    verticalVelocity: -2.2,
+    stallMarginDeg: 15.5,
+    stallSpeedMarginKts: 66.0,
+    indicatedSpeedMps: 63.8,
+    stallSpeedMps: 30.0,
+    stallSpeedIasMps: 29.8,
+    airDensityKgM3: 1.21,
+    temperatureC: 14.2,
+    pressureAltitudeM: 126,
+    enginePowerFraction: 0.64,
+    liftCoefficient: 0.1,
+    dragCoefficient: 0.04,
+    thrustNewtons: 0,
+    dragNewtons: 0,
+    verticalAccelerationMps2: 0,
+    groundEffect: 1,
+    buffet: 0,
     fuel: 100,
     time: 0,
     score: 0,
@@ -12035,7 +12053,7 @@ function O9(u, a) {
         model: E,
         tint: T
       });
-      const i = u.time * (16 + u.throttle * 64 + u.speed * 0.8), o = La(g.bodyRight, g.bodyForward, i), I = La(g.bodyUp, g.bodyForward, i), b = gA(gA(u.position, OA(g.bodyForward, bB)), OA(g.bodyUp, pB));
+      const i = u.time * (8 + u.engineRpm * 0.048), o = La(g.bodyRight, g.bodyForward, i), I = La(g.bodyUp, g.bodyForward, i), b = gA(gA(u.position, OA(g.bodyForward, bB)), OA(g.bodyUp, pB));
       c.push({
         mesh: a.propeller,
         model: $0(b, o, I, g.bodyForward, 1),
@@ -12076,15 +12094,16 @@ function k9() {
       { label: `flaps ${Sa(i.flaps)}`, tone: i.flaps > 0 ? "pill ok" : "pill" },
       ...i.terrainRunTime > 0.3 ? [{ label: "terrain run hot", tone: "pill ok" }] : [],
       { label: `fuel ${Math.round(i.fuel)}%`, tone: i.fuel > 25 ? "pill ok" : "pill bad" },
-      { label: i.stall ? "stall risk" : "stable air", tone: i.stall ? "pill bad" : "pill ok" }
+      { label: i.stall ? "stall risk" : `aoa margin ${Math.max(0, Math.round(i.stallMarginDeg))}°`, tone: i.stall ? "pill bad" : "pill ok" }
     ],
     [i]
   ), tA = Dt.useMemo(
     () => [
-      { label: `${Math.round(kl(i.speed))} kt`, tone: "pill ok" },
+      { label: `${Math.round(kl(i.indicatedSpeedMps ?? i.speed))} kt IAS`, tone: "pill ok" },
+      { label: `${Math.round(kl(i.groundSpeed))} kt GS`, tone: "pill ok" },
       { label: `${Math.round(oA)} m AGL`, tone: "pill ok" },
       { label: i.nextRing < ft.length ? `gate ${i.nextRing + 1}/${ft.length}` : "final runway", tone: "pill" },
-      { label: i.stall ? "slow down the angle" : "stable flight", tone: i.stall ? "pill bad" : "pill ok" }
+      { label: i.stall ? "stall / lower nose" : `${Math.max(0, Math.round(i.stallSpeedMarginKts))} kt stall margin`, tone: i.stall ? "pill bad" : "pill ok" }
     ],
     [oA, i]
   ), M = N ? Z ? 1.06 : 1.22 : 1, _ = Z ? 178 : N ? 278 : 238, iA = Z ? 170 : N ? 248 : 214, BA = Z ? 12 : N ? 14 : 13, fA = 240 * M, Bt = 180 * M, zt = Z ? 178 : N ? 232 : 182, Ut = Z ? 56 : N ? 74 : 62, se = i.nextRing / ft.length * 100, Ht = i.nextRing < ft.length ? ft[i.nextRing]?.label ?? "Runway touchdown" : "Runway touchdown", Ee = i.terrainRunTime > 0.25, Nl = i.cameraMode === "cockpit" && (i.mode === "flying" || i.mode === "rollout"), $t = aA || F, Yt = N ? `calc(env(safe-area-inset-top, 0px) + ${G ? 8 : 12}px) calc(env(safe-area-inset-right, 0px) + ${G ? 8 : 12}px) calc(env(safe-area-inset-bottom, 0px) + ${G ? 12 : 14}px) calc(env(safe-area-inset-left, 0px) + ${G ? 8 : 12}px)` : "0px", we = i.mode === "landed" ? "rgba(71, 156, 111, 0.92)" : i.mode === "crashed" ? "rgba(178, 78, 58, 0.92)" : "rgba(12, 20, 33, 0.88)", He = N ? {
@@ -12309,20 +12328,16 @@ function k9() {
         Q.scenarioId === "crosswind-correction" && (al.x -= 7.2, al.z += 0.8), Q.scenarioId === "engine-power-loss" && Q.time >= 12 && !Q.scenarioFaultActive && (Q.scenarioFaultActive = !0, Q.engineHealth = 0.12, Q.autopilot = !1, Q.commandRoll = 0, Q.commandPitch = 0, Q.message = "ENGINE POWER LOSS. Maintain glide speed and continue toward the runway.");
         Q.commandRoll = Q.flightDirector ? Le : 0, Q.commandPitch = Q.flightDirector ? qe : 0, Q.autopilot && Math.abs(IA) + Math.abs(HA) + Math.abs(jt) > 1.2 && (Q.autopilot = !1, Q.message = "Autopilot disconnected. You have the airplane.");
         const Xl = Q.autopilot ? AA((Le - Q.roll) * 2.8 - Q.rollRate * 0.45, -1, 1) : 0, cl = Q.autopilot ? AA((qe - Q.pitch) * 3.1 - Q.pitchRate * 0.4, -1, 1) : 0, vt = Q.autopilot && Q.lateralMode === "apr" ? AA(-Q.slip * 1.4 - zn.localizerDots * 0.08, -0.35, 0.35) : 0, fu = AA(IA + cl, -1, 1), Qn = AA(HA + Xl, -1, 1), fe = AA(jt + vt, -1, 1), vl = (Math.sin(Q.time * 1.42 + Q.position.x * 14e-4) + Math.cos(Q.time * 0.96 + Q.position.z * 18e-4)) * 8e-3, Na = (Math.cos(Q.time * 1.14 + Q.position.z * 12e-4) + Math.sin(Q.time * 0.88 + Q.position.x * 11e-4)) * 0.012;
-        Q.wind = al, Q.rollRate += (Qn * 1.82 * Ie - Q.rollRate * 2.12 - Q.roll * 0.28 + Q.slip * 0.18 - fe * 0.06 + Na) * sA, Q.pitchRate += (fu * 0.98 * Ie - Q.pitchRate * 1.78 - (Q.pitch - Ja) * 0.18 + vl) * sA, Q.yawRate += (fe * 0.88 * Ie - Q.yawRate * 1.78 - Q.slip * 0.78 - Qn * 0.14 + Math.sin(Q.roll) * 0.2) * sA, Q.roll += Q.rollRate * sA, Q.roll = AA(Q.roll, -1.02, 1.02), Q.pitch += Q.pitchRate * sA, Q.pitch = AA(Q.pitch, -0.24, 0.34), Q.throttle = AA(Q.throttle + At * 0.4 * sA, 0, 1), Q.trim = AA(Q.trim + ot * 0.085 * sA, -0.18, 0.18), Q.engineRpm = RA(Q.engineRpm, 760 + (140 + Q.throttle * 2200 + Q.speed * 12.5) * Q.engineHealth, 0.08), Q.brakes = 0, Q.fuel = AA(Q.fuel - Q.throttle * sA * 1.55 * Q.engineHealth, 0, 100);
+        Q.wind = al;
+        stepFlightModel(Q, {
+          dt: sA,
+          controls: { pitch: fu, roll: Qn, rudder: fe, throttle: At, trim: ot },
+          wind: al,
+          groundHeight: uA(Q.position.x, Q.position.z),
+          runway: { halfWidth: Te, start: ht, end: GA }
+        });
         const Je = Q.position.y - uA(Q.position.x, Q.position.z);
-        Q.slip = AA(
-          Q.slip + (Math.sin(Q.roll) * 0.34 - Q.yawRate * 0.48 - fe * 0.2 - Q.slip * 2.1 + Qn * 0.02) * sA,
-          -0.5,
-          0.5
-        );
-        const Tn = Math.atan2(Q.verticalVelocity - al.y, Math.max(22, Q.speed)), gl = AA(Q.pitch - Tn, -0.24, 0.44), sl = AA((Math.abs(gl) - ui) / 0.12, 0, 1), En = Me * 0.22, Be = Me * 0.08 + Me * Me * 0.03, Ot = AA(OB + kB * gl + En, -0.7, ai + Me * 0.2), Bu = Math.sign(gl || 1) * RA(ai + Me * 0.16, LB + Me * 0.08, sl), rP = RA(Ot, Bu, sl), wn = Math.abs(Q.position.x) <= Te + 20 && Q.position.z <= GA + 160 && Q.position.z >= ht - 60 && Je < 32 ? AA((32 - Je) / 32, 0, 1) : 0, iP = 0.5 * SB * Q.speed * Q.speed, dn = qB + JB * rP * rP + Be + sl * NB + Math.abs(Q.slip) * xB, ou = RA(hB, HB, Q.throttle) * Q.engineHealth, yt = iP * Pi * rP * (1 + wn * 0.08), fP = iP * Pi * Math.max(0.02, dn - wn * 0.03), Cu = (ou * Math.cos(gl) - fP) / Ua - ja * Math.sin(Tn), BP = (yt * Math.cos(Q.roll) + ou * Math.sin(Q.pitch)) / Ua - ja - Q.verticalVelocity * 0.035 + al.y * 0.02, Ne = Math.max(24, Q.speed * Math.cos(Tn)), Du = yt * Math.sin(Q.roll) / Ua - Q.slip * 3.2, zu = ja * Math.tan(Q.roll) / Math.max(34, Ne), rl = RA(Du / Ne, zu, 0.68) + Q.yawRate * 0.12;
-        if (Q.speed = AA(Q.speed + Cu * sA, 38, 112), Q.verticalVelocity = AA(Q.verticalVelocity + BP * sA, -24, 18), Q.heading = vi(Q.heading, Q.heading + rl * sA, 1), Q.angleOfAttack = gl, Q.gLoad = AA(yt * Math.cos(Q.roll) / (Ua * ja), 0, 3.4), Q.stall = Math.abs(gl) > ui, Math.abs(Q.position.x) <= Te + 16 && Q.position.z <= GA + 40 && Q.position.z >= ht - 40 && Je < 20 && Q.pitch > 0) {
-          const oe = AA((20 - Je) / 20, 0, 1) * (0.22 + Me * 0.04);
-          Q.verticalVelocity = RA(Q.verticalVelocity, -1.6 + Q.pitch * 3.8, oe);
-        }
-        const xa = OA(ri(Q.heading, cv(Q)), Q.speed), il = gA(xa, al);
-        if (Q.position.x += il.x * sA, Q.position.z += il.z * sA, Q.position.y += il.y * sA, Q.groundSpeed = Math.hypot(il.x, il.z), Q.time += sA, Q.nextRing < ft.length) {
+        if (Q.nextRing < ft.length) {
           const oe = ft[Q.nextRing];
           $B(Q.position, oe) <= oe.radius * 0.78 && (Q.nextRing += 1, Q.score += oe.bonus, Q.message = `${oe.label} cleared. Keep the approach energy under control.`);
         }
@@ -12372,8 +12387,11 @@ function k9() {
         z: Number(r.current.position.z.toFixed(1)),
         speedMps: Number(r.current.speed.toFixed(1)),
         speedKts: Number(kl(r.current.speed).toFixed(1)),
+        iasSpeedKts: Number(kl(r.current.indicatedSpeedMps ?? r.current.speed).toFixed(1)),
+        trueAirspeedKts: Number(kl(r.current.speed).toFixed(1)),
         groundSpeedKts: Number(kl(r.current.groundSpeed).toFixed(1)),
         engineRpm: Number(r.current.engineRpm.toFixed(0)),
+        enginePowerFraction: Number((r.current.enginePowerFraction ?? 0).toFixed(2)),
         throttle: Number((r.current.throttle * 100).toFixed(0)),
         trim: Number(r.current.trim.toFixed(2)),
         brakes: Number(r.current.brakes.toFixed(2)),
@@ -12388,6 +12406,19 @@ function k9() {
         verticalVelocityFpm: Number(ci(r.current.verticalVelocity).toFixed(0)),
         altitudeAgl: Number((r.current.position.y - uA(r.current.position.x, r.current.position.z)).toFixed(1)),
         angleOfAttackDeg: Number((r.current.angleOfAttack * 57.3).toFixed(1)),
+        stallMarginDeg: Number(r.current.stallMarginDeg.toFixed(1)),
+        stallSpeedMarginKts: Number(r.current.stallSpeedMarginKts.toFixed(1)),
+        stallSpeedKts: Number(kl(r.current.stallSpeedIasMps ?? 29.8).toFixed(1)),
+        airDensityKgM3: Number((r.current.airDensityKgM3 ?? 1.225).toFixed(3)),
+        temperatureC: Number((r.current.temperatureC ?? 15).toFixed(1)),
+        pressureAltitudeM: Number((r.current.pressureAltitudeM ?? r.current.position.y).toFixed(1)),
+        liftCoefficient: Number(r.current.liftCoefficient.toFixed(2)),
+        dragCoefficient: Number(r.current.dragCoefficient.toFixed(3)),
+        thrustNewtons: Number(r.current.thrustNewtons.toFixed(0)),
+        dragNewtons: Number(r.current.dragNewtons.toFixed(0)),
+        verticalAccelerationMps2: Number(r.current.verticalAccelerationMps2.toFixed(2)),
+        groundEffect: Number(r.current.groundEffect.toFixed(2)),
+        buffet: Number(r.current.buffet.toFixed(2)),
         slip: Number(r.current.slip.toFixed(2)),
         gLoad: Number(r.current.gLoad.toFixed(2)),
         stall: r.current.stall
@@ -12542,7 +12573,7 @@ function k9() {
                 /* @__PURE__ */ C.jsx("div", { style: { position: "absolute", left: "50%", bottom: "-6%", width: "min(94%, 1100px)", height: "30%", transform: "translateX(-50%)", borderRadius: "46% 46% 0 0 / 88% 88% 0 0", background: "radial-gradient(circle at 50% 4%, rgba(92,103,120,0.6), rgba(25,31,41,0.98) 34%, rgba(8,11,17,1) 68%)", boxShadow: "0 -24px 60px rgba(0,0,0,0.46)" } }),
                 /* @__PURE__ */ C.jsx("div", { style: { position: "absolute", left: "50%", bottom: "11%", width: "min(22%, 220px)", height: "7%", transform: "translateX(-50%)", clipPath: "polygon(26% 100%, 74% 100%, 58% 0, 42% 0)", background: "linear-gradient(180deg, rgba(64,74,90,0.78), rgba(18,24,33,0.96))" } }),
                 [
-                  { offset: -160, label: "IAS", angle: AA((kl(i.speed) - 140) * 1.15, -126, 126) },
+                  { offset: -160, label: "IAS", angle: AA((kl(i.indicatedSpeedMps ?? i.speed) - 140) * 1.15, -126, 126) },
                   { offset: -92, label: "ALT", angle: oA % 100 / 100 * 360 - 180 },
                   { offset: -24, label: "ATT", angle: i.roll * 57.3 },
                   { offset: 44, label: "HDG", angle: Pu(i.heading) - 180 },
@@ -12605,12 +12636,19 @@ function k9() {
                   /* @__PURE__ */ C.jsx("div", { style: { fontSize: 12, opacity: 0.7, letterSpacing: 1.2, textTransform: "uppercase" }, children: "Flight Data" }),
                   /* @__PURE__ */ C.jsxs("div", { style: { marginTop: 8, display: "grid", gap: 6, fontSize: BA }, children: [
                     /* @__PURE__ */ C.jsxs("div", { children: [
+                      "IAS ",
+                      Math.round(kl(i.indicatedSpeedMps ?? i.speed)),
+                      " kt"
+                    ] }),
+                    /* @__PURE__ */ C.jsxs("div", { children: [
+                      "TAS ",
                       Math.round(kl(i.speed)),
                       " kt"
                     ] }),
                     /* @__PURE__ */ C.jsxs("div", { children: [
+                      "GS ",
                       Math.round(kl(i.groundSpeed)),
-                      " kt GS"
+                      " kt"
                     ] }),
                     /* @__PURE__ */ C.jsxs("div", { children: [
                       Math.round(oA),
@@ -12626,6 +12664,11 @@ function k9() {
                       " RPM"
                     ] }),
                     /* @__PURE__ */ C.jsxs("div", { children: [
+                      "Power ",
+                      Math.round((i.enginePowerFraction ?? 0) * 100),
+                      "%"
+                    ] }),
+                    /* @__PURE__ */ C.jsxs("div", { children: [
                       "Trim ",
                       i.trim >= 0 ? "+" : "",
                       i.trim.toFixed(2)
@@ -12639,6 +12682,27 @@ function k9() {
                       "Sink ",
                       Math.round(ci(i.verticalVelocity)),
                       " fpm"
+                    ] }),
+                    /* @__PURE__ */ C.jsxs("div", { children: [
+                      "Lift / drag ",
+                      i.liftCoefficient.toFixed(2),
+                      " / ",
+                      i.dragCoefficient.toFixed(3)
+                    ] }),
+                    /* @__PURE__ */ C.jsxs("div", { children: [
+                      "Stall speed ",
+                      Math.round(kl(i.stallSpeedIasMps ?? 29.8)),
+                      " kt"
+                    ] }),
+                    /* @__PURE__ */ C.jsxs("div", { children: [
+                      "Density ",
+                      (i.airDensityKgM3 ?? 1.225).toFixed(2),
+                      " kg/m³"
+                    ] }),
+                    /* @__PURE__ */ C.jsxs("div", { children: [
+                      "Stall margin ",
+                      Math.max(0, i.stallMarginDeg).toFixed(0),
+                      "°"
                     ] })
                   ] })
                 ] }),
@@ -12693,6 +12757,11 @@ function k9() {
                       (i.angleOfAttack * 57.3).toFixed(1),
                       " deg"
                     ] }),
+                    /* @__PURE__ */ C.jsxs("div", { children: [
+                      "Stall margin ",
+                      Math.max(0, i.stallMarginDeg).toFixed(1),
+                      " deg"
+                    ] }),
                     /* @__PURE__ */ C.jsx("div", { children: i.stall ? "Stall warning active" : `${i.gLoad.toFixed(1)} G stable` })
                   ] })
                 ] }),
@@ -12701,7 +12770,7 @@ function k9() {
                   /* @__PURE__ */ C.jsx("div", { style: { position: "absolute", top: 12, left: 0, right: 0, textAlign: "center", fontSize: 11, letterSpacing: 1.4, textTransform: "uppercase", opacity: 0.72 }, children: "IAS" }),
                   /* @__PURE__ */ C.jsx("div", { style: { position: "absolute", bottom: 14, left: 0, right: 0, textAlign: "center", fontSize: 11, opacity: 0.74 }, children: "kt" }),
                   /* @__PURE__ */ C.jsx("div", { style: { position: "absolute", left: "50%", top: 38, bottom: 34, width: 10, marginLeft: -5, borderRadius: 999, background: "rgba(255,255,255,0.08)" }, children: /* @__PURE__ */ C.jsx("div", { style: { position: "absolute", left: 0, right: 0, bottom: 0, height: `${AA((i.speed - 36) / 68, 0, 1) * 100}%`, borderRadius: 999, background: "linear-gradient(180deg, #67a5ff, #68ffd8)" } }) }),
-                  /* @__PURE__ */ C.jsx("div", { style: { position: "absolute", left: 0, right: 0, top: "50%", marginTop: -18, textAlign: "center", fontSize: N ? 20 : 17, fontWeight: 700 }, children: Math.round(kl(i.speed)) })
+                  /* @__PURE__ */ C.jsx("div", { style: { position: "absolute", left: 0, right: 0, top: "50%", marginTop: -18, textAlign: "center", fontSize: N ? 20 : 17, fontWeight: 700 }, children: Math.round(kl(i.indicatedSpeedMps ?? i.speed)) })
                 ] }),
                 Z ? null : /* @__PURE__ */ C.jsxs("div", { style: { position: "absolute", right: 18, top: "50%", transform: "translateY(-50%)", width: Ut, height: zt, borderRadius: 18, background: "rgba(5,9,15,0.56)", border: "1px solid rgba(255,255,255,0.1)", backdropFilter: "blur(8px)", overflow: "hidden" }, children: [
                   /* @__PURE__ */ C.jsx("div", { style: { position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(103,240,182,0.24), rgba(7,10,16,0.1))" } }),

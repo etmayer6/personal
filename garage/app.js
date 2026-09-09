@@ -1,145 +1,95 @@
 (function () {
     "use strict";
 
-    const storageKey = "gremlin-garage-demo-v1";
-    const systems = ["powertrain", "electrical", "chassis", "brakes", "safety"];
-    const systemLabels = {
-        powertrain: "Powertrain",
-        electrical: "Electrical",
-        chassis: "Chassis",
-        brakes: "Brakes",
-        safety: "Safety"
+    const storageKey = "gremlin-garage-visualizer-v1";
+    const views = {
+        "three-quarter": { label: "Front three-quarter", yaw: 18, tilt: 0 },
+        side: { label: "Profile / side", yaw: 72, tilt: 0 },
+        front: { label: "Front profile", yaw: 0, tilt: 0 },
+        rear: { label: "Rear profile", yaw: 180, tilt: 0 }
     };
-    const severityLabels = {
-        info: "Monitor",
-        warn: "Watch",
-        critical: "Critical"
+    const paints = {
+        obsidian: { label: "Obsidian", code: "OBSIDIAN", base: "#26333a", hi: "#71858a", shadow: "#0b1114", accent: "#83e0ad" },
+        signal: { label: "Signal orange", code: "SIGNAL", base: "#a84729", hi: "#ffb16c", shadow: "#351718", accent: "#ffd08b" },
+        mineral: { label: "Mineral mint", code: "MINERAL", base: "#2d746d", hi: "#b4efd0", shadow: "#102b2c", accent: "#d7ffe5" },
+        cobalt: { label: "Cobalt blue", code: "COBALT", base: "#2a478f", hi: "#a5def2", shadow: "#10152f", accent: "#8fd8ff" }
     };
-    const severityPenalty = { info: 5, warn: 12, critical: 28 };
-    const systemMetrics = {
-        powertrain: "Oil pressure 42 psi",
-        electrical: "Charge rate 14.2 V",
-        chassis: "Ride height stable",
-        brakes: "Pad depth 7 mm",
-        safety: "All restraints online"
+    const wheels = {
+        street: { label: "Street forged", code: "19 STREET", power: 482, zero: "3.8 s", range: 318, mass: "1,640 kg", ride: "146 mm", status: "Nominal" },
+        aero: { label: "Aero disc", code: "19 AERO", power: 482, zero: "3.9 s", range: 336, mass: "1,618 kg", ride: "146 mm", status: "Efficient" },
+        track: { label: "Track mesh", code: "20 TRACK", power: 496, zero: "3.5 s", range: 289, mass: "1,674 kg", ride: "140 mm", status: "Track ready" }
     };
-    const scanMessages = {
-        powertrain: "Reading powertrain control modules...",
-        electrical: "Checking voltage and charging buses...",
-        chassis: "Comparing suspension and pressure sensors...",
-        brakes: "Validating wheel-speed channels...",
-        safety: "Polling restraint and occupant systems..."
+    const scenes = {
+        golden: { label: "Golden hour", corner: "GOLDEN HOUR" },
+        studio: { label: "Studio white", corner: "STUDIO WHITE" },
+        night: { label: "Night run", corner: "NIGHT RUN" }
     };
-    const defaultIssues = [
-        {
-            id: "finding-brake-signal",
-            title: "Front-right wheel speed signal",
-            system: "brakes",
-            severity: "critical",
-            status: "open",
-            notes: "Intermittent dropout recorded during the last low-speed test.",
-            createdAt: "2026-07-19T14:20:00.000Z"
-        },
-        {
-            id: "finding-voltage-drift",
-            title: "12 V battery voltage drift",
-            system: "electrical",
-            severity: "warn",
-            status: "open",
-            notes: "Resting voltage is near the lower edge of the preferred range.",
-            createdAt: "2026-07-17T09:40:00.000Z"
-        },
-        {
-            id: "finding-tire-pressure",
-            title: "Front-left pressure below target",
-            system: "chassis",
-            severity: "warn",
-            status: "open",
-            notes: "Pressure is 3 psi below the prototype road-test specification.",
-            createdAt: "2026-07-15T18:05:00.000Z"
-        },
-        {
-            id: "finding-idle-adaptation",
-            title: "Cold-start idle adaptation",
-            system: "powertrain",
-            severity: "info",
-            status: "open",
-            notes: "Monitor the next three cold starts before scheduling work.",
-            createdAt: "2026-07-12T12:15:00.000Z"
-        },
-        {
-            id: "finding-occupant-calibration",
-            title: "Passenger occupant sensor calibration",
-            system: "safety",
-            severity: "info",
-            status: "resolved",
-            notes: "Calibration completed and verified against the reference load.",
-            createdAt: "2026-07-08T16:30:00.000Z"
-        }
-    ];
-
+    const defaults = {
+        view: "three-quarter", yaw: 18, tilt: 0, paint: "obsidian", wheel: "street",
+        scene: "golden", lights: true, grid: true, overlay: false, lower: false, saved: false
+    };
     const elements = {
+        body: document.body,
+        stage: document.getElementById("vehicle-stage"),
+        viewportLabel: document.getElementById("viewport-label"),
+        orbitReadout: document.getElementById("orbit-readout"),
+        orbitRange: document.getElementById("orbit-range"),
+        orbitOutput: document.getElementById("orbit-output"),
+        orbitButton: document.getElementById("orbit-button"),
+        paintLabel: document.getElementById("paint-label"),
+        wheelLabel: document.getElementById("wheel-label"),
+        sceneLabel: document.getElementById("scene-label"),
+        sceneControlLabel: document.getElementById("scene-label-control"),
+        buildCode: document.getElementById("build-code"),
+        deckCode: document.getElementById("deck-code"),
+        buildStatus: document.getElementById("build-status"),
+        saveState: document.getElementById("save-state"),
+        specGrid: document.getElementById("spec-grid"),
+        systemList: document.getElementById("system-list"),
+        systemState: document.getElementById("system-state"),
+        lightsToggle: document.getElementById("lights-toggle"),
+        gridToggle: document.getElementById("grid-toggle"),
+        overlayToggle: document.getElementById("overlay-toggle"),
+        lowerToggle: document.getElementById("lower-toggle"),
         scanButton: document.getElementById("scan-button"),
-        exportButton: document.getElementById("export-button"),
+        checkLabel: document.getElementById("check-label"),
+        saveButton: document.getElementById("save-button"),
         resetButton: document.getElementById("reset-button"),
-        clearSystem: document.getElementById("clear-system"),
-        vehicleStage: document.getElementById("vehicle-stage"),
-        scanOverlay: document.getElementById("scan-overlay"),
-        scanTitle: document.getElementById("scan-title"),
-        scanStatus: document.getElementById("scan-status"),
-        scanProgress: document.getElementById("scan-progress"),
-        healthScore: document.getElementById("health-score"),
-        openCount: document.getElementById("open-count"),
-        findingsTitle: document.getElementById("findings-title"),
-        findingsList: document.getElementById("findings-list"),
-        healthGrid: document.getElementById("health-grid"),
-        showResolved: document.getElementById("show-resolved"),
-        addIssueButton: document.getElementById("add-issue-button"),
-        dialog: document.getElementById("finding-dialog"),
-        dialogClose: document.getElementById("dialog-close"),
-        form: document.getElementById("finding-form"),
-        dialogTitle: document.querySelector("#finding-dialog h2"),
-        title: document.getElementById("finding-title"),
-        system: document.getElementById("finding-system"),
-        severity: document.getElementById("finding-severity"),
-        notes: document.getElementById("finding-notes"),
-        saveButton: document.querySelector("#finding-form .save-button"),
         toast: document.getElementById("garage-toast")
     };
 
-    let issues = loadIssues();
-    let activeSystem = "all";
-    let activeSeverity = "all";
-    let editingId = null;
-    let scanning = false;
-    let scanStep = -1;
+    let state = loadBuild();
+    let orbitTimer = 0;
     let toastTimer = 0;
+    let checking = false;
+    let dragState = null;
 
-    function cloneDefaults() {
-        return defaultIssues.map(function (issue) { return Object.assign({}, issue); });
+    function copyDefaults() {
+        return Object.assign({}, defaults);
     }
 
-    function loadIssues() {
+    function isValidBuild(build) {
+        return build && typeof build === "object" &&
+            (views[build.view] || build.view === "custom") &&
+            paints[build.paint] && wheels[build.wheel] && scenes[build.scene] &&
+            Number.isFinite(Number(build.yaw)) && Number.isFinite(Number(build.tilt));
+    }
+
+    function loadBuild() {
         try {
-            const value = JSON.parse(window.localStorage.getItem(storageKey));
-            if (Array.isArray(value) && value.every(isValidIssue)) return value;
+            const saved = JSON.parse(window.localStorage.getItem(storageKey));
+            if (isValidBuild(saved)) return Object.assign(copyDefaults(), saved, { saved: true });
         } catch (error) {
-            // Storage is optional; the demo still works with in-memory data.
+            // The visualizer is intentionally usable without storage.
         }
-        return cloneDefaults();
+        return copyDefaults();
     }
 
-    function isValidIssue(issue) {
-        return issue && typeof issue.id === "string" && typeof issue.title === "string" &&
-            systems.indexOf(issue.system) !== -1 && ["info", "warn", "critical"].indexOf(issue.severity) !== -1 &&
-            ["open", "resolved"].indexOf(issue.status) !== -1;
-    }
-
-    function saveIssues() {
+    function saveBuildToStorage() {
         try {
-            window.localStorage.setItem(storageKey, JSON.stringify(issues));
+            window.localStorage.setItem(storageKey, JSON.stringify(state));
         } catch (error) {
-            showToast("Changes are active for this visit, but browser storage is unavailable.");
+            showToast("The build is active for this visit, but browser storage is unavailable.");
         }
     }
 
@@ -149,328 +99,267 @@
         });
     }
 
-    function formatDate(value) {
-        const date = new Date(value);
-        if (Number.isNaN(date.getTime())) return "Demo log";
-        return new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric" }).format(date);
+    function signedAngle(value) {
+        const angle = Math.round(Number(value) || 0);
+        return (angle > 0 ? "+" : "") + angle + "°";
     }
 
-    function getOpenIssues(system) {
-        return issues.filter(function (issue) {
-            return issue.status === "open" && (!system || issue.system === system);
+    function markDirty() {
+        state.saved = false;
+        elements.saveState.textContent = "Unsaved build";
+    }
+
+    function setPressed(selector, key, value) {
+        document.querySelectorAll(selector).forEach(function (button) {
+            const active = button.dataset[key] === value;
+            button.classList.toggle("is-active", active);
+            button.setAttribute("aria-pressed", String(active));
         });
     }
 
-    function getSystemHealth(system) {
-        const penalty = getOpenIssues(system).reduce(function (total, issue) {
-            return total + severityPenalty[issue.severity];
-        }, 0);
-        return Math.max(48, 100 - penalty);
-    }
-
-    function getSystemStatus(system) {
-        const open = getOpenIssues(system);
-        if (open.some(function (issue) { return issue.severity === "critical"; })) return "critical";
-        if (open.some(function (issue) { return issue.severity === "warn"; })) return "watch";
-        return "nominal";
-    }
-
-    function getFleetHealth() {
-        const sum = systems.reduce(function (total, system) { return total + getSystemHealth(system); }, 0);
-        return Math.round(sum / systems.length);
-    }
-
-    function render() {
-        renderTelemetry();
-        renderHotspots();
-        renderFindings();
-        renderHealth();
-    }
-
-    function renderTelemetry() {
-        elements.healthScore.textContent = getFleetHealth() + "%";
-        const open = getOpenIssues();
-        elements.openCount.textContent = String(open.length);
-        elements.openCount.setAttribute("aria-label", open.length + " open findings");
-    }
-
-    function renderHotspots() {
-        document.querySelectorAll(".system-hotspot").forEach(function (hotspot) {
-            const system = hotspot.dataset.system;
-            const count = getOpenIssues(system).length;
-            const status = getSystemStatus(system);
-            hotspot.classList.toggle("is-active", system === activeSystem);
-            hotspot.classList.toggle("is-watch", status === "watch");
-            hotspot.classList.toggle("is-critical", status === "critical");
-            const countLabel = hotspot.querySelector("[data-system-count]");
-            if (countLabel) countLabel.textContent = count + (count === 1 ? " finding" : " findings");
-        });
-        elements.clearSystem.hidden = activeSystem === "all";
-    }
-
-    function renderFindings() {
-        const visible = issues.filter(function (issue) {
-            if (!elements.showResolved.checked && issue.status === "resolved") return false;
-            if (activeSystem !== "all" && issue.system !== activeSystem) return false;
-            if (activeSeverity !== "all" && issue.severity !== activeSeverity) return false;
-            return true;
-        }).sort(function (a, b) {
-            const severityRank = { critical: 0, warn: 1, info: 2 };
-            if (a.status !== b.status) return a.status === "open" ? -1 : 1;
-            if (severityRank[a.severity] !== severityRank[b.severity]) return severityRank[a.severity] - severityRank[b.severity];
-            return new Date(b.createdAt) - new Date(a.createdAt);
-        });
-
-        const heading = activeSystem === "all" ? "Findings" : systemLabels[activeSystem];
-        elements.findingsTitle.childNodes[0].nodeValue = heading + " ";
-
-        if (!visible.length) {
-            elements.findingsList.innerHTML = "<div class=\"empty-findings\"><div><strong>No findings in this view</strong><p>Adjust the filters or add a new service record for this system.</p></div></div>";
-            return;
-        }
-
-        elements.findingsList.innerHTML = visible.map(function (issue) {
-            const resolved = issue.status === "resolved";
-            return "<article class=\"finding-card" + (resolved ? " is-resolved" : "") + "\" data-severity=\"" + issue.severity + "\">" +
-                "<div class=\"finding-topline\"><span>" + escapeHtml(severityLabels[issue.severity]) + "</span><time>" + escapeHtml(formatDate(issue.createdAt)) + "</time></div>" +
-                "<h3>" + escapeHtml(issue.title) + "</h3>" +
-                "<p>" + escapeHtml(issue.notes || "No technician notes added.") + "</p>" +
-                "<div class=\"finding-meta\"><span>" + escapeHtml(systemLabels[issue.system]) + "</span><span>" + (resolved ? "Closed" : "Open") + "</span></div>" +
-                "<div class=\"finding-actions\"><button type=\"button\" data-action=\"resolve\" data-id=\"" + escapeHtml(issue.id) + "\">" + (resolved ? "Reopen" : "Mark resolved") + "</button><button type=\"button\" data-action=\"edit\" data-id=\"" + escapeHtml(issue.id) + "\">Edit</button><button class=\"delete-finding\" type=\"button\" data-action=\"delete\" data-id=\"" + escapeHtml(issue.id) + "\">Delete</button></div>" +
-                "</article>";
+    function renderSpecs() {
+        const wheel = wheels[state.wheel];
+        const specs = [
+            ["Power", wheel.power + " hp", "rear bias / 7,100 rpm"],
+            ["0–60", wheel.zero, "launch estimate"],
+            ["Range", wheel.range + " mi", state.scene === "night" ? "night-run profile" : "touring profile"],
+            ["Ride height", state.lower ? "132 mm" : wheel.ride, state.lower ? "low stance / -14 mm" : "road stance"]
+        ];
+        elements.specGrid.innerHTML = specs.map(function (spec) {
+            return "<article class=\"spec-card\"><span>" + escapeHtml(spec[0]) + "</span><strong>" + escapeHtml(spec[1]) + "</strong><small>" + escapeHtml(spec[2]) + "</small></article>";
         }).join("");
     }
 
-    function renderHealth() {
-        elements.healthGrid.innerHTML = systems.map(function (system) {
-            const health = getSystemHealth(system);
-            const status = getSystemStatus(system);
-            return "<button class=\"health-card" + (system === activeSystem ? " is-active" : "") + "\" type=\"button\" data-system=\"" + system + "\" data-status=\"" + status + "\">" +
-                "<span>" + systemLabels[system] + "</span>" +
-                "<strong>" + health + "%</strong>" +
-                "<div class=\"health-meter\"><i style=\"width:" + health + "%\"></i></div>" +
-                "<small>" + systemMetrics[system] + "</small>" +
-                "</button>";
+    function renderSystems() {
+        const systems = [
+            ["Aero map", state.wheel === "aero" ? "Efficiency bias" : "Active / balanced", state.wheel === "track" ? "watch" : "nominal"],
+            ["Lighting bus", state.lights ? "Headlamps online" : "Daylight only", state.lights ? "nominal" : "watch"],
+            ["Chassis geometry", state.lower ? "Low stance / 132 mm" : "Road stance / 146 mm", state.lower ? "watch" : "nominal"],
+            ["Brake package", state.wheel === "track" ? "Heat-ready calipers" : "Street ceramic set", "nominal"]
+        ];
+        const isTuned = systems.some(function (system) { return system[2] === "watch"; });
+        elements.systemState.textContent = isTuned ? "Tuned" : wheels[state.wheel].status;
+        elements.systemState.style.color = isTuned ? "var(--garage-orange)" : "var(--garage-mint)";
+        elements.systemList.innerHTML = systems.map(function (system) {
+            const status = system[2] === "watch" ? "Watch" : "Nominal";
+            return "<article class=\"finding-card\" data-status=\"" + system[2] + "\"><span>" + status + " / " + escapeHtml(system[0]) + "</span><strong>" + escapeHtml(system[1]) + "</strong><p>Configuration responds inside the viewport.</p></article>";
         }).join("");
     }
 
-    function selectSystem(system) {
-        activeSystem = system === activeSystem ? "all" : system;
-        render();
-        if (activeSystem !== "all") {
-            showToast(systemLabels[activeSystem] + " isolated. Service queue updated.");
-        }
-    }
-
-    function setSeverityFilter(severity) {
-        activeSeverity = severity;
-        document.querySelectorAll(".filter-button").forEach(function (button) {
-            button.classList.toggle("is-active", button.dataset.severity === severity);
+    function applyVisual() {
+        const paint = paints[state.paint];
+        const wheel = wheels[state.wheel];
+        const scene = scenes[state.scene];
+        const preset = views[state.view];
+        elements.stage.dataset.view = state.view;
+        elements.stage.dataset.scene = state.scene;
+        elements.stage.dataset.wheel = state.wheel;
+        elements.stage.classList.toggle("lights-off", !state.lights);
+        elements.stage.classList.toggle("grid-off", !state.grid);
+        elements.stage.classList.toggle("overlay-on", state.overlay);
+        elements.stage.classList.toggle("is-lowered", state.lower);
+        elements.stage.style.setProperty("--orbit", state.yaw + "deg");
+        elements.stage.style.setProperty("--tilt", state.tilt + "deg");
+        elements.stage.style.setProperty("--paint-base", paint.base);
+        elements.stage.style.setProperty("--paint-hi", paint.hi);
+        elements.stage.style.setProperty("--paint-shadow", paint.shadow);
+        elements.stage.style.setProperty("--paint-accent", paint.accent);
+        elements.viewportLabel.textContent = preset ? preset.label : "Custom orbit";
+        elements.orbitReadout.textContent = "Yaw " + signedAngle(state.yaw);
+        elements.orbitRange.value = String(state.yaw);
+        elements.orbitOutput.textContent = signedAngle(state.yaw);
+        elements.paintLabel.textContent = paint.label;
+        elements.wheelLabel.textContent = wheel.label;
+        elements.sceneLabel.textContent = scene.corner;
+        elements.sceneControlLabel.textContent = scene.label;
+        elements.buildCode.textContent = "APX-04 / " + paint.code;
+        elements.deckCode.textContent = wheel.code;
+        setPressed(".paint-swatch", "paint", state.paint);
+        setPressed(".choice-button", "wheel", state.wheel);
+        setPressed(".scene-button", "scene", state.scene);
+        document.querySelectorAll(".view-tab").forEach(function (button) {
+            const active = button.dataset.view === state.view;
+            button.classList.toggle("is-active", active);
+            button.setAttribute("aria-pressed", String(active));
         });
-        renderFindings();
+        elements.lightsToggle.checked = state.lights;
+        elements.gridToggle.checked = state.grid;
+        elements.overlayToggle.checked = state.overlay;
+        elements.lowerToggle.checked = state.lower;
+        elements.orbitButton.setAttribute("aria-pressed", String(Boolean(orbitTimer)));
+        renderSpecs();
+        renderSystems();
     }
 
-    function openDialog(issue) {
-        editingId = issue ? issue.id : null;
-        elements.dialogTitle.textContent = issue ? "Edit finding" : "Add a finding";
-        elements.saveButton.innerHTML = issue ? "Save changes <span aria-hidden=\"true\">&rarr;</span>" : "Add to service queue <span aria-hidden=\"true\">&rarr;</span>";
-        elements.title.value = issue ? issue.title : "";
-        elements.system.value = issue ? issue.system : (activeSystem === "all" ? "powertrain" : activeSystem);
-        elements.severity.value = issue ? issue.severity : "warn";
-        elements.notes.value = issue ? issue.notes : "";
-        if (typeof elements.dialog.showModal === "function") elements.dialog.showModal();
-        else elements.dialog.setAttribute("open", "");
-        window.setTimeout(function () { elements.title.focus(); }, 0);
+    function selectOption(kind, value) {
+        if (kind === "paint" && paints[value]) state.paint = value;
+        if (kind === "wheel" && wheels[value]) state.wheel = value;
+        if (kind === "scene" && scenes[value]) state.scene = value;
+        markDirty();
+        applyVisual();
+        showToast(kind.charAt(0).toUpperCase() + kind.slice(1) + " updated. Build readout recalculated.");
     }
 
-    function closeDialog() {
-        editingId = null;
-        if (typeof elements.dialog.close === "function") elements.dialog.close();
-        else elements.dialog.removeAttribute("open");
+    function setView(view) {
+        if (!views[view]) return;
+        state.view = view;
+        state.yaw = views[view].yaw;
+        state.tilt = views[view].tilt;
+        markDirty();
+        applyVisual();
     }
 
-    function saveFinding(event) {
-        event.preventDefault();
-        const title = elements.title.value.trim();
-        if (!title) {
-            elements.title.focus();
+    function updateOrbit(value, dirty) {
+        state.view = "custom";
+        state.yaw = Math.max(-72, Math.min(180, Number(value) || 0));
+        if (dirty) markDirty();
+        applyVisual();
+    }
+
+    function updateTilt(value) {
+        state.view = "custom";
+        state.tilt = Math.max(-10, Math.min(12, Number(value) || 0));
+        applyVisual();
+    }
+
+    function toggleAutoOrbit() {
+        if (orbitTimer) {
+            window.clearInterval(orbitTimer);
+            orbitTimer = 0;
+            applyVisual();
+            showToast("Auto orbit paused at " + signedAngle(state.yaw) + ".");
             return;
         }
-
-        if (editingId) {
-            const issue = issues.find(function (item) { return item.id === editingId; });
-            if (issue) {
-                issue.title = title;
-                issue.system = elements.system.value;
-                issue.severity = elements.severity.value;
-                issue.notes = elements.notes.value.trim();
-            }
-            showToast("Finding updated in the local service log.");
-        } else {
-            issues.unshift({
-                id: "finding-" + Date.now(),
-                title: title,
-                system: elements.system.value,
-                severity: elements.severity.value,
-                status: "open",
-                notes: elements.notes.value.trim(),
-                createdAt: new Date().toISOString()
-            });
-            showToast("Finding added to the local service queue.");
-        }
-
-        saveIssues();
-        closeDialog();
-        render();
+        orbitTimer = window.setInterval(function () {
+            state.view = "custom";
+            state.yaw += 1.2;
+            if (state.yaw > 180) state.yaw = -72;
+            applyVisual();
+        }, 60);
+        applyVisual();
+        showToast("Auto orbit engaged. Drag or use the slider to take over.");
     }
 
-    function handleFindingAction(event) {
-        const button = event.target.closest("button[data-action]");
-        if (!button) return;
-        const issue = issues.find(function (item) { return item.id === button.dataset.id; });
-        if (!issue) return;
+    function saveBuild() {
+        state.saved = true;
+        saveBuildToStorage();
+        elements.saveState.textContent = "Saved in this browser";
+        showToast("Build saved locally as APX-04.");
+    }
 
-        if (button.dataset.action === "resolve") {
-            issue.status = issue.status === "resolved" ? "open" : "resolved";
-            saveIssues();
-            render();
-            showToast(issue.status === "resolved" ? "Finding closed. Fleet health recalculated." : "Finding returned to the service queue.");
-            return;
-        }
-
-        if (button.dataset.action === "edit") {
-            openDialog(issue);
-            return;
-        }
-
-        if (button.dataset.action === "delete" && window.confirm("Delete this fictional service finding?")) {
-            issues = issues.filter(function (item) { return item.id !== issue.id; });
-            saveIssues();
-            render();
-            showToast("Finding removed from the local service log.");
-        }
+    function resetBuild() {
+        if (orbitTimer) window.clearInterval(orbitTimer);
+        orbitTimer = 0;
+        state = copyDefaults();
+        try { window.localStorage.removeItem(storageKey); } catch (error) { /* Optional storage. */ }
+        elements.buildStatus.textContent = "Ready to configure";
+        elements.checkLabel.textContent = "Validate the current build";
+        applyVisual();
+        showToast("Apex GT returned to the studio baseline.");
     }
 
     function delay(milliseconds) {
         return new Promise(function (resolve) { window.setTimeout(resolve, milliseconds); });
     }
 
-    async function runScan() {
-        if (scanning) return;
-        scanning = true;
-        scanStep = 0;
+    async function runConfigurationCheck() {
+        if (checking) return;
+        checking = true;
         elements.scanButton.disabled = true;
-        elements.scanButton.lastChild.textContent = "Scanning";
-        elements.scanOverlay.hidden = false;
-        elements.vehicleStage.classList.add("is-scanning");
-        const reducedMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-        const stepDelay = reducedMotion ? 80 : 620;
-
-        for (let index = 0; index < systems.length; index += 1) {
-            scanStep = index;
-            const system = systems[index];
-            const hotspot = document.querySelector(".system-hotspot[data-system=\"" + system + "\"]");
-            elements.scanTitle.textContent = "Scanning " + systemLabels[system];
-            elements.scanStatus.textContent = scanMessages[system];
-            elements.scanProgress.style.width = ((index + 1) / systems.length * 100) + "%";
-            hotspot.classList.add("is-scanning");
-            await delay(stepDelay);
-            hotspot.classList.remove("is-scanning");
+        elements.body.dataset.demoState = "checking";
+        const labels = ["Checking geometry…", "Checking lighting…", "Checking thermal load…"];
+        for (let index = 0; index < labels.length; index += 1) {
+            elements.checkLabel.textContent = labels[index];
+            await delay(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 80 : 420);
         }
-
-        scanStep = systems.length;
-        elements.scanTitle.textContent = "Scan complete";
-        elements.scanStatus.textContent = getOpenIssues().length + " open findings across " + systems.length + " vehicle systems.";
-        await delay(reducedMotion ? 100 : 850);
-        elements.vehicleStage.classList.remove("is-scanning");
-        elements.scanOverlay.hidden = true;
-        elements.scanProgress.style.width = "0";
+        checking = false;
+        elements.body.dataset.demoState = "ready";
         elements.scanButton.disabled = false;
-        elements.scanButton.lastChild.textContent = "Run full scan";
-        scanning = false;
-        scanStep = -1;
-        showToast("Diagnostic scan complete. No new fictional findings detected.");
-    }
-
-    function exportLog() {
-        const payload = {
-            vehicle: "Apex GT / Prototype 04",
-            exportedAt: new Date().toISOString(),
-            fictionalDemo: true,
-            fleetHealth: getFleetHealth(),
-            findings: issues
-        };
-        const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
-        const url = URL.createObjectURL(blob);
-        const anchor = document.createElement("a");
-        anchor.href = url;
-        anchor.download = "apex-gt-diagnostic-log.json";
-        document.body.appendChild(anchor);
-        anchor.click();
-        anchor.remove();
-        window.setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
-        showToast("Fictional diagnostic log exported as JSON.");
-    }
-
-    function resetDemo() {
-        if (!window.confirm("Reset all Garage Diagnostic Bay demo changes?")) return;
-        issues = cloneDefaults();
-        activeSystem = "all";
-        activeSeverity = "all";
-        elements.showResolved.checked = false;
-        document.querySelectorAll(".filter-button").forEach(function (button) {
-            button.classList.toggle("is-active", button.dataset.severity === "all");
-        });
-        try { window.localStorage.removeItem(storageKey); } catch (error) { /* No-op. */ }
-        render();
-        showToast("Garage demo returned to its original fictional data.");
+        elements.checkLabel.textContent = "Current configuration verified";
+        elements.buildStatus.textContent = "Configuration verified";
+        showToast("Build check complete. Current geometry is ready for a drive.");
     }
 
     function showToast(message) {
         window.clearTimeout(toastTimer);
         elements.toast.textContent = message;
         elements.toast.classList.add("is-visible");
-        toastTimer = window.setTimeout(function () { elements.toast.classList.remove("is-visible"); }, 3200);
+        toastTimer = window.setTimeout(function () { elements.toast.classList.remove("is-visible"); }, 3000);
     }
 
-    document.querySelectorAll(".system-hotspot").forEach(function (button) {
-        button.addEventListener("click", function () { selectSystem(button.dataset.system); });
+    function startDrag(event) {
+        if (event.target.closest("button, input, output")) return;
+        dragState = { pointerId: event.pointerId, x: event.clientX, y: event.clientY, yaw: state.yaw, tilt: state.tilt, shift: event.shiftKey };
+        elements.stage.setPointerCapture(event.pointerId);
+    }
+
+    function moveDrag(event) {
+        if (!dragState || event.pointerId !== dragState.pointerId) return;
+        const horizontal = event.clientX - dragState.x;
+        const vertical = event.clientY - dragState.y;
+        updateOrbit(dragState.yaw + horizontal * 0.45, false);
+        if (dragState.shift || event.shiftKey) updateTilt(dragState.tilt - vertical * 0.22);
+    }
+
+    function endDrag(event) {
+        if (!dragState || event.pointerId !== dragState.pointerId) return;
+        markDirty();
+        dragState = null;
+    }
+
+    document.querySelectorAll(".paint-swatch").forEach(function (button) {
+        button.addEventListener("click", function () { selectOption("paint", button.dataset.paint); });
     });
-    document.querySelectorAll(".filter-button").forEach(function (button) {
-        button.addEventListener("click", function () { setSeverityFilter(button.dataset.severity); });
+    document.querySelectorAll(".choice-button").forEach(function (button) {
+        button.addEventListener("click", function () { selectOption("wheel", button.dataset.wheel); });
     });
-    elements.healthGrid.addEventListener("click", function (event) {
-        const card = event.target.closest(".health-card[data-system]");
-        if (card) selectSystem(card.dataset.system);
+    document.querySelectorAll(".scene-button").forEach(function (button) {
+        button.addEventListener("click", function () { selectOption("scene", button.dataset.scene); });
     });
-    elements.findingsList.addEventListener("click", handleFindingAction);
-    elements.showResolved.addEventListener("change", renderFindings);
-    elements.clearSystem.addEventListener("click", function () { activeSystem = "all"; render(); });
-    elements.addIssueButton.addEventListener("click", function () { openDialog(null); });
-    elements.dialogClose.addEventListener("click", closeDialog);
-    elements.dialog.addEventListener("click", function (event) { if (event.target === elements.dialog) closeDialog(); });
-    elements.form.addEventListener("submit", saveFinding);
-    elements.scanButton.addEventListener("click", runScan);
-    elements.exportButton.addEventListener("click", exportLog);
-    elements.resetButton.addEventListener("click", resetDemo);
+    document.querySelectorAll(".view-tab").forEach(function (button) {
+        button.addEventListener("click", function () { setView(button.dataset.view); });
+    });
+    elements.orbitRange.addEventListener("input", function () { updateOrbit(elements.orbitRange.value, true); });
+    elements.orbitButton.addEventListener("click", toggleAutoOrbit);
+    elements.lightsToggle.addEventListener("change", function () { state.lights = elements.lightsToggle.checked; markDirty(); applyVisual(); });
+    elements.gridToggle.addEventListener("change", function () { state.grid = elements.gridToggle.checked; markDirty(); applyVisual(); });
+    elements.overlayToggle.addEventListener("change", function () { state.overlay = elements.overlayToggle.checked; markDirty(); applyVisual(); });
+    elements.lowerToggle.addEventListener("change", function () { state.lower = elements.lowerToggle.checked; markDirty(); applyVisual(); });
+    elements.saveButton.addEventListener("click", saveBuild);
+    elements.resetButton.addEventListener("click", resetBuild);
+    elements.scanButton.addEventListener("click", runConfigurationCheck);
+    elements.stage.addEventListener("pointerdown", startDrag);
+    elements.stage.addEventListener("pointermove", moveDrag);
+    elements.stage.addEventListener("pointerup", endDrag);
+    elements.stage.addEventListener("pointercancel", endDrag);
+    elements.stage.addEventListener("keydown", function (event) {
+        if (event.key === "ArrowLeft") { event.preventDefault(); updateOrbit(state.yaw - 8, true); }
+        if (event.key === "ArrowRight") { event.preventDefault(); updateOrbit(state.yaw + 8, true); }
+        if (event.key === "ArrowUp") { event.preventDefault(); updateTilt(state.tilt + 2); }
+        if (event.key === "ArrowDown") { event.preventDefault(); updateTilt(state.tilt - 2); }
+        if (event.key === " ") { event.preventDefault(); toggleAutoOrbit(); }
+    });
 
     window.render_garage_to_text = function () {
         return JSON.stringify({
-            view: activeSystem,
-            severityFilter: activeSeverity,
-            showingHistory: elements.showResolved.checked,
-            fleetHealth: getFleetHealth(),
-            scanning: scanning,
-            scanSystem: scanStep >= 0 && scanStep < systems.length ? systems[scanStep] : null,
-            openFindings: getOpenIssues().map(function (issue) {
-                return { id: issue.id, system: issue.system, severity: issue.severity, title: issue.title };
-            }),
-            visibleFindingCount: elements.findingsList.querySelectorAll(".finding-card").length,
-            dialogOpen: elements.dialog.hasAttribute("open")
+            view: state.view,
+            yaw: Math.round(state.yaw),
+            tilt: Math.round(state.tilt),
+            paint: state.paint,
+            wheel: state.wheel,
+            scene: state.scene,
+            headlights: state.lights,
+            grid: state.grid,
+            overlay: state.overlay,
+            lowerStance: state.lower,
+            autoOrbit: Boolean(orbitTimer),
+            checking: checking,
+            saved: state.saved,
+            visibleFindingCount: elements.systemList.querySelectorAll(".finding-card").length
         });
     };
     window.render_game_to_text = window.render_garage_to_text;
     window.advanceTime = function () {};
 
-    render();
+    applyVisual();
 }());
