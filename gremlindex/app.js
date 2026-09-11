@@ -4,6 +4,8 @@ const MAP_H = 12;
 const CANVAS_W = MAP_W * TILE;
 const CANVAS_H = MAP_H * TILE;
 const SPEED = 3.2;
+const ROUTE_GOAL = 3;
+const MAX_FOCUS = 3;
 const GREMLINDEX_PASSWORD = "cactus";
 const GREMLINDEX_SESSION_KEY = "gremlindex-unlocked";
 
@@ -46,6 +48,7 @@ function createInitialState(starterId) {
         facing: "down",
         steps: 0,
         wins: 0,
+        lastResult: "",
         discoveries: [],
         grassTicks: 0,
         starterId,
@@ -88,14 +91,31 @@ function fillRoundedRect(x, y, w, h, r) {
 
 function makeEncounter(starterId, wins) {
     const picks = ENCOUNTERS.filter((id) => id !== starterId);
-    const enemyId = picks[wins % picks.length] || "aubrey";
+    const enemyId = wins === ROUTE_GOAL - 1 ? "opranitan" : (picks[wins % picks.length] || "aubrey");
+    const enemy = GREMLINS[enemyId];
+    const enemyMaxHp = enemy.hp + wins * 2;
     return {
         enemyId,
-        enemyHp: GREMLINS[enemyId].hp,
+        enemyHp: enemyMaxHp,
+        enemyMaxHp,
         yourHp: GREMLINS[starterId].hp,
-        enemyMove: GREMLINS[enemyId].abilities[0],
-        log: `${GREMLINS[enemyId].name} emerged from the Splash Zone. ${GREMLINS[enemyId].vibe}`
+        focus: 0,
+        turn: 0,
+        intent: makeEnemyIntent(enemyId, wins, 0),
+        log: `${enemy.name} emerged. Read the tell, then choose a move.`
     };
+}
+
+function makeEnemyIntent(enemyId, wins, turn) {
+    const enemy = GREMLINS[enemyId];
+    const phase = turn % 3;
+    if (phase === 1) {
+        return { kind: "heavy", label: `${enemy.abilities[1]} is winding up`, damage: enemy.atk + 1 + Math.floor(wins / 2) };
+    }
+    if (phase === 2) {
+        return { kind: "drain", label: `${enemy.abilities[2]} will disrupt focus`, damage: 1 };
+    }
+    return { kind: "quick", label: `${enemy.abilities[0]} is coming fast`, damage: Math.max(1, Math.floor(enemy.atk / 2)) };
 }
 
 function addDiscovery(item) {
@@ -146,25 +166,52 @@ function update(dt) {
     }
 }
 
-function handleAttack() {
+function handleBattleAction(action) {
     if (state.mode !== "encounter" || !state.encounter) return;
     const starter = GREMLINS[state.starterId];
     const enemy = GREMLINS[state.encounter.enemyId];
-    state.encounter.enemyHp = Math.max(0, state.encounter.enemyHp - starter.atk);
-    if (state.encounter.enemyHp === 0) {
-        state.encounter.log = `${enemy.name} folded under ${starter.name}'s pressure.`;
-        state.wins += 1;
-        state.encounter = null;
-        state.mode = "victory";
+    const encounter = state.encounter;
+    if (action === "signature" && encounter.focus < 2) {
+        encounter.log = `${starter.abilities[0]} needs 2 focus. Strike or brace first.`;
         return;
     }
-    state.encounter.yourHp = Math.max(0, state.encounter.yourHp - Math.max(1, Math.floor(enemy.atk / 2)));
-    state.encounter.log = `${starter.abilities[0]} answered ${state.encounter.enemyMove}.`;
-    if (state.encounter.yourHp === 0) {
-        state.encounter.yourHp = starter.hp;
-        state.encounter.enemyHp = enemy.hp;
-        state.encounter.log = "Prototype reset: battle health restored.";
+
+    const braced = action === "brace";
+    let damage = 0;
+    let actionLabel = "Brace";
+    if (action === "strike") {
+        damage = starter.atk;
+        encounter.focus = Math.min(MAX_FOCUS, encounter.focus + 1);
+        actionLabel = "Strike";
+    } else if (action === "signature") {
+        damage = starter.atk * 2 + 3;
+        encounter.focus -= 2;
+        actionLabel = starter.abilities[0];
+    } else {
+        encounter.focus = Math.min(MAX_FOCUS, encounter.focus + 1);
     }
+
+    encounter.enemyHp = Math.max(0, encounter.enemyHp - damage);
+    if (state.encounter.enemyHp === 0) {
+        state.lastResult = `${enemy.name} folded under ${actionLabel}.`;
+        state.wins += 1;
+        state.encounter = null;
+        state.mode = state.wins >= ROUTE_GOAL ? "route-clear" : "victory";
+        return;
+    }
+
+    const incoming = braced ? Math.ceil(encounter.intent.damage / 2) : encounter.intent.damage;
+    encounter.yourHp = Math.max(0, encounter.yourHp - incoming);
+    if (encounter.intent.kind === "drain" && !braced) encounter.focus = Math.max(0, encounter.focus - 1);
+    const defenseNote = braced ? ` Brace cut it to ${incoming}.` : "";
+    encounter.log = `${actionLabel}${damage ? ` dealt ${damage}.` : " held."} ${encounter.intent.label} dealt ${incoming}.${defenseNote}`;
+    if (encounter.yourHp === 0) {
+        state.lastResult = `${enemy.name} ended the run at ${state.wins}/${ROUTE_GOAL}.`;
+        state.mode = "defeated";
+        return;
+    }
+    encounter.turn += 1;
+    encounter.intent = makeEnemyIntent(encounter.enemyId, state.wins, encounter.turn);
 }
 
 function handleInteraction() {
@@ -178,7 +225,8 @@ function handleInteraction() {
         state.mode = "explore";
         return;
     }
-    if (state.mode === "encounter") return handleAttack();
+    if (state.mode === "route-clear" || state.mode === "defeated") return resetState("explore");
+    if (state.mode === "encounter") return handleBattleAction("strike");
     const dialogue = nearbyDialogue();
     if (dialogue) {
         state.dialogue = dialogue;
@@ -189,8 +237,27 @@ function handleInteraction() {
 function syncStatus() {
     document.getElementById("status-mode").textContent = state.mode;
     document.getElementById("status-starter").textContent = GREMLINS[state.starterId].name.split(" ")[0];
-    document.getElementById("status-wins").textContent = String(state.wins);
+    document.getElementById("status-wins").textContent = `${state.wins} / ${ROUTE_GOAL}`;
+    document.getElementById("battle-controls").hidden = state.mode !== "encounter";
+    document.getElementById("action-btn").textContent = state.mode === "encounter" ? "Strike" : "Action";
     document.getElementById("live-state").textContent = window.render_game_to_text();
+}
+
+function drawWrappedText(text, x, y, maxWidth, lineHeight, maxLines = 2) {
+    const words = text.split(" ");
+    const lines = [];
+    let line = "";
+    for (const word of words) {
+        const test = line ? `${line} ${word}` : word;
+        if (ctx.measureText(test).width > maxWidth && line) {
+            lines.push(line);
+            line = word;
+        } else {
+            line = test;
+        }
+    }
+    if (line) lines.push(line);
+    lines.slice(0, maxLines).forEach((entry, index) => ctx.fillText(entry, x, y + index * lineHeight));
 }
 
 function drawScene() {
@@ -270,20 +337,23 @@ function drawScene() {
     ctx.fill();
     ctx.fillStyle = starter.accent;
     ctx.fillRect(px - 8, py - 2, 16, 20);
-    ctx.fillStyle = "rgba(9,15,28,0.68)";
-    fillRoundedRect(10, CANVAS_H - 62, 380, 48, 14);
-    ctx.fillStyle = "#eef4ff";
-    ctx.font = "14px sans-serif";
-    ctx.textAlign = "left";
-    const prompt = state.mode === "title" ? "Pick a starter, then Start Run." : state.mode === "encounter" ? "Space, Enter, or Action attacks." : state.mode === "dialogue" ? "Press E, Space, Enter, or Action." : "Move with keyboard or on-screen pad.";
-    ctx.fillText(prompt, 24, CANVAS_H - 33);
+    if (state.mode === "title" || state.mode === "explore") {
+        ctx.fillStyle = "rgba(9,15,28,0.68)";
+        fillRoundedRect(10, CANVAS_H - 62, 380, 48, 14);
+        ctx.fillStyle = "#eef4ff";
+        ctx.font = "14px sans-serif";
+        ctx.textAlign = "left";
+        const prompt = state.mode === "title" ? "Pick a starter, then Start Run." : "Move with keyboard or on-screen pad.";
+        ctx.fillText(prompt, 24, CANVAS_H - 33);
+    }
     ctx.fillStyle = "rgba(9,15,28,0.68)";
     fillRoundedRect(CANVAS_W - 206, 10, 196, 110, 14);
     ctx.fillStyle = "#eef4ff";
+    ctx.textAlign = "left";
     ctx.fillText(`Mode: ${state.mode}`, CANVAS_W - 186, 34);
     ctx.fillText(`Starter: ${starter.name.split(" ")[0]}`, CANVAS_W - 186, 54);
     ctx.fillText(`Steps: ${state.steps}`, CANVAS_W - 186, 74);
-    ctx.fillText(`Wins: ${state.wins}`, CANVAS_W - 186, 94);
+    ctx.fillText(`Route: ${state.wins}/${ROUTE_GOAL}`, CANVAS_W - 186, 94);
     ctx.fillText(document.fullscreenElement ? "Fullscreen: on" : "Fullscreen: off", CANVAS_W - 186, 114);
     if (state.mode === "title") {
         ctx.fillStyle = "rgba(7, 10, 18, 0.74)";
@@ -319,19 +389,24 @@ function drawScene() {
         ctx.fillStyle = "#f1f5fb";
         ctx.font = "14px sans-serif";
         ctx.fillText(`${enemy.title} | ${enemy.types.join(" / ")}`, 58, 88);
-        ctx.fillText(state.encounter.log, 58, 338);
+        ctx.fillStyle = state.encounter.intent.kind === "heavy" ? "#ffb08f" : "#d7f3ff";
+        ctx.font = "bold 15px sans-serif";
+        ctx.fillText(`NEXT: ${state.encounter.intent.label}`, 58, 116);
+        ctx.fillStyle = "#f1f5fb";
+        ctx.font = "14px sans-serif";
+        drawWrappedText(state.encounter.log, 58, 338, CANVAS_W - 116, 18, 2);
         ctx.fillStyle = enemy.accent;
-        fillRoundedRect(378, 60, 182, 96, 18);
+        fillRoundedRect(378, 132, 182, 96, 18);
         ctx.fillStyle = "#132033";
-        ctx.fillText(enemy.name, 396, 94);
-        ctx.fillText(`HP ${state.encounter.enemyHp}/${enemy.hp}`, 396, 118);
-        ctx.fillText(state.encounter.enemyMove, 396, 142);
+        ctx.fillText(enemy.name, 396, 166);
+        ctx.fillText(`HP ${state.encounter.enemyHp}/${state.encounter.enemyMaxHp}`, 396, 190);
+        ctx.fillText(`Hit: ${state.encounter.intent.damage}`, 396, 214);
         ctx.fillStyle = starter.accent;
         fillRoundedRect(92, 220, 196, 104, 18);
         ctx.fillStyle = "#132033";
         ctx.fillText(starter.name, 110, 254);
         ctx.fillText(`HP ${state.encounter.yourHp}/${starter.hp}`, 110, 278);
-        ctx.fillText(starter.abilities[0], 110, 302);
+        ctx.fillText(`Focus ${"◆".repeat(state.encounter.focus)}${"◇".repeat(MAX_FOCUS - state.encounter.focus)}`, 110, 302);
     }
     if (state.mode === "victory") {
         ctx.fillStyle = "rgba(7, 10, 18, 0.78)";
@@ -342,7 +417,22 @@ function drawScene() {
         ctx.fillText("Gremlin Encounter Cleared", CANVAS_W / 2, 138);
         ctx.fillStyle = "#f4f8ff";
         ctx.font = "16px sans-serif";
-        ctx.fillText("Press Enter, Space, E, or Action to return.", CANVAS_W / 2, 178);
+        ctx.fillText(state.lastResult, CANVAS_W / 2, 174);
+        ctx.fillText(`Route progress ${state.wins}/${ROUTE_GOAL} · press Action to continue`, CANVAS_W / 2, 204);
+    }
+    if (state.mode === "route-clear" || state.mode === "defeated") {
+        const cleared = state.mode === "route-clear";
+        ctx.fillStyle = "rgba(7, 10, 18, 0.82)";
+        fillRoundedRect(82, 78, CANVAS_W - 164, 178, 24);
+        ctx.fillStyle = cleared ? "#8ee3a7" : "#ffb08f";
+        ctx.font = "bold 30px sans-serif";
+        ctx.textAlign = "center";
+        ctx.fillText(cleared ? "Route Zero Cleared" : "Run Folded", CANVAS_W / 2, 128);
+        ctx.fillStyle = "#f4f8ff";
+        ctx.font = "16px sans-serif";
+        ctx.fillText(state.lastResult, CANVAS_W / 2, 168);
+        ctx.fillText(cleared ? "Three tells read. Mickey's rumor survives." : "Try the heavy tells with Brace.", CANVAS_W / 2, 198);
+        ctx.fillText("Press Action to start a fresh run.", CANVAS_W / 2, 228);
     }
 }
 
@@ -356,8 +446,19 @@ function renderGameToText() {
         nearbyInteraction: nearbyDialogue() ? nearbyDialogue().speaker : null,
         inGrass: isGrassTile(Math.floor(state.playerX), Math.floor(state.playerY)),
         wins: state.wins,
+        routeGoal: ROUTE_GOAL,
         discoveries: state.discoveries,
-        encounter: state.encounter ? { enemy: GREMLINS[state.encounter.enemyId].name, enemyHp: state.encounter.enemyHp, yourHp: state.encounter.yourHp, log: state.encounter.log } : null,
+        encounter: state.encounter ? {
+            enemy: GREMLINS[state.encounter.enemyId].name,
+            enemyHp: state.encounter.enemyHp,
+            enemyMaxHp: state.encounter.enemyMaxHp,
+            yourHp: state.encounter.yourHp,
+            focus: state.encounter.focus,
+            nextIntent: state.encounter.intent,
+            actions: { strike: "damage + 1 focus", brace: "half damage + 1 focus", signature: "heavy damage, costs 2 focus" },
+            log: state.encounter.log
+        } : null,
+        lastResult: state.lastResult,
         codex: Object.values(GREMLINS).map((g) => ({ name: g.name, title: g.title, types: g.types }))
     });
 }
@@ -441,6 +542,13 @@ document.getElementById("action-btn").addEventListener("click", () => {
     render();
 });
 
+document.querySelectorAll("[data-battle]").forEach((button) => {
+    button.addEventListener("click", () => {
+        handleBattleAction(button.getAttribute("data-battle"));
+        render();
+    });
+});
+
 document.querySelectorAll("[data-dir]").forEach((button) => {
     const direction = button.getAttribute("data-dir");
     button.addEventListener("mousedown", () => setVirtualDirection(direction));
@@ -452,7 +560,7 @@ document.querySelectorAll("[data-dir]").forEach((button) => {
 
 document.addEventListener("keydown", async (event) => {
     const key = event.key.toLowerCase();
-    if (["arrowleft", "arrowright", "arrowup", "arrowdown", "w", "a", "s", "d", "e", " ", "enter", "f"].includes(key)) event.preventDefault();
+    if (["arrowleft", "arrowright", "arrowup", "arrowdown", "w", "a", "s", "d", "e", " ", "enter", "f", "1", "2", "3"].includes(key)) event.preventDefault();
     if (key === "f") {
         if (document.fullscreenElement) await document.exitFullscreen();
         else await canvas.requestFullscreen();
@@ -461,6 +569,11 @@ document.addEventListener("keydown", async (event) => {
     }
     if (key === "e" || key === "enter" || key === " ") {
         handleInteraction();
+        render();
+        return;
+    }
+    if (state.mode === "encounter" && ["1", "2", "3"].includes(key)) {
+        handleBattleAction({ "1": "strike", "2": "brace", "3": "signature" }[key]);
         render();
         return;
     }

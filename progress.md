@@ -922,3 +922,14 @@ Original prompt: Remove clutter from the games on the website. Right now they do
 
 - The bundled web-game client passes ready-to-wave, pre-placement hover, and place-tower/launch-wave scenarios without error artifacts.
 - Browser QA confirms a valid hover reports the expected cell and range, the range ghost is visible on the battlefield, and placement still spends credits while preserving the existing wave loop.
+
+## Weekly Gremlin Dex evolution lab — 2026-09-11
+
+- Original prompt: Evolve exactly one eligible playable game, verify desktop/mobile success, failure, reset, and replay paths, then build and push only if every check passes.
+- Selected Gremlin Dex because its gameplay code has not been evolved since early August and is outside the five latest game-focused changes.
+- Goal: replace consequence-free one-button encounters with a compact, readable tactical loop while preserving the surreal Opposite-of-Fly route fantasy.
+- Implemented telegraphed enemy intents, Strike/Brace/Signature choices, focus economy, three-encounter route progression, a final boss, and real clear/defeat/replay states.
+- Focused desktop keyboard and 390px touch runs passed route clear, deliberate defeat, reset, and replay with no console errors or horizontal overflow; screenshots were visually inspected.
+- The bundled web-game client confirmed encounter state and canvas presentation after each gameplay/layout change.
+- Full `npm run check` passed: syntax, static validation, 24/24 first-render tests, and 64/64 quality tests.
+- TODO: none for this evolution; keep future work centered on the route rather than expanding the roster.

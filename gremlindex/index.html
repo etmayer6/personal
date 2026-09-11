@@ -63,7 +63,7 @@
                 <p class="eyebrow">Gremlin Dex</p>
                 <h1>Opposite-of-Fly</h1>
                 <p class="gremlindex-summary">
-                    Pick a starter, explore the route, and see what emerges.
+                    Pick a starter, read each rival&apos;s tell, and clear three encounters before the route clears you.
                 </p>
                 <div class="gremlindex-actions">
                     <button id="start-btn" class="primary-action">Start Run</button>
@@ -81,7 +81,7 @@
                     <strong id="status-starter">Caleb</strong>
                 </div>
                 <div class="status-card">
-                    <span>Wins</span>
+                    <span>Route</span>
                     <strong id="status-wins">0</strong>
                 </div>
             </div>
@@ -102,6 +102,11 @@
                     <button id="action-btn">Action</button>
                     <button data-dir="right">Right</button>
                     <button data-dir="down">Down</button>
+                </div>
+                <div id="battle-controls" class="battle-controls" aria-label="Battle actions" hidden>
+                    <button data-battle="strike"><span>1</span><strong>Strike</strong><small>Deal damage. Gain focus.</small></button>
+                    <button data-battle="brace"><span>2</span><strong>Brace</strong><small>Cut the shown hit. Gain focus.</small></button>
+                    <button data-battle="signature"><span>3</span><strong>Signature</strong><small>Spend 2 focus for a heavy hit.</small></button>
                 </div>
             </section>
 
