@@ -513,16 +513,21 @@
 
 .archive-card.has-card-image {
     padding-top: 204px;
-    background-image:
-        linear-gradient(180deg, rgba(16, 43, 54, 0.05), rgba(16, 43, 54, 0.02)),
-        var(--card-image);
-    background-position: center, center top;
-    background-repeat: no-repeat;
-    background-size: 100% 100%, 100% 180px;
+    background-image: none;
 }
 
 .archive-card.has-card-image::after {
-    display: none;
+    z-index: 2;
+    top: 0;
+    right: 0;
+    left: 0;
+    width: auto;
+    height: 180px;
+    border: 0;
+    border-radius: 0;
+    background: linear-gradient(180deg, rgba(16, 43, 54, 0.03), rgba(16, 43, 54, 0.2));
+    box-shadow: none;
+    opacity: 1;
 }
 
 .archive-card::before {
@@ -554,6 +559,21 @@
 .archive-card > * {
     position: relative;
     z-index: 1;
+}
+
+.archive-card > .archive-card-image {
+    position: absolute;
+    z-index: 1;
+    top: 0;
+    right: 0;
+    left: 0;
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+}
+
+.archive-card.has-card-image > :not(.archive-card-image) {
+    z-index: 3;
 }
 
 .archive-card:hover,

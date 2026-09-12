@@ -171,7 +171,7 @@
 }
 
 .projects-body .archive-card.has-card-image::after {
-    z-index: 0;
+    z-index: 2;
     top: 5px;
     right: 0;
     left: 0;
@@ -179,17 +179,29 @@
     height: 132px;
     border: 0;
     border-radius: 0;
-    background:
-        linear-gradient(180deg, transparent 45%, rgba(7, 29, 36, 0.74)),
-        var(--card-image) center / cover no-repeat;
+    background: linear-gradient(180deg, transparent 45%, rgba(7, 29, 36, 0.74));
     box-shadow: none;
     opacity: 1;
     transform: scale(1.01);
     transition: transform 420ms var(--project-ease), filter 240ms ease;
 }
 
+.projects-body .archive-card.has-card-image > .archive-card-image {
+    z-index: 1;
+    top: 5px;
+    height: 132px;
+    transform: scale(1.01);
+    transition: transform 420ms var(--project-ease), filter 240ms ease;
+}
+
 .projects-body .archive-card.has-card-image:hover::after,
 .projects-body .archive-card.has-card-image:focus-within::after {
+    filter: saturate(1.08) contrast(1.03);
+    transform: scale(1.06);
+}
+
+.projects-body .archive-card.has-card-image:hover > .archive-card-image,
+.projects-body .archive-card.has-card-image:focus-within > .archive-card-image {
     filter: saturate(1.08) contrast(1.03);
     transform: scale(1.06);
 }

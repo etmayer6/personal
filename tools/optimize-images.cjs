@@ -59,6 +59,18 @@ function imageJobs() {
         : [];
     const courseflowAssets = sourceDirectory(path.join(ROOT, "courseflow", "assets"));
     const courseflowLogo = path.join(courseflowAssets, "logo.png");
+    const projectCardDirectory = sourceDirectory(path.join(ROOT, "projects", "assets"));
+    const projectCardFiles = fs.existsSync(projectCardDirectory)
+        ? fs.readdirSync(projectCardDirectory)
+            .filter((filename) => /-card\.png$/i.test(filename))
+            .sort((left, right) => left.localeCompare(right, undefined, { numeric: true }))
+        : [];
+    const gameCardDirectory = sourceDirectory(path.join(ROOT, "games", "assets"));
+    const gameCardFiles = fs.existsSync(gameCardDirectory)
+        ? fs.readdirSync(gameCardDirectory)
+            .filter((filename) => /-card-v2\.png$/i.test(filename))
+            .sort((left, right) => left.localeCompare(right, undefined, { numeric: true }))
+        : [];
 
     return [
         ...galleryFiles.map((filename) => ({
@@ -83,7 +95,19 @@ function imageJobs() {
             publicSource: path.relative(ROOT, courseflowLogo).replaceAll(path.sep, "/"),
             outputDirectory: path.join(ROOT, "courseflow", "assets"),
             widths: [640]
-        }] : [])
+        }] : []),
+        ...projectCardFiles.map((filename) => ({
+            source: path.join(projectCardDirectory, filename),
+            publicSource: path.relative(ROOT, path.join(projectCardDirectory, filename)).replaceAll(path.sep, "/"),
+            outputDirectory: path.join(ROOT, "projects", "assets", "optimized"),
+            widths: [960]
+        })),
+        ...gameCardFiles.map((filename) => ({
+            source: path.join(gameCardDirectory, filename),
+            publicSource: path.relative(ROOT, path.join(gameCardDirectory, filename)).replaceAll(path.sep, "/"),
+            outputDirectory: path.join(ROOT, "games", "assets", "optimized"),
+            widths: [960]
+        }))
     ];
 }
 

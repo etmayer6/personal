@@ -47,10 +47,15 @@
                 <p class="eyebrow">Playable projects</p>
                 <h1>Pick a game.</h1>
             </div>
-            <p>Eight browser games.</p>
+            <p>Eight small worlds to get lost in.</p>
         </section>
 
-        <article class="game-card game-geo">
+        <div class="games-activity" id="games-activity" aria-live="polite">
+            <span>Your arcade is ready.</span>
+            <span>Pick a game and leave a trail.</span>
+        </div>
+
+        <article class="game-card game-geo" data-game-slug="pinpoint">
             <div class="game-copy">
                 <div class="game-meta"><span>01</span><span>Geography</span></div>
                 <h2>Pinpoint</h2>
@@ -58,12 +63,12 @@
                 <a href="../pinpoint/">Guess the world <span aria-hidden="true">&rarr;</span></a>
             </div>
             <div class="geo-poster">
-                <img class="game-poster-image" src="assets/pinpoint-card-v2.png" alt="Pinpoint geography challenge map with a location marker" width="1536" height="1024" decoding="sync">
+                <img class="game-poster-image" src="assets/optimized/pinpoint-card-v2-960.webp" alt="Pinpoint geography challenge map with a location marker" width="960" height="640" fetchpriority="high" decoding="async">
             </div>
         </article>
 
         <section class="games-grid" aria-label="Playable games">
-            <article class="game-card game-flight">
+            <article class="game-card game-flight" data-game-slug="flight-sim">
                 <div class="game-copy">
                     <div class="game-meta"><span>02</span><span>Simulation</span></div>
                     <h2>Flight Sim</h2>
@@ -71,12 +76,12 @@
                     <a href="../flight-sim/">Take off <span aria-hidden="true">&rarr;</span></a>
                 </div>
                 <div class="flight-poster">
-                    <img class="game-poster-image" src="assets/flight-sim-card-v2.png" alt="Flight Sim cockpit and runway scene" width="1536" height="1024" decoding="sync">
+                    <img class="game-poster-image" src="assets/optimized/flight-sim-card-v2-960.webp" alt="Flight Sim cockpit and runway scene" width="960" height="640" loading="lazy" decoding="async">
                 </div>
             </article>
 
             <div class="games-side">
-                <article class="game-card game-block">
+                <article class="game-card game-block" data-game-slug="block-blast">
                     <div class="game-copy">
                         <div class="game-meta"><span>03</span><span>Arcade puzzle</span></div>
                         <h2>Block Blast</h2>
@@ -84,11 +89,11 @@
                         <a href="../block-blast/">Start a run <span aria-hidden="true">&rarr;</span></a>
                     </div>
                     <div class="block-poster">
-                        <img class="game-poster-image" src="assets/block-blast-card-v2.png" alt="Block Blast puzzle board with colorful blocks" width="1536" height="1024" decoding="sync">
+                        <img class="game-poster-image" src="assets/optimized/block-blast-card-v2-960.webp" alt="Block Blast puzzle board with colorful blocks" width="960" height="640" loading="lazy" decoding="async">
                     </div>
                 </article>
 
-                <article class="game-card game-word">
+                <article class="game-card game-word" data-game-slug="word-sort">
                     <div class="game-copy">
                         <div class="game-meta"><span>04</span><span>Word puzzle</span></div>
                         <h2>Word Sort Solitaire</h2>
@@ -96,13 +101,13 @@
                         <a href="../word-sort/">Deal the words <span aria-hidden="true">&rarr;</span></a>
                     </div>
                     <div class="word-poster">
-                        <img class="game-poster-image" src="assets/word-sort-card-v2.png" alt="Word Sort Solitaire board with grouped word cards" width="1536" height="1024" decoding="sync">
+                        <img class="game-poster-image" src="assets/optimized/word-sort-card-v2-960.webp" alt="Word Sort Solitaire board with grouped word cards" width="960" height="640" loading="lazy" decoding="async">
                     </div>
                 </article>
             </div>
         </section>
 
-        <article class="game-card game-life">
+        <article class="game-card game-life" data-game-slug="conway">
             <div class="game-copy">
                 <div class="game-meta"><span>05</span><span>Cellular automata</span></div>
                 <h2>Conway&rsquo;s Game of Life</h2>
@@ -110,11 +115,11 @@
                 <a href="../conway/">Grow a world <span aria-hidden="true">&rarr;</span></a>
             </div>
             <div class="life-poster">
-                <img class="game-poster-image" src="assets/game-of-life-card-v2.png" alt="Conway's Game of Life grid with living cell patterns" width="1536" height="1024" decoding="sync">
+                <img class="game-poster-image" src="assets/optimized/game-of-life-card-v2-960.webp" alt="Conway's Game of Life grid with living cell patterns" width="960" height="640" loading="lazy" decoding="async">
             </div>
         </article>
 
-        <article class="game-card game-aquarium">
+        <article class="game-card game-aquarium" data-game-slug="aquarium">
             <div class="game-copy">
                 <div class="game-meta"><span>06</span><span>Virtual pet</span></div>
                 <h2>Mola Mola</h2>
@@ -122,11 +127,11 @@
                 <a href="../aquarium/">Feed the fish <span aria-hidden="true">&rarr;</span></a>
             </div>
             <div class="aquarium-poster">
-                <img class="game-poster-image" src="assets/mola-mola-card-v2.png" alt="Mola Mola sunfish in a stylized aquarium scene" width="1536" height="1024" decoding="sync">
+                <img class="game-poster-image" src="assets/optimized/mola-mola-card-v2-960.webp" alt="Mola Mola sunfish in a stylized aquarium scene" width="960" height="640" loading="lazy" decoding="async">
             </div>
         </article>
 
-        <article class="game-card game-sandbox">
+        <article class="game-card game-sandbox" data-game-slug="gremlin-lab">
             <div class="game-copy">
                 <div class="game-meta"><span>07</span><span>Physics sandbox</span></div>
                 <h2>Gremlin Physics Lab</h2>
@@ -134,11 +139,11 @@
                 <a href="../gremlin-lab/">Make a mess <span aria-hidden="true">&rarr;</span></a>
             </div>
             <div class="sandbox-poster">
-                <img class="game-poster-image" src="assets/gremlin-lab-card-v2.png" alt="Gremlin Physics Lab sandbox with reactive particles" width="1536" height="1024" decoding="sync">
+                <img class="game-poster-image" src="assets/optimized/gremlin-lab-card-v2-960.webp" alt="Gremlin Physics Lab sandbox with reactive particles" width="960" height="640" loading="lazy" decoding="async">
             </div>
         </article>
 
-        <article class="game-card game-defense">
+        <article class="game-card game-defense" data-game-slug="tower-defense">
             <div class="game-copy">
                 <div class="game-meta"><span>08</span><span>Tower defense</span></div>
                 <h2>Signal Grove Defense</h2>
@@ -146,7 +151,7 @@
                 <a href="../tower-defense/">Hold the line <span aria-hidden="true">&rarr;</span></a>
             </div>
             <div class="defense-poster">
-                <img class="game-poster-image" src="assets/tower-defense-card-v2.png" alt="Signal Grove Defense path with three glowing signal towers protecting a geometric core" width="1536" height="1024" decoding="sync">
+                <img class="game-poster-image" src="assets/optimized/tower-defense-card-v2-960.webp" alt="Signal Grove Defense path with three glowing signal towers protecting a geometric core" width="960" height="640" loading="lazy" decoding="async">
             </div>
         </article>
 

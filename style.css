@@ -15,6 +15,11 @@
     --site-border: var(--line);
     --site-header-bg: rgba(12, 35, 43, 0.94);
     --site-header-border: rgba(255, 255, 255, 0.1);
+    --control-height: 42px;
+    --control-radius: 4px;
+    --control-ease: cubic-bezier(0.22, 1, 0.36, 1);
+    --control-focus: #73d3cd;
+    --control-shadow: 0 10px 24px rgba(16, 43, 54, 0.12);
 }
 
 *,
@@ -58,6 +63,32 @@ select:focus-visible,
 textarea:focus-visible {
     outline: 3px solid #e69a63;
     outline-offset: 3px;
+}
+
+:is(
+    body.pinpoint-body,
+    body.flight-site-body,
+    body.blockblast-site-body,
+    body.wordsort-site-body,
+    body.life-body,
+    body.aquarium-body,
+    body.gremlin-lab-body,
+    body.tower-defense-site-body
+) :where(button, [role="button"]) {
+    transition: transform 160ms var(--control-ease), background-color 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
+}
+
+:is(
+    body.pinpoint-body,
+    body.flight-site-body,
+    body.blockblast-site-body,
+    body.wordsort-site-body,
+    body.life-body,
+    body.aquarium-body,
+    body.gremlin-lab-body,
+    body.tower-defense-site-body
+) :where(button, [role="button"]):focus-visible {
+    outline-color: var(--control-focus);
 }
 
 img {
@@ -983,9 +1014,9 @@ body.night-shift-mode .gremlin-mode-toggle {
     padding: 32px;
     color: #102b36;
     border: 1px solid rgba(16, 43, 54, 0.26);
-    border-radius: 0;
+    border-radius: var(--control-radius);
     background: #fffdf8;
-    box-shadow: 14px 14px 0 rgba(197, 90, 50, 0.3);
+    box-shadow: 14px 14px 0 rgba(197, 90, 50, 0.3), var(--control-shadow);
 }
 
 .site-play-dialog::backdrop {
@@ -1025,13 +1056,19 @@ body.night-shift-mode .gremlin-mode-toggle {
 
 .site-play-dialog-actions a,
 .site-play-dialog-actions button {
-    min-height: 44px;
+    min-height: var(--control-height);
     padding: 11px 15px;
     border: 1px solid rgba(16, 43, 54, 0.2);
-    border-radius: 0;
+    border-radius: var(--control-radius);
     font: inherit;
     font-weight: 800;
     cursor: pointer;
+    transition: transform 160ms var(--control-ease), background-color 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
+}
+
+.site-play-dialog-actions a:hover,
+.site-play-dialog-actions button:hover {
+    transform: translateY(-2px);
 }
 
 .site-play-dialog-actions a,

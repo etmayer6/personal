@@ -132,6 +132,10 @@ function save() {
     if (mode === "view") return;
     try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        window.EthanSiteState?.saveTierDraft?.({
+            title: state.title,
+            itemCount: Object.keys(state.items).length
+        });
         elements.saveState.textContent = "Saved locally";
     } catch {
         elements.saveState.textContent = "Save unavailable";

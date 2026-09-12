@@ -55,16 +55,58 @@ test('Skywatch labels fictional fallback and recovers to a validated live snapsh
     }));
     await page.goto('/flight-radar/');
     await expect(page.locator('#feed-status')).toContainText('showing fictional aircraft');
+    await expect(page.locator('#feed-age')).toContainText('No live snapshot');
     await expect(page.locator('#map-title')).toHaveText('Fictional practice aircraft over Iowa');
     await expect(page.locator('#refresh-button')).toBeEnabled();
     live = true;
     await page.locator('#refresh-button').click();
     await expect(page.locator('#feed-status')).toHaveText('Live snapshot');
+    await expect(page.locator('#feed-age')).toContainText('Received');
     await expect(page.locator('#selected-status')).toContainText('TEST123');
     live = false;
     await page.locator('#refresh-button').click();
     await expect(page.locator('#feed-status')).toContainText('last received');
+    await expect(page.locator('#feed-age')).toContainText('stale fallback');
     await expect(page.locator('#selected-status')).toContainText('TEST123');
+});
+
+test('Skywatch marks an old snapshot before using practice aircraft', async ({ page }) => {
+    let fresh = false;
+    await page.route('**/flight-radar/live.json*', route => route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+            provider: 'ADSB.lol',
+            updatedAt: new Date(Date.now() - (fresh ? 0 : 60 * 60 * 1000)).toISOString(),
+            ac: [{ hex: 'old123', flight: 'OLD123', lat: 42.03, lon: -93.63, alt_baro: 18000, gs: 312, track: 82 }]
+        })
+    }));
+    await page.goto('/flight-radar/');
+    await expect(page.locator('#feed-status')).toContainText('Snapshot is stale');
+    await expect(page.locator('#feed-age')).toContainText('stale fallback');
+    await expect(page.locator('#map-title')).toHaveText('Fictional practice aircraft over Iowa');
+    fresh = true;
+    await page.locator('#refresh-button').click();
+    await expect(page.locator('#feed-status')).toHaveText('Live snapshot');
+    await expect(page.locator('#feed-age')).toContainText('Received');
+    await expect(page.locator('#map-title')).toHaveText('Aircraft snapshot over Iowa');
+});
+
+test('Games hub remembers favorites, last played game, and best score', async ({ page }) => {
+    await page.goto('/games/');
+    const flightCard = page.locator('[data-game-slug="flight-sim"]');
+    await expect(flightCard.locator('.site-game-card-status')).toHaveText('New to the arcade');
+    await flightCard.locator('.site-game-favorite').click();
+    await expect(flightCard.locator('.site-game-favorite')).toHaveAttribute('aria-pressed', 'true');
+
+    await page.goto('/tower-defense/');
+    await page.evaluate(() => window.EthanSiteState.recordGameSnapshot('tower-defense', { score: 1234 }));
+    await page.goto('/games/');
+
+    await expect(page.locator('#games-activity')).toContainText('Continue Signal Grove Defense');
+    await expect(page.locator('[data-game-slug="tower-defense"] .site-game-card-status')).toContainText('Played');
+    await expect(page.locator('[data-game-slug="tower-defense"] .site-game-card-status')).toContainText('Best 1,234');
+    await expect(flightCard.locator('.site-game-favorite')).toHaveAttribute('aria-pressed', 'true');
 });
 
 test('project filters stay inside the interactive workbench', async ({ page }) => {

@@ -217,6 +217,7 @@
     const elements = {
         refreshButton: document.getElementById("refresh-button"),
         feedStatus: document.getElementById("feed-status"),
+        feedAge: document.getElementById("feed-age"),
         selectedStatus: document.getElementById("selected-status"),
         iowaShape: document.getElementById("iowa-shape"),
         iowaLabel: document.getElementById("iowa-label"),
@@ -230,8 +231,10 @@
         source: "fixture",
         provider: null,
         lastUpdated: null,
+        stale: false,
         requestInFlight: false,
-        timer: null
+        timer: null,
+        ageTimer: null
     };
 
     function svgElement(tagName, attributes) {
@@ -333,6 +336,30 @@
         return String(Math.round(aircraft.track)).padStart(3, "0") + " deg";
     }
 
+    function formatFeedAge(timestamp) {
+        if (!timestamp) return "No live snapshot yet";
+        const ageMs = Math.max(0, Date.now() - timestamp);
+        if (ageMs < 60000) return "Received just now";
+        const minutes = Math.floor(ageMs / 60000);
+        if (minutes < 60) return "Received " + minutes + "m ago";
+        const hours = Math.floor(minutes / 60);
+        if (hours < 24) return "Received " + hours + "h ago";
+        return "Received " + Math.floor(hours / 24) + "d ago";
+    }
+
+    function renderFeedAge() {
+        if (!elements.feedAge) return;
+        const ageLabel = formatFeedAge(state.lastUpdated);
+        elements.feedAge.textContent = state.stale
+            ? ageLabel + " / stale fallback"
+            : ageLabel;
+        elements.feedAge.dataset.state = state.stale
+            ? "stale"
+            : state.source === "live"
+                ? "live"
+                : "offline";
+    }
+
     function setFeedStatus(label, status) {
         elements.feedStatus.textContent = label;
         elements.feedStatus.dataset.state = status;
@@ -342,7 +369,10 @@
                 ? "offline"
                 : status === "error"
                     ? "error"
+                    : status === "stale"
+                        ? "stale"
                     : "ready";
+        renderFeedAge();
     }
 
     function renderSelected() {
@@ -405,14 +435,29 @@
     }
 
     function describeSource() {
-        const live = state.source === "live";
+        const hasLiveSnapshot = state.source === "live";
+        const live = hasLiveSnapshot && !state.stale;
         const provider = state.provider || "ADS-B network";
-        document.getElementById("map-title").textContent = live ? "Aircraft snapshot over Iowa" : "Fictional practice aircraft over Iowa";
+        document.getElementById("map-title").textContent = live
+            ? "Aircraft snapshot over Iowa"
+            : hasLiveSnapshot
+                ? "Last received aircraft over Iowa"
+                : "Fictional practice aircraft over Iowa";
         document.getElementById("map-description").textContent = live
             ? "Positions from " + provider + ". " + (state.lastUpdated ? "Last received " + new Date(state.lastUpdated).toLocaleTimeString() + "." : "")
-            : "These five aircraft are fictional examples, not current flights.";
-        document.querySelector(".map-corner-top").textContent = live ? "ADS-B / " + provider + " snapshot" : "Fictional aircraft / practice mode";
-        document.querySelector(".panel-kicker").textContent = live ? "Airspace snapshot / Iowa" : "Practice airspace / Iowa";
+            : hasLiveSnapshot
+                ? "The live feed is unavailable. Showing the last received positions from " + provider + "."
+                : "These five aircraft are fictional examples, not current flights.";
+        document.querySelector(".map-corner-top").textContent = live
+            ? "ADS-B / " + provider + " snapshot"
+            : hasLiveSnapshot
+                ? "ADS-B / last received"
+                : "Fictional aircraft / practice mode";
+        document.querySelector(".panel-kicker").textContent = live
+            ? "Airspace snapshot / Iowa"
+            : hasLiveSnapshot
+                ? "Last received / Iowa"
+                : "Practice airspace / Iowa";
     }
 
     async function loadFlights() {
@@ -426,6 +471,7 @@
             setFeedStatus("Scanning airspace", "loading");
         }
 
+        let snapshotTime = null;
         try {
             const response = await fetch(SNAPSHOT_URL + "?t=" + Date.now(), {
                 cache: "no-store",
@@ -436,8 +482,10 @@
             }
             const payload = await response.json();
             if (!Array.isArray(payload.ac)) throw new Error("Invalid aircraft feed");
-            const snapshotTime = payload.updatedAt ? Date.parse(payload.updatedAt) : Date.now();
+            snapshotTime = payload.updatedAt ? Date.parse(payload.updatedAt) : Date.now();
             if (!Number.isFinite(snapshotTime) || Date.now() - snapshotTime > SNAPSHOT_MAX_AGE_MS) {
+                if (state.source !== "live") state.lastUpdated = snapshotTime;
+                state.stale = true;
                 throw new Error("Snapshot is stale");
             }
             const flights = payload.ac
@@ -451,6 +499,7 @@
             state.source = "live";
             state.provider = String(payload.provider || "ADS-B network");
             state.lastUpdated = snapshotTime;
+            state.stale = false;
             state.selectedId = flights[0] ? flights[0].id : null;
             setFeedStatus(flights.length ? "Live snapshot" : "Quiet sky", flights.length ? "success" : "quiet");
             describeSource();
@@ -463,7 +512,15 @@
                 state.selectedId = state.aircraft[0] ? state.aircraft[0].id : null;
                 state.provider = null;
             }
-            if (hasLastSnapshot) {
+            if (error.message === "Snapshot is stale") {
+                state.stale = true;
+                if (hasLastSnapshot) {
+                    setFeedStatus("Snapshot is stale / last received " + new Date(state.lastUpdated).toLocaleTimeString(), "stale");
+                } else {
+                    setFeedStatus("Snapshot is stale / showing fictional aircraft", "stale");
+                }
+            } else if (hasLastSnapshot) {
+                state.stale = true;
                 setFeedStatus("Live feed unavailable / last received " + new Date(state.lastUpdated).toLocaleTimeString(), "error");
             } else {
                 state.source = "fixture";
@@ -481,11 +538,13 @@
 
     function scheduleRefresh() {
         window.clearInterval(state.timer);
+        window.clearInterval(state.ageTimer);
         state.timer = window.setInterval(function () {
             if (document.visibilityState === "visible") {
                 loadFlights();
             }
         }, REFRESH_MS);
+        state.ageTimer = window.setInterval(renderFeedAge, 15000);
     }
 
     elements.refreshButton.addEventListener("click", loadFlights);
@@ -499,6 +558,7 @@
     state.aircraft = OFFLINE_AIRCRAFT.map(normalizeAircraft).filter(Boolean);
     state.selectedId = state.aircraft[0] ? state.aircraft[0].id : null;
     state.source = "fixture";
+    state.stale = false;
     describeSource();
     setFeedStatus("Fictional practice aircraft / checking live feed", "offline");
     renderBoard();

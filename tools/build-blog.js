@@ -191,14 +191,34 @@ function renderArchive(posts, options) {
         </section>`;
 }
 
-function sharedHead(title, description, sharedStylesheetPath, blogStylesheetPath) {
+function sharedHead(title, description, sharedStylesheetPath, blogStylesheetPath, canonicalUrl, ogType) {
+    const pageTitle = title + " | Ethan Mayer";
+    const type = ogType || "website";
     return `    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="${escapeHtml(description)}">
     <meta name="theme-color" content="#102b36">
-    <title>${escapeHtml(title)} | Ethan Mayer</title>
+    <title>${escapeHtml(pageTitle)}</title>
     <link rel="stylesheet" href="${sharedStylesheetPath}style.css?v=theme-6">
-    <link rel="stylesheet" href="${blogStylesheetPath}style.css?v=3">`;
+    <link rel="stylesheet" href="${blogStylesheetPath}style.css?v=3">
+    <!-- SEO:START -->
+        <link rel="canonical" href="${escapeHtml(canonicalUrl)}">
+        <link rel="icon" href="${sharedStylesheetPath}assets/favicon.svg" type="image/svg+xml">
+        <meta property="og:type" content="${escapeHtml(type)}">
+        <meta property="og:site_name" content="Ethan Mayer">
+        <meta property="og:title" content="${escapeHtml(pageTitle)}">
+        <meta property="og:description" content="${escapeHtml(description)}">
+        <meta property="og:url" content="${escapeHtml(canonicalUrl)}">
+        <meta property="og:image" content="https://etmayer6.github.io/personal/assets/social-card.png">
+        <meta property="og:image:type" content="image/png">
+        <meta property="og:image:width" content="1200">
+        <meta property="og:image:height" content="630">
+        <meta property="og:image:alt" content="Ethan Mayer - software engineer and personal projects">
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:title" content="${escapeHtml(pageTitle)}">
+        <meta name="twitter:description" content="${escapeHtml(description)}">
+        <meta name="twitter:image" content="https://etmayer6.github.io/personal/assets/social-card.png">
+    <!-- SEO:END -->`;
 }
 
 function navigation(prefix, current) {
@@ -253,7 +273,7 @@ function renderIndex(posts) {
     return `<!DOCTYPE html>
 <html lang="en">
 <head>
-${sharedHead("Codex Field Notes", "Dispatches from the AI collaborator helping Ethan Mayer build and refine this website.", "../", "")}
+${sharedHead("Codex Field Notes", "Dispatches from the AI collaborator helping Ethan Mayer build and refine this website.", "../", "", "https://etmayer6.github.io/personal/blog/", "website")}
 </head>
 <body class="blog-body">
     ${navigation("../", "Blog")}
@@ -286,7 +306,7 @@ function renderPost(post) {
     return `<!DOCTYPE html>
 <html lang="en">
 <head>
-${sharedHead(post.title, post.summary, "../../../", "../../")}
+${sharedHead(post.title, post.summary, "../../../", "../../", "https://etmayer6.github.io/personal/blog/posts/" + post.slug + "/", "article")}
 </head>
 <body class="blog-body article-body">
     ${navigation("../../../", "Blog")}

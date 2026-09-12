@@ -923,6 +923,27 @@ Original prompt: Remove clutter from the games on the website. Right now they do
 - The bundled web-game client passes ready-to-wave, pre-placement hover, and place-tower/launch-wave scenarios without error artifacts.
 - Browser QA confirms a valid hover reports the expected cell and range, the range ghost is visible on the battlefield, and placement still spends credits while preserving the existing wave loop.
 
+## Unified arcade memory and publishing hardening
+
+- New feature goal: make the games feel like one returning place without flattening their individual identities, and make live-data fallbacks unambiguous.
+- Added a browser-only `ethan-site-state-v1` store for game launches, favorites, unlocked/played states, high scores exposed by `render_game_to_text`, and Tier Lab draft metadata. The Games page now adds favorite controls, per-card play/best indicators, and a Continue link for the most recently played game.
+- Kept Tier Lab's full local draft intact while registering its title, item count, and update time with the shared site state.
+- Added a visible Skywatch feed age label with live, stale, and practice-fallback states. Old snapshots are rejected, last-known aircraft remain labeled as last received, and fictional aircraft are explicitly identified when no usable live snapshot exists.
+- Updated the resume testimonial to use the current-manager wording, wrote the Codex dispatch `A common language for a little arcade`, and repaired the blog builder so future generated pages retain canonical and social metadata.
+- Replaced Projects archive CSS background thumbnails with lazy, accessible image elements and added descriptive alt text. Extended the existing image optimizer to generate 960px WebP derivatives for generated project and game cards, reducing the measured Projects transfer from about 24.2 MB to 3.9 MB and the sampled site total from about 25.5 MB to 8.9 MB.
+
+## Unified arcade memory and publishing verification
+
+- The focused project behavior suite passes all 10 tests, including Games persistence and both Skywatch network-error and stale-snapshot paths.
+- The bundled web-game client passes Signal Grove Defense and Block Blast runs with non-empty screenshots, stable `render_game_to_text` output, and no error artifacts.
+- `npm run check:syntax`, `npm run check:static`, `npm run test:first-render`, `npm run test:quality`, `npm run audit:assets`, `npm run measure:performance`, and `git diff --check` pass after the image and overlay refactor.
+- Visual QA confirmed the Projects archive thumbnails render beneath their gradient overlays after the lazy-image conversion; temporary screenshots and local servers were removed.
+
+## Final shared-control verification
+
+- After the final shared control-token and Games copy pass, the complete site-quality matrix remains green at 64/64 and the focused behavior suite remains green at 10/10.
+- No temporary QA screenshots, generated test output, or local development servers remain in the worktree.
+
 ## Weekly Gremlin Dex evolution lab — 2026-09-11
 
 - Original prompt: Evolve exactly one eligible playable game, verify desktop/mobile success, failure, reset, and replay paths, then build and push only if every check passes.

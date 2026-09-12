@@ -64,6 +64,12 @@
     gap: 10px;
 }
 
+.feed-status-stack {
+    display: grid;
+    min-width: 190px;
+    gap: 6px;
+}
+
 .radar-workspace {
     margin: 0;
 }
@@ -142,6 +148,32 @@
 .feed-status[data-state="offline"] {
     color: var(--radar-amber);
     border-color: rgba(242, 203, 63, 0.4);
+}
+
+.feed-status[data-state="stale"] {
+    color: var(--radar-coral);
+    border-color: rgba(231, 121, 82, 0.44);
+}
+
+.feed-age {
+    color: rgba(218, 232, 229, 0.68);
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-align: right;
+    text-transform: uppercase;
+}
+
+.feed-age[data-state="live"] {
+    color: var(--radar-teal);
+}
+
+.feed-age[data-state="stale"] {
+    color: var(--radar-coral);
+}
+
+.feed-age[data-state="offline"] {
+    color: var(--radar-amber);
 }
 
 #radar-map {
@@ -275,9 +307,18 @@
         width: 100%;
     }
 
+    .feed-status-stack {
+        flex: 1;
+        min-width: 0;
+    }
+
     .feed-status {
         flex: 1;
         max-width: none;
+    }
+
+    .feed-age {
+        text-align: left;
     }
 }
 

@@ -10,7 +10,18 @@
     const nightModeKey = "ethan-site-night-shift";
     const visitKey = "ethan-site-visit-log";
     const petKey = "ethan-site-custom-pet";
+    const siteStateKey = "ethan-site-state-v1";
     const originalName = "Ethan Mayer";
+    const playableGames = Object.freeze({
+        pinpoint: { label: "Pinpoint", href: "pinpoint/" },
+        "flight-sim": { label: "Flight Sim", href: "flight-sim/" },
+        "block-blast": { label: "Block Blast", href: "block-blast/" },
+        "word-sort": { label: "Word Sort", href: "word-sort/" },
+        conway: { label: "Conway", href: "conway/" },
+        aquarium: { label: "Mola Mola", href: "aquarium/" },
+        "gremlin-lab": { label: "Gremlin Physics Lab", href: "gremlin-lab/" },
+        "tower-defense": { label: "Signal Grove Defense", href: "tower-defense/" }
+    });
     const hunt = [
         {
             page: "home",
@@ -54,6 +65,7 @@
     let memoryNightMode = false;
     let memoryVisits = [];
     let memoryPet = null;
+    let memorySiteState = null;
     let progress = readProgress();
     let gremlinMode = readMode();
     let nightShiftUnlocked = readNightUnlock() || progress >= hunt.length;
@@ -75,6 +87,15 @@
         if (classes.contains("games-body")) return "games";
         if (classes.contains("flight-site-body")) return "flight";
         return "other";
+    }
+
+    function routeFromLocation() {
+        const currentUrl = new URL(window.location.href);
+        const rootPath = rootUrl.pathname.endsWith("/") ? rootUrl.pathname : rootUrl.pathname + "/";
+        const relativePath = currentUrl.pathname.startsWith(rootPath)
+            ? currentUrl.pathname.slice(rootPath.length)
+            : currentUrl.pathname.replace(/^\/+/, "");
+        return relativePath.split("/").filter(Boolean)[0] || "home";
     }
 
     function storageGet(key) {
@@ -107,6 +128,13 @@
                     memoryPet = null;
                 }
             }
+            if (key === siteStateKey) {
+                try {
+                    memorySiteState = JSON.parse(value);
+                } catch (parseError) {
+                    memorySiteState = null;
+                }
+            }
         }
     }
 
@@ -115,8 +143,223 @@
             window.localStorage.removeItem(key);
         } catch (error) {
             if (key === petKey) memoryPet = null;
+            if (key === siteStateKey) memorySiteState = null;
         }
     }
+
+    function defaultSiteState() {
+        return {
+            version: 1,
+            games: {},
+            favoriteGames: [],
+            unlockedGames: [],
+            tierDraft: null
+        };
+    }
+
+    function normalizeSiteState(input) {
+        const source = input && typeof input === "object" ? input : {};
+        const games = {};
+        Object.entries(source.games && typeof source.games === "object" ? source.games : {}).forEach(([slug, value]) => {
+            if (!playableGames[slug] || !value || typeof value !== "object") return;
+            games[slug] = {
+                lastPlayed: Number.isFinite(Number(value.lastPlayed)) ? Number(value.lastPlayed) : 0,
+                highScore: Math.max(0, Number(value.highScore) || 0),
+                plays: Math.max(0, Math.floor(Number(value.plays) || 0))
+            };
+        });
+        const validSlugs = Object.keys(playableGames);
+        const favorites = Array.isArray(source.favoriteGames)
+            ? source.favoriteGames.filter((slug, index, list) => validSlugs.includes(slug) && list.indexOf(slug) === index)
+            : [];
+        const unlocked = Array.isArray(source.unlockedGames)
+            ? source.unlockedGames.filter((slug, index, list) => validSlugs.includes(slug) && list.indexOf(slug) === index)
+            : [];
+        const tierDraft = source.tierDraft && typeof source.tierDraft === "object"
+            ? {
+                title: String(source.tierDraft.title || "Untitled Tier List").slice(0, 70),
+                itemCount: Math.max(0, Math.floor(Number(source.tierDraft.itemCount) || 0)),
+                updatedAt: Number(source.tierDraft.updatedAt) || 0
+            }
+            : null;
+        return { version: 1, games, favoriteGames: favorites, unlockedGames: unlocked, tierDraft };
+    }
+
+    let siteState = null;
+
+    function readSiteState() {
+        const stored = storageGet(siteStateKey);
+        if (stored == null) return normalizeSiteState(memorySiteState || defaultSiteState());
+        try {
+            return normalizeSiteState(JSON.parse(stored));
+        } catch {
+            return defaultSiteState();
+        }
+    }
+
+    function persistSiteState() {
+        storageSet(siteStateKey, JSON.stringify(siteState));
+    }
+
+    function ensureGameRecord(slug) {
+        if (!siteState.games[slug]) {
+            siteState.games[slug] = { lastPlayed: 0, highScore: 0, plays: 0 };
+        }
+        return siteState.games[slug];
+    }
+
+    function recordGameLaunch(slug) {
+        if (!playableGames[slug]) return;
+        const record = ensureGameRecord(slug);
+        record.lastPlayed = Date.now();
+        record.plays += 1;
+        if (!siteState.unlockedGames.includes(slug)) siteState.unlockedGames.push(slug);
+        persistSiteState();
+    }
+
+    function scoreFromSnapshot(snapshot) {
+        if (!snapshot || typeof snapshot !== "object") return 0;
+        return ["best", "highScore", "score", "totalScore", "points"]
+            .map((key) => Number(snapshot[key]))
+            .filter(Number.isFinite)
+            .reduce((highest, score) => Math.max(highest, score), 0);
+    }
+
+    function recordGameSnapshot(slug, snapshot) {
+        const score = scoreFromSnapshot(snapshot);
+        if (!score) return;
+        const record = ensureGameRecord(slug);
+        if (score <= record.highScore) return;
+        record.highScore = Math.floor(score);
+        persistSiteState();
+    }
+
+    function formatGameDate(timestamp) {
+        if (!timestamp) return "Not played yet";
+        const date = new Date(timestamp);
+        const now = new Date();
+        if (date.toDateString() === now.toDateString()) return "Today";
+        return date.toLocaleDateString(undefined, { month: "short", day: "numeric" });
+    }
+
+    function toggleGameFavorite(slug) {
+        if (!playableGames[slug]) return;
+        const index = siteState.favoriteGames.indexOf(slug);
+        if (index >= 0) siteState.favoriteGames.splice(index, 1);
+        else siteState.favoriteGames.push(slug);
+        persistSiteState();
+    }
+
+    function renderGamesHub() {
+        if (page !== "games") return;
+        const cards = [...document.querySelectorAll(".game-card[data-game-slug]")];
+        if (!cards.length) return;
+        cards.forEach((card) => {
+            const slug = card.dataset.gameSlug;
+            const game = playableGames[slug];
+            if (!game) return;
+            const isFavorite = siteState.favoriteGames.includes(slug);
+            let favorite = card.querySelector(".site-game-favorite");
+            if (!favorite) {
+                favorite = document.createElement("button");
+                favorite.type = "button";
+                favorite.className = "site-game-favorite";
+                favorite.addEventListener("click", () => {
+                    toggleGameFavorite(slug);
+                    renderGamesHub();
+                });
+                card.appendChild(favorite);
+            }
+            favorite.textContent = isFavorite ? "★" : "☆";
+            favorite.setAttribute("aria-pressed", String(isFavorite));
+            favorite.setAttribute("aria-label", `${isFavorite ? "Remove" : "Add"} ${game.label} ${isFavorite ? "from" : "to"} favorites`);
+            favorite.title = isFavorite ? "Remove from favorites" : "Add to favorites";
+            card.classList.toggle("is-favorite", isFavorite);
+
+            const record = siteState.games[slug];
+            let status = card.querySelector(".site-game-card-status");
+            if (!status) {
+                status = document.createElement("div");
+                status.className = "site-game-card-status";
+                card.querySelector(".game-copy")?.appendChild(status);
+            }
+            const statusParts = record?.lastPlayed ? [`Played ${formatGameDate(record.lastPlayed)}`] : ["New to the arcade"];
+            if (record?.highScore) statusParts.push(`Best ${record.highScore.toLocaleString()}`);
+            status.textContent = statusParts.join(" · ");
+        });
+
+        let activity = document.querySelector("#games-activity");
+        if (!activity) {
+            activity = document.createElement("div");
+            activity.id = "games-activity";
+            activity.className = "games-activity";
+            document.querySelector(".games-hero")?.after(activity);
+        }
+        const recent = Object.entries(siteState.games)
+            .filter(([, record]) => record.lastPlayed)
+            .sort(([, first], [, second]) => second.lastPlayed - first.lastPlayed)[0];
+        const favorites = siteState.favoriteGames.length;
+        activity.replaceChildren();
+        const summary = document.createElement("span");
+        summary.textContent = `${favorites} favorite${favorites === 1 ? "" : "s"} · ${siteState.unlockedGames.length} game${siteState.unlockedGames.length === 1 ? "" : "s"} played`;
+        activity.appendChild(summary);
+        if (recent && playableGames[recent[0]]) {
+            const link = document.createElement("a");
+            link.href = new URL(playableGames[recent[0]].href, rootUrl).href;
+            link.textContent = `Continue ${playableGames[recent[0]].label} →`;
+            activity.appendChild(link);
+        } else {
+            const prompt = document.createElement("span");
+            prompt.textContent = "Pick a game and leave a trail.";
+            activity.appendChild(prompt);
+        }
+    }
+
+    function trackCurrentGame() {
+        const route = routeFromLocation();
+        if (!playableGames[route]) return;
+        recordGameLaunch(route);
+        const attachTracker = () => {
+            const original = window.render_game_to_text;
+            if (typeof original !== "function") return false;
+            if (original.__ethanSiteTracked) return true;
+            const tracked = function () {
+                const result = original();
+                try {
+                    recordGameSnapshot(route, typeof result === "string" ? JSON.parse(result) : result);
+                } catch {
+                    // A game can expose a human-readable state string; tracking stays best-effort.
+                }
+                return result;
+            };
+            tracked.__ethanSiteTracked = true;
+            window.render_game_to_text = tracked;
+            return true;
+        };
+        if (attachTracker()) return;
+        let attempts = 0;
+        const timer = window.setInterval(() => {
+            attempts += 1;
+            if (attachTracker() || attempts >= 160) window.clearInterval(timer);
+        }, 50);
+    }
+
+    siteState = readSiteState();
+    window.EthanSiteState = {
+        read: () => normalizeSiteState(siteState),
+        isFavorite: (slug) => siteState.favoriteGames.includes(slug),
+        toggleFavorite: toggleGameFavorite,
+        recordGameLaunch,
+        recordGameSnapshot,
+        saveTierDraft: (draft) => {
+            siteState.tierDraft = {
+                title: String(draft?.title || "Untitled Tier List").slice(0, 70),
+                itemCount: Math.max(0, Math.floor(Number(draft?.itemCount) || 0)),
+                updatedAt: Date.now()
+            };
+            persistSiteState();
+        }
+    };
 
     function readProgress() {
         const stored = storageGet(huntKey);
@@ -163,12 +406,7 @@
             "pet-studio": "Pet Studio",
             "gremlin-lab": "Physics Lab"
         };
-        const currentUrl = new URL(window.location.href);
-        const rootPath = rootUrl.pathname.endsWith("/") ? rootUrl.pathname : rootUrl.pathname + "/";
-        const relativePath = currentUrl.pathname.startsWith(rootPath)
-            ? currentUrl.pathname.slice(rootPath.length)
-            : currentUrl.pathname.replace(/^\/+/, "");
-        const route = relativePath.split("/").filter(Boolean)[0] || "home";
+        const route = routeFromLocation();
         if (!routeLabels[route]) return;
 
         let visits = memoryVisits;
@@ -724,6 +962,8 @@
 
         if (progress >= hunt.length) unlockNightShift();
         recordVisit();
+        renderGamesHub();
+        trackCurrentGame();
         setGremlinMode(gremlinMode, false);
         setNightShiftMode(nightShiftMode, false);
         renderHunt();
