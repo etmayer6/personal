@@ -49,9 +49,9 @@
                             <span class="tool-symbol symbol-pen" aria-hidden="true"></span>
                             <span>Pen</span><kbd>P</kbd>
                         </button>
-                        <button class="tool-button" type="button" data-tool="line" aria-pressed="false" title="Draw a connector line (L)">
+                        <button class="tool-button" type="button" data-tool="line" aria-pressed="false" title="Connect two objects (L)">
                             <span class="tool-symbol symbol-line" aria-hidden="true"></span>
-                            <span>Line</span><kbd>L</kbd>
+                            <span>Link</span><kbd>L</kbd>
                         </button>
                         <button class="tool-button" type="button" data-tool="rectangle" aria-pressed="false" title="Draw a rectangle (R)">
                             <span class="tool-symbol symbol-rectangle" aria-hidden="true"></span>
@@ -125,11 +125,11 @@
                         <span id="object-count">Blank board</span>
                     </div>
                     <div class="canvas-wrap" id="canvas-wrap">
-                        <canvas id="whiteboard-canvas" width="1600" height="950" tabindex="0" aria-label="Digital whiteboard. Draw or place notes here."></canvas>
+                        <canvas id="whiteboard-canvas" width="1600" height="950" tabindex="0" aria-label="Digital whiteboard. Draw, place notes, or link objects here."></canvas>
                         <div class="board-empty" id="board-empty" aria-hidden="true">
                             <span class="empty-mark">+</span>
                             <strong>Start with a mark.</strong>
-                            <span>Pick a tool, then draw on the board.</span>
+                            <span>Add two notes, then link the ideas together.</span>
                         </div>
                         <div class="text-editor" id="text-editor" hidden>
                             <form id="text-form">
@@ -144,7 +144,7 @@
                     </div>
                     <div class="board-frame-bottom">
                         <span id="board-status" role="status" aria-live="polite">Blank board ready. Select a tool to begin.</span>
-                        <span>Local board / export when ready.</span>
+                        <span>Links stay attached when objects move.</span>
                     </div>
                 </div>
             </div>

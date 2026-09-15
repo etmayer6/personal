@@ -34,7 +34,7 @@
     const toolNames = {
         select: "Select",
         pen: "Pen",
-        line: "Line",
+        line: "Connector",
         rectangle: "Box",
         ellipse: "Oval",
         text: "Text",
@@ -108,6 +108,7 @@
     }
 
     function snapshot() {
+        materializeConnectors();
         return JSON.stringify(state.shapes);
     }
 
@@ -121,6 +122,7 @@
     }
 
     function persist() {
+        materializeConnectors();
         try {
             window.localStorage.setItem(storageKey, JSON.stringify({
                 tool: state.tool,
@@ -251,10 +253,12 @@
         }
 
         if (shape.type === "line") {
+            const connector = resolveConnector(shape);
             context.beginPath();
-            context.moveTo(shape.x1, shape.y1);
-            context.lineTo(shape.x2, shape.y2);
+            context.moveTo(connector.x1, connector.y1);
+            context.lineTo(connector.x2, connector.y2);
             context.stroke();
+            drawArrowhead(connector, shape.color || state.color, shape.strokeWidth || state.strokeWidth);
         }
 
         if (shape.type === "rectangle") {
@@ -326,6 +330,27 @@
         context.stroke();
     }
 
+    function drawArrowhead(connector, color, lineWidth) {
+        const angle = Math.atan2(connector.y2 - connector.y1, connector.x2 - connector.x1);
+        const size = Math.max(12, lineWidth * 3);
+        if (distance(connector.x1, connector.y1, connector.x2, connector.y2) < size * 1.5) return;
+        context.save();
+        context.fillStyle = color;
+        context.beginPath();
+        context.moveTo(connector.x2, connector.y2);
+        context.lineTo(
+            connector.x2 - Math.cos(angle - Math.PI / 6) * size,
+            connector.y2 - Math.sin(angle - Math.PI / 6) * size
+        );
+        context.lineTo(
+            connector.x2 - Math.cos(angle + Math.PI / 6) * size,
+            connector.y2 - Math.sin(angle + Math.PI / 6) * size
+        );
+        context.closePath();
+        context.fill();
+        context.restore();
+    }
+
     function getNoteLines(value) {
         context.save();
         context.font = "700 22px Georgia, Palatino Linotype, serif";
@@ -362,6 +387,24 @@
     }
 
     function drawSelection(shape) {
+        if (shape && shape.type === "line") {
+            const connector = resolveConnector(shape);
+            context.save();
+            context.fillStyle = "#fffdf8";
+            context.strokeStyle = "#c55a32";
+            context.lineWidth = 3;
+            [
+                { x: connector.x1, y: connector.y1 },
+                { x: connector.x2, y: connector.y2 }
+            ].forEach(function (point) {
+                context.beginPath();
+                context.arc(point.x, point.y, 7, 0, Math.PI * 2);
+                context.fill();
+                context.stroke();
+            });
+            context.restore();
+            return;
+        }
         const bounds = getBounds(shape);
         if (!bounds) return;
         context.save();
@@ -372,12 +415,33 @@
         context.restore();
     }
 
+    function drawConnectorGuide(shape) {
+        if (!shape || shape.type !== "line") return;
+        [shape.fromId, shape.toId].forEach(function (id) {
+            const target = getShapeById(id);
+            const bounds = target && getBounds(target);
+            if (!bounds) return;
+            context.save();
+            context.strokeStyle = "#2e9b87";
+            context.lineWidth = 3;
+            context.setLineDash([9, 7]);
+            context.strokeRect(bounds.x - 8, bounds.y - 8, bounds.w + 16, bounds.h + 16);
+            context.restore();
+        });
+    }
+
     function render() {
         drawGrid();
         state.shapes.forEach(function (shape) {
-            drawShape(shape, false);
+            if (shape.type === "line") drawShape(shape, false);
         });
-        if (drawing && drawing.preview) drawShape(drawing.preview, true);
+        state.shapes.forEach(function (shape) {
+            if (shape.type !== "line") drawShape(shape, false);
+        });
+        if (drawing && drawing.preview) {
+            drawShape(drawing.preview, true);
+            drawConnectorGuide(drawing.preview);
+        }
         if (state.selectedId != null) {
             drawSelection(state.shapes.find(function (shape) { return shape.id === state.selectedId; }));
         }
@@ -401,7 +465,7 @@
         };
     }
 
-    function makePreview(tool, start, current, points) {
+    function makePreview(tool, start, current, points, attachments) {
         const common = {
             id: -1,
             color: state.color,
@@ -409,7 +473,16 @@
             fill: state.fill
         };
         if (tool === "pen") return { ...common, type: "pen", points: points };
-        if (tool === "line") return { ...common, type: "line", x1: start.x, y1: start.y, x2: current.x, y2: current.y };
+        if (tool === "line") return {
+            ...common,
+            type: "line",
+            x1: start.x,
+            y1: start.y,
+            x2: current.x,
+            y2: current.y,
+            fromId: attachments && attachments.fromId != null ? attachments.fromId : null,
+            toId: attachments && attachments.toId != null ? attachments.toId : null
+        };
         if (tool === "rectangle") {
             return { ...common, type: "rectangle", x: Math.min(start.x, current.x), y: Math.min(start.y, current.y), w: Math.abs(current.x - start.x), h: Math.abs(current.y - start.y) };
         }
@@ -434,7 +507,10 @@
             const ys = shape.points.map(function (point) { return point.y; });
             return boundsFromValues(xs, ys);
         }
-        if (shape.type === "line") return boundsFromValues([shape.x1, shape.x2], [shape.y1, shape.y2]);
+        if (shape.type === "line") {
+            const connector = resolveConnector(shape);
+            return boundsFromValues([connector.x1, connector.x2], [connector.y1, connector.y2]);
+        }
         if (shape.type === "rectangle") return { x: shape.x, y: shape.y, w: shape.w, h: shape.h };
         if (shape.type === "ellipse") return { x: shape.cx - Math.abs(shape.rx), y: shape.cy - Math.abs(shape.ry), w: Math.abs(shape.rx) * 2, h: Math.abs(shape.ry) * 2 };
         if (shape.type === "note") return { x: shape.x, y: shape.y, w: shape.w, h: shape.h || getNoteHeight(shape.text) };
@@ -450,6 +526,80 @@
         return { x: minX, y: minY, w: maxX - minX, h: maxY - minY };
     }
 
+    function getShapeById(id) {
+        if (id == null) return null;
+        return state.shapes.find(function (shape) { return shape.id === id; }) || null;
+    }
+
+    function isConnectable(shape) {
+        return Boolean(shape && ["rectangle", "ellipse", "note", "text"].includes(shape.type));
+    }
+
+    function getConnectableAt(point, excludedId) {
+        const tolerance = 12;
+        for (let index = state.shapes.length - 1; index >= 0; index -= 1) {
+            const shape = state.shapes[index];
+            if (shape.id === excludedId || !isConnectable(shape)) continue;
+            const bounds = getBounds(shape);
+            if (bounds && point.x >= bounds.x - tolerance && point.x <= bounds.x + bounds.w + tolerance && point.y >= bounds.y - tolerance && point.y <= bounds.y + bounds.h + tolerance) {
+                return shape.id;
+            }
+        }
+        return null;
+    }
+
+    function getAnchorPoint(shape, toward) {
+        const bounds = getBounds(shape);
+        if (!bounds) return toward;
+        const center = { x: bounds.x + bounds.w / 2, y: bounds.y + bounds.h / 2 };
+        const dx = toward.x - center.x;
+        const dy = toward.y - center.y;
+        if (dx === 0 && dy === 0) return center;
+
+        if (shape.type === "ellipse") {
+            const rx = Math.max(1, bounds.w / 2);
+            const ry = Math.max(1, bounds.h / 2);
+            const scale = 1 / Math.sqrt(dx * dx / (rx * rx) + dy * dy / (ry * ry));
+            return { x: center.x + dx * scale, y: center.y + dy * scale };
+        }
+
+        const scale = 1 / Math.max(Math.abs(dx) / Math.max(1, bounds.w / 2), Math.abs(dy) / Math.max(1, bounds.h / 2));
+        return { x: center.x + dx * scale, y: center.y + dy * scale };
+    }
+
+    function resolveConnector(shape) {
+        const fromShape = getShapeById(shape.fromId);
+        const toShape = getShapeById(shape.toId);
+        const fromCenter = isConnectable(fromShape) ? getShapeCenter(fromShape) : { x: shape.x1, y: shape.y1 };
+        const toCenter = isConnectable(toShape) ? getShapeCenter(toShape) : { x: shape.x2, y: shape.y2 };
+        const fromAnchor = isConnectable(fromShape) ? getAnchorPoint(fromShape, toCenter) : fromCenter;
+        const toAnchor = isConnectable(toShape) ? getAnchorPoint(toShape, fromCenter) : toCenter;
+        return {
+            x1: fromAnchor.x,
+            y1: fromAnchor.y,
+            x2: toAnchor.x,
+            y2: toAnchor.y
+        };
+    }
+
+    function getShapeCenter(shape) {
+        const bounds = getBounds(shape);
+        return { x: bounds.x + bounds.w / 2, y: bounds.y + bounds.h / 2 };
+    }
+
+    function materializeConnectors() {
+        state.shapes.forEach(function (shape) {
+            if (shape.type !== "line") return;
+            const connector = resolveConnector(shape);
+            shape.x1 = connector.x1;
+            shape.y1 = connector.y1;
+            shape.x2 = connector.x2;
+            shape.y2 = connector.y2;
+            if (!isConnectable(getShapeById(shape.fromId))) shape.fromId = null;
+            if (!isConnectable(getShapeById(shape.toId))) shape.toId = null;
+        });
+    }
+
     function hitTest(point) {
         const tolerance = Math.max(14, state.strokeWidth * 2);
         for (let index = state.shapes.length - 1; index >= 0; index -= 1) {
@@ -457,7 +607,8 @@
             const bounds = getBounds(shape);
             if (!bounds) continue;
             if (shape.type === "line") {
-                if (distanceToSegment(point, { x: shape.x1, y: shape.y1 }, { x: shape.x2, y: shape.y2 }) <= tolerance) return shape.id;
+                const connector = resolveConnector(shape);
+                if (distanceToSegment(point, { x: connector.x1, y: connector.y1 }, { x: connector.x2, y: connector.y2 }) <= tolerance) return shape.id;
             } else if (shape.type === "pen") {
                 for (let pointIndex = 1; pointIndex < shape.points.length; pointIndex += 1) {
                     if (distanceToSegment(point, shape.points[pointIndex - 1], shape.points[pointIndex]) <= tolerance) return shape.id;
@@ -488,6 +639,8 @@
             shape.y1 = original.y1 + deltaY;
             shape.x2 = original.x2 + deltaX;
             shape.y2 = original.y2 + deltaY;
+            shape.fromId = null;
+            shape.toId = null;
         }
         if (shape.type === "rectangle") {
             shape.x = original.x + deltaX;
@@ -549,6 +702,7 @@
             return;
         }
 
+        const fromId = state.tool === "line" ? getConnectableAt(point) : null;
         drawing = {
             mode: "draw",
             tool: state.tool,
@@ -556,8 +710,13 @@
             current: point,
             points: [point],
             before: before,
-            preview: makePreview(state.tool, point, point, [point])
+            fromId: fromId,
+            toId: null,
+            preview: makePreview(state.tool, point, point, [point], { fromId: fromId, toId: null })
         };
+        if (state.tool === "line") {
+            setStatus(fromId == null ? "Drag an arrow to another idea." : "Connector anchored. Drag to another object to link them.");
+        }
         render();
     }
 
@@ -577,7 +736,11 @@
                 const lastPoint = drawing.points[drawing.points.length - 1];
                 if (distance(lastPoint.x, lastPoint.y, point.x, point.y) >= 1.5) drawing.points.push(point);
             }
-            drawing.preview = makePreview(drawing.tool, drawing.start, point, drawing.points);
+            if (drawing.tool === "line") drawing.toId = getConnectableAt(point, drawing.fromId);
+            drawing.preview = makePreview(drawing.tool, drawing.start, point, drawing.points, {
+                fromId: drawing.fromId,
+                toId: drawing.toId
+            });
         }
         render();
     }
@@ -605,7 +768,13 @@
         state.shapes.push(shape);
         state.selectedId = shape.id;
         commit(before);
-        setStatus(toolNames[shape.type] + " placed. Use Select to move it.");
+        if (shape.type === "line" && shape.fromId != null && shape.toId != null) {
+            setStatus("Ideas linked. Move either object and the connector will follow.");
+        } else if (shape.type === "line" && (shape.fromId != null || shape.toId != null)) {
+            setStatus("Connector anchored to one object. Use Select to move it.");
+        } else {
+            setStatus(toolNames[shape.type] + " placed. Use Select to move it.");
+        }
     }
 
     function openTextEditor(point) {
