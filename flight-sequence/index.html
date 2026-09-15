@@ -56,6 +56,21 @@
                         role="img"
                         aria-label="An Airbus A220 progresses from a runway takeoff into a calm cruise above the clouds as the page scrolls."
                     ></canvas>
+                    <div class="flight-sequence-hud" aria-label="Flight progress">
+                        <p class="flight-sequence-kicker">A220 / Flight sequence</p>
+                        <p class="flight-sequence-status" id="flight-sequence-status" aria-live="polite">Ready for departure</p>
+                        <div
+                            class="flight-sequence-progress"
+                            id="flight-sequence-progress"
+                            role="progressbar"
+                            aria-label="Flight sequence progress"
+                            aria-valuemin="0"
+                            aria-valuemax="100"
+                            aria-valuenow="0"
+                            aria-valuetext="Ready for departure: 0% complete"
+                        ><span></span></div>
+                        <p class="flight-sequence-prompt" id="flight-sequence-prompt">Scroll to take off <span aria-hidden="true">↓</span></p>
+                    </div>
                     <noscript>
                         <div class="flight-sequence-noscript">
                             <img src="../assets/home-flight-49-jpg/frame-00.jpg" alt="An Airbus A220 waiting on a runway at dawn." width="1536" height="1024">

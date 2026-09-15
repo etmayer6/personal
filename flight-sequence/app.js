@@ -1,6 +1,10 @@
 (() => {
     const canvas = document.getElementById("flight-sequence-canvas");
     const sequence = document.querySelector(".flight-sequence-track");
+    const status = document.getElementById("flight-sequence-status");
+    const progressMeter = document.getElementById("flight-sequence-progress");
+    const progressFill = progressMeter?.querySelector("span");
+    const prompt = document.getElementById("flight-sequence-prompt");
 
     if (!canvas || !sequence) return;
 
@@ -38,6 +42,7 @@
     let scrollProgress = reduceMotion.matches ? 1 : 0;
     let targetScrollProgress = scrollProgress;
     let renderFrame = 0;
+    let currentPhase = "";
 
     function clamp(value, min, max) {
         return Math.min(Math.max(value, min), max);
@@ -131,10 +136,32 @@
         renderFrame = window.requestAnimationFrame(render);
     }
 
+    function updateFlightStatus(progress) {
+        const percent = Math.round(progress * 100);
+        const phase = progress < 0.12 ? "Ready for departure"
+            : progress < 0.38 ? "Taxiing"
+                : progress < 0.68 ? "Taking off"
+                    : progress < 0.9 ? "Climbing"
+                        : "Cruising";
+
+        if (status && phase !== currentPhase) {
+            status.textContent = phase;
+            currentPhase = phase;
+        }
+        if (progressMeter) {
+            progressMeter.setAttribute("aria-valuenow", String(percent));
+            progressMeter.setAttribute("aria-valuetext", `${phase}: ${percent}% complete`);
+        }
+        if (progressFill) progressFill.style.transform = `scaleX(${progress})`;
+        sequence.classList.toggle("is-underway", progress > 0.02);
+        if (prompt) prompt.hidden = progress > 0.02;
+    }
+
     function updateScrollProgress() {
         if (reduceMotion.matches) {
             targetScrollProgress = 1;
             scrollProgress = targetScrollProgress;
+            updateFlightStatus(targetScrollProgress);
             scheduleRender();
             return;
         }
@@ -142,6 +169,7 @@
         const bounds = sequence.getBoundingClientRect();
         const travel = Math.max(sequence.offsetHeight - window.innerHeight, 1);
         targetScrollProgress = clamp(-bounds.top / travel, 0, 1);
+        updateFlightStatus(targetScrollProgress);
         scheduleRender();
     }
 

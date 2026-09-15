@@ -31,10 +31,10 @@
 
 .flight-sequence-sticky {
     position: sticky;
-    top: 0;
+    top: 68px;
     width: 100%;
-    height: 100vh;
-    min-height: 100svh;
+    height: calc(100vh - 68px);
+    min-height: calc(100svh - 68px);
     display: grid;
     place-items: center;
 }
@@ -42,8 +42,8 @@
 .flight-sequence-stage {
     position: relative;
     width: 100%;
-    height: 100vh;
-    min-height: 100svh;
+    height: calc(100vh - 68px);
+    min-height: calc(100svh - 68px);
     overflow: hidden;
     background: var(--paper);
 }
@@ -54,6 +54,83 @@
     height: 100%;
     object-fit: cover;
     background: var(--paper);
+}
+
+.flight-sequence-hud {
+    position: absolute;
+    z-index: 1;
+    color: var(--ink);
+    background: rgba(247, 242, 233, 0.9);
+    box-shadow: 0 8px 24px rgba(4, 18, 24, 0.16);
+}
+
+.flight-sequence-hud {
+    top: clamp(18px, 4vw, 48px);
+    left: clamp(18px, 4vw, 56px);
+    width: min(230px, calc(100% - 36px));
+    padding: 13px 14px 14px;
+    border: 1px solid rgba(16, 43, 54, 0.16);
+}
+
+.flight-sequence-kicker,
+.flight-sequence-status,
+.flight-sequence-prompt {
+    margin: 0;
+}
+
+.flight-sequence-kicker {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+}
+
+.flight-sequence-status {
+    margin-top: 5px;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: clamp(20px, 2.3vw, 32px);
+    font-weight: 700;
+}
+
+.flight-sequence-progress {
+    width: 100%;
+    height: 3px;
+    margin-top: 14px;
+    overflow: hidden;
+    background: rgba(16, 43, 54, 0.2);
+    border-radius: 999px;
+}
+
+.flight-sequence-progress span {
+    display: block;
+    width: 100%;
+    height: 100%;
+    transform: scaleX(0);
+    transform-origin: left;
+    background: var(--ink);
+    transition: transform 160ms linear;
+}
+
+.flight-sequence-prompt {
+    margin-top: 12px;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.flight-sequence-prompt span {
+    display: inline-block;
+    margin-left: 5px;
+    animation: flight-sequence-nudge 1.6s ease-in-out infinite;
+}
+
+.flight-sequence-track.is-underway .flight-sequence-hud {
+    opacity: 0.82;
+}
+
+@keyframes flight-sequence-nudge {
+    50% { transform: translateY(4px); }
 }
 
 .flight-sequence-noscript {
@@ -93,6 +170,25 @@
 }
 
 @media (max-width: 700px) {
+    .flight-sequence-sticky {
+        top: 62px;
+    }
+
+    .flight-sequence-sticky,
+    .flight-sequence-stage {
+        height: calc(100vh - 62px);
+        min-height: calc(100svh - 62px);
+    }
+
+    .flight-sequence-hud {
+        top: 20px;
+        left: 20px;
+    }
+
+    .flight-sequence-status {
+        font-size: 22px;
+    }
+
     .site-footer {
         flex-direction: column;
         gap: 8px;
@@ -102,5 +198,13 @@
 @media (prefers-reduced-motion: reduce) {
     html {
         scroll-behavior: auto;
+    }
+
+    .flight-sequence-prompt span {
+        animation: none;
+    }
+
+    .flight-sequence-progress span {
+        transition: none;
     }
 }
