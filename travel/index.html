@@ -48,15 +48,36 @@
     </header>
 
     <main class="travel-shell">
-        <section class="travel-hero">
-            <p class="eyebrow">Travel Map</p>
-            <h1>Places I Have Been</h1>
-            <p class="travel-summary">
-                Browse photos by place.
-            </p>
+        <section class="travel-hero" aria-labelledby="travel-title">
+            <div class="travel-hero-copy">
+                <p class="eyebrow">Field atlas / photo journal</p>
+                <h1 id="travel-title">Places,<br><em>remembered.</em></h1>
+                <p class="travel-summary">
+                    A living atlas of road trips, shorelines, layovers, and the frames I kept.
+                </p>
+                <a class="travel-jump" href="#travel-explorer">
+                    Explore the map
+                    <span aria-hidden="true">&darr;</span>
+                </a>
+            </div>
+
+            <div class="travel-hero-gallery" aria-label="Scenes from Iowa, Mexico, and El Salvador">
+                <figure class="travel-hero-photo travel-hero-photo-main">
+                    <img src="../images/photos/optimized/G0019814-960.webp" alt="Rock formations framing the bright Caribbean coast at Punta Sur" width="960" height="720" fetchpriority="high">
+                    <figcaption><strong>Punta Sur</strong><span>Mexico</span></figcaption>
+                </figure>
+                <figure class="travel-hero-photo travel-hero-photo-top">
+                    <img src="../images/photos/optimized/P1020888-960.webp" alt="The green volcanic crater at El Boquerón" width="960" height="720">
+                    <figcaption><strong>El Boquerón</strong><span>El Salvador</span></figcaption>
+                </figure>
+                <figure class="travel-hero-photo travel-hero-photo-bottom">
+                    <img src="../images/photos/optimized/P1020464-960.webp" alt="Snow-covered campus paths in Ames" width="960" height="720">
+                    <figcaption><strong>Ames</strong><span>Iowa</span></figcaption>
+                </figure>
+            </div>
         </section>
 
-        <section class="travel-stats" id="stats-strip">
+        <section class="travel-stats" id="stats-strip" aria-label="Travel collection statistics">
             <div class="travel-stat-card">
                 <span>Places</span>
                 <strong id="places-count">--</strong>
@@ -75,7 +96,7 @@
             </div>
         </section>
 
-        <section class="travel-layout">
+        <section class="travel-layout" id="travel-explorer">
             <div class="travel-map-panel">
                 <div class="travel-panel-header">
                     <h2>Map</h2>

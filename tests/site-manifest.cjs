@@ -17,7 +17,7 @@ const interactiveMetadata = {
     "/courseflow/": { name: "CourseFlow", marker: "CourseFlow", ready: ".page" },
     "/word-sort/": { name: "Word Sort", marker: "Word Sort", ready: "#word-sort-root", featured: true },
     "/apartments/": { name: "Apartment Hunt", marker: "Apartment Hunt", ready: ".listing-card" },
-    "/travel/": { name: "Travel Map", marker: "Places I Have Been", ready: ".place-card" },
+    "/travel/": { name: "Travel Map", marker: "remembered.", ready: ".place-card" },
     "/block-blast/": { name: "Block Blast", marker: "Block Blast", ready: "#block-blast-root" },
     "/groggy-climbs/": { name: "Groggy Climbs", marker: "Recommended Routes", ready: ".route-card" },
     "/diet-tracker/": { name: "Diet Tracker", marker: "A calmer way to log a meal", ready: "#meal-list" },
