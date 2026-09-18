@@ -500,6 +500,33 @@ button:disabled {
     font-size: 23px;
 }
 
+.result-heading {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    margin-bottom: 5px;
+}
+
+.result-heading .panel-label {
+    margin: 0;
+}
+
+.accuracy-grade {
+    display: inline-flex;
+    align-items: center;
+    min-height: 22px;
+    padding: 4px 8px;
+    border: 1px solid rgba(197, 90, 50, 0.22);
+    border-radius: 999px;
+    color: #8c3d22;
+    background: #f8dfc5;
+    font-size: 9px;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    line-height: 1;
+    text-transform: uppercase;
+}
+
 .round-result p:not(.panel-label) {
     margin: 6px 0 0;
     color: var(--pin-muted);

@@ -9,6 +9,7 @@ const MAP_ZOOM_FACTOR = 1.5;
 const MIN_PHOTO_ZOOM = 1;
 const MAX_PHOTO_ZOOM = 8;
 const PHOTO_ZOOM_FACTOR = 1.5;
+const RESULT_REVEAL_MS = 950;
 
 const localLocations = [
     {
@@ -178,6 +179,7 @@ const resultEl = document.getElementById("round-result");
 const answerTitleEl = document.getElementById("answer-title");
 const answerDetailEl = document.getElementById("answer-detail");
 const roundScoreEl = document.getElementById("round-score");
+const accuracyGradeEl = document.getElementById("accuracy-grade");
 const nextButton = document.getElementById("next-button");
 const fullscreenButton = document.getElementById("fullscreen-button");
 
@@ -217,6 +219,15 @@ const photoGesture = {
     pointers: new Map(),
     moved: false,
     pinched: false
+};
+
+const resultReveal = {
+    active: false,
+    elapsed: 0,
+    progress: 1,
+    frame: 0,
+    from: { zoom: 1, centerLon: 0, centerLat: 0 },
+    to: { zoom: 1, centerLon: 0, centerLat: 0 }
 };
 
 function shuffledLocations() {
@@ -398,11 +409,76 @@ function panMap(deltaX, deltaY, redraw = true) {
 }
 
 function resetMapView(redraw = true) {
+    stopResultReveal();
     mapView.zoom = MIN_MAP_ZOOM;
     mapView.centerLon = 0;
     mapView.centerLat = 0;
     updateZoomControls();
     if (redraw) drawMap();
+}
+
+function stopResultReveal() {
+    resultReveal.active = false;
+    resultReveal.progress = 1;
+    resultReveal.elapsed = 0;
+    if (resultReveal.frame) cancelAnimationFrame(resultReveal.frame);
+    resultReveal.frame = 0;
+}
+
+function resultCameraFor(guess, answer) {
+    const lonDelta = normalizeLongitude(answer.lon - guess.lon);
+    const lonSpan = Math.abs(lonDelta);
+    const latSpan = Math.abs(answer.lat - guess.lat);
+    const zoom = Math.min(
+        MAX_MAP_ZOOM,
+        0.65 * 360 / Math.max(24, lonSpan),
+        0.6 * 180 / Math.max(12, latSpan)
+    );
+    return {
+        zoom: Math.max(MIN_MAP_ZOOM, zoom),
+        centerLon: normalizeLongitude(guess.lon + lonDelta / 2),
+        centerLat: (guess.lat + answer.lat) / 2
+    };
+}
+
+function stepResultReveal(milliseconds) {
+    if (!resultReveal.active) return;
+    resultReveal.elapsed = Math.min(RESULT_REVEAL_MS, resultReveal.elapsed + Math.max(0, milliseconds));
+    resultReveal.progress = resultReveal.elapsed / RESULT_REVEAL_MS;
+    const eased = 1 - (1 - resultReveal.progress) ** 3;
+    const lonDelta = normalizeLongitude(resultReveal.to.centerLon - resultReveal.from.centerLon);
+    mapView.zoom = resultReveal.from.zoom + (resultReveal.to.zoom - resultReveal.from.zoom) * eased;
+    mapView.centerLon = normalizeLongitude(resultReveal.from.centerLon + lonDelta * eased);
+    mapView.centerLat = resultReveal.from.centerLat + (resultReveal.to.centerLat - resultReveal.from.centerLat) * eased;
+    constrainMapView();
+    updateZoomControls();
+    drawMap();
+    if (resultReveal.progress >= 1) {
+        resultReveal.active = false;
+        resultReveal.frame = 0;
+    }
+}
+
+function animateResultReveal(previousTime) {
+    if (!resultReveal.active) return;
+    resultReveal.frame = requestAnimationFrame((time) => {
+        stepResultReveal(Math.min(50, Math.max(0, time - previousTime)));
+        animateResultReveal(time);
+    });
+}
+
+function beginResultReveal() {
+    stopResultReveal();
+    resultReveal.from = { ...mapView };
+    resultReveal.to = resultCameraFor(state.guess, currentLocation());
+    resultReveal.elapsed = 0;
+    resultReveal.progress = 0;
+    resultReveal.active = true;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        stepResultReveal(RESULT_REVEAL_MS);
+        return;
+    }
+    resultReveal.frame = requestAnimationFrame((time) => animateResultReveal(time));
 }
 
 function constrainPhotoView() {
@@ -644,10 +720,12 @@ function drawMap() {
         ctx.fillText(label, point.x, point.y);
     }
 
+    let mergedResultPin = false;
     if (state.mode === "result" && state.guess) {
         const guessPoint = project(state.guess.lon, state.guess.lat, width, height);
         const location = currentLocation();
         const actualPoint = project(location.lon, location.lat, width, height);
+        mergedResultPin = state.distanceKm < 25;
         let actualX = actualPoint.x;
         const worldPixelWidth = width * mapView.zoom;
         if (Math.abs(actualX - guessPoint.x) > worldPixelWidth / 2) {
@@ -658,13 +736,21 @@ function drawMap() {
         ctx.setLineDash([8, 7]);
         ctx.beginPath();
         ctx.moveTo(guessPoint.x, guessPoint.y);
-        ctx.lineTo(actualX, actualPoint.y);
+        ctx.lineTo(
+            guessPoint.x + (actualX - guessPoint.x) * resultReveal.progress,
+            guessPoint.y + (actualPoint.y - guessPoint.y) * resultReveal.progress
+        );
         ctx.stroke();
         ctx.setLineDash([]);
-        drawPin(actualPoint, "#e4ad46", "Answer");
+        if (resultReveal.progress > 0.58) {
+            ctx.save();
+            ctx.globalAlpha = Math.min(1, (resultReveal.progress - 0.58) / 0.22);
+            drawPin(actualPoint, "#e4ad46", mergedResultPin ? "Pinpoint" : "Answer");
+            ctx.restore();
+        }
     }
 
-    if (state.guess) {
+    if (state.guess && (!mergedResultPin || resultReveal.progress <= 0.58)) {
         drawPin(project(state.guess.lon, state.guess.lat, width, height), "#c55a32", "Guess");
     }
 }
@@ -836,8 +922,9 @@ function submitGuess() {
     state.roundScore = Math.max(0, baseScore - state.hintCount * 250);
     state.totalScore += state.roundScore;
     state.mode = "result";
-    resetMapView(false);
+    stopResultReveal();
     answerTitleEl.textContent = location.answer;
+    accuracyGradeEl.textContent = accuracyGrade(state.distanceKm);
     answerDetailEl.textContent = `${formatDistance(state.distanceKm)} · ${state.hintCount ? `${state.hintCount * 250} point hint penalty` : "No hint penalty"}`;
     roundScoreEl.textContent = state.roundScore.toLocaleString();
     resultEl.hidden = false;
@@ -852,7 +939,7 @@ function submitGuess() {
         photoCreditEl.href = `https://www.mapillary.com/app/?pKey=${encodeURIComponent(location.imageId)}&focus=photo`;
         photoCreditEl.textContent = "View on Mapillary";
     }
-    drawMap();
+    beginResultReveal();
 }
 
 function scoreRating(percentage) {
@@ -863,10 +950,19 @@ function scoreRating(percentage) {
     return "Lost, but learning";
 }
 
+function accuracyGrade(distance) {
+    if (distance < 25) return "Pinpoint";
+    if (distance < 250) return "Close call";
+    if (distance < 1000) return "Right region";
+    if (distance < 3000) return "Right continent";
+    return "Long haul";
+}
+
 function showFinalScore() {
     state.mode = "complete";
     const maximum = ROUND_COUNT * MAX_ROUND_SCORE;
     const percentage = Math.round(state.totalScore / maximum * 100);
+    accuracyGradeEl.textContent = "5 rounds";
     answerTitleEl.textContent = "Expedition complete";
     answerDetailEl.textContent = `${state.totalScore.toLocaleString()} of ${maximum.toLocaleString()} points · ${scoreRating(percentage)}`;
     roundScoreEl.textContent = percentage;
@@ -1204,9 +1300,18 @@ window.render_game_to_text = () => JSON.stringify({
     } : null,
     distanceKm: state.distanceKm,
     roundScore: state.roundScore,
+    accuracyGrade: state.distanceKm == null ? null : accuracyGrade(state.distanceKm),
+    resultReveal: {
+        active: resultReveal.active,
+        progress: Number(resultReveal.progress.toFixed(2)),
+        targetZoom: Number(resultReveal.to.zoom.toFixed(2))
+    },
     canSubmit: state.mode === "guessing" && Boolean(state.guess)
 });
-window.advanceTime = () => drawMap();
+window.advanceTime = (milliseconds = 1000 / 60) => {
+    if (resultReveal.active) stepResultReveal(milliseconds);
+    else drawMap();
+};
 window.__pinpoint_debug_guess = (lat, lon) => placeGuess(Number(lat), Number(lon));
 window.__pinpoint_debug_sample_regions = () => balancedRegions().map(({ continent, label }) => ({ continent, label }));
 

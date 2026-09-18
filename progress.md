@@ -954,3 +954,15 @@ Original prompt: Remove clutter from the games on the website. Right now they do
 - The bundled web-game client confirmed encounter state and canvas presentation after each gameplay/layout change.
 - Full `npm run check` passed: syntax, static validation, 24/24 first-render tests, and 64/64 quality tests.
 - TODO: none for this evolution; keep future work centered on the route rather than expanding the roster.
+
+## Weekly Pinpoint evolution lab — 2026-09-18
+
+- Original prompt: Evolve exactly one eligible playable game, verify desktop/mobile success, failure, reset, and replay paths, then build and push only if every check passes.
+- Selected Pinpoint because its gameplay code was last changed on 2026-08-31, outside the 72-hour window and the five more recent game evolutions.
+- Core identity: a warm cartographic photo expedition built around reading visual clues, committing a world-map pin, and learning from the distance between guess and answer.
+- Single improvement goal: replace the full-world result snap with an adaptive answer reveal that frames both pins, animates the route, and gives the player an immediate accuracy grade.
+- Implemented an adaptive camera that fits guess and answer across the antimeridian, eases into the result, draws the route progressively, merges sub-25 km pins, and labels five accuracy bands without changing scoring.
+- Focused Playwright QA passes exact-hit success, distant failure, five-round completion, replay, new-game reset, desktop keyboard input, 390px touch input, reduced motion, responsive overflow, and console-error checks; all result screenshots and the bundled-client canvas were visually inspected.
+- Visual QA caught overlapping exact-hit markers; the final pass replaces them with one readable Pinpoint marker and was rerun successfully.
+- Full `npm run check` passes: syntax, static validation, 24/24 first-render tests, and 64/64 site-quality tests.
+- TODO: none for this evolution; keep future work centered on photo-to-map inference rather than adding unrelated modes.
