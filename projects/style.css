@@ -417,35 +417,18 @@
     clip-path: polygon(35% 0, 65% 0, 100% 100%, 0 100%);
 }
 
-.feature-word {
+.feature-travel {
     --tile-accent: #4e7b62;
     background: #edf1e8;
 }
 
-.word-visual {
-    display: grid;
-    align-content: center;
-    gap: 10px;
-    padding: 22px;
+.travel-visual {
+    position: relative;
+    display: block;
+    min-height: 100%;
+    overflow: hidden;
+    padding: 0;
     background: #d7e1d0;
-}
-
-.word-visual > div {
-    display: grid;
-    gap: 7px;
-    padding: 10px;
-    background: rgba(255, 253, 248, 0.66);
-    transform: rotate(2deg);
-}
-
-.word-visual > div:nth-child(2) { transform: rotate(-2deg); }
-
-.word-visual span {
-    padding: 7px 8px;
-    color: #194f61;
-    background: #fffdf8;
-    font-family: Georgia, "Palatino Linotype", serif;
-    font-size: 12px;
 }
 
 .workbench-section {
@@ -737,7 +720,7 @@
     }
 
     .flight-visual,
-    .word-visual {
+    .travel-visual {
         min-height: 220px;
     }
 
@@ -833,12 +816,6 @@
         animation: none;
         transition: none;
     }
-}
-
-.word-visual {
-    position: relative;
-    display: block;
-    padding: 0;
 }
 
 .project-visual-image {

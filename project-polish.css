@@ -570,7 +570,7 @@
     }
 
     .projects-body .courseflow-visual,
-    .projects-body :is(.flight-visual, .word-visual) {
+    .projects-body :is(.flight-visual, .travel-visual) {
         min-height: 210px;
     }
 
