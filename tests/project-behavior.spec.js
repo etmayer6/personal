@@ -25,6 +25,34 @@ test('meal plans reflect selected ingredients, pantry additions, and survive rel
     await expect(page.locator('#recipe-list')).not.toContainText('salmon');
 });
 
+test('meal planner combines shopping gaps and keeps each saved plan at desktop and mobile widths', async ({ browser }, testInfo) => {
+    for (const viewport of [{ name: 'desktop', width: 1280, height: 900 }, { name: 'mobile', width: 390, height: 844 }]) {
+        const context = await browser.newContext({ viewport });
+        const page = await context.newPage();
+        await page.goto('/meal-planner/');
+        await page.locator('#planner-notes').fill('');
+        await page.locator('#analyze-receipt').click();
+        const bowls = page.locator('.recipe-card').filter({ hasText: 'Chicken fajita rice bowls' });
+        const wraps = page.locator('.recipe-card').filter({ hasText: 'Creamy lime chicken wraps' });
+        await bowls.locator('.recipe-plan-button').click();
+        await wraps.locator('.recipe-plan-button').click();
+        await expect(page.locator('#meal-plan-count')).toHaveText('2 of 3 selected');
+        await expect(page.locator('.shopping-list li')).toHaveText(['cilantro', 'oil', 'salt', 'pepper', 'garlic']);
+        await expect(bowls.locator('.recipe-plan-button')).toHaveAttribute('aria-pressed', 'true');
+        await expect(bowls.locator('.recipe-plan-button')).toHaveAttribute('aria-label', 'Remove Chicken fajita rice bowls from plan');
+        await page.reload();
+        await expect(page.locator('#meal-plan-count')).toHaveText('2 of 3 selected');
+        await page.locator('.saved-entry').filter({ hasText: 'Neighborhood Grocer' }).click();
+        await expect(page.locator('#meal-plan-count')).toHaveText('0 of 3 selected');
+        await page.locator('.saved-entry').filter({ hasText: 'Fresh Market' }).first().click();
+        await expect(page.locator('#meal-plan-count')).toHaveText('2 of 3 selected');
+        await expect(page.locator('.shopping-list li')).toHaveCount(5);
+        expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(viewport.width + 1);
+        await page.locator('.meal-plan').screenshot({ path: testInfo.outputPath(`meal-plan-${viewport.name}.png`) });
+        await context.close();
+    }
+});
+
 test('Garage Bay updates the car, build sheet, and saved configuration', async ({ page }) => {
     await page.goto('/garage/');
     await expect(page.locator('.finding-card')).toHaveCount(4);

@@ -8,7 +8,7 @@
     <title>Receipt Meal Planner Demo | Ethan Mayer</title>
     <link rel="stylesheet" href="../style.css?v=quality-1">
     <link rel="stylesheet" href="../diet-tracker/style.css?v=2">
-    <link rel="stylesheet" href="style.css?v=1">
+    <link rel="stylesheet" href="style.css?v=2">
     <link rel="stylesheet" href="../project-polish.css?v=2">
     <!-- SEO:START -->
         <link rel="canonical" href="https://etmayer6.github.io/personal/meal-planner/">
@@ -141,6 +141,11 @@
 
                                 <section id="recipes" class="recipe-section" aria-labelledby="recipes-title">
                                     <div class="planner-section-heading"><div><p class="section-kicker">Ranked by receipt fit</p><h3 id="recipes-title">Recipe ideas</h3></div><div class="recipe-filter"><label for="recipe-type">Show</label><select id="recipe-type"><option value="all">All ideas</option><option value="Dinner">Dinner</option><option value="Breakfast">Breakfast</option><option value="Lunch">Lunch</option></select></div></div>
+                                    <div class="meal-plan" aria-labelledby="meal-plan-title">
+                                        <div class="meal-plan-heading"><div><p class="section-kicker">Make it a plan</p><h4 id="meal-plan-title">Your next meals</h4></div><span id="meal-plan-count">0 of 3 selected</span></div>
+                                        <p class="meal-plan-hint">Choose up to three recipes to combine their shopping gaps.</p>
+                                        <div id="meal-plan-content" aria-live="polite"></div>
+                                    </div>
                                     <div class="recipe-list" id="recipe-list"></div>
                                 </section>
                             </div>
@@ -182,7 +187,7 @@
     </dialog>
 
     <div class="app-toast" id="app-toast" role="status" aria-live="polite"></div>
-    <script src="app.js?v=1"></script>
+    <script src="app.js?v=2"></script>
     <script src="../site-play.js?v=pet-companion-2"></script>
 </body>
 </html>

@@ -68,6 +68,8 @@
         ingredientShelf: document.getElementById("ingredient-shelf"),
         recipeType: document.getElementById("recipe-type"),
         recipeList: document.getElementById("recipe-list"),
+        mealPlanCount: document.getElementById("meal-plan-count"),
+        mealPlanContent: document.getElementById("meal-plan-content"),
         itemCount: document.getElementById("item-count"),
         itemTable: document.getElementById("item-table"),
         ocrText: document.getElementById("ocr-text"),
@@ -196,6 +198,8 @@
     }
 
     function renderRecipes(recipes) {
+        const planned = selectedEntry().plannedRecipes || [];
+        renderMealPlan(recipes, planned);
         const filter = elements.recipeType.value;
         const visible = recipes.filter(function (candidate) { return filter === "all" || candidate.type === filter; });
         if (!visible.length) {
@@ -207,8 +211,30 @@
             const usedLabel = candidate.used.length + " main ingredients available";
             return "<article class=\"recipe-card " + (expanded ? "is-expanded" : "") + "\"><div class=\"recipe-summary\"><span class=\"recipe-rank\">0" + (index + 1) + "</span><div class=\"recipe-copy\"><h4>" + escapeHtml(candidate.title) + "</h4><p>" + escapeHtml(candidate.summary) + "</p></div><div class=\"recipe-score\"><strong>" + candidate.confidence + "% coverage</strong><span>" + escapeHtml(candidate.type) + "</span></div></div>" +
                 "<div class=\"recipe-meta\"><span>" + usedLabel + "</span>" + candidate.staples.map(function (staple) { return "<span>Pantry: " + escapeHtml(staple) + "</span>"; }).join("") + candidate.missing.map(function (missing) { return "<span class=\"missing\">Need: " + escapeHtml(missing) + "</span>"; }).join("") + "</div>" +
-                "<div class=\"recipe-actions\"><button class=\"recipe-toggle\" type=\"button\" data-recipe=\"" + escapeHtml(candidate.title) + "\">" + (expanded ? "Hide steps" : "View steps") + "</button></div><div class=\"recipe-steps\">" + candidate.steps.map(function (step, stepIndex) { return "<div class=\"recipe-step\"><span>" + (stepIndex + 1) + "</span><p>" + escapeHtml(step) + "</p></div>"; }).join("") + "</div></article>";
+                "<div class=\"recipe-actions\"><button class=\"recipe-plan-button\" type=\"button\" data-plan-recipe=\"" + escapeHtml(candidate.title) + "\" aria-label=\"" + escapeHtml((planned.includes(candidate.title) ? "Remove " : "Add ") + candidate.title + (planned.includes(candidate.title) ? " from plan" : " to plan")) + "\" aria-pressed=\"" + planned.includes(candidate.title) + "\"" + (!planned.includes(candidate.title) && planned.length >= 3 ? " disabled" : "") + ">" + (planned.includes(candidate.title) ? "In your plan" : "Add to plan") + "</button><button class=\"recipe-toggle\" type=\"button\" data-toggle-steps=\"" + escapeHtml(candidate.title) + "\" aria-expanded=\"" + expanded + "\">" + (expanded ? "Hide steps" : "View steps") + "</button></div><div class=\"recipe-steps\">" + candidate.steps.map(function (step, stepIndex) { return "<div class=\"recipe-step\"><span>" + (stepIndex + 1) + "</span><p>" + escapeHtml(step) + "</p></div>"; }).join("") + "</div></article>";
         }).join("");
+    }
+
+    function shoppingGaps(chosen) {
+        return [...new Map(chosen.flatMap(function (candidate) { return candidate.missing; }).map(function (ingredient) {
+            return [ingredient.toLowerCase(), ingredient];
+        })).values()];
+    }
+
+    function renderMealPlan(recipes, planned) {
+        const chosen = planned.map(function (title) {
+            return recipes.find(function (candidate) { return candidate.title === title; });
+        }).filter(Boolean);
+        const missing = shoppingGaps(chosen);
+        elements.mealPlanCount.textContent = chosen.length + " of 3 selected";
+        if (!chosen.length) {
+            elements.mealPlanContent.innerHTML = '<p class="meal-plan-empty">Pick a recipe below to start a short meal plan.</p>';
+            return;
+        }
+        elements.mealPlanContent.innerHTML = '<ol class="meal-plan-list">' + chosen.map(function (candidate) {
+            return "<li>" + escapeHtml(candidate.title) + "</li>";
+        }).join("") + '</ol><div class="shopping-heading"><strong>Combined shopping gaps</strong><span>' + missing.length + (missing.length === 1 ? " item" : " items") + '</span></div>' +
+            (missing.length ? '<ul class="shopping-list">' + missing.map(function (ingredient) { return "<li>" + escapeHtml(ingredient) + "</li>"; }).join("") + '</ul><button class="light-button" id="copy-shopping-list" type="button">Copy shopping list</button>' : '<p class="shopping-complete">Every listed ingredient is on hand. Check portions before cooking.</p>');
     }
 
     function renderHistory() {
@@ -216,7 +242,8 @@
         elements.savedList.innerHTML = state.entries.map(function (saved) {
             const fixture = fixtures[saved.fixtureId] || fixtures.fresh;
             const analysis = buildAnalysis(saved);
-            return "<button class=\"saved-entry " + (saved.id === selectedEntryId ? "is-active" : "") + "\" type=\"button\" data-entry=\"" + saved.id + "\"><strong>" + escapeHtml(fixture.store) + "</strong><span>" + formatDate(saved.createdAt) + "</span><small>" + analysis.ingredients.length + " ingredients &middot; " + analysis.recipes.length + " recipes</small></button>";
+            const planned = (saved.plannedRecipes || []).length;
+            return "<button class=\"saved-entry " + (saved.id === selectedEntryId ? "is-active" : "") + "\" type=\"button\" data-entry=\"" + saved.id + "\"><strong>" + escapeHtml(fixture.store) + "</strong><span>" + formatDate(saved.createdAt) + "</span><small>" + (planned ? planned + " meals planned &middot; " : "") + analysis.ingredients.length + " ingredients &middot; " + analysis.recipes.length + " recipes</small></button>";
         }).join("");
     }
 
@@ -253,6 +280,7 @@
             createdAt: Date.now(),
             style: elements.planStyle.value,
             notes: elements.notes.value.trim(),
+            plannedRecipes: [],
             excluded: Array.from(elements.availability.querySelectorAll("input:not(:checked)")).map(function (input) { return input.value; })
         };
         state.entries.unshift(saved);
@@ -367,10 +395,33 @@
     });
 
     elements.recipeList.addEventListener("click", function (event) {
-        const button = event.target.closest("[data-recipe]");
+        const planButton = event.target.closest("[data-plan-recipe]");
+        if (planButton) {
+            const saved = selectedEntry();
+            const planned = Array.isArray(saved.plannedRecipes) ? saved.plannedRecipes : [];
+            const title = planButton.dataset.planRecipe;
+            saved.plannedRecipes = planned.includes(title) ? planned.filter(function (item) { return item !== title; }) : planned.length < 3 ? planned.concat(title) : planned;
+            saveState();
+            renderRecipes(buildAnalysis(saved).recipes);
+            renderHistory();
+            return;
+        }
+        const button = event.target.closest("[data-toggle-steps]");
         if (!button) return;
-        expandedRecipe = expandedRecipe === button.dataset.recipe ? null : button.dataset.recipe;
+        expandedRecipe = expandedRecipe === button.dataset.toggleSteps ? null : button.dataset.toggleSteps;
         renderRecipes(buildAnalysis(selectedEntry()).recipes);
+    });
+
+    elements.mealPlanContent.addEventListener("click", async function (event) {
+        if (!event.target.closest("#copy-shopping-list")) return;
+        const chosen = selectedEntry().plannedRecipes || [];
+        const missing = shoppingGaps(buildAnalysis(selectedEntry()).recipes.filter(function (candidate) { return chosen.includes(candidate.title); }));
+        try {
+            await navigator.clipboard.writeText("Shopping for " + chosen.join(", ") + "\n" + missing.map(function (ingredient) { return "- " + ingredient; }).join("\n"));
+            showToast("Shopping list copied.");
+        } catch (error) {
+            showToast("Copy unavailable here. Select the gaps above to copy them.");
+        }
     });
 
     document.querySelectorAll("[data-tab]").forEach(function (button) { button.addEventListener("click", function () { switchTab(button.dataset.tab); }); });
