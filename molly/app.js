@@ -216,9 +216,19 @@
         bagItems.replaceChildren();
         bagStatus.textContent = "";
         if (!bag.length) {
-            const empty = document.createElement("p");
+            const empty = document.createElement("div");
             empty.className = "empty-bag";
-            empty.textContent = "No work saved yet. Close the bag and browse the shop shelf.";
+            const message = document.createElement("p");
+            message.textContent = "No work saved yet.";
+            const browseButton = document.createElement("button");
+            browseButton.type = "button";
+            browseButton.className = "text-button";
+            browseButton.textContent = "Browse the shop shelf";
+            browseButton.addEventListener("click", function () {
+                bagDialog.close();
+                document.querySelector("#shop").scrollIntoView({ behavior: "smooth" });
+            });
+            empty.append(message, browseButton);
             bagItems.appendChild(empty);
             return;
         }

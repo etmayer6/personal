@@ -1009,6 +1009,15 @@ dialog::backdrop {
     font-size: 19px;
 }
 
+.empty-bag p {
+    margin: 0;
+}
+
+.empty-bag .text-button {
+    margin-top: 14px;
+    color: var(--tomato);
+}
+
 .bag-item {
     padding: 12px 0;
     display: grid;
