@@ -5,6 +5,7 @@
     const filterStatus = document.querySelector("[data-project-filter-status]");
     const surpriseButton = document.querySelector("[data-project-surprise]");
     const filterableCards = [...document.querySelectorAll(".archive-grid:not(.archive-grid-reference) .archive-card")];
+    const validFilters = new Set(filterButtons.map((button) => button.dataset.projectFilter));
 
     cards.forEach((card) => {
         const destination = card.querySelector("a[href]");
@@ -35,7 +36,20 @@
         });
     });
 
-    const applyFilter = (filter) => {
+    const filterFromLocation = () => {
+        const filter = new URLSearchParams(window.location.search).get("kind");
+        return validFilters.has(filter) ? filter : "all";
+    };
+
+    const updateFilterLocation = (filter) => {
+        const url = new URL(window.location.href);
+        if (filter === "all") url.searchParams.delete("kind");
+        else url.searchParams.set("kind", filter);
+        window.history.replaceState(null, "", url.pathname + url.search + url.hash);
+    };
+
+    const applyFilter = (filter, syncLocation = true) => {
+        if (!validFilters.has(filter)) filter = "all";
         let visibleCount = 0;
         filterableCards.forEach((card) => {
             const visible = filter === "all" || card.dataset.projectKind === filter;
@@ -54,11 +68,16 @@
                 ? `All ${filterableCards.length} interactive doors are open.`
                 : `${visibleCount} ${filter} project${visibleCount === 1 ? "" : "s"} ready.`;
         }
+
+        if (syncLocation) updateFilterLocation(filter);
     };
 
     filterButtons.forEach((button) => {
         button.addEventListener("click", () => applyFilter(button.dataset.projectFilter));
     });
+
+    window.addEventListener("popstate", () => applyFilter(filterFromLocation(), false));
+    applyFilter(filterFromLocation(), false);
 
     surpriseButton?.addEventListener("click", () => {
         const visibleCards = filterableCards.filter((card) => !card.hidden);

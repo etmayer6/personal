@@ -121,6 +121,29 @@ test('project filters stay inside the interactive workbench', async ({ page }) =
     await expect(page.locator('[data-project-filter-status]')).toHaveText('All 12 interactive doors are open.');
 });
 
+test('project filter survives a surprise detour at desktop and mobile widths', async ({ browser }) => {
+    for (const viewport of [{ name: 'desktop', width: 1440, height: 900 }, { name: 'mobile', width: 390, height: 844 }]) {
+        const context = await browser.newContext({ viewport, reducedMotion: 'reduce' });
+        await context.addInitScript(() => {
+            Math.random = () => 0;
+        });
+        const page = await context.newPage();
+
+        await page.goto('/projects/');
+        await page.getByRole('button', { name: 'Play', exact: true }).click();
+        await expect(page).toHaveURL(/\/projects\/\?kind=play$/);
+        await page.getByRole('button', { name: /Surprise me/ }).click();
+        await expect(page).not.toHaveURL(/\/projects\//);
+
+        await page.goBack();
+        await expect(page).toHaveURL(/\/projects\/\?kind=play$/);
+        await expect(page.locator('[data-project-filter-status]')).toHaveText('6 play projects ready.');
+        await expect(page.locator('.archive-grid:not(.archive-grid-reference) .archive-card:visible')).toHaveCount(6);
+        await expect(page.locator('html')).toHaveJSProperty('scrollWidth', viewport.width);
+        await context.close();
+    }
+});
+
 test('shared project pages keep Projects marked as the current section', async ({ page }) => {
     for (const route of ['/flight-radar/', '/plant-to-ape/']) {
         await page.goto(route);
