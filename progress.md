@@ -966,3 +966,11 @@ Original prompt: Remove clutter from the games on the website. Right now they do
 - Visual QA caught overlapping exact-hit markers; the final pass replaces them with one readable Pinpoint marker and was rerun successfully.
 - Full `npm run check` passes: syntax, static validation, 24/24 first-render tests, and 64/64 site-quality tests.
 - TODO: none for this evolution; keep future work centered on photo-to-map inference rather than adding unrelated modes.
+
+## Weekly Word Sort friend-mode playtest — 2026-09-22
+
+- Selected Word Sort Solitaire because it is outside the 72-hour change window and the five most recent game-focused updates.
+- First-time desktop and 390px phone playtests completed the clue → crown → matching-word loop, hint feedback, and New Deal reset with no console errors or overflow.
+- Restored Word Sort's concise touch instruction above the board on small screens; the shared layout had hidden it, leaving first-time phone players to discover the second tap themselves.
+- Verified the bundled game client and screenshots, `npm run check:static`, and the full `npm run check` matrix (syntax, static, first-render, and quality) after clearing only interrupted-run Playwright artifacts.
+- TODO: none for this focused pass.
