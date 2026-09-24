@@ -218,11 +218,12 @@
                 "<div class=\"module-grid\">" + groupModules.map(moduleCard).join("") + "</div></section>";
         }).join("");
         const quickRoutes = ["home", "flowchart", "catalog", "current", "course-reviews", "professors", "badges", "profile"];
-        return "<div class=\"page home-grid\"><section class=\"home-surface\"><div class=\"hero-copy\"><h1>Welcome back, Avery.</h1><p>Here's your schedule and planning tools for today.</p>" +
-            "<section class=\"timeline-shell\"><div class=\"timeline-header\"><div><h2>Today's timeline</h2><p>" + dateLabel + "</p></div><span class=\"pill green\">3 classes scheduled</span></div>" + renderTimeline() + "</section></div>" + modules + "</section>" +
-            "<aside class=\"card quick-panel\"><h2>Quick actions</h2><div class=\"quick-list\">" + quickRoutes.map(function (route) {
+        return "<div class=\"page home-grid\"><section class=\"home-surface\"><div class=\"hero-copy\"><div class=\"hero-heading\"><div><p class=\"hero-kicker\">Software Engineering &middot; " + dateLabel + "</p><h1>Your degree, in motion.</h1><p class=\"hero-intro\">Welcome back, Avery. Keep today on track, then shape what comes next.</p></div>" +
+            "<div class=\"hero-progress\" role=\"progressbar\" aria-label=\"Degree progress\" aria-valuemin=\"0\" aria-valuemax=\"100\" aria-valuenow=\"" + metrics.percent + "\" style=\"--progress:" + metrics.percent + "%\"><strong>" + metrics.percent + "%</strong><span>degree complete</span></div></div>" +
+            "<section class=\"timeline-shell\"><div class=\"timeline-header\"><div><span class=\"timeline-kicker\">Up next</span><h2>Today's timeline</h2></div><span class=\"pill green\">3 classes scheduled</span></div>" + renderTimeline() + "</section></div>" + modules + "</section>" +
+            "<aside class=\"card quick-panel\"><p class=\"quick-kicker\">Plan snapshot</p><div class=\"quick-summary\"><div><span>Applied</span><strong>" + metrics.applied + " <small>credits</small></strong></div><div><span>In progress</span><strong>" + metrics.inProgress + " <small>credits</small></strong></div></div><div class=\"progress-mini\"><header><strong>Degree progress</strong><span>" + metrics.percent + "%</span></header><div class=\"progress-bar\"><span style=\"width:" + metrics.percent + "%\"></span></div><p>" + metrics.applied + " of " + DATA.student.targetCredits + " credits applied</p></div><h2>Jump back in</h2><div class=\"quick-list\">" + quickRoutes.map(function (route) {
                 return "<button class=\"quick-item " + (route === "home" ? "is-active" : "") + "\" type=\"button\" data-route=\"" + route + "\"><span aria-hidden=\"true\">" + ICONS[route] + "</span><span>" + ROUTE_LABELS[route] + "</span></button>";
-            }).join("") + "</div><div class=\"progress-mini\"><header><strong>Degree progress</strong><span>" + metrics.percent + "%</span></header><div class=\"progress-bar\"><span style=\"width:" + metrics.percent + "%\"></span></div><p>" + metrics.applied + " of " + DATA.student.targetCredits + " credits applied</p></div></aside></div>";
+            }).join("") + "</div></aside></div>";
     }
 
     function titleCase(value) {
