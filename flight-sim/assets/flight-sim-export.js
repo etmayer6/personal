@@ -11401,6 +11401,9 @@ function lv() {
     time: 0,
     score: 0,
     nextRing: 0,
+    stableApproachS: 0,
+    bestStableApproachS: 0,
+    landingReport: null,
     message: "Three gates. One runway. Maintain a stabilized visual approach.",
     stall: !1,
     wind: s(0, 0, 0),
@@ -11428,6 +11431,48 @@ function e9(u) {
     label: "Survivable landing",
     bonus: 420,
     message: u.nextRing >= ft.length ? "Ugly but valid. The runway is still yours." : "You made it down, even without the full approach line."
+  };
+}
+function approachCoach(u) {
+  const a = cu(u.position), c = kl(u.indicatedSpeedMps ?? u.speed), g = Math.max(0, u.position.y - uA(u.position.x, u.position.z)), r = Math.abs(a.localizerDots), B = Math.abs(a.glideslopeDeviation), E = Math.abs(u.roll * 57.3), T = !u.stall && c >= 112 && c <= 138 && r <= 0.75 && B <= 8 && E <= 20, i = [];
+  let o = "Hold this picture", I = "stable";
+  if (u.stall || c < 105)
+    o = "Lower nose + add power", I = "urgent";
+  else if (c < 112)
+    o = "Add a little power", I = "correct";
+  else if (c > 145)
+    o = "Reduce power", I = "correct";
+  else if (r > 0.75)
+    o = a.localizerMeters > 0 ? "Correct left" : "Correct right", I = "correct";
+  else if (B > 8)
+    o = a.glideslopeDeviation > 0 ? "Ease the nose down" : "Raise nose + add power", I = "correct";
+  else if (E > 20)
+    o = "Level the wings", I = "correct";
+  else if (g < 95 && u.flaps === 0)
+    o = "Set flaps 10°", I = "correct";
+  T && (o = u.nextRing < ft.length ? "Stable — fly through the gate" : "Stable — hold to the flare");
+  i.push({ label: `${Math.round(c)} kt`, state: c < 112 ? "slow" : c > 138 ? "fast" : "set" }), i.push({ label: r <= 0.75 ? "line set" : `${r.toFixed(1)} dot ${a.localizerMeters > 0 ? "right" : "left"}`, state: r <= 0.75 ? "set" : "off" }), i.push({ label: B <= 8 ? "slope set" : `${Math.round(B)} m ${a.glideslopeDeviation > 0 ? "high" : "low"}`, state: B <= 8 ? "set" : "off" });
+  return {
+    status: T ? "STABLE" : I === "urgent" ? "RECOVER" : "CORRECT",
+    tone: I,
+    primary: o,
+    stable: T,
+    stableSeconds: Number((u.stableApproachS ?? 0).toFixed(1)),
+    bestStableSeconds: Number((u.bestStableApproachS ?? 0).toFixed(1)),
+    cues: i
+  };
+}
+function touchdownReport(u, a, c) {
+  return {
+    grade: a,
+    successful: c,
+    fullStop: !1,
+    speedKts: Math.round(kl(u.speed)),
+    sinkFpm: Math.abs(Math.round(ci(u.verticalVelocity))),
+    centerlineM: Number(Math.abs(u.position.x).toFixed(1)),
+    bankDeg: Number(Math.abs(u.roll * 57.3).toFixed(1)),
+    gates: u.nextRing,
+    stableSeconds: Number((u.bestStableApproachS ?? 0).toFixed(1))
   };
 }
 function l9(u, a, c) {
@@ -12077,7 +12122,7 @@ function O9(u, a) {
   return c;
 }
 function k9() {
-  const u = Dt.useRef(null), a = Dt.useRef(null), c = Dt.useRef(null), g = Dt.useRef({}), r = Dt.useRef(lv()), B = Dt.useRef(null), E = Dt.useRef("off"), T = Dt.useRef(null), [i, o] = Dt.useState(lv()), [I, b] = Dt.useState(null), [h, q] = Dt.useState("off"), [x, Y] = Dt.useState(() => PP()), [F, PA] = Dt.useState(!1), [aA, K] = Dt.useState(!1), N = h !== "off", R = h === "immersive", G = x.width <= 900, Z = x.width <= 640, oA = Math.max(0, i.position.y - uA(i.position.x, i.position.z)), $ = cu(i.position), FA = Pu(i.heading), SA = Pu(i.selectedHeading), V = AA(gi(i.selectedHeading, i.heading) * 57.3 * 0.6, -84, 84), nA = i.pitch * 57.3, xA = cv(i) * 57.3, _A = AA((nA - xA) * 5.2, -70, 70), S = AA(i.slip * 78, -60, 60), X = AA((nA - i.commandPitch * 57.3) * 5.2, -72, 72), vA = AA($.localizerDots * 18, -62, 62), yA = AA($.glideslopeDots * 18, -62, 62), mA = Math.abs($.localizerMeters) < 2 ? "LOC centered" : `LOC ${Math.abs($.localizerDots).toFixed(1)} ${$.localizerMeters > 0 ? "R" : "L"}`, d = Math.abs($.glideslopeDeviation) < 2 ? "GS on path" : `GS ${Math.abs($.glideslopeDeviation).toFixed(0)}m ${$.glideslopeDeviation > 0 ? "high" : "low"}`, k = Array.from({ length: 9 }, (J, TA) => {
+  const u = Dt.useRef(null), a = Dt.useRef(null), c = Dt.useRef(null), g = Dt.useRef({}), r = Dt.useRef(lv()), B = Dt.useRef(null), E = Dt.useRef("off"), T = Dt.useRef(null), [i, o] = Dt.useState(lv()), [I, b] = Dt.useState(null), [h, q] = Dt.useState("off"), [x, Y] = Dt.useState(() => PP()), [F, PA] = Dt.useState(!1), [aA, K] = Dt.useState(!1), N = h !== "off", R = h === "immersive", G = x.width <= 900, Z = x.width <= 640, oA = Math.max(0, i.position.y - uA(i.position.x, i.position.z)), $ = cu(i.position), FA = Pu(i.heading), SA = Pu(i.selectedHeading), V = AA(gi(i.selectedHeading, i.heading) * 57.3 * 0.6, -84, 84), nA = i.pitch * 57.3, xA = cv(i) * 57.3, _A = AA((nA - xA) * 5.2, -70, 70), S = AA(i.slip * 78, -60, 60), X = AA((nA - i.commandPitch * 57.3) * 5.2, -72, 72), vA = AA($.localizerDots * 18, -62, 62), yA = AA($.glideslopeDots * 18, -62, 62), mA = Math.abs($.localizerMeters) < 2 ? "LOC centered" : `LOC ${Math.abs($.localizerDots).toFixed(1)} ${$.localizerMeters > 0 ? "R" : "L"}`, d = Math.abs($.glideslopeDeviation) < 2 ? "GS on path" : `GS ${Math.abs($.glideslopeDeviation).toFixed(0)}m ${$.glideslopeDeviation > 0 ? "high" : "low"}`, approachGuidance = approachCoach(i), landingDebrief = i.landingReport, k = Array.from({ length: 9 }, (J, TA) => {
     const nt = (TA - 4) * 10, EA = (Math.round(FA / 10) * 10 + nt + 360) % 360;
     return {
       offset: nt * 6,
@@ -12341,6 +12386,8 @@ function k9() {
           const oe = ft[Q.nextRing];
           $B(Q.position, oe) <= oe.radius * 0.78 && (Q.nextRing += 1, Q.score += oe.bonus, Q.message = `${oe.label} cleared. Keep the approach energy under control.`);
         }
+        const approachGuidance = approachCoach(Q);
+        Q.stableApproachS = approachGuidance.stable ? (Q.stableApproachS ?? 0) + sA : Math.max(0, (Q.stableApproachS ?? 0) - sA * 1.8), Q.bestStableApproachS = Math.max(Q.bestStableApproachS ?? 0, Q.stableApproachS);
         Je > 10 && Je < 38 && Q.groundSpeed > 60 && Math.abs(Q.roll) > 0.22 && Math.abs(Q.slip) < 0.18 && Q.mode === "flying" ? (Q.terrainRunTime += sA, Q.terrainRunTime >= 1.35 && (Q.terrainRunTime -= 1.35, Q.score += 55, Q.message = "Terrain run bonus. Keep it fast, low, and coordinated.")) : Q.terrainRunTime = Math.max(0, Q.terrainRunTime - sA * 1.8), Q.stall && Math.floor(Q.time * 2) % 2 === 0 && (Q.message = "Stall warning. Lower the nose or add power.");
         const bn = uA(Q.position.x, Q.position.z) + 4;
         if (Q.position.y <= bn) {
@@ -12349,22 +12396,32 @@ function k9() {
           if (oe && pn && Ce)
             if (Va) {
               const In = e9(Q);
+              Q.landingReport = touchdownReport(Q, In.label, !0),
               iu(`${In.label}. Roll it out, hold centerline, and brake to a stop.`, In.bonus);
             } else
+              Q.landingReport = touchdownReport(Q, "Rough touchdown", !0),
               iu("Rough landing. You smacked it down, but it is still salvageable if you keep it straight.", 320);
           else
+            Q.landingReport = touchdownReport(Q, oe ? "Hard impact" : "Off-runway impact", !1),
             pe(
               "crashed",
               oe ? "You hit the runway too hard. Bleed speed and flare earlier." : "You reached the ground off-runway. Line up sooner and hold centerline."
             );
-        } else (Q.position.x < Di + 120 || Q.position.x > zi - 120 || Q.position.z < ql + 180 || Q.position.z > fn - 180 || Q.position.y > 1800) && pe("crashed", "You left the modeled flight region. Turn back toward the valley and the runway.");
+        } else if (Q.position.x < Di + 120 || Q.position.x > zi - 120 || Q.position.z < ql + 180 || Q.position.z > fn - 180 || Q.position.y > 1800)
+          Q.landingReport = touchdownReport(Q, "Flight path lost", !1), pe("crashed", "You left the modeled flight region. Turn back toward the valley and the runway.");
       } else if (Q.mode === "rollout") {
         const IA = (g.current.e ? 1 : 0) - (g.current.q ? 1 : 0) + ((g.current.arrowright || g.current.d ? 1 : 0) - (g.current.arrowleft || g.current.a ? 1 : 0)) * 0.5, HA = g.current.b || g.current.brake ? 1 : 0, jt = (g.current.pageup || g.current["throttle-up"] ? 1 : 0) - (g.current.pagedown || g.current["throttle-down"] ? 1 : 0);
         Q.brakes = HA, Q.throttle = AA(Q.throttle + jt * 0.25 * sA, 0, 0.3), Q.engineRpm = RA(Q.engineRpm, 760 + Q.throttle * 1150 * Q.engineHealth, 0.08);
         const At = IA * 0.42;
         Q.heading = vi(Q.heading, Q.heading + At * sA * AA(Q.groundSpeed / 22, 0.35, 1.2), 1);
         const ot = 3.8 + Q.brakes * 10.5 + Math.abs(At) * 1.6;
-        Q.speed = Math.max(0, Q.speed - ot * sA), Q.groundSpeed = Math.max(0, Q.groundSpeed - (ot + 1.2) * sA), Q.position.x += Math.sin(Q.heading) * Q.groundSpeed * sA, Q.position.z += -Math.cos(Q.heading) * Q.groundSpeed * sA, Q.position.y = uA(Q.position.x, Q.position.z) + 4, Q.pitch = RA(Q.pitch, -0.04, 0.08), Q.roll = RA(Q.roll, 0, 0.18), Q.verticalVelocity = 0, Q.time += sA, !si(Q.position) && Q.groundSpeed > 12 ? pe("crashed", "You departed the runway during rollout. Hold the centerline and brake earlier.") : Q.groundSpeed <= 6 ? pe("landed", "Full stop. Taxi speed reached and the rollout is complete.") : Q.brakes > 0.2 && (Q.message = "Braking rollout. Keep the nose straight and let the airplane decelerate.");
+        Q.speed = Math.max(0, Q.speed - ot * sA), Q.groundSpeed = Math.max(0, Q.groundSpeed - (ot + 1.2) * sA), Q.position.x += Math.sin(Q.heading) * Q.groundSpeed * sA, Q.position.z += -Math.cos(Q.heading) * Q.groundSpeed * sA, Q.position.y = uA(Q.position.x, Q.position.z) + 4, Q.pitch = RA(Q.pitch, -0.04, 0.08), Q.roll = RA(Q.roll, 0, 0.18), Q.verticalVelocity = 0, Q.time += sA;
+        if (!si(Q.position) && Q.groundSpeed > 12)
+          Q.landingReport && (Q.landingReport.grade = "Runway departure", Q.landingReport.successful = !1), pe("crashed", "You departed the runway during rollout. Hold the centerline and brake earlier.");
+        else if (Q.groundSpeed <= 6)
+          Q.landingReport && (Q.landingReport.fullStop = !0, Q.landingReport.successful = !0), pe("landed", "Full stop. Taxi speed reached and the rollout is complete.");
+        else
+          Q.brakes > 0.2 && (Q.message = "Braking rollout. Keep the nose straight and let the airplane decelerate.");
       }
       Q.camera = A9(Q);
     }, Dn = () => {
@@ -12448,6 +12505,8 @@ function k9() {
         papi: cu(r.current.position).papiLabel,
         papiWhites: cu(r.current.position).papiWhites
       },
+      coach: approachCoach(r.current),
+      landingReport: r.current.landingReport,
       autopilot: {
         flightDirector: r.current.flightDirector,
         engaged: r.current.autopilot,
@@ -12599,6 +12658,18 @@ function k9() {
                   /* @__PURE__ */ C.jsx("span", { children: Ee ? "terrain run active" : "approach stable" })
                 ] })
               ] }),
+              i.mode === "flying" ? /* @__PURE__ */ C.jsxs("div", { className: `flight-approach-coach is-${approachGuidance.tone}`, style: { position: "absolute", right: Z ? 12 : 18, left: Z ? 12 : void 0, top: Z ? 8 : void 0, bottom: Z ? void 0 : 72, width: Z ? "auto" : "min(38vw, 332px)" }, children: [
+                /* @__PURE__ */ C.jsxs("div", { className: "flight-coach-heading", children: [
+                  /* @__PURE__ */ C.jsx("span", { children: Z ? `${approachGuidance.status} // ${Ht}` : approachGuidance.status }),
+                  /* @__PURE__ */ C.jsxs("span", { children: [
+                    approachGuidance.stableSeconds.toFixed(1),
+                    "s stable"
+                  ] })
+                ] }),
+                /* @__PURE__ */ C.jsx("div", { className: "flight-coach-command", children: approachGuidance.primary }),
+                /* @__PURE__ */ C.jsx("div", { className: "flight-coach-cues", children: approachGuidance.cues.map((J) => /* @__PURE__ */ C.jsx("span", { className: `is-${J.state}`, children: J.label }, J.label)) }),
+                /* @__PURE__ */ C.jsx("div", { className: "flight-coach-meter", "aria-hidden": "true", children: /* @__PURE__ */ C.jsx("span", { style: { width: `${Math.min(100, approachGuidance.stableSeconds / 6 * 100)}%` } }) })
+              ] }) : null,
               F ? null : /* @__PURE__ */ C.jsx("div", { className: "flight-quick-instruments", style: { position: "absolute", left: Z ? 12 : 18, right: Z ? 12 : void 0, bottom: Z ? 64 : 72, display: "flex", gap: 8, flexWrap: "wrap", justifyContent: Z ? "center" : "flex-start", maxWidth: Z ? "none" : "min(56vw, 420px)" }, children: tA.map((J) => /* @__PURE__ */ C.jsx("span", { className: J.tone, children: J.label }, J.label)) }),
               F && !Z ? /* @__PURE__ */ C.jsxs(C.Fragment, { children: [
                 /* @__PURE__ */ C.jsx("div", { style: { position: "absolute", top: Z ? 94 : N ? 108 : 102, left: "50%", transform: "translateX(-50%)", width: Z ? "min(calc(100% - 24px), 320px)" : "min(62vw, 380px)", padding: Z ? "8px 10px" : "8px 12px", borderRadius: 14, background: "rgba(6,11,18,0.6)", border: "1px solid rgba(255,255,255,0.08)", backdropFilter: "blur(10px)" }, children: /* @__PURE__ */ C.jsxs("div", { style: { position: "relative", height: 30, overflow: "hidden" }, children: [
@@ -12946,6 +13017,21 @@ function k9() {
                     /* @__PURE__ */ C.jsx("div", { style: { fontSize: 11, letterSpacing: 1.3, textTransform: "uppercase", opacity: 0.72 }, children: "Condition" }),
                     /* @__PURE__ */ C.jsx("div", { style: { marginTop: 6, fontSize: 13, fontWeight: 700 }, children: "C camera / Z-X" })
                   ] })
+                ] }) : null,
+                landingDebrief ? /* @__PURE__ */ C.jsxs("div", { className: "flight-landing-debrief", children: [
+                  /* @__PURE__ */ C.jsxs("div", { className: "flight-debrief-grade", children: [
+                    /* @__PURE__ */ C.jsx("span", { children: landingDebrief.grade }),
+                    /* @__PURE__ */ C.jsx("span", { children: `${landingDebrief.gates}/${ft.length} gates` })
+                  ] }),
+                  /* @__PURE__ */ C.jsx("div", { className: "flight-debrief-metrics", children: [
+                    ["Touchdown", `${landingDebrief.speedKts} kt`],
+                    ["Sink", `${landingDebrief.sinkFpm} fpm`],
+                    ["Centerline", `${landingDebrief.centerlineM} m`],
+                    ["Stable best", `${landingDebrief.stableSeconds.toFixed(1)} s`]
+                  ].map((J) => /* @__PURE__ */ C.jsxs("div", { children: [
+                    /* @__PURE__ */ C.jsx("span", { children: J[0] }),
+                    /* @__PURE__ */ C.jsx("strong", { children: J[1] })
+                  ] }, J[0])) })
                 ] }) : null,
                 /* @__PURE__ */ C.jsxs("div", { style: { marginTop: 18, display: "flex", justifyContent: "center", gap: 10, flexWrap: "wrap", pointerEvents: "auto" }, children: [
                   /* @__PURE__ */ C.jsx("button", { id: "flight-overlay-start", onClick: on, children: i.mode === "title" ? "Begin Approach" : "Fly Again" })

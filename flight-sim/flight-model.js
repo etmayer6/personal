@@ -197,10 +197,13 @@ export function stepFlightModel(state, { dt, controls, wind, groundHeight, runwa
 
   const horizontalSpeed = Math.max(18, state.speed * Math.cos(flightPathAngle));
   const forwardX = Math.sin(state.heading) * horizontalSpeed;
-  const forwardY = Math.sin(flightPathAngle) * state.speed;
   const forwardZ = -Math.cos(state.heading) * horizontalSpeed;
   const groundVelocityX = forwardX + windVector.x;
-  const groundVelocityY = forwardY + windVector.y;
+  // Vertical acceleration above has already converted pitch, lift, and energy
+  // into a new flight path. Rebuilding Y velocity from the pre-step path angle
+  // here discarded that control response and made the runway effectively
+  // unreachable. Keep the integrated vertical velocity as the ground track.
+  const groundVelocityY = state.verticalVelocity;
   const groundVelocityZ = forwardZ + windVector.z;
 
   state.position.x += groundVelocityX * dt;

@@ -1355,6 +1355,180 @@
     }
 }
 
+#flight-sim-root .flight-approach-coach {
+    z-index: 8;
+    box-sizing: border-box;
+    padding: 11px 12px 10px;
+    overflow: hidden;
+    color: #f8fbff;
+    background: rgba(5, 11, 18, 0.78);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-left: 3px solid var(--flight-amber);
+    border-radius: 14px;
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.28);
+    backdrop-filter: blur(10px);
+    pointer-events: none;
+}
+
+#flight-sim-root .flight-approach-coach.is-stable {
+    border-left-color: var(--flight-green);
+    background: rgba(5, 22, 18, 0.8);
+}
+
+#flight-sim-root .flight-approach-coach.is-urgent {
+    border-left-color: var(--flight-red);
+    animation: flight-coach-alert 0.8s ease-in-out infinite alternate;
+}
+
+#flight-sim-root .flight-coach-heading,
+#flight-sim-root .flight-debrief-grade {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    font-family: var(--flight-mono);
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+#flight-sim-root .flight-coach-heading span:last-child,
+#flight-sim-root .flight-debrief-grade span:last-child {
+    color: var(--flight-muted);
+    font-weight: 600;
+    letter-spacing: 0.04em;
+}
+
+#flight-sim-root .flight-coach-command {
+    margin-top: 5px;
+    font-size: 16px;
+    font-weight: 800;
+    letter-spacing: 0.01em;
+}
+
+#flight-sim-root .flight-coach-cues {
+    display: flex;
+    gap: 5px;
+    margin-top: 8px;
+}
+
+#flight-sim-root .flight-coach-cues span {
+    flex: 1 1 0;
+    min-width: 0;
+    padding: 4px 5px;
+    overflow: hidden;
+    color: var(--flight-paper);
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 999px;
+    font-family: var(--flight-mono);
+    font-size: 9px;
+    line-height: 1.2;
+    text-align: center;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+#flight-sim-root .flight-coach-cues .is-set {
+    color: var(--flight-green);
+    background: rgba(87, 215, 154, 0.13);
+}
+
+#flight-sim-root .flight-coach-meter {
+    height: 3px;
+    margin-top: 8px;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.09);
+    border-radius: 999px;
+}
+
+#flight-sim-root .flight-coach-meter span {
+    display: block;
+    height: 100%;
+    background: linear-gradient(90deg, var(--flight-amber), var(--flight-green));
+    border-radius: inherit;
+    transition: width 160ms linear;
+}
+
+#flight-sim-root .flight-landing-debrief {
+    margin-top: 16px;
+    padding: 12px;
+    background: rgba(4, 10, 16, 0.26);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 16px;
+}
+
+#flight-sim-root .flight-debrief-metrics {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 6px;
+    margin-top: 10px;
+}
+
+#flight-sim-root .flight-debrief-metrics div {
+    display: grid;
+    gap: 3px;
+    min-width: 0;
+    padding: 7px 4px;
+    background: rgba(255, 255, 255, 0.07);
+    border-radius: 10px;
+}
+
+#flight-sim-root .flight-debrief-metrics span {
+    color: var(--flight-muted);
+    font-size: 8px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+#flight-sim-root .flight-debrief-metrics strong {
+    font-family: var(--flight-mono);
+    font-size: 11px;
+}
+
+@keyframes flight-coach-alert {
+    from { box-shadow: 0 10px 28px rgba(0, 0, 0, 0.28); }
+    to { box-shadow: 0 10px 34px rgba(255, 82, 72, 0.26); }
+}
+
+@media (max-width: 640px) {
+    #flight-sim-root .flight-viewport {
+        height: 310px !important;
+        min-height: 310px !important;
+        aspect-ratio: auto !important;
+    }
+
+    #flight-sim-root .flight-objective,
+    #flight-sim-root .flight-radio-message {
+        display: none !important;
+    }
+
+    #flight-sim-root .flight-quick-instruments {
+        bottom: 8px !important;
+    }
+
+    #flight-sim-root .flight-approach-coach {
+        padding: 8px 9px 7px;
+    }
+
+    #flight-sim-root .flight-coach-command {
+        font-size: 13px;
+    }
+
+    #flight-sim-root .flight-coach-cues span {
+        font-size: 8px;
+    }
+
+    #flight-sim-root .flight-debrief-metrics {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    #flight-sim-root .flight-landing-debrief {
+        margin-top: 8px;
+        padding: 8px;
+    }
+}
+
 @media (prefers-reduced-motion: reduce) {
     .flight-site-loading-track span {
         animation: none;
@@ -1362,6 +1536,14 @@
     }
 
     #flight-sim-root button {
+        transition: none;
+    }
+
+    #flight-sim-root .flight-approach-coach.is-urgent {
+        animation: none;
+    }
+
+    #flight-sim-root .flight-coach-meter span {
         transition: none;
     }
 }

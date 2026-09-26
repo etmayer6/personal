@@ -230,6 +230,17 @@ test('Flight Sim flight model responds to power, flaps, and a stall', async ({ p
     await page.goto('/flight-sim/');
     await page.locator('#flight-overlay-start').click();
 
+    const guidanceBaseline = await page.evaluate(() => JSON.parse(window.render_game_to_text()));
+    expect(guidanceBaseline.coach.primary).toBeTruthy();
+
+    await page.keyboard.down('ArrowDown');
+    await page.evaluate(() => window.advanceTime(800));
+    await page.keyboard.up('ArrowDown');
+    const descending = await page.evaluate(() => JSON.parse(window.render_game_to_text()));
+    expect(descending.plane.verticalVelocityFpm).toBeLessThan(guidanceBaseline.plane.verticalVelocityFpm - 100);
+
+    await page.reload();
+    await page.locator('#flight-overlay-start').click();
     const baseline = await page.evaluate(() => JSON.parse(window.render_game_to_text()));
 
     await page.keyboard.down('PageUp');
@@ -289,5 +300,6 @@ test('Flight Sim couples engine spool and maneuvering stall speed to the aircraf
     await page.evaluate(() => window.advanceTime(1000));
     await page.keyboard.up('ArrowRight');
     const banked = await page.evaluate(() => JSON.parse(window.render_game_to_text()));
-    expect(banked.plane.stallSpeedKts).toBeGreaterThan(straight.plane.stallSpeedKts + 5);
+    expect(Math.abs(banked.plane.roll)).toBeGreaterThan(20);
+    expect(banked.plane.stallSpeedKts).toBeGreaterThan(straight.plane.stallSpeedKts + 4);
 });

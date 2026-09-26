@@ -974,3 +974,18 @@ Original prompt: Remove clutter from the games on the website. Right now they do
 - Restored Word Sort's concise touch instruction above the board on small screens; the shared layout had hidden it, leaving first-time phone players to discover the second tap themselves.
 - Verified the bundled game client and screenshots, `npm run check:static`, and the full `npm run check` matrix (syntax, static, first-render, and quality) after clearing only interrupted-run Playwright artifacts.
 - TODO: none for this focused pass.
+
+## Weekly Flight Sim evolution lab — 2026-09-26
+
+- Original prompt: Evolve exactly one eligible playable game, verify desktop/mobile success, failure, reset, and replay paths, then build and push only if every check passes.
+- Selected Flight Sim because the five latest game-specific passes covered Word Sort, Pinpoint, Gremlin Dex, Night Shift, and Signal Grove Defense; Flight Sim has not received a focused evolution in that rotation or within 72 hours.
+- Core identity: a compact cockpit challenge about managing energy, flying a three-gate visual approach, and earning a clean full-stop landing.
+- Single improvement goal: make the approach teachable and replayable through live, actionable energy/centerline guidance and an honest touchdown debrief.
+- Implemented the live approach coach, stability streak, touchdown report, and synchronized text-state output.
+- Playtesting exposed a pre-existing flight-model defect that calculated vertical acceleration and then discarded it; fixed the integration so pitch inputs now change the flight path and the coach's corrections are actionable.
+- Desktop keyboard and 390px touch QA now pass full-stop success, deliberate off-runway failure, reset, and replay paths with no console errors or horizontal overflow.
+- Visual QA caught and fixed a cramped phone viewport; the narrow layout now replaces overlapping objective/radio cards with the coach, preserves gate context, and keeps the touchdown debrief and replay button visible.
+- Added focused regression coverage for actionable pitch response, coach state, bank angle, and maneuvering stall speed.
+- Focused project behavior passes 12/12 tests, including the new pitch-response regression; the bundled game client and inspected screenshots agree with `render_game_to_text`.
+- Full `npm run check` passes: syntax, static validation, 24/24 first-render tests, and 64/64 site-quality tests.
+- TODO: none for this evolution; keep future work centered on approach execution rather than adding unrelated aircraft or modes.
