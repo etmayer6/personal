@@ -172,6 +172,24 @@ test('project filter survives a surprise detour at desktop and mobile widths', a
     }
 });
 
+test('Travel Map leads into the full photo journal at desktop and mobile widths', async ({ browser }) => {
+    for (const viewport of [{ width: 1440, height: 900 }, { width: 390, height: 844 }]) {
+        const context = await browser.newContext({ viewport, reducedMotion: 'reduce' });
+        const page = await context.newPage();
+
+        await page.goto('/travel/');
+        const journalLink = page.getByRole('link', { name: /Open the full photo journal/ });
+        await expect(journalLink).toBeVisible();
+        await expect(journalLink).toHaveAttribute('href', '../photos/');
+        await journalLink.click();
+        await expect(page).toHaveURL(/\/photos\/$/);
+        await expect(page.getByRole('button', { name: 'Curated journal' })).toHaveAttribute('aria-pressed', 'true');
+        await expect(page.locator('.photo-card').first()).toBeVisible();
+        expect(await page.locator('html').evaluate(element => element.scrollWidth)).toBeLessThanOrEqual(viewport.width + 1);
+        await context.close();
+    }
+});
+
 test('shared project pages keep Projects marked as the current section', async ({ page }) => {
     for (const route of ['/flight-radar/', '/plant-to-ape/']) {
         await page.goto(route);

@@ -506,6 +506,32 @@ body.travel-body .travel-summary {
     transition: color 160ms ease, background 160ms ease, transform 160ms ease;
 }
 
+.travel-hero-actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 14px 20px;
+}
+
+.travel-hero-actions .travel-jump {
+    margin-top: 30px;
+}
+
+.travel-journal-link {
+    margin-top: 30px;
+    color: var(--travel-teal);
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 4px;
+}
+
+.travel-journal-link:hover,
+.travel-journal-link:focus-visible {
+    color: var(--travel-coral);
+}
+
 .travel-jump:hover,
 .travel-jump:focus-visible {
     color: #fffaf1;
@@ -718,6 +744,10 @@ body.travel-body .place-card.active {
     }
 
     .travel-jump {
+        margin-top: 24px;
+    }
+
+    .travel-hero-actions .travel-journal-link {
         margin-top: 24px;
     }
 
