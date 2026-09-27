@@ -235,12 +235,26 @@
         return parts.length ? parts.join(" | ") : "Details pending";
     }
 
-    function renderCards(target, items, emptyText) {
+    function renderCards(target, items, emptyText, emptyAction) {
         target.innerHTML = "";
 
         if (!items.length) {
-            const empty = document.createElement("p");
-            empty.textContent = emptyText || "No listings matched your filters.";
+            const empty = document.createElement("div");
+            empty.className = "empty-state";
+
+            const copy = document.createElement("p");
+            copy.textContent = emptyText || "No listings matched your filters.";
+            empty.appendChild(copy);
+
+            if (emptyAction) {
+                const action = document.createElement("button");
+                action.type = "button";
+                action.className = "empty-action";
+                action.textContent = emptyAction.label;
+                action.addEventListener("click", emptyAction.onClick);
+                empty.appendChild(action);
+            }
+
             target.appendChild(empty);
             return;
         }
@@ -367,8 +381,19 @@
 
         listingCountText.textContent = visible.length + " listings";
         renderCards(ethanTopPicks, curatedPicks, "Top picks are unavailable right now.");
-        renderCards(listingsGrid, visible);
+        renderCards(listingsGrid, visible, "No listings match this cut.", {
+            label: "Clear filters",
+            onClick: resetFilters
+        });
         document.body.dataset.demoState = visible.length ? "ready" : "empty";
+    }
+
+    function resetFilters() {
+        searchInput.value = "";
+        maxAllInInput.value = "1300";
+        maxCommuteInput.value = "20";
+        goodFitOnlyInput.checked = true;
+        render();
     }
 
     function showError(message, actionLabel, action) {
