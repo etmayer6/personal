@@ -278,6 +278,18 @@
     margin-top: 22px;
 }
 
+.care-progress {
+    min-height: 38px;
+    margin: 10px 0 0;
+    padding: 9px 10px;
+    color: #d8fff0;
+    background: rgba(123, 224, 203, 0.1);
+    border-left: 2px solid var(--aqua-mint);
+    font-size: 11px;
+    font-weight: 800;
+    line-height: 1.35;
+}
+
 .care-button {
     min-height: 48px;
     padding: 10px 9px;
@@ -515,10 +527,6 @@ kbd {
 @media (max-width: 430px) {
     .fish-stats strong {
         font-size: 16px;
-    }
-
-    .care-actions {
-        grid-template-columns: 1fr;
     }
 }
 

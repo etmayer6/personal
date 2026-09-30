@@ -96,6 +96,7 @@
         cleanButton: document.getElementById("clean-button"),
         playButton: document.getElementById("play-button"),
         fullscreenButton: document.getElementById("fullscreen-button"),
+        careProgress: document.getElementById("care-progress"),
         foodButtons: Array.from(document.querySelectorAll("[data-food]")),
         foodDescription: document.getElementById("food-description")
     };
@@ -772,6 +773,9 @@
         const variety = Object.keys(state.foodsTried).length;
         elements.foodVarietyValue.textContent = variety + " / " + Object.keys(FOOD_TYPES).length;
         elements.foodVarietyFill.style.width = (variety / Object.keys(FOOD_TYPES).length) * 100 + "%";
+        elements.careProgress.textContent = state.growth === 0
+            ? "Growth starts with a snack. Try every food for a variety bonus."
+            : "Growth " + Math.round(progress) + "% \u00b7 " + variety + " of " + Object.keys(FOOD_TYPES).length + " foods sampled.";
         elements.eventMessage.textContent = state.message;
         elements.foodDescription.textContent = FOOD_TYPES[state.foodType].description;
     }

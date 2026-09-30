@@ -989,3 +989,8 @@ Original prompt: Remove clutter from the games on the website. Right now they do
 - Focused project behavior passes 12/12 tests, including the new pitch-response regression; the bundled game client and inspected screenshots agree with `render_game_to_text`.
 - Full `npm run check` passes: syntax, static validation, 24/24 first-render tests, and 64/64 site-quality tests.
 - TODO: none for this evolution; keep future work centered on approach execution rather than adding unrelated aircraft or modes.
+
+## Weekly Mola Mola friend-mode playtest — 2026-09-29
+
+- Playtested the feed, clean, play, and food-variety loop at desktop and 390px mobile. On the phone, the primary growth reward was below the stacked care controls after a snack.
+- Added an adjacent live care-progress readout and retained a two-column phone action grid so growth and sampled-food feedback are reachable in the same care interaction.
