@@ -76,6 +76,12 @@
         resetButton: document.getElementById("reset-button"),
         recordDialog: document.getElementById("record-dialog"),
         recordJson: document.getElementById("record-json"),
+        transformPreview: document.getElementById("transform-preview"),
+        transformLedger: document.getElementById("transform-ledger"),
+        transformStatus: document.getElementById("transform-status"),
+        transformPrevious: document.getElementById("transform-previous"),
+        transformNext: document.getElementById("transform-next"),
+        transformSteps: Array.from(document.querySelectorAll("[data-transform-step]")),
         toast: document.getElementById("app-toast")
     };
 
@@ -83,6 +89,24 @@
     let selectedId = events[events.length - 1].id;
     let flagged = loadFlags();
     let toastTimer = 0;
+    let activeTransformEvent = null;
+    let activeTransformStep = 0;
+
+    const protectedFields = [
+        { label: "Name", protectedAt: 1 },
+        { label: "Author identity", protectedAt: 1 },
+        { label: "Exact date", protectedAt: 2 },
+        { label: "Location", protectedAt: 2 },
+        { label: "Source link", protectedAt: 3 },
+        { label: "Original media", protectedAt: 3 }
+    ];
+
+    const transformSteps = [
+        { label: "Extract", note: "The private parser separates evidence from identifying fields." },
+        { label: "De-identify", note: "Names and author identity are removed before story work begins." },
+        { label: "Generalize", note: "Exact time and place become relative chronology and broad context." },
+        { label: "Publish", note: "Links and original media stay private; only the reviewed story leaves the workspace." }
+    ];
 
     function loadFlags() {
         try {
@@ -149,7 +173,7 @@
             return;
         }
         const isFlagged = flagged.has(event.id);
-        elements.evidencePanel.innerHTML = "<div class=\"evidence-visual\" style=\"--visual-bg:" + event.color + "2b\"><span class=\"visual-glyph\">" + escapeHtml(event.glyph) + "</span></div><div class=\"evidence-body\"><div class=\"evidence-heading\"><p class=\"section-kicker\">" + escapeHtml(event.era) + " / Archive year " + String(event.year).padStart(2, "0") + "</p><h3>" + escapeHtml(event.title) + "</h3><p>" + escapeHtml(event.details) + "</p></div><div class=\"evidence-meta\"><span>" + escapeHtml(event.category) + "</span><span>" + escapeHtml(event.source) + "</span><span>" + (event.certainty === "direct" ? "Direct subject evidence" : "Confirmed context") + "</span></div><div class=\"confidence-block\"><div class=\"confidence-copy\"><span>Evidence confidence</span><strong>" + event.score + " / 100</strong></div><div class=\"confidence-track\"><i style=\"width:" + event.score + "%\"></i></div></div><div class=\"source-evidence\"><span>Fictional source excerpt</span><blockquote>&ldquo;" + escapeHtml(event.excerpt) + "&rdquo;</blockquote></div><div class=\"redaction-note\"><span>PUBLIC</span><p>Exact date, names, place, media, author identity, and original link are intentionally absent. This excerpt was written for the demo.</p></div><div class=\"evidence-actions\"><button type=\"button\" data-action=\"record\" data-id=\"" + event.id + "\">View structured record</button><button class=\"" + (isFlagged ? "is-reviewed" : "") + "\" type=\"button\" data-action=\"flag\" data-id=\"" + event.id + "\">" + (isFlagged ? "Flagged for re-review" : "Flag for re-review") + "</button></div></div>";
+        elements.evidencePanel.innerHTML = "<div class=\"evidence-visual\" style=\"--visual-bg:" + event.color + "2b\"><span class=\"visual-glyph\">" + escapeHtml(event.glyph) + "</span></div><div class=\"evidence-body\"><div class=\"evidence-heading\"><p class=\"section-kicker\">" + escapeHtml(event.era) + " / Archive year " + String(event.year).padStart(2, "0") + "</p><h3>" + escapeHtml(event.title) + "</h3><p>" + escapeHtml(event.details) + "</p></div><div class=\"evidence-meta\"><span>" + escapeHtml(event.category) + "</span><span>" + escapeHtml(event.source) + "</span><span>" + (event.certainty === "direct" ? "Direct subject evidence" : "Confirmed context") + "</span></div><div class=\"confidence-block\"><div class=\"confidence-copy\"><span>Evidence confidence</span><strong>" + event.score + " / 100</strong></div><div class=\"confidence-track\"><i style=\"width:" + event.score + "%\"></i></div></div><div class=\"source-evidence\"><span>Fictional source excerpt</span><blockquote>&ldquo;" + escapeHtml(event.excerpt) + "&rdquo;</blockquote></div><div class=\"redaction-note\"><span>PUBLIC</span><p>Exact date, names, place, media, author identity, and original link are intentionally absent. This excerpt was written for the demo.</p></div><div class=\"evidence-actions\"><button type=\"button\" data-action=\"record\" data-id=\"" + event.id + "\">Trace privacy changes</button><button class=\"" + (isFlagged ? "is-reviewed" : "") + "\" type=\"button\" data-action=\"flag\" data-id=\"" + event.id + "\">" + (isFlagged ? "Flagged for re-review" : "Flag for re-review") + "</button></div></div>";
     }
 
     function escapeHtml(value) {
@@ -158,8 +182,8 @@
         });
     }
 
-    function openRecord(event) {
-        const publicRecord = {
+    function publicRecordFor(event) {
+        return {
             id: event.id,
             relativeYear: event.year,
             era: event.era,
@@ -179,7 +203,59 @@
                 originalMediaRemoved: true
             }
         };
+    }
+
+    function transformField(label, value, state) {
+        return "<div class=\"transform-field " + state + "\"><span>" + escapeHtml(label) + "</span><strong>" + escapeHtml(value) + "</strong></div>";
+    }
+
+    function renderTransformation() {
+        const event = activeTransformEvent;
+        if (!event) return;
+        const step = activeTransformStep;
+        const removed = "Protected before publication";
+        const exactDate = step >= 2 ? "Archive year " + String(event.year).padStart(2, "0") : "<exact date>";
+        const location = step >= 2 ? removed : "<precise location>";
+        const name = step >= 1 ? removed : "<full name>";
+        const author = step >= 1 ? removed : "<author identity>";
+        const link = step >= 3 ? removed : "<original source link>";
+        const media = step >= 3 ? removed : "<original media>";
+        const sourceValue = step >= 3 ? event.source : event.record;
+        const story = step >= 3
+            ? "<div class=\"transform-story\"><p class=\"section-kicker\">Reviewed public story</p><h3>" + escapeHtml(event.title) + "</h3><p>" + escapeHtml(event.summary) + "</p></div>"
+            : "<blockquote>&ldquo;" + escapeHtml(event.excerpt) + "&rdquo;</blockquote>";
+
+        elements.transformPreview.innerHTML = "<header><div><p class=\"section-kicker\">Step " + (step + 1) + " / " + transformSteps[step].label + "</p><h3>" + escapeHtml(transformSteps[step].note) + "</h3></div><span class=\"transform-stage\">" + (step >= 3 ? "Public" : "Private workspace") + "</span></header><div class=\"transform-fields\">" +
+            transformField("Record", sourceValue, "is-retained") +
+            transformField("Subject", name, step >= 1 ? "is-protected" : "is-sensitive") +
+            transformField("Captured", exactDate, step >= 2 ? "is-generalized" : "is-sensitive") +
+            transformField("Place", location, step >= 2 ? "is-protected" : "is-sensitive") +
+            transformField("Author", author, step >= 1 ? "is-protected" : "is-sensitive") +
+            transformField("Source", link, step >= 3 ? "is-protected" : "is-sensitive") +
+            transformField("Media", media, step >= 3 ? "is-protected" : "is-sensitive") +
+            "</div>" + story;
+
+        elements.transformLedger.innerHTML = protectedFields.map(function (field) {
+            const complete = step >= field.protectedAt;
+            return "<li class=\"" + (complete ? "is-complete" : "") + "\"><span aria-hidden=\"true\">" + (complete ? "&#10003;" : "&middot;") + "</span>" + escapeHtml(field.label) + "<small>" + (complete ? "Protected" : "Pending") + "</small></li>";
+        }).join("");
+
+        elements.transformSteps.forEach(function (button, index) {
+            button.classList.toggle("is-active", index === step);
+            button.classList.toggle("is-complete", index < step);
+            if (index === step) button.setAttribute("aria-current", "step"); else button.removeAttribute("aria-current");
+        });
+        elements.transformPrevious.disabled = step === 0;
+        elements.transformNext.textContent = step === transformSteps.length - 1 ? "Restart trace" : "Next change";
+        elements.transformStatus.textContent = "Step " + (step + 1) + " of " + transformSteps.length + ": " + transformSteps[step].label;
+    }
+
+    function openRecord(event) {
+        const publicRecord = publicRecordFor(event);
         elements.recordJson.textContent = JSON.stringify(publicRecord, null, 2);
+        activeTransformEvent = event;
+        activeTransformStep = 0;
+        renderTransformation();
         elements.recordDialog.showModal();
     }
 
@@ -247,6 +323,23 @@
             renderEvidence(selected);
             showToast(flagged.has(selected.id) ? "Record flagged for another private review." : "Review flag removed.");
         }
+    });
+
+    elements.transformSteps.forEach(function (button) {
+        button.addEventListener("click", function () {
+            activeTransformStep = Number(button.dataset.transformStep);
+            renderTransformation();
+        });
+    });
+
+    elements.transformPrevious.addEventListener("click", function () {
+        activeTransformStep = Math.max(0, activeTransformStep - 1);
+        renderTransformation();
+    });
+
+    elements.transformNext.addEventListener("click", function () {
+        activeTransformStep = activeTransformStep === transformSteps.length - 1 ? 0 : activeTransformStep + 1;
+        renderTransformation();
     });
 
     document.querySelectorAll(".hub-nav a").forEach(function (link) {

@@ -53,7 +53,7 @@
             </div>
             <div class="intro-copy">
                 <p>Explore a fictional timeline and its redacted evidence.</p>
-                <div class="intro-tags" aria-label="Things to try"><span>Pick a year</span><span>Open evidence</span><span>Follow a theme</span></div>
+                <div class="intro-tags" aria-label="Things to try"><span>Pick a year</span><span>Open evidence</span><span>Trace a redaction</span></div>
             </div>
         </section>
 
@@ -158,8 +158,30 @@
 
     <dialog id="record-dialog" class="app-dialog record-dialog">
         <form method="dialog">
-            <div class="dialog-heading"><div><p class="section-kicker">Public-safe record</p><h2>Structured output</h2></div><button class="dialog-close" value="cancel" aria-label="Close dialog">&times;</button></div>
-            <pre id="record-json"></pre>
+            <div class="dialog-heading"><div><p class="section-kicker">Privacy transformation</p><h2>From archive record to public story</h2></div><button class="dialog-close" value="cancel" aria-label="Close dialog">&times;</button></div>
+            <p class="transform-intro">Walk through the publication gate using placeholders only. No real names, dates, locations, media, or links are loaded.</p>
+            <nav class="transform-steps" aria-label="Transformation steps">
+                <button type="button" data-transform-step="0"><span>01</span>Extract</button>
+                <button type="button" data-transform-step="1"><span>02</span>De-identify</button>
+                <button type="button" data-transform-step="2"><span>03</span>Generalize</button>
+                <button type="button" data-transform-step="3"><span>04</span>Publish</button>
+            </nav>
+            <div class="transform-workspace">
+                <section class="transform-preview" id="transform-preview"></section>
+                <aside class="transform-ledger" aria-labelledby="transform-ledger-title">
+                    <div><p class="section-kicker">Publication gate</p><h3 id="transform-ledger-title">Protected fields</h3></div>
+                    <ul id="transform-ledger"></ul>
+                </aside>
+            </div>
+            <div class="transform-controls">
+                <button class="quiet-button" id="transform-previous" type="button">Previous</button>
+                <p id="transform-status" role="status">Step 1 of 4</p>
+                <button class="quiet-button" id="transform-next" type="button">Next change</button>
+            </div>
+            <details class="structured-record">
+                <summary>View public structured record</summary>
+                <pre id="record-json"></pre>
+            </details>
             <div class="dialog-actions"><button class="quiet-button" value="cancel">Close</button></div>
         </form>
     </dialog>
