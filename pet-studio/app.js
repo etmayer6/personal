@@ -11,6 +11,7 @@
     const previewSpecies = document.getElementById("pet-preview-species");
     const previewTrait = document.getElementById("pet-preview-trait");
     const previewStatus = document.getElementById("pet-preview-status");
+    const previewStage = document.querySelector(".pet-preview-stage");
     const builderStatus = document.getElementById("builder-status");
     const saveButton = document.getElementById("save-pet");
     const randomizeButton = document.getElementById("randomize-pet");
@@ -150,6 +151,8 @@
         previewName.textContent = pet.name || "Unnamed friend";
         previewSpecies.textContent = pet.species.toUpperCase();
         previewTrait.textContent = speciesDetails[pet.species].trait + " / " + speciesDetails[pet.species].detail;
+        previewStage.style.setProperty("--preview-color", pet.color);
+        previewStage.style.setProperty("--preview-accent", pet.accent);
         previewStatus.textContent = pet.name ? "Companion ready" : "Draft companion";
         colorInput.value = pet.color;
         accentInput.value = pet.accent;

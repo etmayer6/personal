@@ -49,6 +49,10 @@
                 </div>
                 <div class="pet-preview-stage">
                     <div class="pet-preview-sky" aria-hidden="true"></div>
+                    <div class="pet-preview-orbit orbit-one" aria-hidden="true"></div>
+                    <div class="pet-preview-orbit orbit-two" aria-hidden="true"></div>
+                    <div class="pet-stage-coordinate coordinate-top" aria-hidden="true">FIELD UNIT / 01</div>
+                    <div class="pet-stage-coordinate coordinate-bottom" aria-hidden="true">SITE RANGE / ALL PAGES</div>
                     <div id="pet-preview-art" class="pet-preview-art" aria-label="Custom pet preview"></div>
                     <div class="pet-preview-shadow" aria-hidden="true"></div>
                     <span class="pet-preview-spark spark-one" aria-hidden="true">+</span>
@@ -65,9 +69,16 @@
 
             <form class="pet-builder-card" id="pet-form">
                 <div class="builder-heading">
-                    <p class="eyebrow">Companion lab</p>
-                    <h2>Make a pet to explore with.</h2>
+                    <p class="eyebrow">Companion field lab / 01</p>
+                    <h2>Build a small friend for the road.</h2>
+                    <p class="builder-intro">Choose a look, give them a name, then send them to the corner of every page.</p>
                 </div>
+
+                <ol class="builder-steps" aria-label="Companion builder steps">
+                    <li class="is-current"><span>01</span>Identity</li>
+                    <li><span>02</span>Character</li>
+                    <li><span>03</span>Explore</li>
+                </ol>
 
                 <label class="builder-label" for="pet-name">Name
                     <input id="pet-name" name="pet-name" type="text" maxlength="18" autocomplete="off" placeholder="Mochi" required>
