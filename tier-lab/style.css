@@ -269,6 +269,26 @@
     line-height: 1.55;
 }
 
+.tier-account-panel {
+    border-color: rgba(217, 93, 69, 0.38);
+}
+
+.tier-account-panel #account-credentials {
+    display: grid;
+    gap: 8px;
+}
+
+.tier-account-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 7px;
+    margin-top: 5px;
+}
+
+.tier-account-panel [hidden] {
+    display: none !important;
+}
+
 .tier-board-wrap {
     min-width: 0;
 }

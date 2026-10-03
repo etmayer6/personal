@@ -20,13 +20,22 @@ const elements = {
     addTier: document.querySelector("#add-tier-button"),
     newButton: document.querySelector("#new-button"),
     shareButton: document.querySelector("#share-button"),
+    publishButton: document.querySelector("#publish-button"),
+    accountForm: document.querySelector("#account-form"),
+    accountNote: document.querySelector("#account-note"),
+    accountCredentials: document.querySelector("#account-credentials"),
+    accountEmail: document.querySelector("#account-email"),
+    accountPassword: document.querySelector("#account-password"),
+    accountActions: document.querySelector("#account-actions"),
+    accountStatus: document.querySelector("#account-status"),
+    signOutButton: document.querySelector("#signout-button"),
     exportButton: document.querySelector("#export-button"),
     importInput: document.querySelector("#import-input"),
     selectionTools: document.querySelector("#selection-tools"),
     selectedName: document.querySelector("#selected-name"),
     moveButtons: document.querySelector("#move-buttons"),
     deleteItem: document.querySelector("#delete-item-button"),
-    remixLink: document.querySelector(".viewer-only")
+    remixLink: document.querySelector("#remix-link")
 };
 
 const defaultState = () => ({
@@ -58,6 +67,8 @@ let state = defaultState();
 let selectedId = null;
 let draggedId = null;
 let mode = "edit";
+let onlineId = null;
+let onlineOwnerId = null;
 
 function uid(prefix) {
     if (window.crypto?.randomUUID) return `${prefix}-${window.crypto.randomUUID()}`;
@@ -66,6 +77,15 @@ function uid(prefix) {
 
 function setStatus(message) {
     elements.status.textContent = message;
+}
+
+function syncAccountUi() {
+    const user = window.TierLabBackend?.user;
+    const signedIn = Boolean(user?.id);
+    elements.accountCredentials.hidden = signedIn;
+    elements.accountActions.hidden = signedIn;
+    elements.signOutButton.hidden = !signedIn;
+    if (signedIn) elements.accountNote.textContent = `Signed in as ${user.email || "your account"}.`;
 }
 
 function normalizeText(value, fallback, maxLength) {
@@ -159,6 +179,11 @@ function decodeState(value) {
 
 function publicUrl() {
     const url = new URL(window.location.href);
+    if (onlineId) {
+        url.search = `?id=${encodeURIComponent(onlineId)}`;
+        url.hash = "";
+        return url.toString();
+    }
     url.search = "?view=1";
     url.hash = `list=${encodeState(state)}`;
     return url.toString();
@@ -323,7 +348,19 @@ function render() {
     renderRows();
     renderItems(elements.pool, state.pool);
     renderSelection();
-    if (elements.remixLink && window.location.hash.startsWith(SHARE_PREFIX)) {
+    if (elements.publishButton) {
+        elements.publishButton.hidden = mode !== "edit" || !window.TierLabBackend?.configured();
+        elements.publishButton.textContent = onlineId ? "Update online list" : "Publish online";
+    }
+    if (elements.accountForm) elements.accountForm.hidden = !window.TierLabBackend?.configured() || mode !== "edit";
+    if (elements.remixLink && onlineId) {
+        const isOwner = window.TierLabBackend?.user?.id === onlineOwnerId;
+        elements.remixLink.textContent = isOwner ? "Edit your list" : "Remix this list";
+        elements.remixLink.href = isOwner
+            ? `?id=${encodeURIComponent(onlineId)}&edit=1`
+            : `?edit=1#list=${encodeState(state)}`;
+    } else if (elements.remixLink && window.location.hash.startsWith(SHARE_PREFIX)) {
+        elements.remixLink.textContent = "Remix this list";
         elements.remixLink.href = `?edit=1${window.location.hash}`;
     }
 }
@@ -356,11 +393,46 @@ function handleTierAction(action, tierId) {
     render();
 }
 
-function loadInitialState() {
+async function loadInitialState() {
     const shared = window.location.hash.startsWith(SHARE_PREFIX)
         ? window.location.hash.slice(SHARE_PREFIX.length)
         : "";
-    mode = new URLSearchParams(window.location.search).get("view") === "1" ? "view" : "edit";
+    const params = new URLSearchParams(window.location.search);
+    const remoteId = params.get("id");
+    mode = params.get("view") === "1" || remoteId ? "view" : "edit";
+    elements.body.dataset.mode = mode;
+    if (remoteId) {
+        elements.saveState.textContent = "Loading online list";
+        elements.boardTitle.textContent = "Loading…";
+        elements.rows.replaceChildren();
+        elements.pool.replaceChildren();
+        setStatus("Loading published list…");
+    }
+
+    if (remoteId && window.TierLabBackend?.configured()) {
+        try {
+            const record = await window.TierLabBackend.getList(remoteId);
+            if (!record) throw new Error("This online list could not be found.");
+            state = normalizeState(record.state);
+            onlineId = record.id;
+            onlineOwnerId = record.owner_id;
+            if (params.get("edit") === "1" && window.TierLabBackend.user?.id === record.owner_id) {
+                mode = "edit";
+                elements.saveState.textContent = "Online list";
+                setStatus("Editing your published list. Update it online when you’re ready.");
+            } else {
+                mode = "view";
+                elements.saveState.textContent = "Public list";
+                setStatus("A public tier list. No sign-in required to view.");
+            }
+            return;
+        } catch (error) {
+            mode = "view";
+            state = defaultState();
+            setStatus(error.message || "This online list could not be loaded.");
+            return;
+        }
+    }
 
     if (shared) {
         try {
@@ -509,6 +581,59 @@ elements.shareButton.addEventListener("click", async () => {
     }
 });
 
+elements.accountForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const authMode = event.submitter?.dataset.authMode;
+    if (!authMode) return;
+    elements.accountStatus.textContent = authMode === "signup" ? "Creating account…" : "Signing in…";
+    try {
+        const payload = await window.TierLabBackend.authenticate(
+            authMode,
+            elements.accountEmail.value.trim(),
+            elements.accountPassword.value
+        );
+        if (!payload?.access_token) {
+            elements.accountStatus.textContent = "Check your email to confirm the account, then sign in.";
+            return;
+        }
+        syncAccountUi();
+        elements.accountStatus.textContent = "You can now publish lists online.";
+        render();
+    } catch (error) {
+        elements.accountStatus.textContent = error.message || "Could not sign in. Please try again.";
+    }
+});
+
+elements.signOutButton.addEventListener("click", async () => {
+    await window.TierLabBackend.signOut();
+    elements.accountNote.textContent = "Owner: sign in to publish. Friends can open the link without an account.";
+    elements.accountPassword.value = "";
+    syncAccountUi();
+    elements.accountStatus.textContent = "Signed out.";
+});
+
+elements.publishButton.addEventListener("click", async () => {
+    elements.publishButton.disabled = true;
+    elements.publishButton.textContent = onlineId ? "Updating…" : "Publishing…";
+    try {
+        onlineId = await window.TierLabBackend.saveList(onlineId, state.title, state);
+        onlineOwnerId = window.TierLabBackend.user?.id || onlineOwnerId;
+        const editorUrl = new URL(window.location.href);
+        editorUrl.search = `?id=${encodeURIComponent(onlineId)}&edit=1`;
+        editorUrl.hash = "";
+        window.history.replaceState({}, "", editorUrl);
+        elements.saveState.textContent = "Online list";
+        elements.publishButton.textContent = "Update online list";
+        setStatus("Published online. Copy public link to send it to your friends.");
+    } catch (error) {
+        setStatus(error.message || "The list could not be published.");
+        elements.publishButton.textContent = onlineId ? "Update online list" : "Publish online";
+    } finally {
+        elements.publishButton.disabled = false;
+        render();
+    }
+});
+
 elements.exportButton.addEventListener("click", () => {
     const blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json" });
     const link = document.createElement("a");
@@ -560,12 +685,14 @@ elements.newButton.addEventListener("click", () => {
     setStatus("Fresh board ready.");
 });
 
-loadInitialState();
-render();
-
-if (mode === "view") {
-    setStatus("A public tier list. No sign-in required.");
-}
+elements.accountForm.hidden = !window.TierLabBackend?.configured();
+syncAccountUi();
+loadInitialState().finally(() => {
+    render();
+    if (mode === "view" && !new URLSearchParams(window.location.search).has("id")) {
+        setStatus("A public tier list. No sign-in required.");
+    }
+});
 
 // Exposed for the site's lightweight first-render checks.
 window.__tierLabState = () => ({ mode, items: allPlacements().length, tiers: state.tiers.length });

@@ -103,9 +103,16 @@
             <div class="travel-map-panel">
                 <div class="travel-panel-header">
                     <h2>Map</h2>
-                    <div class="travel-view-toggle" role="group" aria-label="Map layer">
-                        <button type="button" data-view="photos" aria-pressed="true">Photos</button>
-                        <button type="button" data-view="places" aria-pressed="false">Places</button>
+                    <div class="travel-map-tools">
+                        <div class="travel-view-toggle" role="group" aria-label="Map layer">
+                            <button type="button" data-view="photos" aria-pressed="true">Photos</button>
+                            <button type="button" data-view="places" aria-pressed="false">Places</button>
+                            <button type="button" data-view="both" aria-pressed="false">Both</button>
+                        </div>
+                        <div class="travel-map-legend" aria-label="Map marker key">
+                            <span><i class="travel-marker-swatch is-photo" aria-hidden="true"></i>Photos</span>
+                            <span><i class="travel-marker-swatch is-place" aria-hidden="true"></i>Places</span>
+                        </div>
                     </div>
                 </div>
                 <div id="travel-map" class="travel-map" aria-label="Interactive map of gallery photos and visited places">

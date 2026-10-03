@@ -61,17 +61,35 @@
         <section class="tier-toolbar" aria-label="Tier list actions">
             <div class="tier-toolbar-primary">
                 <button class="tier-button tier-button-accent" id="share-button" type="button">Copy public link</button>
+                <button class="tier-button editor-only" id="publish-button" type="button" hidden>Publish online</button>
                 <button class="tier-button" id="export-button" type="button">Export JSON</button>
                 <label class="tier-button tier-import-button editor-only" for="import-input">Import JSON</label>
                 <input id="import-input" type="file" accept="application/json,.json" hidden>
                 <button class="tier-button tier-button-quiet editor-only" id="new-button" type="button">New list</button>
             </div>
             <p class="tier-status" id="tier-status" role="status" aria-live="polite">Drag a card or tap one to move it.</p>
-            <a class="tier-button tier-button-accent viewer-only" href="./">Remix this list</a>
+            <a class="tier-button tier-button-accent viewer-only" id="remix-link" href="./">Remix this list</a>
         </section>
 
         <section class="tier-workspace">
             <aside class="tier-sidebar editor-only" aria-label="Tier list editor">
+                <form class="tier-panel tier-account-panel" id="account-form" hidden>
+                    <p class="tier-panel-label">Online lists</p>
+                    <p class="tier-help" id="account-note">Owner: sign in to publish. Friends can open the link without an account.</p>
+                    <div id="account-credentials">
+                        <label for="account-email">Email</label>
+                        <input id="account-email" type="email" autocomplete="email" required>
+                        <label for="account-password">Password</label>
+                        <input id="account-password" type="password" minlength="8" autocomplete="current-password" required>
+                    </div>
+                    <div class="tier-account-actions" id="account-actions">
+                        <button class="tier-button tier-button-dark" type="submit" data-auth-mode="signin">Sign in</button>
+                        <button class="tier-button" type="submit" data-auth-mode="signup">Create account</button>
+                    </div>
+                    <button class="tier-button" id="signout-button" type="button" hidden>Sign out</button>
+                    <p class="tier-status" id="account-status" role="status" aria-live="polite"></p>
+                </form>
+
                 <div class="tier-panel">
                     <p class="tier-panel-label">The list</p>
                     <label for="list-title">Title</label>
@@ -126,10 +144,12 @@
             </div>
         </section>
 
-        <p class="tier-fine-print">Public links contain the list—no account or sign-in required.</p>
+        <p class="tier-fine-print">Local links need no account. Publish online with a free account; anyone can view the link.</p>
     </main>
 
-    <script src="app.js?v=1"></script>
+    <script src="supabase-config.js"></script>
+    <script src="backend.js?v=1"></script>
+    <script src="app.js?v=2"></script>
     <script src="../site-play.js?v=pet-companion-2"></script>
 </body>
 </html>

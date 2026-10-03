@@ -65,7 +65,7 @@ const projectRegistry = [
     { name: "Groggy Climbs", path: "/groggy-climbs/" },
     { name: "Zulip", href: "https://github.com/etmayer6/zulip", external: true },
     { name: "SE / COM S 319", href: "https://github.com/etmayer6/secoms319", external: true },
-    { name: "Garage Diagnostic Bay", path: "/garage/" },
+    { name: "Garage Bay", path: "/garage/" },
     { name: "Diet Tracker", path: "/diet-tracker/" },
     { name: "Receipt Meal Planner", path: "/meal-planner/" },
     { name: "Childhood Timeline", path: "/childhood-timeline/" }

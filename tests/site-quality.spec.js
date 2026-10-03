@@ -407,7 +407,6 @@ test("projects lead with interactive work and finish with reference projects", a
         "Groggy Climbs",
         "Zulip",
         "SE / COM S 319",
-        "Garage Diagnostic Bay",
         "Diet Tracker",
         "Receipt Meal Planner",
         "Childhood Timeline"
@@ -468,6 +467,67 @@ test("Tier Lab creates, ranks, and shares a public list", async ({ browser }) =>
     await expect(page.locator(".tier-sidebar")).toBeHidden();
     await expect(page.locator("#board-title")).toHaveText("Best UFOs");
     await expect(page.locator(".tier-board")).toContainText("🛸 Saucer");
+    await context.close();
+});
+
+test("Tier Lab publishes a persistent list and opens its public link", async ({ browser }) => {
+    const context = await browser.newContext({ reducedMotion: "reduce", serviceWorkers: "block" });
+    await context.grantPermissions(["clipboard-read", "clipboard-write"], { origin: "http://127.0.0.1:4175" });
+    await installOfflineRoutes(context);
+    const page = await context.newPage();
+    const onlineId = "d34db33f-51c0-4f8a-93e4-4e44da6e6c12";
+    const ownerId = "tier-lab-test-owner";
+    let savedRecord = null;
+
+    await context.route("https://jqnfxgkmlrswxgtxqovm.supabase.co/**", async (route) => {
+        const request = route.request();
+        const url = new URL(request.url());
+        if (url.pathname === "/auth/v1/token") {
+            await route.fulfill({
+                status: 200,
+                contentType: "application/json",
+                body: JSON.stringify({
+                    access_token: "test-access-token",
+                    refresh_token: "test-refresh-token",
+                    expires_in: 3600,
+                    user: { id: ownerId, email: "tier-tester@example.com" }
+                })
+            });
+            return;
+        }
+        if (url.pathname === "/rest/v1/tier_lists" && request.method() === "POST") {
+            const submitted = request.postDataJSON();
+            savedRecord = { id: onlineId, ...submitted };
+            await route.fulfill({ status: 201, contentType: "application/json", body: JSON.stringify([{ id: onlineId }]) });
+            return;
+        }
+        if (url.pathname === "/rest/v1/tier_lists" && request.method() === "GET") {
+            await route.fulfill({
+                status: 200,
+                contentType: "application/json",
+                body: JSON.stringify(savedRecord ? [{ ...savedRecord, owner_id: ownerId }] : [])
+            });
+            return;
+        }
+        await route.fulfill({ status: 404, contentType: "application/json", body: JSON.stringify({ message: "Unexpected request" }) });
+    });
+
+    await page.goto("/tier-lab/", { waitUntil: "domcontentloaded" });
+    await page.getByLabel("Email").fill("tier-tester@example.com");
+    await page.getByLabel("Password").fill("test-password-123");
+    await page.getByRole("button", { name: "Sign in" }).click();
+    await expect(page.locator("#account-status")).toContainText("publish lists online");
+    await page.getByLabel("Title").fill("The online ranking");
+    await page.getByRole("button", { name: "Publish online" }).click();
+    await expect(page.locator("#tier-status")).toContainText("Published online");
+    expect(savedRecord.title).toBe("The online ranking");
+
+    await page.getByRole("button", { name: "Copy public link" }).click();
+    const publicLink = await page.evaluate(() => navigator.clipboard.readText());
+    expect(publicLink).toContain(`?id=${onlineId}`);
+    await page.goto(publicLink, { waitUntil: "domcontentloaded" });
+    await expect(page.locator("body")).toHaveAttribute("data-mode", "view");
+    await expect(page.locator("#board-title")).toHaveText("The online ranking");
     await context.close();
 });
 

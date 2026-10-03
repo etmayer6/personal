@@ -144,9 +144,9 @@ test('project filters stay inside the interactive workbench', async ({ page }) =
     await expect(page.locator('[data-project-filter-status]')).toHaveText('3 explore projects ready.');
     await expect(page.locator('.feature-card')).toHaveCount(3);
     await expect(page.locator('.archive-grid:not(.archive-grid-reference) .archive-card:visible')).toHaveCount(3);
-    await expect(page.locator('.archive-grid-reference .archive-card')).toHaveCount(8);
+    await expect(page.locator('.archive-grid-reference .archive-card')).toHaveCount(7);
     await page.getByRole('button', { name: 'Everything', exact: true }).click();
-    await expect(page.locator('[data-project-filter-status]')).toHaveText('All 12 interactive doors are open.');
+    await expect(page.locator('[data-project-filter-status]')).toHaveText('All 13 interactive doors are open.');
 });
 
 test('project filter survives a surprise detour at desktop and mobile widths', async ({ browser }) => {
@@ -165,8 +165,8 @@ test('project filter survives a surprise detour at desktop and mobile widths', a
 
         await page.goBack();
         await expect(page).toHaveURL(/\/projects\/\?kind=play$/);
-        await expect(page.locator('[data-project-filter-status]')).toHaveText('6 play projects ready.');
-        await expect(page.locator('.archive-grid:not(.archive-grid-reference) .archive-card:visible')).toHaveCount(6);
+        await expect(page.locator('[data-project-filter-status]')).toHaveText('7 play projects ready.');
+        await expect(page.locator('.archive-grid:not(.archive-grid-reference) .archive-card:visible')).toHaveCount(7);
         await expect(page.locator('html')).toHaveJSProperty('scrollWidth', viewport.width);
         await context.close();
     }
@@ -320,4 +320,18 @@ test('Flight Sim couples engine spool and maneuvering stall speed to the aircraf
     const banked = await page.evaluate(() => JSON.parse(window.render_game_to_text()));
     expect(Math.abs(banked.plane.roll)).toBeGreaterThan(20);
     expect(banked.plane.stallSpeedKts).toBeGreaterThan(straight.plane.stallSpeedKts + 4);
+});
+
+test('Travel Map combines photo and place layers with a clear marker key', async ({ page }) => {
+    await page.goto('/travel/');
+    await expect(page.locator('#travel-status')).toHaveText(/\d+ photos \| \d+ with EXIF GPS/);
+
+    await page.getByRole('button', { name: 'Both' }).click();
+    await expect(page.getByRole('button', { name: 'Both' })).toHaveAttribute('aria-pressed', 'true');
+    await expect(page.locator('#list-title')).toHaveText('Photos + Places');
+    await expect(page.locator('#travel-status')).toHaveText(/\d+ photos \+ \d+ places/);
+    await expect(page.locator('.travel-list-group-label.is-photo')).toHaveText('Photos / orange markers');
+    await expect(page.locator('.travel-list-group-label.is-place')).toHaveText('Places / blue markers');
+    await expect(page.locator('.travel-map-legend')).toContainText('Photos');
+    await expect(page.locator('.travel-map-legend')).toContainText('Places');
 });

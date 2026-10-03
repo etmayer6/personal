@@ -1,365 +1,224 @@
-(function () {
-    "use strict";
+import { paints, wheels, engines, defaultBuild, validBuild, specifications, newRun, stepCar, clamp } from './model.js';
+import { GarageRenderer } from './render.js';
+import { EngineSound } from './sound.js';
 
-    const storageKey = "gremlin-garage-visualizer-v1";
-    const views = {
-        "three-quarter": { label: "Front three-quarter", yaw: 18, tilt: 0 },
-        side: { label: "Profile / side", yaw: 72, tilt: 0 },
-        front: { label: "Front profile", yaw: 0, tilt: 0 },
-        rear: { label: "Rear profile", yaw: 180, tilt: 0 }
-    };
-    const paints = {
-        obsidian: { label: "Obsidian", code: "OBSIDIAN", base: "#26333a", hi: "#71858a", shadow: "#0b1114", accent: "#83e0ad" },
-        signal: { label: "Signal orange", code: "SIGNAL", base: "#a84729", hi: "#ffb16c", shadow: "#351718", accent: "#ffd08b" },
-        mineral: { label: "Mineral mint", code: "MINERAL", base: "#2d746d", hi: "#b4efd0", shadow: "#102b2c", accent: "#d7ffe5" },
-        cobalt: { label: "Cobalt blue", code: "COBALT", base: "#2a478f", hi: "#a5def2", shadow: "#10152f", accent: "#8fd8ff" }
-    };
-    const wheels = {
-        street: { label: "Street forged", code: "19 STREET", power: 482, zero: "3.8 s", range: 318, mass: "1,640 kg", ride: "146 mm", status: "Nominal" },
-        aero: { label: "Aero disc", code: "19 AERO", power: 482, zero: "3.9 s", range: 336, mass: "1,618 kg", ride: "146 mm", status: "Efficient" },
-        track: { label: "Track mesh", code: "20 TRACK", power: 496, zero: "3.5 s", range: 289, mass: "1,674 kg", ride: "140 mm", status: "Track ready" }
-    };
-    const scenes = {
-        golden: { label: "Golden hour", corner: "GOLDEN HOUR" },
-        studio: { label: "Studio white", corner: "STUDIO WHITE" },
-        night: { label: "Night run", corner: "NIGHT RUN" }
-    };
-    const defaults = {
-        view: "three-quarter", yaw: 18, tilt: 0, paint: "obsidian", wheel: "street",
-        scene: "golden", lights: true, grid: true, overlay: false, lower: false, saved: false
-    };
-    const elements = {
-        body: document.body,
-        stage: document.getElementById("vehicle-stage"),
-        viewportLabel: document.getElementById("viewport-label"),
-        orbitReadout: document.getElementById("orbit-readout"),
-        orbitRange: document.getElementById("orbit-range"),
-        orbitOutput: document.getElementById("orbit-output"),
-        orbitButton: document.getElementById("orbit-button"),
-        paintLabel: document.getElementById("paint-label"),
-        wheelLabel: document.getElementById("wheel-label"),
-        sceneLabel: document.getElementById("scene-label"),
-        sceneControlLabel: document.getElementById("scene-label-control"),
-        buildCode: document.getElementById("build-code"),
-        deckCode: document.getElementById("deck-code"),
-        buildStatus: document.getElementById("build-status"),
-        saveState: document.getElementById("save-state"),
-        specGrid: document.getElementById("spec-grid"),
-        systemList: document.getElementById("system-list"),
-        systemState: document.getElementById("system-state"),
-        lightsToggle: document.getElementById("lights-toggle"),
-        gridToggle: document.getElementById("grid-toggle"),
-        overlayToggle: document.getElementById("overlay-toggle"),
-        lowerToggle: document.getElementById("lower-toggle"),
-        scanButton: document.getElementById("scan-button"),
-        checkLabel: document.getElementById("check-label"),
-        saveButton: document.getElementById("save-button"),
-        resetButton: document.getElementById("reset-button"),
-        toast: document.getElementById("garage-toast")
-    };
-
-    let state = loadBuild();
-    let orbitTimer = 0;
-    let toastTimer = 0;
-    let checking = false;
-    let dragState = null;
-
-    function copyDefaults() {
-        return Object.assign({}, defaults);
-    }
-
-    function isValidBuild(build) {
-        return build && typeof build === "object" &&
-            (views[build.view] || build.view === "custom") &&
-            paints[build.paint] && wheels[build.wheel] && scenes[build.scene] &&
-            Number.isFinite(Number(build.yaw)) && Number.isFinite(Number(build.tilt));
-    }
-
-    function loadBuild() {
-        try {
-            const saved = JSON.parse(window.localStorage.getItem(storageKey));
-            if (isValidBuild(saved)) return Object.assign(copyDefaults(), saved, { saved: true });
-        } catch (error) {
-            // The visualizer is intentionally usable without storage.
-        }
-        return copyDefaults();
-    }
-
-    function saveBuildToStorage() {
-        try {
-            window.localStorage.setItem(storageKey, JSON.stringify(state));
-        } catch (error) {
-            showToast("The build is active for this visit, but browser storage is unavailable.");
-        }
-    }
-
-    function escapeHtml(value) {
-        return String(value == null ? "" : value).replace(/[&<>"']/g, function (character) {
-            return { "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#39;" }[character];
+const $ = id => document.getElementById(id);
+const storageKey = 'garage-bay-builds-v2', legacyKey = 'gremlin-garage-visualizer-v1';
+let storageAvailable = true;
+function readStorage(key, fallback) {
+    try { return JSON.parse(localStorage.getItem(key)) ?? fallback; }
+    catch { return fallback; }
+}
+function writeStorage(key, value) {
+    try { localStorage.setItem(key, JSON.stringify(value)); return true; }
+    catch { storageAvailable = false; return false; }
+}
+const rawGarage = readStorage(storageKey, {});
+let saved = Array.isArray(rawGarage?.builds) ? rawGarage.builds.slice(0, 8).filter(b => b && typeof b.id === 'string').map(b => ({ id: b.id.slice(0, 60), build: validBuild(b.build) })) : [];
+let build = validBuild(rawGarage?.current || readStorage(legacyKey, defaultBuild));
+if (!saved.length && readStorage(legacyKey, null)?.saved) saved.push({ id: 'legacy-build', build: { ...build } });
+const rawRecords = readStorage('garage-bay-records-v1', {});
+const records = rawRecords && typeof rawRecords === 'object' && !Array.isArray(rawRecords) ? rawRecords : {};
+let mode = 'studio', car = newRun(), paused = false, camera = 'chase', autoOrbit = false, renderer;
+let orbit = { yaw: .76, elevation: .31, distance: 10.5 }, lastManual = 0, noticeRemaining = 0;
+let studioViewLabel = 'Front three-quarter';
+const keys = new Set(), touchKeys = new Set();
+const sound = new EngineSound();
+let toastTimer, drag, focusBeforeShare;
+const stage = $('vehicle-stage');
+const formatTime = seconds => Math.floor(seconds/60) + ':' + (seconds%60).toFixed(2).padStart(5,'0');
+const recordKey = () => [build.wheel,build.engine,build.suspension,build.lower?'low':'std'].join('-');
+const activeRecords = () => records[recordKey()] || {};
+const finiteRecord = value => Number.isFinite(value) && value > 0;
+function toast(text) {
+    clearTimeout(toastTimer); $('garage-toast').textContent = text; $('garage-toast').hidden = false;
+    toastTimer = setTimeout(() => { $('garage-toast').hidden = true; }, 3500);
+}
+function notice(text, seconds = 4) {
+    $('stage-notice').textContent = text; $('stage-notice').hidden = false; noticeRemaining = seconds;
+}
+function sharedBuild() {
+    if (!location.hash.startsWith('#build=')) return null;
+    try {
+        const raw = JSON.parse(decodeURIComponent(location.hash.slice(7)));
+        if (raw?.v !== 1 || !raw.build || !Object.hasOwn(paints, raw.build.paint) || !Object.hasOwn(wheels, raw.build.wheel) || !Object.hasOwn(engines, raw.build.engine)) throw new Error('Invalid build');
+        return validBuild(raw.build);
+    } catch { toast('This build link is invalid. Your local build is unchanged.'); return null; }
+}
+function setSelected(key) {
+    document.querySelectorAll('[data-'+key+']').forEach(button => {
+        const active = button.dataset[key] === build[key]; button.classList.toggle('active',active); button.setAttribute('aria-pressed',String(active));
+    });
+}
+function refreshBuild(rebuild = true) {
+    for (const key of ['paint','wheel','engine','scene']) setSelected(key);
+    const spec = specifications(build);
+    $('paint-label').textContent = $('paint-choice-label').textContent = paints[build.paint].label;
+    $('deck-code').textContent = wheels[build.wheel].code;
+    $('build-code').textContent = [build.paint,build.wheel,build.engine,build.lower?'LOW':''].filter(Boolean).join(' / ').toUpperCase();
+    $('power-spec').textContent = spec.hp+' hp'; $('mass-spec').textContent = spec.mass.toLocaleString()+' kg';
+    $('grip-spec').textContent = spec.grip.toFixed(2)+' g'; $('height-spec').textContent = spec.height+' mm';
+    $('engine-note').textContent = engines[build.engine].hp+' hp · '+engines[build.engine].note;
+    $('lower-toggle').checked = build.lower; $('lights-toggle').checked = build.lights;
+    $('suspension-range').value = build.suspension; $('suspension-label').textContent = build.suspension<30?'Comfort':build.suspension>70?'Firm':'Balanced';
+    if (rebuild && renderer) renderer.buildCar(build);
+    render();
+}
+function persistGarage() { return writeStorage(storageKey,{current:build,builds:saved}); }
+function edit(key,value) {
+    build = validBuild({...build,[key]:value}); $('save-state').textContent = 'Unsaved build';
+    refreshBuild(); clearSharedHash();
+}
+function clearSharedHash() {
+    if (location.hash.startsWith('#build=')) history.replaceState(null,'',location.pathname+location.search);
+}
+function renderSaved() {
+    const container = $('saved-builds'); container.replaceChildren();
+    if (!saved.length) { const p = document.createElement('p'); p.textContent = 'Save a build to park it here. Stored in this browser.'; container.append(p); return; }
+    container.className = 'saved-builds-grid';
+    saved.forEach(entry => {
+        const card = document.createElement('article'); card.className = 'saved-build';
+        const header = document.createElement('header'), swatch = document.createElement('i'), title = document.createElement('strong'), info = document.createElement('small'), actions = document.createElement('div');
+        swatch.style.background = paints[entry.build.paint].color; swatch.setAttribute('aria-hidden','true');
+        title.textContent = paints[entry.build.paint].label+' GT'; header.append(swatch,title);
+        info.textContent = engines[entry.build.engine].hp+' hp / '+wheels[entry.build.wheel].label;
+        const load = document.createElement('button'); load.textContent = 'Load build';
+        load.addEventListener('click',() => { leaveDrive(); build={...entry.build};refreshBuild();$('save-state').textContent='Saved in this browser';clearSharedHash();persistGarage(); });
+        const remove = document.createElement('button'); remove.textContent = 'Remove'; remove.setAttribute('aria-label','Remove '+title.textContent);
+        remove.addEventListener('click',() => {
+            const next=saved.filter(b=>b.id!==entry.id);
+            if(writeStorage(storageKey,{current:build,builds:next})){saved=next;renderSaved();toast('Build removed from this browser. The active configuration is unchanged.');}
+            else toast('Browser storage is unavailable. Your saved build was not removed.');
         });
-    }
-
-    function signedAngle(value) {
-        const angle = Math.round(Number(value) || 0);
-        return (angle > 0 ? "+" : "") + angle + "°";
-    }
-
-    function markDirty() {
-        state.saved = false;
-        elements.saveState.textContent = "Unsaved build";
-    }
-
-    function setPressed(selector, key, value) {
-        document.querySelectorAll(selector).forEach(function (button) {
-            const active = button.dataset[key] === value;
-            button.classList.toggle("is-active", active);
-            button.setAttribute("aria-pressed", String(active));
-        });
-    }
-
-    function renderSpecs() {
-        const wheel = wheels[state.wheel];
-        const specs = [
-            ["Power", wheel.power + " hp", "rear bias / 7,100 rpm"],
-            ["0–60", wheel.zero, "launch estimate"],
-            ["Range", wheel.range + " mi", state.scene === "night" ? "night-run profile" : "touring profile"],
-            ["Ride height", state.lower ? "132 mm" : wheel.ride, state.lower ? "low stance / -14 mm" : "road stance"]
-        ];
-        elements.specGrid.innerHTML = specs.map(function (spec) {
-            return "<article class=\"spec-card\"><span>" + escapeHtml(spec[0]) + "</span><strong>" + escapeHtml(spec[1]) + "</strong><small>" + escapeHtml(spec[2]) + "</small></article>";
-        }).join("");
-    }
-
-    function renderSystems() {
-        const systems = [
-            ["Aero map", state.wheel === "aero" ? "Efficiency bias" : "Active / balanced", state.wheel === "track" ? "watch" : "nominal"],
-            ["Lighting bus", state.lights ? "Headlamps online" : "Daylight only", state.lights ? "nominal" : "watch"],
-            ["Chassis geometry", state.lower ? "Low stance / 132 mm" : "Road stance / 146 mm", state.lower ? "watch" : "nominal"],
-            ["Brake package", state.wheel === "track" ? "Heat-ready calipers" : "Street ceramic set", "nominal"]
-        ];
-        const isTuned = systems.some(function (system) { return system[2] === "watch"; });
-        elements.systemState.textContent = isTuned ? "Tuned" : wheels[state.wheel].status;
-        elements.systemState.style.color = isTuned ? "var(--garage-orange)" : "var(--garage-mint)";
-        elements.systemList.innerHTML = systems.map(function (system) {
-            const status = system[2] === "watch" ? "Watch" : "Nominal";
-            return "<article class=\"finding-card\" data-status=\"" + system[2] + "\"><span>" + status + " / " + escapeHtml(system[0]) + "</span><strong>" + escapeHtml(system[1]) + "</strong><p>Configuration responds inside the viewport.</p></article>";
-        }).join("");
-    }
-
-    function applyVisual() {
-        const paint = paints[state.paint];
-        const wheel = wheels[state.wheel];
-        const scene = scenes[state.scene];
-        const preset = views[state.view];
-        elements.stage.dataset.view = state.view;
-        elements.stage.dataset.scene = state.scene;
-        elements.stage.dataset.wheel = state.wheel;
-        elements.stage.classList.toggle("lights-off", !state.lights);
-        elements.stage.classList.toggle("grid-off", !state.grid);
-        elements.stage.classList.toggle("overlay-on", state.overlay);
-        elements.stage.classList.toggle("is-lowered", state.lower);
-        elements.stage.style.setProperty("--orbit", state.yaw + "deg");
-        elements.stage.style.setProperty("--tilt", state.tilt + "deg");
-        elements.stage.style.setProperty("--paint-base", paint.base);
-        elements.stage.style.setProperty("--paint-hi", paint.hi);
-        elements.stage.style.setProperty("--paint-shadow", paint.shadow);
-        elements.stage.style.setProperty("--paint-accent", paint.accent);
-        elements.viewportLabel.textContent = preset ? preset.label : "Custom orbit";
-        elements.orbitReadout.textContent = "Yaw " + signedAngle(state.yaw);
-        elements.orbitRange.value = String(state.yaw);
-        elements.orbitOutput.textContent = signedAngle(state.yaw);
-        elements.paintLabel.textContent = paint.label;
-        elements.wheelLabel.textContent = wheel.label;
-        elements.sceneLabel.textContent = scene.corner;
-        elements.sceneControlLabel.textContent = scene.label;
-        elements.buildCode.textContent = "APX-04 / " + paint.code;
-        elements.deckCode.textContent = wheel.code;
-        setPressed(".paint-swatch", "paint", state.paint);
-        setPressed(".choice-button", "wheel", state.wheel);
-        setPressed(".scene-button", "scene", state.scene);
-        document.querySelectorAll(".view-tab").forEach(function (button) {
-            const active = button.dataset.view === state.view;
-            button.classList.toggle("is-active", active);
-            button.setAttribute("aria-pressed", String(active));
-        });
-        elements.lightsToggle.checked = state.lights;
-        elements.gridToggle.checked = state.grid;
-        elements.overlayToggle.checked = state.overlay;
-        elements.lowerToggle.checked = state.lower;
-        elements.orbitButton.setAttribute("aria-pressed", String(Boolean(orbitTimer)));
-        renderSpecs();
-        renderSystems();
-    }
-
-    function selectOption(kind, value) {
-        if (kind === "paint" && paints[value]) state.paint = value;
-        if (kind === "wheel" && wheels[value]) state.wheel = value;
-        if (kind === "scene" && scenes[value]) state.scene = value;
-        markDirty();
-        applyVisual();
-        showToast(kind.charAt(0).toUpperCase() + kind.slice(1) + " updated. Build readout recalculated.");
-    }
-
-    function setView(view) {
-        if (!views[view]) return;
-        state.view = view;
-        state.yaw = views[view].yaw;
-        state.tilt = views[view].tilt;
-        markDirty();
-        applyVisual();
-    }
-
-    function updateOrbit(value, dirty) {
-        state.view = "custom";
-        state.yaw = Math.max(-72, Math.min(180, Number(value) || 0));
-        if (dirty) markDirty();
-        applyVisual();
-    }
-
-    function updateTilt(value) {
-        state.view = "custom";
-        state.tilt = Math.max(-10, Math.min(12, Number(value) || 0));
-        applyVisual();
-    }
-
-    function toggleAutoOrbit() {
-        if (orbitTimer) {
-            window.clearInterval(orbitTimer);
-            orbitTimer = 0;
-            applyVisual();
-            showToast("Auto orbit paused at " + signedAngle(state.yaw) + ".");
-            return;
-        }
-        orbitTimer = window.setInterval(function () {
-            state.view = "custom";
-            state.yaw += 1.2;
-            if (state.yaw > 180) state.yaw = -72;
-            applyVisual();
-        }, 60);
-        applyVisual();
-        showToast("Auto orbit engaged. Drag or use the slider to take over.");
-    }
-
-    function saveBuild() {
-        state.saved = true;
-        saveBuildToStorage();
-        elements.saveState.textContent = "Saved in this browser";
-        showToast("Build saved locally as APX-04.");
-    }
-
-    function resetBuild() {
-        if (orbitTimer) window.clearInterval(orbitTimer);
-        orbitTimer = 0;
-        state = copyDefaults();
-        try { window.localStorage.removeItem(storageKey); } catch (error) { /* Optional storage. */ }
-        elements.buildStatus.textContent = "Ready to configure";
-        elements.checkLabel.textContent = "Validate the current build";
-        applyVisual();
-        showToast("Apex GT returned to the studio baseline.");
-    }
-
-    function delay(milliseconds) {
-        return new Promise(function (resolve) { window.setTimeout(resolve, milliseconds); });
-    }
-
-    async function runConfigurationCheck() {
-        if (checking) return;
-        checking = true;
-        elements.scanButton.disabled = true;
-        elements.body.dataset.demoState = "checking";
-        const labels = ["Checking geometry…", "Checking lighting…", "Checking thermal load…"];
-        for (let index = 0; index < labels.length; index += 1) {
-            elements.checkLabel.textContent = labels[index];
-            await delay(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 80 : 420);
-        }
-        checking = false;
-        elements.body.dataset.demoState = "ready";
-        elements.scanButton.disabled = false;
-        elements.checkLabel.textContent = "Current configuration verified";
-        elements.buildStatus.textContent = "Configuration verified";
-        showToast("Build check complete. Current geometry is ready for a drive.");
-    }
-
-    function showToast(message) {
-        window.clearTimeout(toastTimer);
-        elements.toast.textContent = message;
-        elements.toast.classList.add("is-visible");
-        toastTimer = window.setTimeout(function () { elements.toast.classList.remove("is-visible"); }, 3000);
-    }
-
-    function startDrag(event) {
-        if (event.target.closest("button, input, output")) return;
-        dragState = { pointerId: event.pointerId, x: event.clientX, y: event.clientY, yaw: state.yaw, tilt: state.tilt, shift: event.shiftKey };
-        elements.stage.setPointerCapture(event.pointerId);
-    }
-
-    function moveDrag(event) {
-        if (!dragState || event.pointerId !== dragState.pointerId) return;
-        const horizontal = event.clientX - dragState.x;
-        const vertical = event.clientY - dragState.y;
-        updateOrbit(dragState.yaw + horizontal * 0.45, false);
-        if (dragState.shift || event.shiftKey) updateTilt(dragState.tilt - vertical * 0.22);
-    }
-
-    function endDrag(event) {
-        if (!dragState || event.pointerId !== dragState.pointerId) return;
-        markDirty();
-        dragState = null;
-    }
-
-    document.querySelectorAll(".paint-swatch").forEach(function (button) {
-        button.addEventListener("click", function () { selectOption("paint", button.dataset.paint); });
+        actions.append(load,remove);card.append(header,info,actions);container.append(card);
     });
-    document.querySelectorAll(".choice-button").forEach(function (button) {
-        button.addEventListener("click", function () { selectOption("wheel", button.dataset.wheel); });
-    });
-    document.querySelectorAll(".scene-button").forEach(function (button) {
-        button.addEventListener("click", function () { selectOption("scene", button.dataset.scene); });
-    });
-    document.querySelectorAll(".view-tab").forEach(function (button) {
-        button.addEventListener("click", function () { setView(button.dataset.view); });
-    });
-    elements.orbitRange.addEventListener("input", function () { updateOrbit(elements.orbitRange.value, true); });
-    elements.orbitButton.addEventListener("click", toggleAutoOrbit);
-    elements.lightsToggle.addEventListener("change", function () { state.lights = elements.lightsToggle.checked; markDirty(); applyVisual(); });
-    elements.gridToggle.addEventListener("change", function () { state.grid = elements.gridToggle.checked; markDirty(); applyVisual(); });
-    elements.overlayToggle.addEventListener("change", function () { state.overlay = elements.overlayToggle.checked; markDirty(); applyVisual(); });
-    elements.lowerToggle.addEventListener("change", function () { state.lower = elements.lowerToggle.checked; markDirty(); applyVisual(); });
-    elements.saveButton.addEventListener("click", saveBuild);
-    elements.resetButton.addEventListener("click", resetBuild);
-    elements.scanButton.addEventListener("click", runConfigurationCheck);
-    elements.stage.addEventListener("pointerdown", startDrag);
-    elements.stage.addEventListener("pointermove", moveDrag);
-    elements.stage.addEventListener("pointerup", endDrag);
-    elements.stage.addEventListener("pointercancel", endDrag);
-    elements.stage.addEventListener("keydown", function (event) {
-        if (event.key === "ArrowLeft") { event.preventDefault(); updateOrbit(state.yaw - 8, true); }
-        if (event.key === "ArrowRight") { event.preventDefault(); updateOrbit(state.yaw + 8, true); }
-        if (event.key === "ArrowUp") { event.preventDefault(); updateTilt(state.tilt + 2); }
-        if (event.key === "ArrowDown") { event.preventDefault(); updateTilt(state.tilt - 2); }
-        if (event.key === " ") { event.preventDefault(); toggleAutoOrbit(); }
-    });
-
-    window.render_garage_to_text = function () {
-        return JSON.stringify({
-            view: state.view,
-            yaw: Math.round(state.yaw),
-            tilt: Math.round(state.tilt),
-            paint: state.paint,
-            wheel: state.wheel,
-            scene: state.scene,
-            headlights: state.lights,
-            grid: state.grid,
-            overlay: state.overlay,
-            lowerStance: state.lower,
-            autoOrbit: Boolean(orbitTimer),
-            checking: checking,
-            saved: state.saved,
-            visibleFindingCount: elements.systemList.querySelectorAll(".finding-card").length
-        });
-    };
-    window.render_game_to_text = window.render_garage_to_text;
-    window.advanceTime = function () {};
-
-    applyVisual();
-}());
+}
+$('save-button').addEventListener('click',() => {
+    const identical = saved.find(entry => JSON.stringify(entry.build)===JSON.stringify(build));
+    if (!identical && saved.length>=8) { toast('Your garage has 8 builds. Remove one before saving another.'); return; }
+    const next = identical?saved:[...saved,{id:typeof crypto.randomUUID==='function'?crypto.randomUUID():String(Date.now()),build:{...build}}];
+    if(writeStorage(storageKey,{current:build,builds:next})){saved=next;renderSaved();$('save-state').textContent='Saved in this browser';toast('Build parked in your garage.');}
+    else { $('save-state').textContent='Storage unavailable';toast('Could not save in this browser. Use Share build to keep a link.'); }
+});
+$('reset-button').addEventListener('click',() => {build={...defaultBuild};orbit={yaw:.76,elevation:.31,distance:10.5};autoOrbit=false;studioViewLabel='Front three-quarter';$('viewport-label').textContent=studioViewLabel;document.querySelectorAll('[data-view]').forEach(b=>{b.classList.toggle('active',b.dataset.view==='three-quarter');b.setAttribute('aria-pressed',String(b.dataset.view==='three-quarter'));});$('orbit-button').setAttribute('aria-pressed','false');refreshBuild();clearSharedHash();$('save-state').textContent='Unsaved build';});
+for(const key of ['paint','wheel','engine','scene'])document.querySelectorAll('[data-'+key+']').forEach(button=>button.addEventListener('click',()=>edit(key,button.dataset[key])));
+$('lower-toggle').addEventListener('change',e=>edit('lower',e.target.checked));
+$('lights-toggle').addEventListener('change',e=>edit('lights',e.target.checked));
+$('suspension-range').addEventListener('input',e=>edit('suspension',Number(e.target.value)));
+const views = {'three-quarter':{yaw:.76,label:'Front three-quarter'},side:{yaw:Math.PI/2,label:'Profile / side'},front:{yaw:0,label:'Front profile'},rear:{yaw:Math.PI,label:'Rear profile'}};
+document.querySelectorAll('[data-view]').forEach(button=>button.addEventListener('click',()=>{
+    autoOrbit=false;orbit.yaw=views[button.dataset.view].yaw;orbit.elevation=.24;studioViewLabel=views[button.dataset.view].label;$('viewport-label').textContent=studioViewLabel;$('orbit-button').setAttribute('aria-pressed','false');
+    document.querySelectorAll('[data-view]').forEach(b=>{b.classList.toggle('active',b===button);b.setAttribute('aria-pressed',String(b===button));});render();
+}));
+$('orbit-button').addEventListener('click',()=>{autoOrbit=!autoOrbit;$('orbit-button').setAttribute('aria-pressed',String(autoOrbit));if(autoOrbit){studioViewLabel='Free orbit';$('viewport-label').textContent=studioViewLabel;document.querySelectorAll('[data-view]').forEach(b=>{b.classList.remove('active');b.setAttribute('aria-pressed','false');});}});
+stage.addEventListener('pointerdown',e=>{
+    if(mode!=='studio'||e.target!==$('garage-canvas'))return;drag={x:e.clientX,y:e.clientY};stage.setPointerCapture(e.pointerId);autoOrbit=false;$('orbit-button').setAttribute('aria-pressed','false');
+});
+stage.addEventListener('pointermove',e=>{
+    if(!drag)return;orbit.yaw+=(e.clientX-drag.x)*.007;orbit.elevation=clamp(orbit.elevation+(e.clientY-drag.y)*.003,.06,.8);drag={x:e.clientX,y:e.clientY};studioViewLabel='Free orbit';$('viewport-label').textContent=studioViewLabel;document.querySelectorAll('[data-view]').forEach(b=>{b.classList.remove('active');b.setAttribute('aria-pressed','false');});render();
+});
+stage.addEventListener('pointerup',()=>{drag=null;});stage.addEventListener('pointercancel',()=>{drag=null;});
+stage.addEventListener('wheel',e=>{if(mode!=='studio')return;e.preventDefault();orbit.distance=clamp(orbit.distance+e.deltaY*.007,7.8,15);render();},{passive:false});
+function refreshMode(){
+    document.body.classList.toggle('driving',mode==='drive');$('drive-hud').hidden=mode!=='drive';$('driving-controls').hidden=mode!=='drive';$('view-controls').hidden=mode==='drive';
+    $('mode-badge').textContent=mode==='drive'?(car.course==='sprint'?'PROVING GROUND / SPRINT':'PROVING GROUND / CIRCUIT'):'DESIGN STUDIO';
+    $('viewport-label').textContent=mode==='drive'?'Apex GT / '+camera:studioViewLabel;$('pause-overlay').hidden=!paused;$('pause-button').textContent=paused?'Resume':'Pause';
+    document.querySelector('.track-map').toggleAttribute('hidden',car.course==='sprint');
+    render();
+}
+function startDrive(){
+    if(!renderer)return;mode='drive';paused=false;autoOrbit=false;keys.clear();touchKeys.clear();camera='chase';car=newRun($('drive-mode').value);renderer.resetCamera();$('camera-button').textContent='Camera: chase';refreshMode();stage.focus({preventScroll:true});stage.scrollIntoView({block:'start',behavior:'instant'});
+    notice(car.course==='sprint'?'Hold W / ↑. Stay on the strip for a valid timed run.':'W / ↑ to go. A/D to steer. Brake before the hairpins.',6);
+}
+function leaveDrive(){mode='studio';paused=false;keys.clear();touchKeys.clear();noticeRemaining=0;$('stage-notice').hidden=true;renderer?.resetCamera();refreshMode();}
+function restart(){car=newRun(car.course);paused=false;keys.clear();touchKeys.clear();renderer?.resetCamera();refreshMode();notice('Fresh run. Your configuration is unchanged.',3);stage.focus({preventScroll:true});}
+function setPaused(value){paused=value;keys.clear();touchKeys.clear();refreshMode();}
+$('sound-button').addEventListener('click',async()=>{try{const enabled=await sound.toggle();$('sound-button').textContent='Sound: '+(enabled?'on':'off');$('sound-button').setAttribute('aria-pressed',String(enabled));render();}catch{toast('Engine audio is unavailable in this browser.');}});
+$('drive-button').addEventListener('click',startDrive);$('return-button').addEventListener('click',leaveDrive);$('restart-button').addEventListener('click',restart);
+$('pause-button').addEventListener('click',()=>setPaused(!paused));$('resume-button').addEventListener('click',()=>{setPaused(false);stage.focus({preventScroll:true});});
+$('camera-button').addEventListener('click',()=>{camera=camera==='chase'?'hood':'chase';renderer?.resetCamera();$('camera-button').textContent='Camera: '+camera;$('viewport-label').textContent='Apex GT / '+camera;render();});
+async function fullscreen(){try{if(document.fullscreenElement)await document.exitFullscreen();else await stage.requestFullscreen();}catch{toast('Fullscreen is unavailable in this browser.');}}
+$('fullscreen-button').addEventListener('click',fullscreen);
+$('reload-button').addEventListener('click',()=>location.reload());
+const recognized=['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','KeyW','KeyA','KeyS','KeyD','Space','KeyR','KeyP','KeyC','KeyF'];
+window.addEventListener('keydown',e=>{
+    if(e.target.closest('input,select,textarea')||!$('share-dialog').hidden)return;
+    if(e.code==='KeyF'&&(mode==='drive'||stage.contains(document.activeElement))){e.preventDefault();if(!e.repeat)fullscreen();return;}
+    if(mode!=='drive'||!recognized.includes(e.code))return;e.preventDefault();
+    if(!e.repeat){if(e.code==='KeyR')return restart();if(e.code==='KeyP')return setPaused(!paused);if(e.code==='KeyC')return $('camera-button').click();}
+    if(!paused)keys.add(e.code);
+});
+window.addEventListener('keyup',e=>keys.delete(e.code));
+window.addEventListener('blur',()=>{keys.clear();touchKeys.clear();if(mode==='drive')setPaused(true);});
+document.addEventListener('visibilitychange',()=>{if(document.hidden&&mode==='drive')setPaused(true);});
+document.querySelectorAll('[data-key]').forEach(button=>{
+    button.addEventListener('pointerdown',e=>{e.preventDefault();button.setPointerCapture(e.pointerId);if(!paused)touchKeys.add(button.dataset.key);});
+    for(const type of ['pointerup','pointercancel','lostpointercapture'])button.addEventListener(type,()=>touchKeys.delete(button.dataset.key));
+});
+function driveInput(){const has=(...codes)=>codes.some(c=>keys.has(c)||touchKeys.has(c));return{up:has('ArrowUp','KeyW'),down:has('ArrowDown','KeyS'),left:has('ArrowLeft','KeyA'),right:has('ArrowRight','KeyD'),handbrake:has('Space')};}
+function recordResult(type,value){
+    const k=recordKey(), previous=records[k]||{};
+    if(!finiteRecord(previous[type])||value<previous[type]){records[k]={...previous,[type]:value};writeStorage('garage-bay-records-v1',records);return true;}return false;
+}
+function update(dt){
+    if(mode==='studio'){if(autoOrbit&&!document.hidden)orbit.yaw+=dt*.3;return;}
+    if(paused)return;
+    const input=driveInput();car.handbrake=input.handbrake;stepCar(car,build,input,dt);renderer?.skid(car);
+    if(noticeRemaining>0){noticeRemaining-=dt;if(noticeRemaining<=0)$('stage-notice').hidden=true;}
+    if(car.event==='sixty'){const pb=recordResult('sixty',car.zeroSixty);notice('0–60: '+car.zeroSixty.toFixed(2)+' s'+(pb?' · Personal best':''),5);}
+    if(car.event==='quarter'){const pb=recordResult('quarter',car.quarter);notice('¼ mile: '+car.quarter.toFixed(2)+' s'+(pb?' · Personal best':'')+' · Brake for the end of the strip',7);}
+    if(car.event==='lap'){const pb=recordResult('lap',car.lastLap);notice('Lap '+(car.lap-1)+': '+formatTime(car.lastLap)+(pb?' · Personal best':''),6);}
+    if(car.event==='invalid-lap')notice('Lap completed. Grass shortcut — no record saved.',6);
+    if(car.event==='boundary')notice('Back on the start line. Stay inside the test ground.',4);
+    if(car.event==='end')notice('End of the strip. Results kept — R to run again.',3600);
+    if(car.event==='collision')notice('Easy on the bodywork. R puts you back on the start line.',3);
+}
+function updateHud(){
+    if(mode!=='drive')return;const best=activeRecords(),mph=Math.abs(car.speed)*2.23694;
+    $('speed-readout').textContent=Math.round(mph);$('gear-readout').textContent=car.gear;$('rpm-readout').textContent=car.rpm+' RPM';$('rpm-bar').style.width=(car.rpm/7000*100)+'%';
+    $('surface-readout').textContent=car.surface==='grass'?'GRASS / REDUCED GRIP':car.surface==='curb'?'CURB':Math.abs(car.slip)>.08?'TIRE SLIP':car.handbrake?'HANDBRAKE':'TARMAC';
+    $('trial-label').textContent=car.course==='circuit'?'CIRCUIT / LAP '+car.lap+(car.lapInvalid?' · INVALID':''):'0–60 / ¼ MILE'+(car.sprintInvalid?' · INVALID':'');
+    $('time-readout').textContent=car.course==='circuit'?formatTime(car.lapTime):car.quarter?car.quarter.toFixed(2)+' s / ¼':car.elapsed.toFixed(2)+' s';
+    $('best-readout').textContent=car.course==='circuit'?'Best '+(finiteRecord(best.lap)?formatTime(best.lap):'—'):'Best 0–60 '+(finiteRecord(best.sixty)?best.sixty.toFixed(2)+' s':'—')+' · ¼ '+(finiteRecord(best.quarter)?best.quarter.toFixed(2)+' s':'—');
+    $('map-dot').setAttribute('cx',clamp(50+car.x*28/34,3,97));$('map-dot').setAttribute('cy',clamp(85+car.z*43/65,3,167));
+}
+function render(dt=1/60){renderer?.draw(build,mode,car,orbit,camera,dt);sound.update(car,mode==='drive'&&!paused&&!car.finished,driveInput().up);updateHud();}
+$('share-button').addEventListener('click',()=>{
+    if(mode==='drive')setPaused(true);
+    const url=new URL(location.href);url.hash='build='+encodeURIComponent(JSON.stringify({v:1,build}));
+    $('share-url').value=url.href;$('copy-status').textContent='';focusBeforeShare=document.activeElement;$('share-dialog').hidden=false;$('share-url').focus();$('share-url').select();
+});
+function closeShare(){ $('share-dialog').hidden=true;focusBeforeShare?.focus(); }
+$('close-share').addEventListener('click',closeShare);
+$('share-dialog').addEventListener('click',e=>{if(e.target===$('share-dialog'))closeShare();});
+$('share-dialog').addEventListener('keydown',e=>{
+    if(e.key==='Escape'){e.preventDefault();closeShare();}
+    if(e.key==='Tab'){const items=[...$('share-dialog').querySelectorAll('button,input')],first=items[0],last=items.at(-1);if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}}
+});
+$('copy-link').addEventListener('click',async()=>{
+    try{await navigator.clipboard.writeText($('share-url').value);$('copy-status').textContent='Copied. Share it wherever you like.';}
+    catch{$('share-url').focus();$('share-url').select();$('copy-status').textContent='Copy the selected link manually (Ctrl/Cmd+C).';}
+});
+window.addEventListener('hashchange',()=>{const shared=sharedBuild();if(shared){leaveDrive();build=shared;refreshBuild();$('save-state').textContent='Shared build';toast('Shared build loaded. Take it for a drive.');}});
+window.render_game_to_text=()=>JSON.stringify({
+    mode,paused,sound:sound.enabled,renderer:renderer?'webgl':'unavailable',coordinates:'meters; +x east, +z south; yaw 0 faces north (-z)',
+    build,specifications:specifications(build),camera:mode==='drive'?camera:{yaw:orbit.yaw,distance:orbit.distance},
+    car:mode==='drive'?{x:+car.x.toFixed(2),z:+car.z.toFixed(2),yaw:+car.yaw.toFixed(3),speedMps:+car.speed.toFixed(2),mph:+(Math.abs(car.speed)*2.23694).toFixed(1),steer:+car.steer.toFixed(2),slip:+car.slip.toFixed(3),gear:car.gear,rpm:car.rpm,surface:car.surface}:null,
+    run:{course:car.course,elapsed:+car.elapsed.toFixed(3),started:car.started,finished:car.finished,zeroSixty:car.zeroSixty,quarter:car.quarter,distance:+car.distance.toFixed(1),invalid:car.course==='sprint'?car.sprintInvalid:car.lapInvalid,lap:car.lap,checkpoint:car.checkpoint,lapTime:+car.lapTime.toFixed(3),lastLap:car.lastLap},
+    records:activeRecords(),savedBuilds:saved.length,storageAvailable
+});
+window.render_garage_to_text=window.render_game_to_text;
+window.advanceTime=ms=>{if(!Number.isFinite(ms)||ms<0)return;lastManual=performance.now();const duration=Math.min(ms,60000);const steps=Math.ceil(duration/(1000/120));for(let i=0;i<steps;i++)update(duration/1000/steps);render(Math.max(1/60,duration/1000));};
+try{renderer=new GarageRenderer($('garage-canvas'));renderer.buildCar(build);}
+catch(error){$('render-error').hidden=false;$('drive-button').disabled=true;$('fullscreen-button').disabled=true;}
+$('garage-canvas').addEventListener('webglcontextlost',e=>{e.preventDefault();if(mode==='drive')setPaused(true);renderer=null;$('render-error').hidden=false;$('drive-button').disabled=true;document.body.dataset.demoState='error';});
+const initialShared=sharedBuild();if(initialShared){build=initialShared;$('save-state').textContent='Shared build';}
+else if(saved.length)$('save-state').textContent='Saved in this browser';
+refreshBuild();renderSaved();document.body.dataset.demoState=renderer?'ready':'error';
+let last=performance.now(),accumulator=0;
+function loop(now){
+    const delta=Math.min(.1,(now-last)/1000);last=now;
+    if(now-lastManual>100&&!document.hidden){accumulator+=delta;while(accumulator>=1/120){update(1/120);accumulator-=1/120;}render(delta);}
+    requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);

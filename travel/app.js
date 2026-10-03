@@ -53,7 +53,9 @@ let filteredPhotos = [];
 let markers = [];
 let activeIndex = -1;
 let activeView = "photos";
+let activeItemType = null;
 let photoMarkerByLabel = new Map();
+let placeMarkerByIndex = new Map();
 let photoImageObserver = null;
 
 function loadDeferredPhotoImage(image) {
@@ -104,6 +106,7 @@ function clearMarkers() {
     }
     markers = [];
     photoMarkerByLabel = new Map();
+    placeMarkerByIndex = new Map();
 }
 
 function groupedPhotos(items) {
@@ -155,7 +158,7 @@ function renderPhotoMarkers() {
     const bounds = [];
     for (const group of groupedPhotos(filteredPhotos)) {
         const marker = leaflet.circleMarker([group.lat, group.lon], {
-            radius: Math.min(12, 6 + Math.sqrt(group.photos.length)),
+            radius: Math.min(12, 7 + Math.sqrt(group.photos.length)),
             color: "#8f3f24",
             weight: 2,
             fillColor: "#e78555",
@@ -176,15 +179,16 @@ function renderPlaceMarkers() {
 
     filteredPlaces.forEach((place, index) => {
         const marker = leaflet.circleMarker([place.lat, place.lon], {
-            radius: 6,
+            radius: 5,
             color: "#143b63",
             weight: 2,
-            fillColor: "#7fc8a9",
-            fillOpacity: 0.85
+            fillColor: "#4a91c5",
+            fillOpacity: 0.92
         }).addTo(map);
 
         marker.bindPopup(`<strong>${place.label}</strong><br>Added ${formatDate(place.addedAt)}`);
         marker.on("click", () => setActivePlace(index));
+        placeMarkerByIndex.set(index, marker);
         markers.push(marker);
         bounds.push([place.lat, place.lon]);
     });
@@ -198,7 +202,12 @@ function renderMarkers() {
     }
     mapFallbackEl.hidden = true;
     clearMarkers();
-    const bounds = activeView === "photos" ? renderPhotoMarkers() : renderPlaceMarkers();
+    let bounds = [];
+    if (activeView === "photos") bounds = renderPhotoMarkers();
+    if (activeView === "places") bounds = renderPlaceMarkers();
+    if (activeView === "both") {
+        bounds = [...renderPhotoMarkers(), ...renderPlaceMarkers()];
+    }
 
     if (bounds.length) {
         map.fitBounds(bounds, { padding: [28, 28], maxZoom: 5 });
@@ -209,7 +218,7 @@ function renderPlacesList() {
     filteredPlaces.forEach((place, index) => {
         const card = document.createElement("button");
         card.type = "button";
-        card.className = `place-card${index === activeIndex ? " active" : ""}`;
+        card.className = `place-card${activeItemType === "place" && index === activeIndex ? " active" : ""}`;
         card.innerHTML = `
             <strong>${place.label}</strong>
             <span>${place.lat.toFixed(3)}, ${place.lon.toFixed(3)}</span>
@@ -224,7 +233,7 @@ function renderPhotosList() {
     filteredPhotos.forEach((photo, index) => {
         const card = document.createElement("button");
         card.type = "button";
-        card.className = `place-card photo-card${index === activeIndex ? " active" : ""}`;
+        card.className = `place-card photo-card${activeItemType === "photo" && index === activeIndex ? " active" : ""}`;
         card.innerHTML = `
             <img src="${transparentPixel}" data-src="${escapeHtml(photo.image)}" alt="" loading="lazy" width="${photo.width || 1440}" height="${photo.height || 1080}" sizes="86px">
             <span class="photo-card-copy">
@@ -238,25 +247,49 @@ function renderPhotosList() {
     });
 }
 
+function renderCombinedList() {
+    if (filteredPhotos.length) {
+        const photosLabel = document.createElement("div");
+        photosLabel.className = "travel-list-group-label is-photo";
+        photosLabel.textContent = "Photos / orange markers";
+        placesListEl.appendChild(photosLabel);
+        renderPhotosList();
+    }
+    if (filteredPlaces.length) {
+        const placesLabel = document.createElement("div");
+        placesLabel.className = "travel-list-group-label is-place";
+        placesLabel.textContent = "Places / blue markers";
+        placesListEl.appendChild(placesLabel);
+        renderPlacesList();
+    }
+}
+
 function renderList() {
     placesListEl.innerHTML = "";
-    const items = activeView === "photos" ? filteredPhotos : filteredPlaces;
+    const items = activeView === "photos"
+        ? filteredPhotos
+        : activeView === "places"
+            ? filteredPlaces
+            : [...filteredPhotos, ...filteredPlaces];
     if (!items.length) {
         document.body.dataset.demoState = "empty";
         statusEl.dataset.state = "empty";
-        placesListEl.innerHTML = `<div class="place-card">No ${activeView} matched your search. Try clearing the search or switching views.</div>`;
+        const emptyLabel = activeView === "both" ? "photos or places" : activeView;
+        placesListEl.innerHTML = `<div class="place-card">No ${emptyLabel} matched your search. Try clearing the search or switching views.</div>`;
         return;
     }
     if (activeView === "photos") renderPhotosList();
-    else renderPlacesList();
+    else if (activeView === "places") renderPlacesList();
+    else renderCombinedList();
     observePhotoImages();
 }
 
 function setActivePlace(index) {
     activeIndex = index;
+    activeItemType = "place";
     renderList();
     const place = filteredPlaces[index];
-    const marker = markers[index];
+    const marker = placeMarkerByIndex.get(index);
     if (!place || !marker || !map) return;
     map.flyTo([place.lat, place.lon], Math.max(map.getZoom(), 5), { duration: 0.8 });
     marker.openPopup();
@@ -264,6 +297,7 @@ function setActivePlace(index) {
 
 function setActivePhoto(index) {
     activeIndex = index;
+    activeItemType = "photo";
     renderList();
     const photo = filteredPhotos[index];
     const markerEntry = photoMarkerByLabel.get(photo?.label);
@@ -278,8 +312,10 @@ function updateStatus() {
     if (activeView === "photos") {
         const exact = filteredPhotos.filter((photo) => photo.coordinateSource === "exif").length;
         statusEl.textContent = `${filteredPhotos.length} photos | ${exact} with EXIF GPS`;
-    } else {
+    } else if (activeView === "places") {
         statusEl.textContent = `${filteredPlaces.length} places loaded`;
+    } else {
+        statusEl.textContent = `${filteredPhotos.length} photos + ${filteredPlaces.length} places`;
     }
     statusEl.dataset.state = "ready";
     document.body.dataset.demoState = "ready";
@@ -291,22 +327,36 @@ function applySearch() {
     filteredPhotos = allPhotos.filter((photo) =>
         `${photo.title} ${photo.label}`.toLowerCase().includes(q)
     );
-    const items = activeView === "photos" ? filteredPhotos : filteredPlaces;
+    const items = activeView === "photos"
+        ? filteredPhotos
+        : activeView === "places"
+            ? filteredPlaces
+            : [...filteredPhotos, ...filteredPlaces];
     activeIndex = items.length ? 0 : -1;
+    activeItemType = null;
     renderMarkers();
     renderList();
     updateStatus();
 }
 
 function setView(view) {
-    if (!["photos", "places"].includes(view)) return;
+    if (!["photos", "places", "both"].includes(view)) return;
     activeView = view;
     activeIndex = -1;
+    activeItemType = null;
     for (const button of viewButtons) {
         button.setAttribute("aria-pressed", String(button.dataset.view === activeView));
     }
-    listTitleEl.textContent = activeView === "photos" ? "Gallery Photos" : "Visited Places";
-    searchInputEl.placeholder = activeView === "photos" ? "Search photos or locations" : "Search places";
+    listTitleEl.textContent = activeView === "photos"
+        ? "Gallery Photos"
+        : activeView === "places"
+            ? "Visited Places"
+            : "Photos + Places";
+    searchInputEl.placeholder = activeView === "photos"
+        ? "Search photos or locations"
+        : activeView === "places"
+            ? "Search places"
+            : "Search photos or places";
     renderMarkers();
     renderList();
     updateStatus();

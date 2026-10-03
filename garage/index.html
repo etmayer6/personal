@@ -1,212 +1,63 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="An interactive car visualizer for composing the fictional Apex GT across paint, wheels, stance, and light.">
-    <meta name="theme-color" content="#0b1215">
-    <title>Garage Bay | Apex GT Visualizer | Ethan Mayer</title>
-    <link rel="stylesheet" href="../style.css">
-    <link rel="stylesheet" href="style.css?v=2">
-    <link rel="stylesheet" href="../project-polish.css?v=2">
-    <!-- SEO:START -->
-        <link rel="canonical" href="https://etmayer6.github.io/personal/garage/">
-        <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
-        <meta property="og:type" content="website">
-        <meta property="og:site_name" content="Ethan Mayer">
-        <meta property="og:title" content="Garage Bay | Apex GT Visualizer | Ethan Mayer">
-        <meta property="og:description" content="Compose a fictional Apex GT across paint, wheels, stance, and light in an interactive browser-based car visualizer.">
-        <meta property="og:url" content="https://etmayer6.github.io/personal/garage/">
-        <meta property="og:image" content="https://etmayer6.github.io/personal/assets/social-card.png">
-        <meta property="og:image:type" content="image/png">
-        <meta property="og:image:width" content="1200">
-        <meta property="og:image:height" content="630">
-        <meta property="og:image:alt" content="Ethan Mayer - software engineer and personal projects">
-        <meta name="twitter:card" content="summary_large_image">
-        <meta name="twitter:title" content="Garage Bay | Apex GT Visualizer | Ethan Mayer">
-        <meta name="twitter:description" content="Compose a fictional Apex GT across paint, wheels, stance, and light in an interactive browser-based car visualizer.">
-        <meta name="twitter:image" content="https://etmayer6.github.io/personal/assets/social-card.png">
-    <!-- SEO:END -->
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Garage Bay | Build &amp; Drive | Ethan Mayer</title>
+<meta name="description" content="Build an Apex GT, then drive your creation on a 3D test circuit. Tune paint, wheels, suspension, and power, and share your build.">
+<meta name="theme-color" content="#102326">
+<!-- SEO:START -->
+<link rel="canonical" href="https://etmayer6.github.io/personal/garage/">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="website"><meta property="og:title" content="Garage Bay | Build &amp; Drive">
+<meta property="og:description" content="Your build. Your test lap. A playable 3D car workshop.">
+<meta property="og:url" content="https://etmayer6.github.io/personal/garage/">
+<meta property="og:image" content="https://etmayer6.github.io/personal/assets/social-card.png">
+<meta name="twitter:card" content="summary_large_image">
+<!-- SEO:END -->
+<link rel="stylesheet" href="style.css?v=3">
 </head>
-<body class="garage-body" data-demo-state="ready">
-    <header class="garage-site-header">
-        <nav aria-label="Primary navigation">
-            <a class="nav-name" href="../index.html">Ethan Mayer</a>
-            <ul>
-                <li><a href="../index.html">Home</a></li><li><a href="../about/">About</a></li>
-                <li><a href="../resume/">Resume</a></li>
-                <li><a aria-current="page" href="../projects/">Projects</a></li>
-                <li><a href="../games/">Games</a></li>
-                <li><a href="../photos/">Photos</a></li>
-                <li><a href="../blog/">Blog</a></li>
-            </ul>
-        </nav>
-    </header>
-
-    <main class="garage-page-shell">
-        <section class="garage-hero" aria-labelledby="project-title">
-            <div class="hero-copy">
-                <a class="back-link" href="../projects/"><span aria-hidden="true">&larr;</span> Project index</a>
-                <p class="eyebrow">Garage Bay / Visualizer 04</p>
-                <h1 id="project-title">Put the whole machine <em>on the lift.</em></h1>
-                <p class="hero-lede">Build a look, orbit the car, and see the numbers move with it. A fictional studio for the details that make a machine feel like yours.</p>
-                <div class="hero-meta" aria-label="Visualizer details"><span>Interactive vehicle studio</span><span>Local / no account</span></div>
-            </div>
-            <div class="hero-index" aria-label="Project index number">
-                <span>04</span>
-                <small>APEX GT<br>PROTOTYPE</small>
-            </div>
-        </section>
-
-        <section class="visualizer-shell" aria-labelledby="studio-title">
-            <header class="studio-bar">
-                <div class="studio-brand">
-                    <span class="studio-mark" aria-hidden="true"><i></i><i></i><i></i></span>
-                    <div><strong id="studio-title">Apex GT / Studio build</strong><small>Garage Bay 04 · design mode</small></div>
-                </div>
-                <div class="studio-actions">
-                    <span class="save-state" id="save-state" role="status" aria-live="polite">Unsaved build</span>
-                    <button class="ghost-button" id="reset-button" type="button">Reset</button>
-                    <button class="accent-button" id="save-button" type="button">Save build <span aria-hidden="true">&rarr;</span></button>
-                </div>
-            </header>
-
-            <div class="visualizer-layout">
-                <section class="viewport-panel" aria-labelledby="viewport-title">
-                    <div class="viewport-heading">
-                        <div><p class="panel-kicker">Live viewport</p><h2 id="viewport-title">Shape, light, stance.</h2></div>
-                        <div class="viewport-readout"><span id="viewport-label">Front three-quarter</span><strong id="orbit-readout">Yaw +18&deg;</strong></div>
-                    </div>
-
-                    <div class="vehicle-stage" id="vehicle-stage" data-view="three-quarter" data-scene="golden" data-wheel="street" tabindex="0" aria-describedby="stage-help">
-                        <div class="stage-stars" aria-hidden="true"></div>
-                        <div class="stage-grid" aria-hidden="true"></div>
-                        <div class="stage-horizon" aria-hidden="true"></div>
-                        <div class="stage-floor" aria-hidden="true"></div>
-                        <div class="stage-corner stage-corner-top"><span class="live-dot"></span> LIVE VIEWPORT</div>
-                        <div class="stage-corner stage-corner-bottom">APEX / 04 &middot; <span id="scene-label">GOLDEN HOUR</span></div>
-                        <div class="orbit-hint" id="stage-help"><span aria-hidden="true">&harr;</span> Drag to orbit <kbd>Shift</kbd> + drag to tilt</div>
-                        <div class="vehicle-render" id="vehicle-render">
-                            <svg class="car-visual" viewBox="0 0 800 470" role="img" aria-labelledby="car-title car-description">
-                                <title id="car-title">Apex GT configurable concept car</title>
-                                <desc id="car-description">A stylized three-quarter view of a fictional performance coupe with configurable paint, wheels, lights, and stance.</desc>
-                                <defs>
-                                    <linearGradient id="car-paint" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="var(--paint-hi)"></stop><stop offset="0.47" stop-color="var(--paint-base)"></stop><stop offset="1" stop-color="var(--paint-shadow)"></stop></linearGradient>
-                                    <linearGradient id="car-glass" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#a8d8d6" stop-opacity=".78"></stop><stop offset="1" stop-color="#0b1b22" stop-opacity=".96"></stop></linearGradient>
-                                    <linearGradient id="car-chrome" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#d9e8e0"></stop><stop offset=".5" stop-color="#6b8585"></stop><stop offset="1" stop-color="#edf9ef"></stop></linearGradient>
-                                    <filter id="car-drop-shadow" x="-20%" y="-30%" width="140%" height="170%"><feDropShadow dx="0" dy="25" stdDeviation="18" flood-color="#000" flood-opacity=".8"></feDropShadow></filter>
-                                    <filter id="neon-glow"><feGaussianBlur stdDeviation="5" result="blur"></feGaussianBlur><feMerge><feMergeNode in="blur"></feMergeNode><feMergeNode in="SourceGraphic"></feMerge></filter>
-                                </defs>
-                                <g class="car-model" filter="url(#car-drop-shadow)">
-                                    <ellipse class="car-shadow" cx="413" cy="371" rx="288" ry="32"></ellipse>
-                                    <path class="under-glow" d="M150 334c91 30 420 35 548-2l-48 40c-132 30-370 30-496-4z"></path>
-                                    <g class="far-wheels" aria-hidden="true"><ellipse cx="210" cy="296" rx="32" ry="68"></ellipse><ellipse cx="608" cy="289" rx="30" ry="65"></ellipse></g>
-                                    <path class="car-body" d="M106 310c8-45 38-69 93-78l69-19 48-70c29-39 68-53 130-53 72 0 118 20 149 66l39 58c38 12 61 34 67 72l9 42-21 30-60 4c-11 31-34 48-67 48-35 0-58-17-67-50l-224-2c-10 33-33 50-69 50-35 0-58-18-68-52l-69-6z"></path>
-                                    <path class="body-shoulder" d="M201 233c101 18 302 23 435-6l65 36c-106 31-373 38-508 9z"></path>
-                                    <path class="roof-line" d="M266 213l48-64c27-33 58-45 113-45 63 0 99 15 125 53l39 61c-100 20-225 20-325-5z"></path>
-                                    <path class="windshield" d="M328 153c21-27 47-36 88-37l17 91-107-2z"></path>
-                                    <path class="side-glass" d="M447 116c46 1 72 15 96 47l24 37-99 4z"></path>
-                                    <path class="glass-divider" d="m432 116 19 91"></path>
-                                    <path class="hood-highlight" d="M162 252c133 25 360 26 507-4"></path>
-                                    <path class="door-line" d="M435 212c-6 34-8 67-6 108M228 226l-12 103M610 215l31 116"></path>
-                                    <path class="front-bumper" d="M106 310c85 21 185 25 286 25 114 0 221-6 318-30l-4 30c-110 34-479 43-588 4z"></path>
-                                    <path class="front-grille" d="M102 322c47 13 101 17 163 18l-24 20-117-7z"></path>
-                                    <path class="headlight" d="M116 270c31-13 64-20 100-22l-42 37-61 10z"></path>
-                                    <path class="headlight-glow" d="M119 271c28-10 54-15 80-17l-33 23-47 8z"></path>
-                                    <path class="tail-light" d="M666 237c27 6 47 17 64 31l-4 27-75-16z"></path>
-                                    <path class="tail-light-glow" d="M679 246c20 5 33 11 45 20l-1 12-48-12z"></path>
-                                    <path class="side-skirt" d="M229 334c90 7 298 9 407-2l-23 31c-115 17-290 14-407-4z"></path>
-                                    <path class="mirror" d="M558 198c17-15 32-15 43-7l-6 17-32 7z"></path>
-                                    <path class="door-handle" d="M482 237h26"></path>
-                                    <g class="wheel wheel-front" transform="translate(656 329)"><circle class="tire" r="44"></circle><circle class="rim" r="29"></circle><circle class="hub" r="7"></circle><g class="wheel-spokes"><path d="M0-25V-8M0 8v17M-25 0h17M8 0h17M-18-18l13 13M5 5l13 13M18-18 5-5M-5 5l-13 13"></path></g><path class="caliper" d="M-22-20c13-9 25-5 29 7l-13 16c-13-2-20-10-16-23z"></path></g>
-                                    <g class="wheel wheel-rear" transform="translate(228 337)"><circle class="tire" r="42"></circle><circle class="rim" r="28"></circle><circle class="hub" r="7"></circle><g class="wheel-spokes"><path d="M0-24V-8M0 8v16M-24 0h16M8 0h16M-17-17l12 12M5 5l12 12M17-17 5-5M-5 5l-12 12"></path></g><path class="caliper" d="M-21-19c12-9 24-5 28 7l-12 16c-12-2-19-10-16-23z"></path></g>
-                                    <g class="spec-overlay" aria-hidden="true"><path d="M250 113 170 74H72"></path><text x="18" y="69">AERO ROOF</text><path d="M659 327h93"></path><text x="624" y="361">FORGED 19</text><path d="M429 334v50"></path><text x="389" y="409">LOW / 132 MM</text></g>
-                                </g>
-                            </svg>
-                        </div>
-                        <div class="stage-caption"><span id="build-code">APX-04 / OBSIDIAN</span><span id="build-status">Ready to configure</span></div>
-                    </div>
-
-                    <div class="viewport-controls">
-                        <div class="view-tabs" role="group" aria-label="Camera view">
-                            <button type="button" class="view-tab is-active" data-view="three-quarter" aria-pressed="true">3/4 view</button>
-                            <button type="button" class="view-tab" data-view="side" aria-pressed="false">Side</button>
-                            <button type="button" class="view-tab" data-view="front" aria-pressed="false">Front</button>
-                            <button type="button" class="view-tab" data-view="rear" aria-pressed="false">Rear</button>
-                        </div>
-                        <label class="range-control" for="orbit-range"><span>Orbit</span><input id="orbit-range" type="range" min="-72" max="180" value="18"><output id="orbit-output">+18&deg;</output></label>
-                        <button class="orbit-button" id="orbit-button" type="button" aria-pressed="false"><span aria-hidden="true">&circlearrowright;</span> Auto orbit</button>
-                    </div>
-                </section>
-
-                <aside class="build-panel" aria-labelledby="build-title">
-                    <div class="build-panel-heading"><p class="panel-kicker">Build controls</p><h2 id="build-title">Compose the look.</h2><p>Every choice updates the car, the code, and the readout.</p></div>
-
-                    <fieldset class="control-group">
-                        <legend>Paint <span id="paint-label">Obsidian</span></legend>
-                        <div class="paint-options" role="group" aria-label="Paint color">
-                            <button class="paint-swatch is-active" type="button" data-paint="obsidian" aria-label="Obsidian black" aria-pressed="true"><i></i><span>Obsidian</span></button>
-                            <button class="paint-swatch" type="button" data-paint="signal" aria-label="Signal orange" aria-pressed="false"><i></i><span>Signal</span></button>
-                            <button class="paint-swatch" type="button" data-paint="mineral" aria-label="Mineral mint" aria-pressed="false"><i></i><span>Mineral</span></button>
-                            <button class="paint-swatch" type="button" data-paint="cobalt" aria-label="Cobalt blue" aria-pressed="false"><i></i><span>Cobalt</span></button>
-                        </div>
-                    </fieldset>
-
-                    <fieldset class="control-group">
-                        <legend>Wheel package <span id="wheel-label">Street forged</span></legend>
-                        <div class="choice-list" role="group" aria-label="Wheel package">
-                            <button class="choice-button is-active" type="button" data-wheel="street" aria-pressed="true"><span class="choice-icon wheel-icon wheel-icon-street" aria-hidden="true"></span><span><strong>Street forged</strong><small>19 in / satin graphite</small></span><b>+0</b></button>
-                            <button class="choice-button" type="button" data-wheel="aero" aria-pressed="false"><span class="choice-icon wheel-icon wheel-icon-aero" aria-hidden="true"></span><span><strong>Aero disc</strong><small>19 in / efficiency spec</small></span><b>-4</b></button>
-                            <button class="choice-button" type="button" data-wheel="track" aria-pressed="false"><span class="choice-icon wheel-icon wheel-icon-track" aria-hidden="true"></span><span><strong>Track mesh</strong><small>20 in / heat-ready</small></span><b>+12</b></button>
-                        </div>
-                    </fieldset>
-
-                    <fieldset class="control-group">
-                        <legend>Scene light <span id="scene-label-control">Golden hour</span></legend>
-                        <div class="scene-options" role="group" aria-label="Scene lighting">
-                            <button class="scene-button is-active" type="button" data-scene="golden" aria-pressed="true"><i></i><span>Golden</span></button>
-                            <button class="scene-button" type="button" data-scene="studio" aria-pressed="false"><i></i><span>Studio</span></button>
-                            <button class="scene-button" type="button" data-scene="night" aria-pressed="false"><i></i><span>Night</span></button>
-                        </div>
-                    </fieldset>
-
-                    <div class="toggle-grid" aria-label="Viewport layers">
-                        <label class="toggle-control"><input id="lights-toggle" type="checkbox" checked><span class="toggle-ui"></span><span>Headlights</span></label>
-                        <label class="toggle-control"><input id="grid-toggle" type="checkbox" checked><span class="toggle-ui"></span><span>Floor grid</span></label>
-                        <label class="toggle-control"><input id="overlay-toggle" type="checkbox"><span class="toggle-ui"></span><span>Spec overlay</span></label>
-                        <label class="toggle-control"><input id="lower-toggle" type="checkbox"><span class="toggle-ui"></span><span>Lower stance</span></label>
-                    </div>
-
-                    <button class="check-button" id="scan-button" type="button"><span class="check-icon" aria-hidden="true">&check;</span><span><strong>Run configuration check</strong><small id="check-label">Validate the current build</small></span><b aria-hidden="true">&rarr;</b></button>
-                </aside>
-            </div>
-
-            <div class="build-deck">
-                <section class="spec-panel" aria-labelledby="spec-title">
-                    <div class="deck-heading"><div><p class="panel-kicker">Build sheet</p><h2 id="spec-title">The numbers behind the look.</h2></div><span class="deck-code" id="deck-code">APX-04</span></div>
-                    <div class="spec-grid" id="spec-grid"></div>
-                </section>
-                <section class="systems-panel" aria-labelledby="systems-title">
-                    <div class="deck-heading"><div><p class="panel-kicker">Engineering readout</p><h2 id="systems-title">What changed?</h2></div><span class="system-state" id="system-state">Nominal</span></div>
-                    <div class="system-list" id="system-list"></div>
-                </section>
-            </div>
-        </section>
-
-        <section class="build-note" aria-labelledby="build-note-title">
-            <div><p class="eyebrow">Behind the build</p><h2 id="build-note-title">A small car studio, fully local.</h2></div>
-            <p>There is no configurator account or remote vehicle data here. The model, controls, spec math, and saved build all run in the browser.</p>
-        </section>
-    </main>
-
-    <div class="garage-toast" id="garage-toast" role="status" aria-live="polite"></div>
-
-    <footer class="garage-footer">
-        <span>Garage Bay / Fictional vehicle studio</span>
-        <a href="../projects/">Return to project index</a>
-    </footer>
-
-    <script src="app.js?v=2"></script>
-    <script src="../site-play.js?v=pet-companion-2"></script>
-</body>
-</html>
+<body class="garage-body" data-demo-state="loading">
+<header class="garage-site-header"><nav aria-label="Primary navigation"><a class="nav-name" href="../index.html">Ethan Mayer</a><ul><li><a href="../index.html">Home</a></li><li><a href="../about/">About</a></li><li><a href="../resume/">Resume</a></li><li><a href="../projects/" aria-current="page">Projects</a></li><li><a href="../games/">Games</a></li><li><a href="../photos/">Photos</a></li><li><a href="../blog/">Blog</a></li></ul></nav></header>
+<main class="garage-page-shell">
+<header class="garage-hero"><div><a class="back-link" href="../projects/">&larr; Projects</a><h1>Garage Bay<span>Build it. Drive it.</span></h1></div><p>Put the whole machine in your hands.</p></header>
+<section class="workshop" aria-label="Apex GT car workshop">
+<header class="studio-bar"><div class="studio-brand"><span class="brand-mark" aria-hidden="true">G / B</span><div><strong>Apex GT</strong><small id="build-code">OBSIDIAN / STREET / STOCK</small></div></div><div class="studio-actions"><span id="save-state" role="status">Unsaved build</span><button id="save-button">Save build</button><button id="share-button">Share build</button></div></header>
+<div class="workshop-layout">
+<section class="viewport-panel" aria-label="Interactive 3D car">
+<div class="vehicle-stage" id="vehicle-stage" tabindex="0" aria-describedby="stage-help">
+<canvas id="garage-canvas" aria-label="3D Apex GT car and driving circuit">The interactive workshop needs JavaScript and WebGL.</canvas>
+<div class="viewport-top"><span class="mode-badge" id="mode-badge">DESIGN STUDIO</span><span id="viewport-label">Front three-quarter</span><button id="fullscreen-button" aria-label="Toggle fullscreen" title="Fullscreen (F)">&#x26F6;</button></div>
+<div class="studio-caption" id="studio-caption"><span>APEX</span><strong>GT<span>01</span></strong><small id="paint-label">Obsidian</small></div>
+<div class="stage-help" id="stage-help">Drag to orbit &middot; Scroll to zoom</div>
+<div class="drive-hud" id="drive-hud" hidden>
+<div class="telemetry"><div class="speed"><strong id="speed-readout">0</strong><span>MPH</span></div><div class="gear"><strong id="gear-readout">N</strong><span id="rpm-readout">900 RPM</span></div><div class="rpm-track"><i id="rpm-bar"></i></div></div>
+<div class="timing"><span id="trial-label">CIRCUIT / LAP 1</span><strong id="time-readout">0:00.00</strong><small id="best-readout">Best &mdash;</small></div>
+<div class="surface-readout" id="surface-readout">TARMAC</div>
+<svg class="track-map" viewBox="0 0 100 170" role="img" aria-label="Circuit map and car location"><path d="M78 42 A28 28 0 0 0 22 42 V128 A28 28 0 0 0 78 128 Z" fill="none" stroke="#fff" stroke-opacity=".3" stroke-width="8"/><path d="M72 110h12" stroke="#c5e9a7" stroke-width="2"/><circle id="map-dot" cx="78" cy="110" r="4" fill="#c5e9a7"/></svg>
+<div class="pause-overlay" id="pause-overlay" hidden><strong>In neutral.</strong><button id="resume-button">Resume driving</button></div>
+<div class="touch-drive" aria-label="Touch driving controls"><button data-key="ArrowLeft" aria-label="Steer left">&larr;</button><button data-key="ArrowRight" aria-label="Steer right">&rarr;</button><button data-key="ArrowDown" aria-label="Brake or reverse">BRAKE</button><button data-key="ArrowUp" aria-label="Accelerate">GO</button></div>
+</div>
+<div class="stage-notice" id="stage-notice" role="status" hidden></div>
+<div class="render-error" id="render-error" hidden><strong>3D rendering is unavailable.</strong><p>Enable hardware acceleration or try a browser with WebGL. Your saved builds are safe.</p><button id="reload-button">Try again</button></div>
+</div>
+<div class="view-controls" id="view-controls"><div class="segmented" aria-label="Camera angle"><button class="view-tab active" data-view="three-quarter">3/4 view</button><button class="view-tab" data-view="side">Side</button><button class="view-tab" data-view="front">Front</button><button class="view-tab" data-view="rear">Rear</button></div><button id="orbit-button" aria-pressed="false">Auto orbit</button></div>
+<div class="driving-controls" id="driving-controls" hidden><button id="return-button">&larr; Workshop</button><button id="camera-button">Camera: chase</button><button id="sound-button" aria-pressed="false">Sound: off</button><button id="pause-button">Pause</button><button id="restart-button">Restart run</button><span>WASD / arrows &middot; Space handbrake &middot; R reset</span></div>
+</section>
+<aside class="build-panel" id="build-panel" aria-label="Build options">
+<div class="panel-heading"><span class="eyebrow">YOUR CONFIGURATION</span><button class="text-button" id="reset-button">Reset build</button></div>
+<fieldset><legend>01 <span>Paint</span><strong id="paint-choice-label">Obsidian</strong></legend><div class="paint-options"><button class="paint-swatch active" data-paint="obsidian" aria-label="Obsidian" style="--swatch:#34494e" aria-pressed="true"></button><button class="paint-swatch" data-paint="signal" aria-label="Signal orange" style="--swatch:#d46e3d" aria-pressed="false"></button><button class="paint-swatch" data-paint="mineral" aria-label="Mineral green" style="--swatch:#6c9e83" aria-pressed="false"></button><button class="paint-swatch" data-paint="cobalt" aria-label="Cobalt blue" style="--swatch:#4875b3" aria-pressed="false"></button><button class="paint-swatch" data-paint="pearl" aria-label="Pearl white" style="--swatch:#e6e4d9" aria-pressed="false"></button></div></fieldset>
+<fieldset><legend>02 <span>Wheels &amp; tires</span><strong id="deck-code">19 STREET</strong></legend><div class="choice-list"><button data-wheel="street" class="choice-button active"><span>Street forged</span><small>19&quot; &middot; all-round grip</small></button><button data-wheel="aero" class="choice-button"><span>Aero disc</span><small>19&quot; &middot; low rolling resistance</small></button><button data-wheel="track" class="choice-button"><span>Track mesh</span><small>20&quot; &middot; stickier compound</small></button></div></fieldset>
+<fieldset><legend>03 <span>Power</span></legend><div class="segmented"><button data-engine="stock" class="active">Stock</button><button data-engine="sport">Sport</button><button data-engine="race">Race</button></div><p class="option-note" id="engine-note">320 hp &middot; predictable power delivery</p></fieldset>
+<fieldset><legend>04 <span>Suspension</span></legend><label class="toggle"><span>Lower stance</span><input type="checkbox" id="lower-toggle"></label><label class="range-label" for="suspension-range">Compliance <span id="suspension-label">Balanced</span></label><input id="suspension-range" type="range" min="0" max="100" value="50"><div class="range-ends"><span>Comfort</span><span>Firm</span></div></fieldset>
+<details class="scene-options"><summary>Studio lighting</summary><div class="segmented"><button data-scene="golden" class="active">Golden</button><button data-scene="studio">Studio</button><button data-scene="night">Night</button></div><label class="toggle"><span>Headlights</span><input id="lights-toggle" type="checkbox" checked></label></details>
+<div class="launch-controls"><label for="drive-mode">Test ground</label><select id="drive-mode"><option value="circuit">Test circuit</option><option value="sprint">0&ndash;60 / drag strip</option></select><button class="accent-button" id="drive-button">Take it for a drive <span aria-hidden="true">&nearr;</span></button></div>
+</aside>
+</div>
+<div class="build-sheet" id="spec-grid" aria-label="Vehicle specifications"><div class="finding-card"><span>Power</span><strong id="power-spec">320 hp</strong></div><div class="finding-card"><span>Mass</span><strong id="mass-spec">1,430 kg</strong></div><div class="finding-card"><span>Tire grip</span><strong id="grip-spec">1.05 g</strong></div><div class="finding-card"><span>Ride height</span><strong id="height-spec">146 mm</strong></div><p>Fictional car. Real-time handling.<br><span id="build-status">Build links include your settings, not your driving records.</span></p></div>
+</section>
+<section class="saved-garage" aria-labelledby="saved-title"><div><span class="eyebrow">YOUR GARAGE</span><h2 id="saved-title">Keep the good ones.</h2></div><div id="saved-builds"><p>Save a build to park it here. Stored in this browser.</p></div></section>
+<div class="share-dialog" id="share-dialog" hidden role="dialog" aria-modal="true" aria-labelledby="share-title"><div><button id="close-share" class="close-share" aria-label="Close share dialog">&times;</button><h2 id="share-title">Hand over the keys.</h2><p>Anyone with this link can open and drive this exact build. No account needed.</p><label for="share-url">Build link</label><input id="share-url" readonly><button id="copy-link" class="accent-button">Copy link</button><span id="copy-status" role="status"></span></div></div>
+<div class="garage-toast" id="garage-toast" role="status" aria-live="polite" hidden></div>
+<noscript><p>Enable JavaScript to configure and drive the car.</p></noscript>
+</main><script type="module" src="app.js?v=3"></script>
+</body></html>

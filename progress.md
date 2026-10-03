@@ -994,3 +994,13 @@ Original prompt: Remove clutter from the games on the website. Right now they do
 
 - Playtested the feed, clean, play, and food-variety loop at desktop and 390px mobile. On the phone, the primary growth reward was below the stacked care controls after a snack.
 - Added an adjacent live care-progress readout and retained a two-column phone action grid so growth and sampled-food feedback are reachable in the same care interaction.
+
+## Garage Bay build-and-drive refactor — 2026-10-03
+
+- User request: implement the Garage Bay car-building/driving idea and repurpose suitable Flight Sim content.
+- Replaced the pseudo-orbit SVG and simulated diagnostics with a native WebGL coupe, compact workshop, real camera presets/orbit/zoom, paint/wheel/power/suspension controls, and optional lighting.
+- Adapted Flight Sim's transform/lighting and chase-camera approach without modifying Flight Sim. Added circuit/drag environments, car-specific 120 Hz dynamics, steering/brakes/reverse/handbrake, body movement, wheel animation, tire tracks, solid pit/guardrail, hood/chase views, touch controls, pause/reset/fullscreen, and opt-in engine audio.
+- Added eight-slot local garage, legacy-build migration, validated cross-browser public build links, and configuration-specific local lap/0–60/quarter-mile bests. No Supabase schema/account changes or paid services; cloud garages are intentionally not claimed.
+- QA caught and fixed strip-end results being erased, manual-time camera lag, track-overlapping scenery, SVG minimap visibility, and stopped-car gear/RPM. Added focused regression coverage and updated the Projects card to describe the actual experience.
+- Final verification: syntax/static checks pass. The 111-test site matrix passed 110 checks; the multi-context WebGL fallback check hit a parallel-load timeout, then passed in the clean 8/8 focused Garage rerun. Added a full physics-driven valid lap (~50.55 s) to the regression test. Required bundled-client driving run completed without page/console errors; inspected desktop studio, chase/hood, sprint-finish, mobile, and gameplay screenshots.
+- Promoted Garage Bay to the playable Projects workbench and updated filter/reference-count expectations while preserving the pre-existing Tier Lab and Travel work. No commits or pushes made for this request. TODO: optional future Supabase cloud garages/public records; current link sharing is complete and does not require them.
