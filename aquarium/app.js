@@ -346,6 +346,8 @@
                 state.message = "The water is getting cloudy. Time for a clean.";
             } else if (state.mood < 30) {
                 state.message = "Momo looks a little gloomy. Play with the fish.";
+            } else if (state.feedings === 0) {
+                state.message = "New tank ready. Feed Momo to start the growth log.";
             } else {
                 state.message = currentStage().title;
             }
