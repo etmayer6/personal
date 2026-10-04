@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Sticker Sketchbook | Ethan Mayer</title>
+    <meta name="description" content="Leave a little illustration in a shared sticker sketchbook. Pick a curated doodle and an ink, then explore the pages made by everyone who visits.">
+    <meta name="theme-color" content="#3e6056">
+    <!-- SEO:START -->
+    <link rel="canonical" href="https://etmayer6.github.io/personal/sketchbook/">
+    <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+    <meta property="og:type" content="website"><meta property="og:site_name" content="Ethan Mayer">
+    <meta property="og:title" content="Sticker Sketchbook | Ethan Mayer"><meta property="og:description" content="A little mark from everyone who passes through.">
+    <meta property="og:url" content="https://etmayer6.github.io/personal/sketchbook/">
+    <meta property="og:image" content="https://etmayer6.github.io/personal/assets/social-card.png"><meta property="og:image:alt" content="Ethan Mayer's collection of interactive projects">
+    <meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Sticker Sketchbook | Ethan Mayer"><meta name="twitter:description" content="A little mark from everyone who passes through."><meta name="twitter:image" content="https://etmayer6.github.io/personal/assets/social-card.png">
+    <!-- SEO:END -->
+    <link rel="stylesheet" href="style.css?v=1">
+</head>
+<body class="sketchbook-body" data-demo-state="ready">
+    <header class="site-header"><nav aria-label="Primary navigation"><a class="nav-name" href="../index.html">Ethan Mayer</a><ul><li><a href="../index.html">Home</a></li><li><a href="../about/">About</a></li><li><a href="../resume/">Resume</a></li><li><a href="../projects/" aria-current="page">Projects</a></li><li><a href="../games/">Games</a></li><li><a href="../photos/">Photos</a></li><li><a href="../blog/">Blog</a></li></ul></nav></header>
+    <main>
+        <header class="sketch-heading"><div><a class="back-link" href="../projects/?kind=make">&larr; All projects</a><h1>Sticker Sketchbook<span aria-hidden="true">.</span></h1><p>A little mark from everyone who passes through.</p></div><span id="connection" class="connection" role="status">Connecting to the shared album</span></header>
+        <section class="worktable" aria-label="Shared sticker sketchbook">
+            <div class="album-column">
+                <div class="album-toolbar"><span class="eyebrow">THE SHARED PAGES</span><div><button id="refresh" aria-label="Refresh shared page">Refresh</button><button id="share">Copy page link &nearr;</button><button id="download">Save picture</button></div></div>
+                <div class="notebook"><div class="binding" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="paper"><header class="paper-heading"><span>Little things, together.</span><span id="page-number">01</span></header><div id="sticker-board" class="sticker-board" aria-label="Stickers on this page"><p class="empty-caption">The shared pages are loading.</p></div><footer class="paper-footer"><span id="page-caption">A page made by visitors</span><span>EST. 2026</span></footer></div></div>
+                <nav class="page-navigation" aria-label="Sketchbook pages"><button id="previous" aria-label="Previous sketchbook page" disabled>&larr;</button><span id="page-counter">Page 1</span><button id="next" aria-label="Next sketchbook page" disabled>&rarr;</button><button id="latest" disabled>Latest page</button><span id="total-count">Shared, not just saved here.</span></nav>
+                <p id="album-message" class="album-message" role="status" hidden></p>
+            </div>
+            <aside class="sticker-tray" aria-label="Choose your contribution">
+                <header><span class="eyebrow">LEAVE SOMETHING LITTLE</span><h2>Pick your sticker.</h2></header>
+                <div id="sticker-picker" class="sticker-picker" role="group" aria-label="Sticker designs"></div>
+                <div class="ink-heading"><span class="eyebrow">THE INK</span><span id="ink-name">Fern</span></div>
+                <div id="ink-picker" class="ink-picker" role="group" aria-label="Sticker ink"></div>
+                <div class="preview-card"><span class="preview-label">YOUR STICKER</span><div id="sticker-preview"></div><strong id="sticker-name">Little sprout</strong></div>
+                <button id="publish" class="primary" disabled>Leave a sticker &nearr;</button>
+                <p id="publish-status" role="status" aria-live="polite">Pick a doodle while the shared page connects.</p>
+                <button id="undo" class="undo" hidden>Undo my last sticker</button>
+                <details class="house-rules"><summary>How this stays friendly</summary><p>Only these illustrated stickers and inks can be posted. The server picks a separate spot for each one—no drawing, uploads, names, or custom text.</p><p>Three stickers per guest pass each day, a minute apart. There is also a shared posting cap. This reduces abuse; it is not a promise of perfect moderation.</p><p>A guest pass is saved in this browser. The album is public. Removing your sticker leaves its spot blank and does not reset the posting limit.</p></details>
+            </aside>
+        </section>
+        <noscript><p>Enable JavaScript to see the shared pages and leave an illustrated sticker.</p></noscript>
+    </main>
+    <script src="../tier-lab/supabase-config.js"></script><script type="module" src="app.js?v=1"></script><script src="../site-play.js?v=sketchbook-1" defer></script>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pocket Worlds | Ethan Mayer</title>
+<meta name="description" content="Sculpt a tiny island, plant a forest, and make a little world your own. Save and share your creations in this free browser sandbox.">
+<meta name="theme-color" content="#244f48">
+<!-- SEO:START -->
+<link rel="canonical" href="https://etmayer6.github.io/personal/pocket-worlds/">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="website"><meta property="og:title" content="Pocket Worlds | Ethan Mayer">
+<meta property="og:description" content="A little island. Entirely yours. Sculpt, plant, build, and share.">
+<meta property="og:url" content="https://etmayer6.github.io/personal/pocket-worlds/">
+<meta property="og:image" content="https://etmayer6.github.io/personal/projects/assets/optimized/pocket-worlds-card-960.webp">
+<meta property="og:site_name" content="Ethan Mayer"><meta property="og:image:alt" content="A miniature green island with pine trees, a river, and terracotta-roof cottages">
+<meta name="twitter:title" content="Pocket Worlds | Ethan Mayer"><meta name="twitter:description" content="A little island. Entirely yours. Sculpt, plant, build, and share."><meta name="twitter:image" content="https://etmayer6.github.io/personal/projects/assets/optimized/pocket-worlds-card-960.webp">
+<meta name="twitter:card" content="summary_large_image">
+<!-- SEO:END -->
+<link rel="stylesheet" href="style.css?v=1">
+</head><body class="pocket-body" data-demo-state="loading">
+<header class="site-header"><nav aria-label="Primary navigation"><a class="nav-name" href="../index.html">Ethan Mayer</a><ul><li><a href="../index.html">Home</a></li><li><a href="../about/">About</a></li><li><a href="../resume/">Resume</a></li><li><a href="../projects/">Projects</a></li><li><a href="../games/" aria-current="page">Games</a></li><li><a href="../photos/">Photos</a></li><li><a href="../blog/">Blog</a></li></ul></nav></header>
+<main>
+<header class="world-heading"><div><a href="../games/" class="back-link">&larr; All games</a><h1>Pocket Worlds</h1></div><p>A little island. Entirely yours.</p></header>
+<section class="world-editor" aria-label="Island editor">
+<header class="editor-bar"><label class="world-name-label" for="world-name"><span aria-hidden="true">◈</span><input id="world-name" value="Little Cove" maxlength="40" aria-label="World name"></label><div class="bar-actions"><span id="save-state" role="status">Local draft</span><button id="save-world">Save</button><button class="primary" id="share-world">Share world ↗</button></div></header>
+<div class="studio-layout">
+<aside class="tool-panel" aria-label="World tools">
+<div class="tool-list" role="group" aria-label="Choose tool">
+<button data-tool="raise" aria-pressed="true" class="active"><span aria-hidden="true">↥</span>Raise<span class="key">1</span></button>
+<button data-tool="lower" aria-pressed="false"><span aria-hidden="true">↧</span>Lower<span class="key">2</span></button>
+<button data-tool="water" aria-pressed="false"><span aria-hidden="true">≈</span>Water<span class="key">3</span></button>
+<button data-tool="tree" aria-pressed="false"><span aria-hidden="true">♧</span>Forest<span class="key">4</span></button>
+<button data-tool="cottage" aria-pressed="false"><span aria-hidden="true">⌂</span>Cottage<span class="key">5</span></button>
+<button data-tool="path" aria-pressed="false"><span aria-hidden="true">┄</span>Path<span class="key">6</span></button>
+<button data-tool="erase" aria-pressed="false"><span aria-hidden="true">×</span>Erase<span class="key">7</span></button>
+<button data-tool="view" aria-pressed="false"><span aria-hidden="true">⤢</span>Look around<span class="key">8</span></button>
+</div>
+<label class="brush-label" for="brush-size">Brush <select id="brush-size"><option value="1">One tile</option><option value="3">3 × 3 tiles</option></select></label>
+<div class="history"><button id="undo" disabled title="Undo (Ctrl/Cmd Z)">↶ Undo</button><button id="redo" disabled title="Redo (Ctrl/Cmd Shift Z)">↷ Redo</button></div>
+<details class="help"><summary>Controls</summary><p>Drag to paint. Look around or right-drag to orbit. Scroll to zoom.</p><p>Keyboard: 1–8 tools, arrows select a tile, Enter edits, Space grows, F fullscreen.</p><p>Erase removes trees, cottages, and paths. Water carves terrain.</p></details>
+</aside>
+<div class="world-stage" id="world-stage"><canvas id="world-canvas" tabindex="0" aria-label="Editable island. Arrow keys select tiles, Enter applies the selected tool." aria-describedby="tool-hint">Enable JavaScript to build your island.</canvas>
+<div class="stage-top"><span id="world-badge">LITTLE COVE</span><button id="fullscreen" aria-label="Toggle fullscreen" title="Fullscreen (F)">⛶</button></div>
+<div class="shared-banner" id="shared-banner" hidden>Shared world · edits stay here until you keep a copy.<button id="keep-world">Keep a copy</button></div>
+<div class="stage-bottom"><span id="tool-hint">Raise · drag across tiles</span><div><button id="rotate-left" aria-label="Rotate left">↶</button><button id="reset-view">Recenter</button><button id="rotate-right" aria-label="Rotate right">↷</button><button id="zoom-out" aria-label="Zoom out">−</button><button id="zoom-in" aria-label="Zoom in">+</button></div></div>
+</div></div>
+<footer class="environment-bar"><div class="weather" role="group" aria-label="Atmosphere"><button data-weather="sunny" class="active" aria-pressed="true">☀ Sun</button><button data-weather="rain" aria-pressed="false">☂ Rain</button><button data-weather="snow" aria-pressed="false">❄ Snow</button><button data-weather="night" aria-pressed="false">☾ Night</button></div><div class="growth"><button id="grow" aria-pressed="false">▶ Let it grow</button><label for="growth-speed" class="sr-only">Growth speed</label><select id="growth-speed"><option value="1">1×</option><option value="4">4×</option></select><span id="world-stats">A growing place</span></div></footer>
+</section>
+<section class="shelf" aria-labelledby="shelf-title"><header><div><span class="eyebrow">YOUR ISLANDS</span><h2 id="shelf-title">Keep a little escape.</h2><p>Saved in this browser. Share a link or export a file to take it elsewhere.</p></div><div class="shelf-actions"><button id="new-world">New island</button><button id="export-world">Export file</button><button id="import-world">Import file</button><input id="world-file" type="file" accept="application/json,.json" hidden><button id="postcard">Save postcard</button></div></header><div id="saved-worlds" class="saved-worlds"></div></section>
+<dialog id="share-dialog"><form method="dialog"><button class="close-dialog" aria-label="Close share dialog">×</button><h2>Send a small world.</h2><p>This link opens an editable snapshot. Your later edits won’t change it.</p><label for="share-url">World link</label><input id="share-url" readonly><button type="button" class="primary" id="copy-link">Copy link</button><span id="copy-state" role="status"></span></form></dialog>
+<dialog id="new-dialog"><form method="dialog"><button class="close-dialog" aria-label="Close new island dialog">×</button><h2>Somewhere new.</h2><p>Starting over replaces your local draft. Save it first if you want to keep it.</p><label for="world-template">Starting point</label><select id="world-template"><option value="cove">Wooded cove</option><option value="atoll">Ring island</option><option value="blank">Open water</option></select><button type="button" class="primary" id="create-world">Create island</button></form></dialog>
+<p id="notice" class="notice" role="status" aria-live="polite" hidden></p><noscript><p>This island editor needs JavaScript. Your browser saves are not uploaded.</p></noscript>
+</main><script type="module" src="app.js?v=1"></script><script src="../site-play.js?v=9" defer></script></body></html>

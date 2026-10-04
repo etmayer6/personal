@@ -14,6 +14,10 @@ const primaryNavigation = [
 ];
 
 const interactiveMetadata = {
+    "/sketchbook/": { name: "Sticker Sketchbook", marker: "Sticker Sketchbook", ready: "#sticker-board" },
+    "/marble-lab/": { name: "Marble Lab", marker: "Marble Lab", ready: "#lab-canvas" },
+    "/sound-garden/": { name: "Sound Garden", marker: "Sound Garden", ready: "#garden-canvas" },
+    "/pocket-worlds/": { name: "Pocket Worlds", marker: "Pocket Worlds", ready: "#world-canvas" },
     "/courseflow/": { name: "CourseFlow", marker: "CourseFlow", ready: ".page" },
     "/word-sort/": { name: "Word Sort", marker: "Word Sort", ready: "#word-sort-root", featured: true },
     "/apartments/": { name: "Apartment Hunt", marker: "Apartment Hunt", ready: ".listing-card" },
@@ -46,6 +50,10 @@ const redirectMetadata = {
 // This is the small registry the portfolio page currently expresses in HTML.
 // Keeping it beside the checks lets tests catch stale project totals and links.
 const projectRegistry = [
+    { name: "Sticker Sketchbook", path: "/sketchbook/" },
+    { name: "Marble Lab", path: "/marble-lab/" },
+    { name: "Sound Garden", path: "/sound-garden/" },
+    { name: "Pocket Worlds", path: "/pocket-worlds/" },
     { name: "CourseFlow", path: "/courseflow/", featured: true },
     { name: "Flight Sim", path: "/flight-sim/", featured: true },
     { name: "Word Sort Solitaire", path: "/word-sort/", featured: true },

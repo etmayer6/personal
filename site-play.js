@@ -20,7 +20,10 @@
         conway: { label: "Conway", href: "conway/" },
         aquarium: { label: "Mola Mola", href: "aquarium/" },
         "gremlin-lab": { label: "Gremlin Physics Lab", href: "gremlin-lab/" },
-        "tower-defense": { label: "Signal Grove Defense", href: "tower-defense/" }
+        "tower-defense": { label: "Signal Grove Defense", href: "tower-defense/" },
+        "pocket-worlds": { label: "Pocket Worlds", href: "pocket-worlds/" },
+        "sound-garden": { label: "Sound Garden", href: "sound-garden/" },
+        "marble-lab": { label: "Marble Lab", href: "marble-lab/" }
     });
     const hunt = [
         {
@@ -41,7 +44,7 @@
             page: "photos",
             host: ".photos-intro",
             title: "The photo journal",
-            clue: "Three browser games are waiting for a player.",
+            clue: "The arcade is waiting for a player.",
             next: "games/"
         },
         {
@@ -403,6 +406,10 @@
             "meal-planner": "Meal Planner",
             "childhood-timeline": "Timeline",
             garage: "Garage Bay",
+            "pocket-worlds": "Pocket Worlds",
+            "sound-garden": "Sound Garden",
+            "marble-lab": "Marble Lab",
+            sketchbook: "Sticker Sketchbook",
             "pet-studio": "Pet Studio",
             "gremlin-lab": "Physics Lab"
         };

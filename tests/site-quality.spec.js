@@ -13,6 +13,10 @@ const VIEWPORTS = [
 function installOfflineRoutes(context) {
     return context.route("**/*", async (route) => {
         const url = route.request().url();
+        if (url.includes('/rest/v1/rpc/sketchbook_read')) {
+            await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ page: 0, pages: 1, total: 0, open: true, stickers: [] }) });
+            return;
+        }
         if (route.request().resourceType() === "document" && url.startsWith("http://127.0.0.1:4175")) {
             const response = await route.fetch();
             const body = await response.text();

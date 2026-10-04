@@ -415,6 +415,33 @@
     color: #fffaf0;
 }
 
+.game-sound { min-height: 320px; display: grid; grid-template-columns: minmax(0,.78fr) minmax(360px,1.22fr); margin-top: 16px; background: #ead8bd; color: #39523c; }
+.game-sound .game-copy { padding: 38px; }
+.game-sound h2 { max-width: 10ch; color: #39523c; font-size: clamp(40px,5vw,66px); }
+.game-sound .game-meta { color: #81724f; padding-right: 42px; }
+.game-sound p { color: #7a785c; }
+.game-sound a { color: #39523c; }
+.sound-poster { position: relative; min-height: 270px; margin: 24px 24px 24px 0; overflow: hidden; background: #e9d7c0; }
+@media(max-width:980px) { .game-sound { grid-template-columns: minmax(0,1fr) minmax(0,1fr); } }
+@media(max-width:700px) { .game-sound { display: block; } .game-sound .game-copy { padding: 28px; } .sound-poster { height: 250px; margin: 0 24px 24px; } }
+
+.game-worlds {
+    min-height: 320px;
+    display: grid;
+    grid-template-columns: minmax(0,.78fr) minmax(360px,1.22fr);
+    margin-top: 16px;
+    background: #dce8d0;
+    color: #244b3e;
+}
+.game-worlds .game-copy { padding: 38px; }
+.game-worlds h2 { max-width: 10ch; color: #244b3e; font-size: clamp(40px,5vw,66px); }
+.game-worlds .game-meta { color: #536c49; padding-right: 42px; }
+.game-worlds p { color: #5b7159; }
+.game-worlds a { color: #244b3e; }
+.worlds-poster { position: relative; min-height: 270px; margin: 24px 24px 24px 0; overflow: hidden; background: #438e91; }
+@media(max-width:980px) { .game-worlds { grid-template-columns: minmax(0,1fr) minmax(0,1fr); } }
+@media(max-width:700px) { .game-worlds { display: block; } .game-worlds .game-copy { padding: 28px; } .worlds-poster { height: 250px; margin: 0 24px 24px; } }
+
 .game-defense {
     min-height: 300px;
     display: grid;
@@ -942,3 +969,6 @@
     object-fit: cover;
     object-position: center;
 }
+
+.game-marble{display:grid;grid-template-columns:.8fr 1.2fr;min-height:380px;background:#e8d7b9;color:#35544e}.game-marble .game-copy{padding:40px}.game-marble .game-meta{padding-right:42px}.game-marble h2{font-size:clamp(46px,5vw,76px);line-height:.98;letter-spacing:-.05em;margin:24px 0 20px}.game-marble p{color:#7b775d}.game-marble .marble-poster{position:relative;min-height:330px;margin:24px 24px 24px 0;overflow:hidden;border-radius:2px}.game-marble a{color:#36564c}.game-marble .marble-poster img{object-position:center}
+@media(max-width:700px){.game-marble{display:block}.game-marble .game-copy{padding:24px}.game-marble .marble-poster{min-height:230px;margin:0 18px 18px}}

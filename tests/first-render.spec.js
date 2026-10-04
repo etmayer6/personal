@@ -9,12 +9,19 @@ const corruptStorageKeys = [
     "gremlin-garage-demo-v1",
     "ethan-childhood-timeline-demo-flags-v1",
     "ethan-site-whiteboard-v1",
-    "ethan-site-pet-v1"
+    "ethan-site-pet-v1",
+    "ethan-sketchbook-draft-v1",
+    "ethan-sketchbook-guest-v1",
+    "ethan-sketchbook-last-v1"
 ];
 
 function installOfflineRoutes(context) {
     return context.route("**/*", async (route) => {
         const url = route.request().url();
+        if (url.includes('/rest/v1/rpc/sketchbook_read')) {
+            await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ page: 0, pages: 1, total: 0, open: true, stickers: [] }) });
+            return;
+        }
         if (route.request().resourceType() === "document" && url.startsWith(BASE_URL)) {
             const response = await route.fetch();
             const body = await response.text();

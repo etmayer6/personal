@@ -154,7 +154,12 @@ async function main() {
         const context = await browser.newContext();
         const page = await context.newPage();
         await page.goto(`${BASE_URL}/`, { waitUntil: "domcontentloaded" });
-        for (const job of imageJobs()) {
+        const onlyIndex = process.argv.indexOf('--only');
+        const only = onlyIndex >= 0 ? process.argv[onlyIndex + 1] : null;
+        if (onlyIndex >= 0 && !only) throw new Error('--only requires a public source path');
+        const jobs = imageJobs().filter(job => !only || job.publicSource === only);
+        if (only && !jobs.length) throw new Error(`No optimization job found for ${only}`);
+        for (const job of jobs) {
             fs.mkdirSync(job.outputDirectory, { recursive: true });
             const sourceMtime = fs.statSync(job.source).mtimeMs;
             for (const width of job.widths || widths) {

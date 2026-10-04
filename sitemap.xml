@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
+        <loc>https://etmayer6.github.io/personal/sketchbook/</loc>
+    </url>
+    <url>
         <loc>https://etmayer6.github.io/personal/</loc>
     </url>
     <url>
@@ -97,10 +100,19 @@
         <loc>https://etmayer6.github.io/personal/plant-to-ape/</loc>
     </url>
     <url>
+        <loc>https://etmayer6.github.io/personal/pocket-worlds/</loc>
+    </url>
+    <url>
         <loc>https://etmayer6.github.io/personal/projects/</loc>
     </url>
     <url>
         <loc>https://etmayer6.github.io/personal/resume/</loc>
+    </url>
+    <url>
+        <loc>https://etmayer6.github.io/personal/sound-garden/</loc>
+    </url>
+    <url>
+        <loc>https://etmayer6.github.io/personal/marble-lab/</loc>
     </url>
     <url>
         <loc>https://etmayer6.github.io/personal/tier-lab/</loc>
