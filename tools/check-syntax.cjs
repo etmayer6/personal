@@ -3,7 +3,7 @@ const path = require("path");
 const { spawnSync } = require("child_process");
 const { SITE_ROOT } = require("../tests/site-manifest.cjs");
 
-const ignoredDirectories = new Set([".git", "node_modules", "output"]);
+const ignoredDirectories = new Set([".git", "node_modules", "output", "test-results", "playwright-report"]);
 const files = [];
 const failures = [];
 

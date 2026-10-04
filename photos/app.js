@@ -219,7 +219,6 @@ photoViewer.addEventListener("close", restorePhotoViewerFocus);
 
 function closePhotoViewer() {
     if (photoViewer.open) photoViewer.close();
-    else restorePhotoViewerFocus();
 }
 
 function createPhotoCard(item, index, featured = false) {
@@ -365,13 +364,6 @@ photoViewerClose.addEventListener("click", closePhotoViewer);
 photoViewer.addEventListener("cancel", (event) => {
     event.preventDefault();
     closePhotoViewer();
-});
-
-photoViewer.addEventListener("close", () => {
-    if (lastViewerTrigger && lastViewerTrigger.isConnected) {
-        lastViewerTrigger.focus();
-    }
-    lastViewerTrigger = null;
 });
 
 photoViewer.addEventListener("keydown", (event) => {

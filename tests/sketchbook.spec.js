@@ -163,7 +163,7 @@ test('the sketchbook is discoverable under Make and the homepage, not categorize
     await page.goto('/projects/?kind=make');
     await expect(page.getByRole('link', { name: 'Open Sticker Sketchbook', exact: true }).last()).toBeVisible();
     await expect(page.locator('[data-project-filter-status]')).toHaveText('4 make projects ready.');
-    await page.goto('/'); await expect(page.getByRole('link', { name: 'Leave a sticker' })).toHaveAttribute('href', 'sketchbook/');
+    await page.goto('/'); await expect(page.getByRole('link', { name: 'Sketchbook preview' })).toHaveAttribute('href', 'sketchbook/');
     await page.goto('/games/'); await expect(page.locator('a[href*="sketchbook"]')).toHaveCount(0);
 });
 

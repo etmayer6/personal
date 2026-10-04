@@ -4,7 +4,9 @@ const { SITE_ROOT, projectRegistry, publicRoutes } = require("../tests/site-mani
 const { SITE_URL } = require("./seo-config.cjs");
 
 const errors = [];
-const ignoredDirectories = new Set([".git", "node_modules", "output"]);
+// Browser traces contain copies of pages with relocated relative URLs, not
+// deployable site files. Ignore them even while a test run is still writing.
+const ignoredDirectories = new Set([".git", "node_modules", "output", "test-results", "playwright-report"]);
 const htmlFiles = [];
 const cssFiles = [];
 const jsFiles = [];

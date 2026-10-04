@@ -12,7 +12,7 @@
     "photos:manifest": "node tools/build-photo-image-manifest.cjs",
     "measure:performance": "node tools/measure-performance.cjs",
     "test:first-render": "node tools/run-playwright.cjs tests/first-render.spec.js",
-    "test:quality": "node tools/run-playwright.cjs tests/site-quality.spec.js"
+    "test:quality": "node tools/run-playwright.cjs tests/site-quality.spec.js tests/site-flow.spec.js"
   },
   "devDependencies": {
     "@playwright/test": "^1.62.1"
