@@ -2,6 +2,11 @@ const { test, expect } = require("@playwright/test");
 const { interactiveRoutes: routes } = require("./site-manifest.cjs");
 const BASE_URL = "http://127.0.0.1:4175";
 
+// Each route captures four diagnostic frames. Keeping those captures in one
+// Chromium worker avoids intermittent screenshot protocol failures in CI while
+// preserving the same first-render assertions for every route.
+test.describe.configure({ mode: "serial" });
+
 const corruptStorageKeys = [
     "courseflow-faithful-demo-v1",
     "ethan-diet-tracker-demo-v1",
