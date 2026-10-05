@@ -1205,7 +1205,8 @@ dialog::backdrop {
     }
 
     .nav-links a {
-        font-size: 9px;
+        min-height: 44px;
+        font-size: 10px;
         padding-inline: 8px;
     }
 
