@@ -52,6 +52,8 @@
     const nav = document.getElementById("primary-nav");
     const sidebar = document.getElementById("app-sidebar");
     const scrim = document.getElementById("sidebar-scrim");
+    const mobileMenu = document.getElementById("mobile-menu");
+    const mobileSidebarQuery = window.matchMedia("(max-width: 980px)");
     const toast = document.getElementById("toast");
     const dialog = document.getElementById("app-dialog");
     const commandDialog = document.getElementById("command-dialog");
@@ -463,10 +465,19 @@
         toastTimer = setTimeout(function () { toast.classList.remove("is-visible"); }, 2800);
     }
 
+    function syncSidebarAccessibility() {
+        const mobile = mobileSidebarQuery.matches;
+        const open = mobile && sidebar.classList.contains("is-open");
+        sidebar.inert = mobile && !open;
+        mobileMenu.setAttribute("aria-expanded", String(open));
+        mobileMenu.setAttribute("aria-label", open ? "Close navigation" : "Open navigation");
+    }
+
     function closeSidebar() {
         sidebar.classList.remove("is-open");
         scrim.classList.remove("is-open");
-        document.getElementById("mobile-menu").setAttribute("aria-expanded", "false");
+        syncSidebarAccessibility();
+        if (mobileSidebarQuery.matches) mobileMenu.focus();
     }
 
     function openCommandPalette() {
@@ -623,12 +634,26 @@
         placeCourse(course, term.dataset.term);
     });
 
-    document.getElementById("mobile-menu").addEventListener("click", function () {
+    mobileMenu.addEventListener("click", function () {
         const open = sidebar.classList.toggle("is-open");
         scrim.classList.toggle("is-open", open);
-        this.setAttribute("aria-expanded", String(open));
+        syncSidebarAccessibility();
+        if (open) {
+            const firstLink = sidebar.querySelector("a, button");
+            if (firstLink) firstLink.focus();
+        }
     });
     scrim.addEventListener("click", closeSidebar);
+    document.addEventListener("keydown", function (event) {
+        if (event.key === "Escape" && mobileSidebarQuery.matches && sidebar.classList.contains("is-open")) closeSidebar();
+    });
+    mobileSidebarQuery.addEventListener("change", function () {
+        if (!mobileSidebarQuery.matches) {
+            sidebar.classList.remove("is-open");
+            scrim.classList.remove("is-open");
+        }
+        syncSidebarAccessibility();
+    });
     document.getElementById("command-button").addEventListener("click", openCommandPalette);
     document.getElementById("notification-button").addEventListener("click", function () { showToast("Your sample plan has no new conflicts."); });
     document.getElementById("reset-demo").addEventListener("click", openResetDialog);
@@ -638,5 +663,6 @@
     });
 
     applyPreferences();
+    syncSidebarAccessibility();
     render();
 }());

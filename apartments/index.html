@@ -28,13 +28,14 @@
     <link rel="stylesheet" href="../site-frame.css?v=flow-1">
 </head>
 <body class="apartment-body" data-demo-state="loading">
+    <a class="skip-link" href="#main-content">Skip to main content</a>
     <header class="apartment-header">
         <nav aria-label="Primary navigation">
             <a class="nav-name" href="../index.html">Ethan Mayer</a>
             <ul>
                 <li><a href="../index.html">Home</a></li><li><a href="../about/">About</a></li>
                 <li><a href="../resume/">Resume</a></li>
-                <li><a aria-current="page" href="../projects/">Projects</a></li>
+                <li><a aria-current="location" href="../projects/">Projects</a></li>
                 <li><a href="../games/">Games</a></li>
                 <li><a href="../photos/">Photos</a></li>
                 <li><a href="../blog/">Blog</a></li>
@@ -42,7 +43,7 @@
         </nav>
     </header>
 
-    <main class="apartments-page">
+    <main id="main-content" class="apartments-page" tabindex="-1">
         <section class="hero">
             <div class="container">
                 <p class="eyebrow">Apartment Board</p>

@@ -1,7 +1,7 @@
 :root {
     --project-ease: cubic-bezier(0.22, 1, 0.36, 1);
     --project-shadow: 0 18px 48px rgba(16, 43, 54, 0.12);
-    --project-ring: 0 0 0 3px rgba(115, 211, 205, 0.3);
+    --project-ring: 0 0 0 2px #fffdf8, 0 0 0 5px #7b321f;
 }
 
 /* Shared project rhythm --------------------------------------------------- */
@@ -69,7 +69,8 @@
     .apartment-body,
     .groggy-body,
     .garage-body,
-    .diet-body
+    .diet-body,
+    .tier-lab-body
 ) :is(button, a, input, select):focus-visible {
     outline: none;
     box-shadow: var(--project-ring);
@@ -258,6 +259,10 @@
 
 .flight-site-body .scenario-option {
     min-height: 126px;
+}
+
+.flight-site-body .scenario-scroll-hint {
+    display: none;
 }
 
 .wordsort-site-body .wordsort-site-app,
@@ -661,7 +666,8 @@
         .apartment-body,
         .groggy-body,
         .garage-body,
-        .diet-body
+        .diet-body,
+        .tier-lab-body
     ) main {
         animation-duration: 380ms;
     }
@@ -695,16 +701,41 @@
         overflow-x: auto;
         overscroll-behavior-inline: contain;
         scroll-snap-type: x mandatory;
-        scrollbar-width: none;
+        scrollbar-width: thin;
+        scrollbar-color: rgba(244, 184, 96, 0.75) rgba(255, 255, 255, 0.08);
     }
 
     .flight-site-body .scenario-options::-webkit-scrollbar {
-        display: none;
+        height: 5px;
+    }
+
+    .flight-site-body .scenario-options::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.08);
+    }
+
+    .flight-site-body .scenario-options::-webkit-scrollbar-thumb {
+        border-radius: 999px;
+        background: rgba(244, 184, 96, 0.75);
     }
 
     .flight-site-body .scenario-option {
         min-width: min(78vw, 270px);
         scroll-snap-align: start;
+    }
+
+    .flight-site-body .scenario-scroll-hint {
+        display: block;
+        margin: 6px 0 0;
+        color: #b8c1c1;
+        font: 8px/1.4 var(--flight-mono);
+        letter-spacing: 0.12em;
+        text-align: right;
+        text-transform: uppercase;
+    }
+
+    .flight-site-body .scenario-scroll-hint span {
+        color: #f4b860;
+        font-size: 12px;
     }
 
     .travel-body .travel-shell,

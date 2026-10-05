@@ -29,6 +29,7 @@
     <link rel="stylesheet" href="../site-frame.css?v=flow-1">
 </head>
 <body class="flight-site-body">
+    <a class="skip-link" href="#main-content">Skip to main content</a>
     <header class="flight-site-header">
         <nav aria-label="Primary navigation">
             <a class="nav-name" href="../index.html">Ethan Mayer</a>
@@ -36,14 +37,14 @@
                 <li><a href="../index.html">Home</a></li><li><a href="../about/">About</a></li>
                 <li><a href="../resume/">Resume</a></li>
                 <li><a href="../projects/">Projects</a></li>
-                <li><a aria-current="page" href="../games/">Games</a></li>
+                <li><a aria-current="location" href="../games/">Games</a></li>
                 <li><a href="../photos/">Photos</a></li>
                 <li><a href="../blog/">Blog</a></li>
             </ul>
         </nav>
     </header>
 
-    <main class="flight-site-shell">
+    <main id="main-content" class="flight-site-shell" tabindex="-1">
         <section class="flight-site-app">
             <section class="scenario-library" aria-labelledby="scenario-library-title">
                 <div class="scenario-library-copy">
@@ -52,6 +53,7 @@
                     <p>Pick a sortie, fly the aircraft, clear the gates, and settle onto the runway with a little style.</p>
                 </div>
                 <div class="scenario-options" data-role="scenario-options" role="radiogroup" aria-label="Available flight scenarios"></div>
+                <p class="scenario-scroll-hint" aria-hidden="true">Swipe to browse all flight conditions <span>&rarr;</span></p>
             </section>
 
             <div id="flight-sim-root" class="flight-site-root">

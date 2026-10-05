@@ -29,13 +29,14 @@
     <link rel="stylesheet" href="../site-frame.css?v=flow-1">
 </head>
 <body class="flight-radar-body" data-demo-state="offline">
+    <a class="skip-link" href="#main-content">Skip to main content</a>
     <header class="flight-radar-header">
         <nav aria-label="Primary navigation">
             <a class="nav-name" href="../index.html">Ethan Mayer</a>
             <ul>
                 <li><a href="../index.html">Home</a></li><li><a href="../about/">About</a></li>
                 <li><a href="../resume/">Resume</a></li>
-                <li><a aria-current="page" href="../projects/">Projects</a></li>
+                <li><a aria-current="location" href="../projects/">Projects</a></li>
                 <li><a href="../games/">Games</a></li>
                 <li><a href="../photos/">Photos</a></li>
                 <li><a href="../blog/">Blog</a></li>
@@ -43,7 +44,7 @@
         </nav>
     </header>
 
-    <main class="flight-radar-shell">
+    <main id="main-content" class="flight-radar-shell" tabindex="-1">
         <section class="radar-workspace" aria-labelledby="sector-heading">
             <div class="radar-board-panel">
                 <header class="radar-panel-header">

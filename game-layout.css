@@ -88,16 +88,19 @@
   :is(#block-blast-root, #word-sort-root) section:has(canvas) > header p {
     display: none;
   }
+  /* Block Blast's short objective is the only mobile explanation of its row/column goal. */
+  #block-blast-root section:has(canvas) > header p {
+    display: block;
+  }
   :is(#block-blast-root, #word-sort-root) section:has(canvas) > div:not(:has(canvas)):not(:has(button)) {
     display: none !important;
   }
   :is(#block-blast-root, #word-sort-root) section:has(canvas) > div:has(button) > p {
     display: none;
   }
-  /* Word Sort is a two-step tap interaction; keep its touch instruction visible
-     so a first-time phone player does not have to discover the destination tap. */
-  #word-sort-root section:has(canvas) > div:has(button) > p {
-    display: block;
+  /* Keep the touch instructions visible; they explain how to play without drag. */
+  :is(#block-blast-root, #word-sort-root) section:has(canvas) > div:has(button) > p {
+    display: block !important;
     margin: 0;
     padding: 0 4px;
     color: #687b80;

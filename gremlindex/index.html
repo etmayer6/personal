@@ -28,6 +28,7 @@
     <link rel="stylesheet" href="../site-frame.css?v=flow-1">
 </head>
 <body class="gremlindex-body">
+    <a class="skip-link" href="#gate-password">Skip to main content</a>
     <header class="gremlindex-header">
         <nav aria-label="Primary navigation">
             <a class="nav-name" href="../index.html">Ethan Mayer</a>
@@ -35,14 +36,14 @@
                 <li><a href="../index.html">Home</a></li><li><a href="../about/">About</a></li>
                 <li><a href="../resume/">Resume</a></li>
                 <li><a href="../projects/">Projects</a></li>
-                <li><a aria-current="page" href="../games/">Games</a></li>
+                <li><a aria-current="location" href="../games/">Games</a></li>
                 <li><a href="../photos/">Photos</a></li>
                 <li><a href="../blog/">Blog</a></li>
             </ul>
         </nav>
     </header>
 
-    <section id="gate-panel" class="gate-shell">
+    <section id="gate-panel" class="gate-shell" tabindex="-1">
         <div class="gate-card">
             <p class="eyebrow">Gremlin Dex</p>
             <h1>Private game.</h1>
@@ -58,7 +59,7 @@
         </div>
     </section>
 
-    <main id="gremlindex-content" class="gremlindex-shell" hidden>
+    <main id="gremlindex-content" class="gremlindex-shell" hidden tabindex="-1">
         <section class="gremlindex-top">
             <div class="gremlindex-copy">
                 <p class="eyebrow">Gremlin Dex</p>

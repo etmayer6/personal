@@ -32,11 +32,21 @@ const gatePanel = document.getElementById("gate-panel");
 const gateForm = document.getElementById("gate-form");
 const gatePassword = document.getElementById("gate-password");
 const gateError = document.getElementById("gate-error");
+const skipLink = document.querySelector(".skip-link");
 const content = document.getElementById("gremlindex-content");
 const footer = document.getElementById("gremlindex-footer");
 const pressed = {};
 const state = createInitialState("caleb");
 let selectedStarter = "caleb";
+
+skipLink.addEventListener("click", (event) => {
+    const target = document.getElementById(skipLink.hash.slice(1));
+    if (!target) return;
+
+    event.preventDefault();
+    target.focus({ preventScroll: true });
+    target.scrollIntoView({ block: "start" });
+});
 let frameHandle = null;
 let isUnlocked = false;
 
@@ -508,6 +518,7 @@ function loop() {
 
 function revealGame() {
     isUnlocked = true;
+    skipLink.href = "#gremlindex-content";
     gatePanel.hidden = true;
     content.hidden = false;
     footer.hidden = false;
@@ -559,6 +570,9 @@ document.querySelectorAll("[data-dir]").forEach((button) => {
 });
 
 document.addEventListener("keydown", async (event) => {
+    const target = event.target;
+    if (target instanceof Element && target.closest("a, button, input, textarea, select, [contenteditable='true']")) return;
+
     const key = event.key.toLowerCase();
     if (["arrowleft", "arrowright", "arrowup", "arrowdown", "w", "a", "s", "d", "e", " ", "enter", "f", "1", "2", "3"].includes(key)) event.preventDefault();
     if (key === "f") {

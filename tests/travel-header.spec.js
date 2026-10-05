@@ -38,7 +38,7 @@ for (const width of [1440, 768, 390]) {
         await expect(image).toHaveAttribute('src', /P1020464-1440/);
         await expect(home).toBeFocused();
         await expect(home).toHaveAttribute('aria-pressed', 'true');
-        await expect(page.getByRole('link', { name: 'Open the full photo journal' })).toHaveAttribute('href', '../photos/');
+        await expect(page.getByRole('link', { name: 'Browse the photo journal' })).toHaveAttribute('href', '../photos/');
         await page.getByRole('link', { name: 'Explore the map' }).click();
         await expect(page).toHaveURL(/#travel-explorer$/);
         await expect(page.locator('.travel-view-toggle')).toBeInViewport();

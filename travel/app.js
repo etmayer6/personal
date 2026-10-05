@@ -25,6 +25,59 @@ const mapRetryEl = document.getElementById("travel-map-retry");
 const recoveryEl = document.getElementById("travel-recovery");
 const retryDataEl = document.getElementById("travel-retry-data");
 const transparentPixel = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==";
+const curatedPhotoTitles = new Map((window.PHOTOS_GALLERY || []).map((photo) => {
+    const fileName = photo.src.split("/").pop().replace(/\.[^.]+$/, "").toLowerCase();
+    return [fileName, photo.title];
+}));
+let mapTileLayer = null;
+let mapHasTiles = false;
+let mapTileFailureTimer = null;
+
+function showMapTileFallback() {
+    mapFallbackEl.hidden = false;
+    mapFallbackEl.classList.add("is-degraded");
+    mapFallbackEl.querySelector("strong").textContent = "Map tiles unavailable";
+    mapFallbackEl.querySelector("span").textContent = "Your saved places and photos are still available in the list.";
+}
+
+function showMapEngineFallback() {
+    mapFallbackEl.hidden = false;
+    mapFallbackEl.classList.remove("is-degraded");
+    mapFallbackEl.querySelector("strong").textContent = "Interactive map unavailable";
+    mapFallbackEl.querySelector("span").textContent = "Your places and photos are still available in the lists beside this panel.";
+}
+
+function showMapLoading() {
+    mapFallbackEl.hidden = false;
+    mapFallbackEl.classList.remove("is-degraded");
+    mapFallbackEl.querySelector("strong").textContent = "Loading map…";
+    mapFallbackEl.querySelector("span").textContent = "Place and photo details are still available in the list.";
+}
+
+function armMapTileFailureNotice() {
+    if (mapHasTiles || mapTileFailureTimer !== null) return;
+    mapTileFailureTimer = window.setTimeout(() => {
+        mapTileFailureTimer = null;
+        if (!mapHasTiles) showMapTileFallback();
+    }, 4000);
+}
+
+if (map) {
+    mapTileLayer = leaflet.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 19,
+        attribution: "&copy; OpenStreetMap contributors"
+    });
+    mapTileLayer.on("tileload", () => {
+        mapHasTiles = true;
+        if (mapTileFailureTimer !== null) window.clearTimeout(mapTileFailureTimer);
+        mapTileFailureTimer = null;
+        mapFallbackEl.hidden = true;
+        mapFallbackEl.classList.remove("is-degraded");
+    });
+    mapTileLayer.on("tileerror", armMapTileFailureNotice);
+    mapTileLayer.addTo(map);
+    armMapTileFailureNotice();
+}
 
 const FALLBACK_DATA = {
     count: 3,
@@ -197,10 +250,10 @@ function renderPlaceMarkers() {
 
 function renderMarkers() {
     if (!map) {
-        mapFallbackEl.hidden = false;
+        showMapEngineFallback();
         return;
     }
-    mapFallbackEl.hidden = true;
+    mapFallbackEl.hidden = mapHasTiles;
     clearMarkers();
     let bounds = [];
     if (activeView === "photos") bounds = renderPhotoMarkers();
@@ -231,6 +284,11 @@ function renderPlacesList() {
 
 function renderPhotosList() {
     filteredPhotos.forEach((photo, index) => {
+        const fileStem = (photo.filename || photo.id || "").replace(/\.[^.]+$/, "").toLowerCase();
+        const curatedTitle = curatedPhotoTitles.get(fileStem);
+        const normalizedTitle = (photo.title || "").replace(/[^a-z0-9]/gi, "").toLowerCase();
+        const normalizedFileName = fileStem.replace(/[^a-z0-9]/gi, "");
+        const photoTitle = curatedTitle || (normalizedTitle === normalizedFileName ? "" : photo.title);
         const card = document.createElement("button");
         card.type = "button";
         card.className = `place-card photo-card${activeItemType === "photo" && index === activeIndex ? " active" : ""}`;
@@ -238,7 +296,7 @@ function renderPhotosList() {
             <img src="${transparentPixel}" data-src="${escapeHtml(photo.image)}" alt="" loading="lazy" width="${photo.width || 1440}" height="${photo.height || 1080}" sizes="86px">
             <span class="photo-card-copy">
                 <strong>${escapeHtml(photo.label)}</strong>
-                <span>${escapeHtml(photo.title)}</span>
+                ${photoTitle ? `<span>${escapeHtml(photoTitle)}</span>` : ""}
                 <span class="coordinate-source ${photo.coordinateSource}">${photo.coordinateSource === "exif" ? "EXIF GPS" : "Trip inferred"}</span>
             </span>
         `;
@@ -417,6 +475,17 @@ async function init() {
 searchInputEl.addEventListener("input", applySearch);
 viewButtons.forEach((button) => button.addEventListener("click", () => setView(button.dataset.view)));
 retryDataEl.addEventListener("click", init);
-mapRetryEl.addEventListener("click", () => window.location.reload());
+mapRetryEl.addEventListener("click", () => {
+    if (!mapTileLayer) {
+        window.location.reload();
+        return;
+    }
+    showMapLoading();
+    if (mapTileFailureTimer !== null) window.clearTimeout(mapTileFailureTimer);
+    mapTileFailureTimer = null;
+    mapHasTiles = false;
+    mapTileLayer.redraw();
+    armMapTileFailureNotice();
+});
 
 init();

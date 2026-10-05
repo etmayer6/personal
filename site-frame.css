@@ -12,6 +12,27 @@ body:not(.resume-body) > header:has(nav[aria-label="Primary navigation"]) {
     border-bottom: 1px solid #2b4650;
     box-shadow: none;
 }
+.skip-link {
+    position: fixed;
+    z-index: 1000;
+    top: 8px;
+    left: 8px;
+    padding: 10px 14px;
+    color: #fff9ee;
+    border: 2px solid #f0aa83;
+    background: #102b36;
+    box-shadow: 0 8px 24px rgba(16, 43, 54, 0.22);
+    font-size: 13px;
+    font-weight: 800;
+    text-decoration: none;
+    transform: translateY(calc(-100% - 14px));
+    transition: transform 140ms ease;
+}
+.skip-link:focus-visible {
+    outline: 3px solid #fff9ee;
+    outline-offset: 2px;
+    transform: translateY(0);
+}
 body:not(.resume-body) > header nav[aria-label="Primary navigation"] {
     box-sizing: border-box;
     display: flex;
@@ -61,7 +82,8 @@ body:not(.resume-body) > header nav[aria-label="Primary navigation"] li a {
     transition: background-color 160ms ease, color 160ms ease;
 }
 body:not(.resume-body) > header nav[aria-label="Primary navigation"] li a:hover,
-body:not(.resume-body) > header nav[aria-label="Primary navigation"] li a[aria-current="page"] {
+body:not(.resume-body) > header nav[aria-label="Primary navigation"] li a[aria-current="page"],
+body:not(.resume-body) > header nav[aria-label="Primary navigation"] li a[aria-current="location"] {
     color: #102b36;
     background: #f8f1e6;
     transform: none;
@@ -88,7 +110,7 @@ body:not(.resume-body) > header nav[aria-label="Primary navigation"] a:focus-vis
 .home-body .off-clock-links a { min-height: 74px; padding: 18px; display: flex; align-items: center; justify-content: space-between; gap: 12px; font-size: 15px; text-decoration: none; }
 
 /* Three equal invitations, instead of one oversized card and two cramped ones. */
-.projects-body .projects-shell { padding-top: 52px; }
+.projects-body .projects-shell { padding-top: 0; }
 .projects-body .portfolio-section:first-child { padding-top: 0; }
 .projects-body .portfolio-section { padding-top: 64px; }
 .projects-body .section-heading h2 { font-size: clamp(36px, 4.4vw, 56px); line-height: 1.05; }
@@ -100,13 +122,17 @@ body:not(.resume-body) > header nav[aria-label="Primary navigation"] a:focus-vis
 .projects-body .featured-layout .feature-card p { margin: 0; font-size: 15px; line-height: 1.6; }
 .projects-body .featured-layout .feature-meta { font-size: 11px; }
 .projects-body .featured-layout .feature-actions,
-.projects-body .featured-layout .feature-copy > .feature-link { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; min-height: 76px; margin: auto 0 0; padding-top: 20px; }
+.projects-body .featured-layout .feature-copy > .feature-link { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; min-height: 110px; margin: auto 0 0; padding-top: 20px; }
 .projects-body .featured-layout .feature-actions .feature-link { margin: 0; font-size: 14px; line-height: 1.4; white-space: nowrap; }
 .projects-body .featured-layout .feature-actions .feature-link-secondary { font-size: 12px; }
 .projects-body .featured-layout .feature-copy > .feature-link { flex-direction: row; font-size: 14px; line-height: 1.4; }
 .projects-body .featured-layout :is(.courseflow-visual, .flight-visual, .travel-visual) { position: relative; order: 0; flex: 0 0 210px; width: 100%; height: 210px; min-height: 0; margin: 0; border: 0; overflow: hidden; }
-.projects-body .projects-hero { min-height: 320px; padding: 56px 0; }
-.projects-body .projects-hero h1 { font-size: clamp(48px, 5.5vw, 76px); line-height: 1.03; }
+.projects-body .projects-hero { min-height: 0; padding: 32px 0 30px; }
+.projects-body .projects-hero h1 { font-size: clamp(58px, 7.2vw, 102px); line-height: 0.94; }
+.projects-body .project-tally { padding: 20px; }
+.projects-body .project-tally dl { margin-top: 18px; }
+.projects-body .project-tally dl div { padding: 10px 0; }
+.projects-body .section-heading { margin-bottom: 28px; }
 
 /* Consistent game cards, with readable status labels on light backgrounds. */
 .games-body .games-shell { width: min(1160px, calc(100% - 40px)); padding-top: 52px; }
@@ -163,10 +189,36 @@ body:not(.resume-body) > header nav[aria-label="Primary navigation"] a:focus-vis
     .blog-body .blog-shell .blog-hero { gap: 28px; padding: 30px; }
 }
 @media (max-width: 700px) {
-    body:not(.resume-body) > header nav[aria-label="Primary navigation"] { min-height: 61px; gap: 0; }
-    body:not(.resume-body) > header nav[aria-label="Primary navigation"] .nav-name { display: none; }
-    body:not(.resume-body) > header nav[aria-label="Primary navigation"] ul { width: 100%; overflow-x: auto; padding: 5px 0; }
-    body:not(.resume-body) > header nav[aria-label="Primary navigation"] li a { padding: 9px 10px; font-size: 11px; }
+    html { scroll-padding-top: 7.5rem; }
+    body:not(.resume-body) > header nav[aria-label="Primary navigation"] {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        justify-content: stretch;
+        gap: 4px;
+        min-height: 0;
+        padding: 8px 0 9px;
+    }
+    body:not(.resume-body) > header nav[aria-label="Primary navigation"] .nav-name {
+        display: block;
+        width: fit-content;
+        font-size: 16px;
+    }
+    body:not(.resume-body) > header nav[aria-label="Primary navigation"] ul {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 2px;
+        width: 100%;
+        overflow: visible;
+        padding: 0;
+    }
+    body:not(.resume-body) > header nav[aria-label="Primary navigation"] li a {
+        display: flex;
+        justify-content: center;
+        min-height: 36px;
+        padding: 7px 3px;
+        font-size: 11px;
+        letter-spacing: 0.045em;
+    }
     .home-body .home-hero { grid-template-columns: 1fr; padding-top: 24px; }
     .home-body .hero-copy { padding: 28px; }
     .home-body .hero-portrait { min-height: 330px; }
@@ -193,7 +245,7 @@ body:not(.resume-body) > header nav[aria-label="Primary navigation"] a:focus-vis
     .blog-body .blog-shell .featured-note { grid-template-columns: 1fr; }
     .blog-body .blog-shell .featured-number { display: none; }
     .blog-body .blog-shell .featured-copy { padding: 24px; }
-    .photos-body .photos-toolbar { top: 62px; flex-wrap: wrap; gap: 12px; }
+    .photos-body .photos-toolbar { top: 122px; flex-wrap: wrap; gap: 12px; }
     .photos-body .photos-map-link { margin-left: 0; }
     .photos-body .photo-chapter:first-child { padding-top: 40px; }
     .photos-body .photo-chapter { padding-top: 64px; }

@@ -28,6 +28,7 @@
     <link rel="stylesheet" href="../site-frame.css?v=flow-1">
 </head>
 <body class="games-body">
+    <a class="skip-link" href="#main-content">Skip to main content</a>
     <header class="games-header">
         <nav aria-label="Primary navigation">
             <a class="nav-name" href="../index.html">Ethan Mayer</a>
@@ -42,26 +43,26 @@
         </nav>
     </header>
 
-    <main class="games-shell">
+    <main id="main-content" class="games-shell" tabindex="-1">
         <section class="games-hero">
             <div>
                 <p class="eyebrow">Playable projects</p>
                 <h1>Pick a game.</h1>
             </div>
-            <p>Eleven small worlds to get lost in.</p>
+            <p>Puzzles, flight, strategy, and creative sandboxes&mdash;choose where to begin.</p>
         </section>
 
         <div class="games-activity" id="games-activity" aria-live="polite">
             <span>Your arcade is ready.</span>
-            <span>Pick a game and leave a trail.</span>
+            <span>Pick a game to get started.</span>
         </div>
 
         <section class="games-grid" aria-label="Playable games">
         <article class="game-card game-geo" data-game-slug="pinpoint">
-            <div class="game-copy">
-                <div class="game-meta"><span>01</span><span>Geography</span></div>
-                <h2>Pinpoint</h2>
-                <p>Read the photo, place your pin, and see how close you get.</p>
+                <div class="game-copy">
+                    <div class="game-meta"><span>01</span><span>Geography</span></div>
+                    <h2>Pinpoint</h2>
+                <p>Use a location photo to place a map pin, then see how close your guess lands.</p>
                 <a href="../pinpoint/">Guess the world <span aria-hidden="true">&rarr;</span></a>
             </div>
             <div class="geo-poster">
@@ -73,7 +74,7 @@
                 <div class="game-copy">
                     <div class="game-meta"><span>02</span><span>Simulation</span></div>
                     <h2>Flight Sim</h2>
-                    <p>Fly the gates and make the approach count.</p>
+                    <p>Choose a flight scenario, fly the aircraft, and work toward a runway landing.</p>
                     <a href="../flight-sim/">Take off <span aria-hidden="true">&rarr;</span></a>
                 </div>
                 <div class="flight-poster">
@@ -86,7 +87,7 @@
                     <div class="game-copy">
                         <div class="game-meta"><span>03</span><span>Arcade puzzle</span></div>
                         <h2>Block Blast</h2>
-                        <p>Place pieces, clear lines, and keep the board alive.</p>
+                        <p>Drag each piece onto the grid and clear complete lines.</p>
                         <a href="../block-blast/">Start a run <span aria-hidden="true">&rarr;</span></a>
                     </div>
                     <div class="block-poster">
@@ -98,7 +99,7 @@
                     <div class="game-copy">
                         <div class="game-meta"><span>04</span><span>Word puzzle</span></div>
                         <h2>Word Sort Solitaire</h2>
-                        <p>Find the associations before the board closes in.</p>
+                        <p>Use clue cards to sort words into their matching category stacks.</p>
                         <a href="../word-sort/">Deal the words <span aria-hidden="true">&rarr;</span></a>
                     </div>
                     <div class="word-poster">
@@ -108,9 +109,9 @@
             </div>
         <article class="game-card game-life" data-game-slug="conway">
             <div class="game-copy">
-                <div class="game-meta"><span>05</span><span>Cellular automata</span></div>
-                <h2>Conway&rsquo;s Game of Life</h2>
-                <p>Seed a grid and watch simple rules make patterns.</p>
+                    <div class="game-meta"><span>05</span><span>Cellular automata</span></div>
+                    <h2>Conway&rsquo;s Game of Life</h2>
+                <p>Paint cells, choose a starting seed, and watch the grid evolve.</p>
                 <a href="../conway/">Grow a world <span aria-hidden="true">&rarr;</span></a>
             </div>
             <div class="life-poster">
@@ -122,7 +123,7 @@
             <div class="game-copy">
                 <div class="game-meta"><span>06</span><span>Virtual pet</span></div>
                 <h2>Mola Mola</h2>
-                <p>Feed a gentle giant and keep the water happy.</p>
+                <p>Feed and play with Momo, and keep the aquarium clean.</p>
                 <a href="../aquarium/">Feed the fish <span aria-hidden="true">&rarr;</span></a>
             </div>
             <div class="aquarium-poster">
@@ -134,7 +135,7 @@
             <div class="game-copy">
                 <div class="game-meta"><span>07</span><span>Physics sandbox</span></div>
                 <h2>Gremlin Physics Lab</h2>
-                <p>Drop elements into a tiny lab and see what reacts.</p>
+                <p>Drop elements into the lab, drag them together, and discover their reactions.</p>
                 <a href="../gremlin-lab/">Make a mess <span aria-hidden="true">&rarr;</span></a>
             </div>
             <div class="sandbox-poster">
@@ -146,7 +147,7 @@
             <div class="game-copy">
                 <div class="game-meta"><span>08</span><span>Tower defense</span></div>
                 <h2>Signal Grove Defense</h2>
-                <p>Place signal towers, tune their range, and hold the core through eight waves.</p>
+                <p>Place and upgrade signal towers to defend the core through eight waves.</p>
                 <a href="../tower-defense/">Hold the line <span aria-hidden="true">&rarr;</span></a>
             </div>
             <div class="defense-poster">
@@ -158,19 +159,19 @@
             <div class="game-copy">
                 <div class="game-meta"><span>09</span><span>Island sandbox</span></div>
                 <h2>Pocket Worlds</h2>
-                <p>Sculpt hills, plant a forest, and give a few cottages a place to call home.</p>
+                <p>Shape the island, then add trees, cottages, and paths.</p>
                 <a href="../pocket-worlds/">Make a little world <span aria-hidden="true">&rarr;</span></a>
             </div>
             <div class="worlds-poster"><img class="game-poster-image" src="../projects/assets/optimized/pocket-worlds-card-960.webp" alt="A miniature green island with pine trees, a river, and terracotta-roof cottages" width="960" height="640" loading="lazy" decoding="async"></div>
         </article>
 
         <article class="game-card game-sound" data-game-slug="sound-garden">
-            <div class="game-copy"><div class="game-meta"><span>10</span><span>Musical playground</span></div><h2>Sound Garden</h2><p>Plant a few sounds, give each its own rhythm, and watch a little orchestra come to life.</p><a href="../sound-garden/">Grow a groove <span aria-hidden="true">&rarr;</span></a></div>
+            <div class="game-copy"><div class="game-meta"><span>10</span><span>Musical playground</span></div><h2>Sound Garden</h2><p>Plant instruments, shape their rhythms, and play your own repeating loop.</p><a href="../sound-garden/">Grow a groove <span aria-hidden="true">&rarr;</span></a></div>
             <div class="sound-poster"><img class="game-poster-image" src="../projects/assets/optimized/sound-garden-card-960.webp" alt="A miniature musical garden with bellflowers, teal reeds, rosy stones and a seed drum" width="960" height="640" loading="lazy" decoding="async"></div>
         </article>
 
         <article class="game-card game-marble" data-game-slug="marble-lab">
-            <div class="game-copy"><div class="game-meta"><span>11</span><span>Contraption sandbox</span></div><h2>Marble Lab</h2><p>Build a track, release the marbles, and see where your chain reaction goes.</p><a href="../marble-lab/">Set things rolling <span aria-hidden="true">&rarr;</span></a></div>
+            <div class="game-copy"><div class="game-meta"><span>11</span><span>Contraption sandbox</span></div><h2>Marble Lab</h2><p>Arrange machine parts, release marbles, and see how the chain reaction plays out.</p><a href="../marble-lab/">Set things rolling <span aria-hidden="true">&rarr;</span></a></div>
             <div class="marble-poster"><img class="game-poster-image" src="../projects/assets/optimized/marble-lab-card-960.webp" alt="A miniature wooden marble machine with teal and amber glass marbles, brass funnel, bell and catch cup" width="960" height="640" loading="lazy" decoding="async"></div>
         </article>
 

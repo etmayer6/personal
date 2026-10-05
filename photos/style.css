@@ -603,22 +603,27 @@ body.photos-body .photos-footer {
     .photos-toolbar {
         top: 62px;
         display: grid;
-        grid-template-columns: auto minmax(0, 1fr);
+        grid-template-columns: minmax(0, 1fr);
         gap: 10px 16px;
         padding: 12px 0;
     }
 
     .view-control {
+        grid-column: 1 / -1;
         display: grid;
         grid-template-columns: repeat(3, minmax(0, 1fr));
         gap: 3px;
     }
 
     .view-button {
-        min-height: 36px;
-        padding: 0 5px;
-        font-size: 0.53rem;
-        letter-spacing: 0.07em;
+        min-width: 0;
+        min-height: 44px;
+        padding: 4px 3px;
+        font-size: 0.58rem;
+        letter-spacing: 0.04em;
+        line-height: 1.15;
+        white-space: normal;
+        text-wrap: balance;
     }
 
     .photo-chapter {
@@ -694,8 +699,8 @@ body.photos-body .photos-footer {
     .photo-open-button {
         top: 9px;
         right: 9px;
-        width: 34px;
-        height: 34px;
+        width: 44px;
+        height: 44px;
     }
 
     .full-deck-grid {

@@ -8,6 +8,7 @@
     const HEIGHT = canvas.height;
     const MAX_GROWTH = 260;
     const TAU = Math.PI * 2;
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 
     const STAGES = [
         { name: "Tiny pancake", threshold: 0, size: 0.82, color: "#f7c94a", accent: "#e77952", title: "Tiny fins, big plans." },
@@ -188,6 +189,7 @@
     function feedFish(x, foodType) {
         if (state.feedCooldown > 0) {
             setMessage("Momo is still chewing that one.", 2);
+            renderReducedMotionState();
             return;
         }
         const selectedFoodType = FOOD_TYPES[foodType] ? foodType : state.foodType;
@@ -218,6 +220,7 @@
         } else {
             setMessage(state.growth >= MAX_GROWTH ? "Momo reached gentle giant status!" : food.message, 4);
         }
+        renderReducedMotionState();
     }
 
     function selectFood(foodType) {
@@ -232,6 +235,7 @@
         elements.foodDescription.textContent = food.description;
         setMessage(food.label + " ready for the tank.", 3);
         renderUI();
+        renderReducedMotionState();
     }
 
     function cleanTank() {
@@ -242,6 +246,7 @@
             addBubble(250 + index * 126, 480, 1.15);
         }
         setMessage("The water sparkles. Momo approves.", 4);
+        renderReducedMotionState();
     }
 
     function playWithFish() {
@@ -251,6 +256,7 @@
         state.fish.targetY = 250 + ((state.feedings * 37) % 110);
         addBubble(state.fish.x, state.fish.y + 40, 1.1);
         setMessage("Momo did a very slow zoomie.", 4);
+        renderReducedMotionState();
     }
 
     function randomEvent() {
@@ -782,6 +788,12 @@
         elements.foodDescription.textContent = FOOD_TYPES[state.foodType].description;
     }
 
+    function renderReducedMotionState() {
+        if (!reducedMotion.matches) return;
+        renderUI();
+        render();
+    }
+
     function pointerPosition(event) {
         const bounds = canvas.getBoundingClientRect();
         return {
@@ -870,6 +882,7 @@
     window.advanceTime = advanceTime;
 
     function loop(timestamp) {
+        if (reducedMotion.matches) return;
         const delta = Math.min(0.1, Math.max(0, (timestamp - lastTimestamp) / 1000));
         lastTimestamp = timestamp;
         update(delta);
@@ -880,5 +893,11 @@
 
     renderUI();
     render();
-    window.requestAnimationFrame(loop);
+    if (!reducedMotion.matches) window.requestAnimationFrame(loop);
+    reducedMotion.addEventListener("change", function (event) {
+        lastTimestamp = performance.now();
+        renderUI();
+        render();
+        if (!event.matches) window.requestAnimationFrame(loop);
+    });
 }());

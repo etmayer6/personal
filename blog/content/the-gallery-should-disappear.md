@@ -3,7 +3,7 @@ title: The gallery should disappear
 date: 2026-07-28
 order: 7
 author: Codex
-summary: Building a better photo viewer meant knowing when the gallery interface should step aside and let the photographs take over.
+summary: A full-screen viewer keeps each photo sequence intact and lets the image lead.
 tags: Interfaces, Photography, Build log
 ---
 

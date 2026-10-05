@@ -340,12 +340,31 @@ test("Iowa Skywatch stays scoped to Iowa", async ({ browser }) => {
     await page.goto("/flight-radar/", { waitUntil: "domcontentloaded" });
     await page.waitForTimeout(350);
 
+    await expect(page.locator("#sector-heading")).toHaveCSS("color", "rgb(244, 240, 232)");
         await expect(page.locator(".regional-states")).toHaveCount(0);
         await expect(page.locator(".radar-hero, .radar-sidebar, .radar-note, .flight-radar-footer")).toHaveCount(0);
         await expect(page.locator(".radar-board")).toHaveCount(1);
         await expect(page.locator(".aircraft-marker:not(.is-over-iowa)")).toHaveCount(0);
     await expect(page.locator("#map-description")).not.toContainText("surrounding states");
     await context.close();
+});
+
+test("Travel keeps a centered, useful fallback when the map library is unavailable", async ({ page }) => {
+    await page.route("https://unpkg.com/**", route => route.abort());
+    await page.goto("/travel/", { waitUntil: "domcontentloaded" });
+    const fallback = page.locator("#travel-map-fallback");
+    await expect(fallback).toBeVisible();
+    await expect(fallback).not.toHaveClass(/is-degraded/);
+    await expect(fallback.locator("strong")).toHaveText("Interactive map unavailable");
+    await expect(fallback.locator("span")).toContainText("lists beside this panel");
+});
+
+test("Travel photo list uses editorial captions instead of camera filenames", async ({ page }) => {
+    await page.goto("/travel/", { waitUntil: "domcontentloaded" });
+    await expect(page.getByRole("button", { name: /Island window/ })).toBeVisible();
+    await expect(page.locator(".photo-card").filter({ hasText: "592404102" })).toHaveCount(0);
+    await expect(page.locator(".photo-card").filter({ hasText: "GOPR9752" })).toHaveCount(0);
+    await expect(page.locator(".photo-card").filter({ hasText: "G0019814" })).toHaveCount(0);
 });
 
 test("project counts match the centralized registry", async ({ browser }) => {
@@ -394,28 +413,26 @@ test("project tiles navigate from their open area", async ({ browser }) => {
     expect(new URL(page.url()).pathname).toBe("/flight-sim/");
 
     await page.goto("/projects/", { waitUntil: "domcontentloaded" });
-    await page.locator(".archive-grid-reference .archive-card").first().locator(".archive-top").click();
+    const apartmentCard = page.locator(".archive-card").filter({ has: page.getByRole("heading", { name: "Apartment Hunt", exact: true }) });
+    await apartmentCard.locator(".archive-top").click();
     expect(new URL(page.url()).pathname).toBe("/apartments/");
     await context.close();
 });
 
-test("projects lead with interactive work and finish with reference projects", async ({ browser }) => {
+test("projects group the playable, making, and exploring collection", async ({ browser }) => {
     const context = await browser.newContext({ reducedMotion: "reduce", serviceWorkers: "block" });
     await installOfflineRoutes(context);
     const page = await context.newPage();
     await page.goto("/projects/", { waitUntil: "domcontentloaded" });
 
-    const referenceNames = await page.locator(".archive-grid-reference .archive-card h3").allTextContents();
-    expect(referenceNames).toEqual([
-        "Apartment Hunt",
-        "Groggy Climbs",
-        "Zulip",
-        "SE / COM S 319",
-        "Diet Tracker",
-        "Receipt Meal Planner",
-        "Childhood Timeline"
-    ]);
-    await expect(page.locator(".archive-break")).toContainText("Reference shelf");
+    const groups = page.locator(".catalog-group");
+    await expect(groups).toHaveCount(3);
+    await expect(groups.nth(0)).toContainText("Play & simulation");
+    await expect(groups.nth(1)).toContainText("Tools & making");
+    await expect(groups.nth(2)).toContainText("Explore & compare");
+    expect(await groups.evaluateAll(nodes => nodes.map(group => group.querySelectorAll(".archive-card").length))).toEqual([11, 8, 5]);
+    await expect(groups.nth(0).locator(".archive-card h4").last()).toHaveText("Word Sort Solitaire");
+    await expect(groups.nth(2).locator(".archive-card h4").last()).toHaveText("Childhood Timeline");
     await context.close();
 });
 

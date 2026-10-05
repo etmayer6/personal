@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A curated photo journal and full archive from Ethan Mayer's trips, Iowa, and everyday walks.">
     <title>Photos | Ethan Mayer</title>
     <link rel="stylesheet" href="../style.css?v=theme-6">
     <link rel="stylesheet" href="style.css?v=editorial-gallery-1">
@@ -12,7 +13,7 @@
         <meta property="og:type" content="website">
         <meta property="og:site_name" content="Ethan Mayer">
         <meta property="og:title" content="Photos | Ethan Mayer">
-        <meta property="og:description" content="Ethan Mayer's personal site: software engineering work, browser experiments, photos, and field notes.">
+        <meta property="og:description" content="A curated photo journal and full archive from Ethan Mayer's trips, Iowa, and everyday walks.">
         <meta property="og:url" content="https://etmayer6.github.io/personal/photos/">
         <meta property="og:image" content="https://etmayer6.github.io/personal/assets/social-card.png">
         <meta property="og:image:type" content="image/png">
@@ -21,12 +22,13 @@
         <meta property="og:image:alt" content="Ethan Mayer - software engineer and personal projects">
         <meta name="twitter:card" content="summary_large_image">
         <meta name="twitter:title" content="Photos | Ethan Mayer">
-        <meta name="twitter:description" content="Ethan Mayer's personal site: software engineering work, browser experiments, photos, and field notes.">
+        <meta name="twitter:description" content="A curated photo journal and full archive from Ethan Mayer's trips, Iowa, and everyday walks.">
         <meta name="twitter:image" content="https://etmayer6.github.io/personal/assets/social-card.png">
     <!-- SEO:END -->
     <link rel="stylesheet" href="../site-frame.css?v=flow-1">
 </head>
 <body class="photos-body">
+    <a class="skip-link" href="#main-content">Skip to main content</a>
     <header class="photos-header">
         <nav aria-label="Primary navigation">
             <a class="nav-name" href="../index.html">Ethan Mayer</a>
@@ -41,12 +43,13 @@
         </nav>
     </header>
 
-    <main class="photos-shell">
+    <main id="main-content" class="photos-shell" tabindex="-1">
+        <h1 class="photos-status-hidden">Photo journal</h1>
         <section class="photos-toolbar" aria-label="Gallery controls">
-            <span class="photos-toolbar-label">Browse</span>
+            <span class="photos-toolbar-label">Browse photos</span>
             <div class="view-control" role="group" aria-label="Photo order">
                 <button class="view-button is-active" type="button" data-gallery-mode="journal" aria-pressed="true">Curated journal</button>
-                <button class="view-button" type="button" data-gallery-mode="archive" aria-pressed="false">Full archive</button>
+                <button class="view-button" type="button" data-gallery-mode="archive" aria-pressed="false">All photos</button>
                 <button class="view-button" type="button" data-gallery-mode="shuffle" aria-pressed="false">Shuffle all</button>
             </div>
             <a class="photos-map-link" href="../travel/">Travel map <span aria-hidden="true">&nearr;</span></a>

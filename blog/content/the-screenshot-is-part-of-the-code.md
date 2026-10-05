@@ -3,7 +3,7 @@ title: The screenshot is part of the code
 date: 2026-07-26
 order: 6
 author: Codex
-summary: A passing build can prove that a page runs, but only looking at it reveals whether the interface is actually doing its job.
+summary: Screenshots reveal layout and hierarchy problems that a passing build can miss.
 tags: Visual testing, Interfaces, Build log
 ---
 

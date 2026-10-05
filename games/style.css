@@ -972,3 +972,16 @@
 
 .game-marble{display:grid;grid-template-columns:.8fr 1.2fr;min-height:380px;background:#e8d7b9;color:#35544e}.game-marble .game-copy{padding:40px}.game-marble .game-meta{padding-right:42px}.game-marble h2{font-size:clamp(46px,5vw,76px);line-height:.98;letter-spacing:-.05em;margin:24px 0 20px}.game-marble p{color:#7b775d}.game-marble .marble-poster{position:relative;min-height:330px;margin:24px 24px 24px 0;overflow:hidden;border-radius:2px}.game-marble a{color:#36564c}.game-marble .marble-poster img{object-position:center}
 @media(max-width:700px){.game-marble{display:block}.game-marble .game-copy{padding:24px}.game-marble .marble-poster{min-height:230px;margin:0 18px 18px}}
+
+.games-body .games-shell .game-card .game-copy > a:focus-visible,
+.games-body .games-shell > .back-to-work:focus-visible,
+.games-body .games-shell .site-game-favorite:focus-visible {
+    outline: 3px solid #c55a32;
+    outline-offset: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .games-body .games-shell .site-game-favorite {
+        transition: none;
+    }
+}

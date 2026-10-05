@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Travel Map | Ethan Mayer</title>
+    <meta name="description" content="Explore a map of Ethan Mayer's travel photos and places, with scenes from Iowa, Mexico, and El Salvador.">
+    <title>Travel Atlas | Ethan Mayer</title>
     <link rel="stylesheet" href="../style.css">
     <link rel="stylesheet" href="style.css?v=atlas-header-2">
     <link rel="stylesheet" href="../project-polish.css?v=2">
@@ -18,8 +19,8 @@
         <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
         <meta property="og:type" content="website">
         <meta property="og:site_name" content="Ethan Mayer">
-        <meta property="og:title" content="Travel Map | Ethan Mayer">
-        <meta property="og:description" content="Ethan Mayer's personal site: software engineering work, browser experiments, photos, and field notes.">
+        <meta property="og:title" content="Travel Atlas | Ethan Mayer">
+        <meta property="og:description" content="Explore a map of Ethan Mayer's travel photos and places, with scenes from Iowa, Mexico, and El Salvador.">
         <meta property="og:url" content="https://etmayer6.github.io/personal/travel/">
         <meta property="og:image" content="https://etmayer6.github.io/personal/assets/social-card.png">
         <meta property="og:image:type" content="image/png">
@@ -27,20 +28,21 @@
         <meta property="og:image:height" content="630">
         <meta property="og:image:alt" content="Ethan Mayer - software engineer and personal projects">
         <meta name="twitter:card" content="summary_large_image">
-        <meta name="twitter:title" content="Travel Map | Ethan Mayer">
-        <meta name="twitter:description" content="Ethan Mayer's personal site: software engineering work, browser experiments, photos, and field notes.">
+        <meta name="twitter:title" content="Travel Atlas | Ethan Mayer">
+        <meta name="twitter:description" content="Explore a map of Ethan Mayer's travel photos and places, with scenes from Iowa, Mexico, and El Salvador.">
         <meta name="twitter:image" content="https://etmayer6.github.io/personal/assets/social-card.png">
     <!-- SEO:END -->
     <link rel="stylesheet" href="../site-frame.css?v=flow-1">
 </head>
 <body class="travel-body" data-demo-state="loading">
+    <a class="skip-link" href="#main-content">Skip to main content</a>
     <header class="travel-header">
         <nav aria-label="Primary navigation">
             <a class="nav-name" href="../index.html">Ethan Mayer</a>
             <ul>
                 <li><a href="../index.html">Home</a></li><li><a href="../about/">About</a></li>
                 <li><a href="../resume/">Resume</a></li>
-                <li><a aria-current="page" href="../projects/">Projects</a></li>
+                <li><a aria-current="location" href="../projects/">Projects</a></li>
                 <li><a href="../games/">Games</a></li>
                 <li><a href="../photos/">Photos</a></li>
                 <li><a href="../blog/">Blog</a></li>
@@ -48,7 +50,7 @@
         </nav>
     </header>
 
-    <main class="travel-shell">
+    <main id="main-content" class="travel-shell" tabindex="-1">
         <section class="travel-hero" aria-labelledby="travel-title">
             <figure class="travel-hero-scene">
                 <img id="travel-hero-image" src="../images/photos/optimized/GOPR9752-1440.webp" srcset="../images/photos/optimized/GOPR9752-480.webp 480w, ../images/photos/optimized/GOPR9752-960.webp 960w, ../images/photos/optimized/GOPR9752-1440.webp 1440w" sizes="(min-width: 1220px) 1180px, calc(100vw - 24px)" alt="Turquoise Caribbean water and palm trees framed by a thatched palapa on Isla Mujeres" width="1440" height="1080" fetchpriority="high" decoding="async">
@@ -65,7 +67,7 @@
                         Explore the map
                         <span aria-hidden="true">&darr;</span>
                     </a>
-                    <a class="travel-journal-link" href="../photos/">Open the full photo journal <span aria-hidden="true">&rarr;</span></a>
+                    <a class="travel-journal-link" href="../photos/">Browse the photo journal <span aria-hidden="true">&rarr;</span></a>
                 </div>
             </div>
 
@@ -123,9 +125,9 @@
                 </div>
                 <div id="travel-map" class="travel-map" aria-label="Interactive map of gallery photos and visited places">
                     <div class="travel-map-fallback" id="travel-map-fallback">
-                        <strong>Travel map ready</strong>
-                        <span>Map tiles will appear when the map service is reachable.</span>
-                        <button type="button" id="travel-map-retry">Retry map tiles</button>
+                        <strong>Loading map…</strong>
+                        <span>Place and photo details are still available in the list.</span>
+                        <button type="button" id="travel-map-retry">Retry map</button>
                     </div>
                 </div>
             </div>
@@ -161,6 +163,7 @@
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
         crossorigin=""
     ></script>
+    <script src="../photos/data.js"></script>
     <script src="app.js"></script>
     <script src="../site-play.js?v=pet-companion-2"></script>
 </body>

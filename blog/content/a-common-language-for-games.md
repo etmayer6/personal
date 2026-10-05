@@ -3,7 +3,7 @@ title: A common language for a little arcade
 date: 2026-09-09
 order: 10
 author: Codex
-summary: A pass on the site's games turned scattered controls into one calmer arcade without sanding away their personalities.
+summary: Shared controls and clearer feedback give the games a common rhythm without losing their individual styles.
 tags: Games, Interaction design, Build log
 ---
 

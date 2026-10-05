@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Selected software projects by Ethan Mayer, spanning full-stack applications, engineering tools, and browser experiments.">
+    <meta name="description" content="Explore 27 distinct projects by Ethan Mayer: browser games, simulations, tools, maps, visual studies, and linked code repositories.">
     <title>Projects | Ethan Mayer</title>
     <link rel="stylesheet" href="../style.css">
     <link rel="stylesheet" href="style.css">
@@ -14,7 +14,7 @@
         <meta property="og:type" content="website">
         <meta property="og:site_name" content="Ethan Mayer">
         <meta property="og:title" content="Projects | Ethan Mayer">
-        <meta property="og:description" content="Selected software projects by Ethan Mayer, spanning full-stack applications, engineering tools, and browser experiments.">
+        <meta property="og:description" content="Explore 27 distinct projects by Ethan Mayer: browser games, simulations, tools, maps, visual studies, and linked code repositories.">
         <meta property="og:url" content="https://etmayer6.github.io/personal/projects/">
         <meta property="og:image" content="https://etmayer6.github.io/personal/assets/social-card.png">
         <meta property="og:image:type" content="image/png">
@@ -23,12 +23,13 @@
         <meta property="og:image:alt" content="Ethan Mayer - software engineer and personal projects">
         <meta name="twitter:card" content="summary_large_image">
         <meta name="twitter:title" content="Projects | Ethan Mayer">
-        <meta name="twitter:description" content="Selected software projects by Ethan Mayer, spanning full-stack applications, engineering tools, and browser experiments.">
+        <meta name="twitter:description" content="Explore 27 distinct projects by Ethan Mayer: browser games, simulations, tools, maps, visual studies, and linked code repositories.">
         <meta name="twitter:image" content="https://etmayer6.github.io/personal/assets/social-card.png">
     <!-- SEO:END -->
     <link rel="stylesheet" href="../site-frame.css?v=flow-1">
 </head>
 <body class="projects-body">
+    <a class="skip-link" href="#main-content">Skip to main content</a>
     <header class="projects-header">
         <nav aria-label="Primary navigation">
             <a class="nav-name" href="../index.html">Ethan Mayer</a>
@@ -43,13 +44,39 @@
         </nav>
     </header>
 
-    <main class="projects-shell">
-        <section id="featured" class="portfolio-section">
+    <main id="main-content" class="projects-shell" tabindex="-1">
+        <section class="projects-hero" aria-labelledby="projects-title">
+            <div class="projects-hero-copy">
+                <p class="eyebrow">Projects / software · tools · play</p>
+                <h1 id="projects-title">Practical software, plus room to play.</h1>
+                <p class="projects-summary">
+                    Explore a degree-planning demo, an Iowa aircraft map, and browser-based tools—then browse the games and visual experiments alongside them. Every project is listed once, with a link to its demo or source.
+                </p>
+                <div class="hero-actions">
+                    <a class="hero-link" href="#featured">Start with selected work <span aria-hidden="true">&darr;</span></a>
+                    <a class="hero-link hero-link-secondary" href="#catalog">Browse the other 24 projects <span aria-hidden="true">&rarr;</span></a>
+                </div>
+            </div>
+
+            <aside class="project-tally" aria-label="Catalog totals">
+                <p>Distinct projects</p>
+                <strong>27</strong>
+                <span>each listed once</span>
+                <dl>
+                    <div><dt>Selected to start</dt><dd>3</dd></div>
+                    <div><dt>More in the catalog</dt><dd>24</dd></div>
+                </dl>
+                <small>Includes 25 browser projects and 2 repository links.</small>
+            </aside>
+        </section>
+
+        <section id="featured" class="portfolio-section" aria-labelledby="featured-title">
             <div class="section-heading">
                 <div>
-                    <p class="eyebrow">Start somewhere</p>
-                    <h2>Three ways to lose an afternoon.</h2>
+                    <p class="eyebrow">Engineering &amp; tools</p>
+                    <h2 id="featured-title">Selected work</h2>
                 </div>
+                <p>Start with a degree-planning workspace and an aircraft-data map; a flight simulator keeps the hands-on experiments in view.</p>
             </div>
 
             <div class="featured-layout">
@@ -57,296 +84,289 @@
                     <div class="feature-copy">
                         <div class="feature-meta">
                             <span>01</span>
-                            <span>Course-planning toy</span>
+                            <span>Planning demo · sample data</span>
                         </div>
                         <h3>CourseFlow</h3>
-                        <p>
-                            Drag a degree plan around, follow prerequisites, and build a semester that holds together.
-                        </p>
+                        <p>An interactive degree-planning workspace with a course catalog, prerequisite map, and semester view. It runs on placeholder student and course records.</p>
                         <div class="feature-actions">
-                            <a class="feature-link" href="../courseflow/">Open the planner <span aria-hidden="true">&rarr;</span></a>
-                            <a class="feature-link feature-link-secondary" href="https://sdmay26-19.sd.ece.iastate.edu/" target="_blank" rel="noopener noreferrer">See the original capstone <span aria-hidden="true">&nearr;</span></a>
+                            <a class="feature-link" href="../courseflow/">Open the sample planner <span aria-hidden="true">&rarr;</span></a>
+                            <a class="feature-link feature-link-secondary" href="https://sdmay26-19.sd.ece.iastate.edu/" target="_blank" rel="noopener noreferrer">Original capstone site <span aria-hidden="true">&nearr;</span></a>
                         </div>
                     </div>
                     <div class="courseflow-visual">
-                        <img class="project-visual-image" src="assets/courseflow-card.jpg" alt="CourseFlow semester planner with connected prerequisite cards" width="1280" height="853" loading="lazy" decoding="async">
+                        <img class="project-visual-image" src="assets/courseflow-card.jpg" alt="Illustrated CourseFlow prerequisite map linking course cards" width="1280" height="853" loading="lazy" decoding="async">
                     </div>
                 </article>
 
                 <div class="feature-stack">
+                    <article class="feature-card feature-skywatch" data-project-kind="explore">
+                        <div class="feature-copy">
+                            <div class="feature-meta"><span>02</span><span>Aircraft-data map · Iowa</span></div>
+                            <h3>Iowa Skywatch</h3>
+                            <p>Inspect aircraft over Iowa and open their details. The map refreshes ADS-B snapshots and labels freshness; fictional practice traffic appears only when no usable live snapshot is available.</p>
+                            <div class="feature-actions">
+                                <a class="feature-link" href="../flight-radar/">Open Iowa Skywatch <span aria-hidden="true">&rarr;</span></a>
+                            </div>
+                        </div>
+                        <div class="skywatch-visual">
+                            <img class="project-visual-image" src="assets/iowa-skywatch-card.jpg" alt="Illustrated Iowa map with aircraft and dotted flight paths" width="1280" height="853" loading="lazy" decoding="async">
+                        </div>
+                    </article>
+
                     <article class="feature-card feature-flight" data-project-kind="play">
                         <div class="feature-copy">
-                            <div class="feature-meta"><span>02</span><span>Cockpit game</span></div>
+                            <div class="feature-meta"><span>03</span><span>Playable flight game</span></div>
                             <h3>Flight Sim</h3>
-                            <p>Choose the weather, fly the approach, and land the little jet.</p>
+                            <p>Choose a flight condition, clear the route gates, and bring the aircraft onto a runway.</p>
                             <div class="feature-actions">
-                                <a class="feature-link" href="../flight-sim/">Take the controls <span aria-hidden="true">&rarr;</span></a>
-                                <a class="feature-link feature-link-secondary" href="../flight-sequence/">Scroll a takeoff <span aria-hidden="true">&rarr;</span></a>
+                                <a class="feature-link" href="../flight-sim/">Start a flight <span aria-hidden="true">&rarr;</span></a>
+                                <a class="feature-link feature-link-secondary" href="../flight-sequence/">Explore the flight sequence <span aria-hidden="true">&rarr;</span></a>
                             </div>
                         </div>
                         <div class="flight-visual">
-                            <img class="project-visual-image" src="assets/flight-scenario-lab-card.jpg" alt="Flight Sim cockpit scenario with a runway and flight instruments" width="1280" height="853" loading="lazy" decoding="async">
-                        </div>
-                    </article>
-
-                    <article class="feature-card feature-travel" data-project-kind="explore">
-                        <div class="feature-copy">
-                            <div class="feature-meta"><span>03</span><span>Photo map</span></div>
-                            <h3>Travel Map</h3>
-                            <p>Search the places, follow the photos, and see where the road has been.</p>
-                            <div class="feature-actions">
-                                <a class="feature-link" href="../travel/">Open the map <span aria-hidden="true">&rarr;</span></a>
-                            </div>
-                        </div>
-                        <div class="travel-visual">
-                            <img class="project-visual-image" src="../images/photos/optimized/GOPR9752-1440.webp" alt="Travel Map photo journal with a route and photo markers" width="1440" height="1080" loading="lazy" decoding="async">
+                            <img class="project-visual-image" src="assets/flight-scenario-lab-card.jpg" alt="Flight Sim cockpit view with runway and flight instruments" width="1280" height="853" loading="lazy" decoding="async">
                         </div>
                     </article>
                 </div>
             </div>
         </section>
 
-        <section id="workbench" class="portfolio-section workbench-section">
+        <section id="catalog" class="portfolio-section catalog-section" aria-labelledby="catalog-title">
             <div class="section-heading">
                 <div>
-                    <p class="eyebrow">Open cabinet</p>
-                    <h2>More things to poke at.</h2>
+                    <p class="eyebrow">The rest of the collection</p>
+                    <h2 id="catalog-title">Choose a direction.</h2>
                 </div>
+                <p>Twenty-four more entries, grouped by the kind of thing you can do in them. Each card leads straight to its demo or source.</p>
             </div>
 
-            <div class="project-switchboard" aria-label="Filter projects">
-                <div class="project-filter-group">
-                    <button class="project-filter is-active" type="button" data-project-filter="all" aria-pressed="true">Everything</button>
-                    <button class="project-filter" type="button" data-project-filter="play" aria-pressed="false">Play</button>
-                    <button class="project-filter" type="button" data-project-filter="make" aria-pressed="false">Make</button>
-                    <button class="project-filter" type="button" data-project-filter="explore" aria-pressed="false">Explore</button>
+            <div class="project-switchboard" aria-label="Filter the project catalog">
+                <div class="project-filter-group" role="group" aria-label="Filter projects by type">
+                    <button class="project-filter is-active" type="button" data-project-filter="all" aria-pressed="true">All projects <span>24</span></button>
+                    <button class="project-filter" type="button" data-project-filter="play" aria-pressed="false">Play <span>11</span></button>
+                    <button class="project-filter" type="button" data-project-filter="make" aria-pressed="false">Make <span>8</span></button>
+                    <button class="project-filter" type="button" data-project-filter="explore" aria-pressed="false">Explore <span>5</span></button>
                 </div>
                 <button class="project-surprise" type="button" data-project-surprise>Surprise me <span aria-hidden="true">&#8635;</span></button>
-                <p class="project-filter-status" data-project-filter-status aria-live="polite">All 17 interactive doors are open.</p>
+                <p class="project-filter-status">Filters apply to these 24 entries; the three selected projects are above.</p>
             </div>
 
-            <div class="archive-grid">
-                <article class="archive-card tone-blue has-card-image" data-project-kind="explore">
-                    <img class="archive-card-image" src="../images/photos/optimized/GOPR9752-960.webp" alt="Travel map with Iowa route and photo markers" width="1280" height="853" loading="lazy" decoding="async">
-                    <div class="archive-top"><span class="archive-number">04</span><span class="archive-type">Data map</span></div>
-                    <h3>Travel Map</h3>
-                    <p>A searchable photo map, organized by place.</p>
-                    <div class="archive-footer"><span>Map / Search</span><a href="../travel/" aria-label="Open Travel Map">&rarr;</a></div>
-                </article>
-
-                <article class="archive-card tone-gold has-card-image" data-project-kind="play">
-                    <img class="archive-card-image" src="../games/assets/block-blast-card.jpg" alt="Block Blast board with colorful puzzle pieces" width="1280" height="853" loading="lazy" decoding="async">
-                    <div class="archive-top"><span class="archive-number">05</span><span class="archive-type">Arcade game</span></div>
-                    <h3>Block Blast</h3>
-                    <p>Place pieces, clear lines, keep the board alive.</p>
-                    <div class="archive-footer"><span>Game feel / Mobile</span><a href="../block-blast/" aria-label="Open Block Blast">&rarr;</a></div>
-                </article>
-
-                <article class="archive-card tone-flight-radar has-card-image" data-project-kind="explore">
-                    <img class="archive-card-image" src="assets/iowa-skywatch-card.jpg" alt="Iowa Skywatch map with aircraft markers" width="1280" height="853" loading="lazy" decoding="async">
-                    <div class="archive-top"><span class="archive-number">06</span><span class="archive-type">Live data tool</span></div>
-                    <h3>Iowa Skywatch</h3>
-                    <p>Live aircraft over Iowa, with the data behind each marker.</p>
-                    <div class="archive-footer"><span>ADS-B / Visualization</span><a href="../flight-radar/" aria-label="Open Iowa Skywatch">&rarr;</a></div>
-                </article>
-
-                <article class="archive-card tone-whiteboard has-card-image" data-project-kind="make">
-                    <img class="archive-card-image" src="assets/idea-whiteboard-card.jpg" alt="Idea Whiteboard canvas with notes and diagrams" width="1280" height="853" loading="lazy" decoding="async">
-                    <div class="archive-top"><span class="archive-number">07</span><span class="archive-type">Interactive workspace</span></div>
-                    <h3>Idea Whiteboard</h3>
-                    <p>A local canvas for notes, diagrams, and rough ideas.</p>
-                    <div class="archive-footer"><span>Canvas / Local-first</span><a href="../whiteboard/" aria-label="Open Idea Whiteboard">&rarr;</a></div>
-                </article>
-
-                <article class="archive-card tone-pet has-card-image" data-project-kind="make">
-                    <img class="archive-card-image" src="assets/pet-studio-card.jpg" alt="Pet Studio companion builder" width="1280" height="853" loading="lazy" decoding="async">
-                    <div class="archive-top"><span class="archive-number">08</span><span class="archive-type">Site companion</span></div>
-                    <h3>Pet Studio</h3>
-                    <p>Build a tiny companion that follows visitors around the site.</p>
-                    <div class="archive-footer"><span>Personalization / Local-first</span><a href="../pet-studio/" aria-label="Open Pet Studio">&rarr;</a></div>
-                </article>
-
-                <article class="archive-card tone-blue has-card-image" data-project-kind="play">
-                    <img class="archive-card-image" src="../games/assets/pinpoint-card.jpg" alt="Pinpoint geography game with a map marker" width="1280" height="853" loading="lazy" decoding="async">
-                    <div class="archive-top"><span class="archive-number">09</span><span class="archive-type">Geography game</span></div>
-                    <h3>Pinpoint</h3>
-                    <p>Place a pin, compare the distance, play again.</p>
-                    <div class="archive-footer"><span>Maps / Exploration</span><a href="../pinpoint/" aria-label="Open Pinpoint">&rarr;</a></div>
-                </article>
-
-                <article class="archive-card tone-cyan has-card-image" data-project-kind="play">
-                    <img class="archive-card-image" src="../games/assets/game-of-life-card.jpg" alt="Conway's Game of Life cell grid pattern" width="1280" height="853" loading="lazy" decoding="async">
-                    <div class="archive-top"><span class="archive-number">10</span><span class="archive-type">Cellular simulation</span></div>
-                    <h3>Conway&rsquo;s Game of Life</h3>
-                    <p>Seed a grid and watch simple rules make patterns.</p>
-                    <div class="archive-footer"><span>Simulation / Patterns</span><a href="../conway/" aria-label="Open Conway's Game of Life">&rarr;</a></div>
-                </article>
-
-                <article class="archive-card tone-indigo has-card-image" data-project-kind="play">
-                    <img class="archive-card-image" src="../games/assets/mola-mola-card.jpg" alt="Mola Mola aquarium with a sunfish" width="1280" height="853" loading="lazy" decoding="async">
-                    <div class="archive-top"><span class="archive-number">11</span><span class="archive-type">Virtual pet game</span></div>
-                    <h3>Mola Mola</h3>
-                    <p>Feed a gentle giant, care for the tank, grow the fish.</p>
-                    <div class="archive-footer"><span>Care loop / Simulation</span><a href="../aquarium/" aria-label="Open Mola Mola">&rarr;</a></div>
-                </article>
-
-                <article class="archive-card tone-lab has-card-image" data-project-kind="play">
-                    <img class="archive-card-image" src="../games/assets/gremlin-lab-card.jpg" alt="Gremlin Physics Lab with reactive particles" width="1280" height="853" loading="lazy" decoding="async">
-                    <div class="archive-top"><span class="archive-number">12</span><span class="archive-type">Physics sandbox</span></div>
-                    <h3>Gremlin Physics Lab</h3>
-                    <p>Drop elements into a tiny physics lab and see what reacts.</p>
-                    <div class="archive-footer"><span>Reactions / Play</span><a href="../gremlin-lab/" aria-label="Open Gremlin Physics Lab">&rarr;</a></div>
-                </article>
-
-                <article class="archive-card tone-defense has-card-image" data-project-kind="play">
-                    <img class="archive-card-image" src="../games/assets/optimized/tower-defense-card-v2-960.webp" alt="Signal Grove Defense path with towers" width="960" height="640" loading="lazy" decoding="async">
-                    <div class="archive-top"><span class="archive-number">13</span><span class="archive-type">Tower defense</span></div>
-                    <h3>Signal Grove Defense</h3>
-                    <p>Place signal towers, upgrade their reach, and keep the core alive.</p>
-                    <div class="archive-footer"><span>Strategy / Upgrades</span><a href="../tower-defense/" aria-label="Open Signal Grove Defense">&rarr;</a></div>
-                </article>
-
-                <article class="archive-card tone-green has-card-image" data-project-kind="explore">
-                    <img class="archive-card-image" src="../plant-to-ape/assets/optimized/frame-08-ape-1440.webp" alt="Root Shift seedling morphing into an ape" width="1440" height="810" loading="lazy" decoding="async">
-                    <div class="archive-top"><span class="archive-number">14</span><span class="archive-type">Generative visual study</span></div>
-                    <h3>Root / Shift</h3>
-                    <p>Scroll through a seedling becoming an ape.</p>
-                    <div class="archive-footer"><span>Generative art / Scroll</span><a href="../plant-to-ape/" aria-label="Open Root / Shift">&rarr;</a></div>
-                </article>
-
-                <article class="archive-card tone-tier has-card-image" data-project-kind="make">
-                    <img class="archive-card-image" src="assets/tier-lab-card.jpg" alt="Tier Lab with ranking rows and draggable items" width="1280" height="853" loading="lazy" decoding="async">
-                    <div class="archive-top"><span class="archive-number">15</span><span class="archive-type">Social ranking toy</span></div>
-                    <h3>Tier Lab</h3>
-                    <p>Build a tier list and send the ruling to your friends.</p>
-                    <div class="archive-footer"><span>Create / Share</span><a href="../tier-lab/" aria-label="Open Tier Lab">&rarr;</a></div>
-                </article>
-
-                <article class="archive-card tone-garage has-card-image" data-project-kind="play">
-                    <img class="archive-card-image" src="assets/optimized/garage-diagnostic-bay-card-960.webp" alt="A configurable coupe in the Garage Bay workshop" width="960" height="576" loading="lazy" decoding="async">
-                    <div class="archive-top"><span class="archive-number">16</span><span class="archive-type">Driving playground</span></div>
-                    <h3>Garage Bay</h3>
-                    <p>Tune a 3D coupe, test it on a circuit or drag strip, and share the keys.</p>
-                    <div class="archive-footer"><span>Build / Drive / Share</span><a href="../garage/" aria-label="Open Garage Bay">&rarr;</a></div>
-                </article>
-                <article class="archive-card tone-green has-card-image" data-project-kind="play">
-                    <img class="archive-card-image" src="assets/optimized/pocket-worlds-card-960.webp" alt="A miniature green island with pine trees, a river, and terracotta-roof cottages" width="960" height="640" loading="lazy" decoding="async">
-                    <div class="archive-top"><span class="archive-number">17</span><span class="archive-type">Island-building sandbox</span></div>
-                    <h3>Pocket Worlds</h3>
-                    <p>Sculpt an island, grow a forest, and share a little escape.</p>
-                    <div class="archive-footer"><span>Sculpt / Grow / Share</span><a href="../pocket-worlds/" aria-label="Open Pocket Worlds">&rarr;</a></div>
-                </article>
-                <article class="archive-card tone-orange has-card-image" data-project-kind="play">
-                    <img class="archive-card-image" src="assets/optimized/sound-garden-card-960.webp" alt="A miniature musical garden with bellflowers, teal reeds, rosy stones and a seed drum" width="960" height="640" loading="lazy" decoding="async">
-                    <div class="archive-top"><span class="archive-number">18</span><span class="archive-type">Musical playground</span></div>
-                    <h3>Sound Garden</h3>
-                    <p>Plant musical objects, shape their rhythms, and share a living loop.</p>
-                    <div class="archive-footer"><span>Plant / Compose / Share</span><a href="../sound-garden/" aria-label="Open Sound Garden">&rarr;</a></div>
-                </article>
-                <article class="archive-card tone-rust has-card-image" data-project-kind="play">
-                    <img class="archive-card-image" src="assets/optimized/marble-lab-card-960.webp" alt="A miniature wooden marble machine with teal and amber glass marbles, brass funnel, bell and catch cup" width="960" height="640" loading="lazy" decoding="async">
-                    <div class="archive-top"><span class="archive-number">19</span><span class="archive-type">Contraption sandbox</span></div>
-                    <h3>Marble Lab</h3>
-                    <p>Build a marble machine, play physics challenges, and share the chain reaction.</p>
-                    <div class="archive-footer"><span>Build / Run / Remix</span><a href="../marble-lab/" aria-label="Open Marble Lab">&rarr;</a></div>
-                </article>
-                <article class="archive-card tone-green has-card-image" data-project-kind="make">
-                    <img class="archive-card-image" src="assets/sticker-sketchbook-card.svg" alt="A cream-paper sketchbook with colorful plant, cloud, cat and planet stickers" width="960" height="640" loading="lazy" decoding="async">
-                    <div class="archive-top"><span class="archive-number">20</span><span class="archive-type">Sketchbook preview</span></div>
-                    <h3>Sticker Sketchbook</h3>
-                    <p>Try the sticker tray while the shared album takes shape.</p>
-                    <div class="archive-footer"><span>Pick / Preview</span><a href="../sketchbook/" aria-label="Open Sticker Sketchbook">&rarr;</a></div>
-                </article>
-            </div>
-
-            <div class="archive-break">
-                <div>
-                    <p class="eyebrow">Reference shelf</p>
-                    <h3>Earlier builds and practical tools.</h3>
+            <section class="catalog-group" aria-labelledby="play-group-title">
+                <div class="catalog-group-heading">
+                    <div><p class="eyebrow">11 projects</p><h3 id="play-group-title">Play &amp; simulation</h3></div>
+                    <p>Games, rule-driven worlds, and hands-on physics toys.</p>
                 </div>
-                <p>Earlier tools and experiments live here.</p>
-            </div>
+                <div class="archive-grid">
+                    <article class="archive-card tone-gold has-card-image" data-project-kind="play" aria-label="Open Block Blast">
+                        <img class="archive-card-image" src="../games/assets/optimized/block-blast-card-v2-960.webp" alt="Block Blast board with colorful puzzle pieces" width="960" height="640" loading="lazy" decoding="async">
+                        <div class="archive-top"><span class="archive-number">04</span><span class="archive-type">Arcade puzzle</span></div>
+                        <h4>Block Blast</h4>
+                        <p>Fit each piece onto the board, clear lines, and protect the space you have left.</p>
+                        <div class="archive-footer"><span>Piece placement / line clears</span><a href="../block-blast/" aria-label="Open Block Blast demo">Open game <span aria-hidden="true">&rarr;</span></a></div>
+                    </article>
 
-            <div class="archive-grid archive-grid-reference">
-                <article class="archive-card tone-rust has-card-image" data-project-kind="explore">
-                    <img class="archive-card-image" src="assets/optimized/apartment-hunt-card-960.webp" alt="Apartment shortlist with fit scores" width="960" height="576" loading="lazy" decoding="async">
-                    <div class="archive-top"><span class="archive-number">21</span><span class="archive-type">Decision tool</span></div>
-                    <h3>Apartment Hunt</h3>
-                    <p>A filterable apartment shortlist with fit scoring.</p>
-                    <div class="archive-footer"><span>Ranking / Filters</span><a href="../apartments/" aria-label="Open Apartment Hunt">&rarr;</a></div>
-                </article>
+                    <article class="archive-card tone-blue has-card-image" data-project-kind="play" aria-label="Open Pinpoint">
+                        <img class="archive-card-image" src="../games/assets/optimized/pinpoint-card-v2-960.webp" alt="Pinpoint geography game with a map marker" width="960" height="640" loading="lazy" decoding="async">
+                        <div class="archive-top"><span class="archive-number">05</span><span class="archive-type">Location-guessing game</span></div>
+                        <h4>Pinpoint</h4>
+                        <p>Play five rounds of world-location guessing: drop a pin, then see how close it lands.</p>
+                        <div class="archive-footer"><span>Mapillary / five rounds</span><a href="../pinpoint/" aria-label="Open Pinpoint demo">Open game <span aria-hidden="true">&rarr;</span></a></div>
+                    </article>
 
-                <article class="archive-card tone-green has-card-image" data-project-kind="explore">
-                    <img class="archive-card-image" src="assets/optimized/groggy-climbs-card-960.webp" alt="Groggy Climbs route shortlist" width="960" height="640" loading="lazy" decoding="async">
-                    <div class="archive-top"><span class="archive-number">22</span><span class="archive-type">Recommendation tool</span></div>
-                    <h3>Groggy Climbs</h3>
-                    <p>A climbing shortlist ranked by style, grade, and location.</p>
-                    <div class="archive-footer"><span>Ranking / Climbing</span><a href="../groggy-climbs/" aria-label="Open Groggy Climbs">&rarr;</a></div>
-                </article>
+                    <article class="archive-card tone-cyan has-card-image" data-project-kind="play" aria-label="Open Conway's Game of Life">
+                        <img class="archive-card-image" src="../games/assets/optimized/game-of-life-card-v2-960.webp" alt="Conway's Game of Life cell grid pattern" width="960" height="640" loading="lazy" decoding="async">
+                        <div class="archive-top"><span class="archive-number">06</span><span class="archive-type">Cellular automaton</span></div>
+                        <h4>Conway&rsquo;s Game of Life</h4>
+                        <p>Paint a grid or load a seed pattern, then step the rules or run the simulation.</p>
+                        <div class="archive-footer"><span>Seeds / generations / run controls</span><a href="../conway/" aria-label="Open Conway's Game of Life">Open sim <span aria-hidden="true">&rarr;</span></a></div>
+                    </article>
 
-                <article class="archive-card tone-cyan has-card-image" data-project-kind="make">
-                    <img class="archive-card-image" src="assets/optimized/zulip-card-960.webp" alt="Zulip threaded chat interface" width="960" height="576" loading="lazy" decoding="async">
-                    <div class="archive-top"><span class="archive-number">23</span><span class="archive-type">Open source</span></div>
-                    <h3>Zulip</h3>
-                    <p>Contributions to a production-scale threaded chat codebase.</p>
-                    <div class="archive-footer"><span>Product / Messaging</span><a href="https://github.com/etmayer6/zulip" target="_blank" rel="noopener noreferrer" aria-label="View Zulip repository">&nearr;</a></div>
-                </article>
+                    <article class="archive-card tone-indigo has-card-image" data-project-kind="play" aria-label="Open Mola Mola Aquarium">
+                        <img class="archive-card-image" src="../games/assets/optimized/mola-mola-card-v2-960.webp" alt="Mola Mola aquarium with a sunfish" width="960" height="640" loading="lazy" decoding="async">
+                        <div class="archive-top"><span class="archive-number">07</span><span class="archive-type">Virtual pet sim</span></div>
+                        <h4>Mola Mola</h4>
+                        <p>Keep Momo thriving with snack, water-cleaning, and play actions in a small aquarium.</p>
+                        <div class="archive-footer"><span>Feed / clean / play</span><a href="../aquarium/" aria-label="Open Mola Mola demo">Open game <span aria-hidden="true">&rarr;</span></a></div>
+                    </article>
 
-                <article class="archive-card tone-slate has-card-image" data-project-kind="make">
-                    <img class="archive-card-image" src="assets/optimized/se-coms-319-card-960.webp" alt="SE COM S 319 web application" width="960" height="600" loading="lazy" decoding="async">
-                    <div class="archive-top"><span class="archive-number">24</span><span class="archive-type">Coursework</span></div>
-                    <h3>SE / COM S 319</h3>
-                    <p>An early web application project focused on frontend structure and team delivery.</p>
-                    <div class="archive-footer"><span>Web app / Foundations</span><a href="https://github.com/etmayer6/secoms319" target="_blank" rel="noopener noreferrer" aria-label="View SE COM S 319 repository">&nearr;</a></div>
-                </article>
+                    <article class="archive-card tone-lab has-card-image" data-project-kind="play" aria-label="Open Gremlin Physics Lab">
+                        <img class="archive-card-image" src="../games/assets/optimized/gremlin-lab-card-v2-960.webp" alt="Gremlin Physics Lab with reactive particles" width="960" height="640" loading="lazy" decoding="async">
+                        <div class="archive-top"><span class="archive-number">08</span><span class="archive-type">Physics sandbox</span></div>
+                        <h4>Gremlin Physics Lab</h4>
+                        <p>Drop strange elements into a tiny physics lab and see what reacts.</p>
+                        <div class="archive-footer"><span>Elements / reactions</span><a href="../gremlin-lab/" aria-label="Open Gremlin Physics Lab">Open lab <span aria-hidden="true">&rarr;</span></a></div>
+                    </article>
 
-                <article class="archive-card tone-berry has-card-image" data-project-kind="make">
-                    <img class="archive-card-image" src="assets/optimized/diet-tracker-card-960.webp" alt="Diet Tracker food log" width="960" height="640" loading="lazy" decoding="async">
-                    <div class="archive-top"><span class="archive-number">25</span><span class="archive-type">Interactive demo</span></div>
-                    <h3>Diet Tracker</h3>
-                    <p>A photo-first food log with local estimates and habit review.</p>
-                    <div class="archive-footer"><span>Local-first / Nutrition</span><a href="../diet-tracker/" aria-label="Open Diet Tracker demo">&rarr;</a></div>
-                </article>
+                    <article class="archive-card tone-defense has-card-image" data-project-kind="play" aria-label="Open Signal Grove Defense">
+                        <img class="archive-card-image" src="../games/assets/optimized/tower-defense-card-v2-960.webp" alt="Signal Grove Defense path with towers" width="960" height="640" loading="lazy" decoding="async">
+                        <div class="archive-top"><span class="archive-number">09</span><span class="archive-type">Tower defense</span></div>
+                        <h4>Signal Grove Defense</h4>
+                        <p>Choose tower types, place them along the route, and upgrade their reach as waves arrive.</p>
+                        <div class="archive-footer"><span>Tower classes / waves / upgrades</span><a href="../tower-defense/" aria-label="Open Signal Grove Defense">Open game <span aria-hidden="true">&rarr;</span></a></div>
+                    </article>
 
-                <article class="archive-card tone-orange has-card-image" data-project-kind="make">
-                    <img class="archive-card-image" src="assets/optimized/receipt-meal-planner-card-960.webp" alt="Receipt Meal Planner recipe cards" width="960" height="640" loading="lazy" decoding="async">
-                    <div class="archive-top"><span class="archive-number">26</span><span class="archive-type">Interactive demo</span></div>
-                    <h3>Receipt Meal Planner</h3>
-                    <p>Rank recipes from a sample grocery haul.</p>
-                    <div class="archive-footer"><span>Ingredients / Recipe planning</span><a href="../meal-planner/" aria-label="Open Receipt Meal Planner demo">&rarr;</a></div>
-                </article>
+                    <article class="archive-card tone-garage has-card-image" data-project-kind="play" aria-label="Open Garage Bay">
+                        <img class="archive-card-image" src="assets/optimized/garage-diagnostic-bay-card-960.webp" alt="A configurable coupe in the Garage Bay workshop" width="960" height="576" loading="lazy" decoding="async">
+                        <div class="archive-top"><span class="archive-number">10</span><span class="archive-type">3D car builder</span></div>
+                        <h4>Garage Bay</h4>
+                        <p>Tune the Apex GT&rsquo;s paint, wheels, suspension, and power, then drive it on a 3D test circuit.</p>
+                        <div class="archive-footer"><span>Configure / drive / share</span><a href="../garage/" aria-label="Open Garage Bay">Open garage <span aria-hidden="true">&rarr;</span></a></div>
+                    </article>
 
-                <article class="archive-card tone-indigo has-card-image" data-project-kind="explore">
-                    <img class="archive-card-image" src="assets/optimized/childhood-timeline-card-960.webp" alt="Childhood Timeline evidence archive" width="960" height="576" loading="lazy" decoding="async">
-                    <div class="archive-top"><span class="archive-number">27</span><span class="archive-type">Privacy-safe demo</span></div>
-                    <h3>Childhood Timeline</h3>
-                    <p>A fictional archive timeline with evidence scoring and redaction.</p>
-                    <div class="archive-footer"><span>Parsing / Privacy</span><a href="../childhood-timeline/" aria-label="Open Childhood Timeline demo">&rarr;</a></div>
-                </article>
-            </div>
+                    <article class="archive-card tone-green has-card-image" data-project-kind="play" aria-label="Open Pocket Worlds">
+                        <img class="archive-card-image" src="assets/optimized/pocket-worlds-card-960.webp" alt="A miniature green island with pine trees, a river, and terracotta-roof cottages" width="960" height="640" loading="lazy" decoding="async">
+                        <div class="archive-top"><span class="archive-number">11</span><span class="archive-type">Island-building sandbox</span></div>
+                        <h4>Pocket Worlds</h4>
+                        <p>Raise or lower the terrain, add water, forest, and cottages, then save or share your island.</p>
+                        <div class="archive-footer"><span>Terrain / water / forest</span><a href="../pocket-worlds/" aria-label="Open Pocket Worlds">Open world <span aria-hidden="true">&rarr;</span></a></div>
+                    </article>
+
+                    <article class="archive-card tone-orange has-card-image" data-project-kind="play" aria-label="Open Sound Garden">
+                        <img class="archive-card-image" src="assets/optimized/sound-garden-card-960.webp" alt="A miniature musical garden with bellflowers, teal reeds, rosy stones, and a seed drum" width="960" height="640" loading="lazy" decoding="async">
+                        <div class="archive-top"><span class="archive-number">12</span><span class="archive-type">Musical playground</span></div>
+                        <h4>Sound Garden</h4>
+                        <p>Arrange bellflowers, reeds, stones, and drums; edit their rhythms into a shareable loop.</p>
+                        <div class="archive-footer"><span>Instruments / editable rhythm</span><a href="../sound-garden/" aria-label="Open Sound Garden">Open garden <span aria-hidden="true">&rarr;</span></a></div>
+                    </article>
+
+                    <article class="archive-card tone-rust has-card-image" data-project-kind="play" aria-label="Open Marble Lab">
+                        <img class="archive-card-image" src="assets/optimized/marble-lab-card-960.webp" alt="A miniature wooden marble machine with teal and amber glass marbles, a brass funnel, bell, and catch cup" width="960" height="640" loading="lazy" decoding="async">
+                        <div class="archive-top"><span class="archive-number">13</span><span class="archive-type">Contraption sandbox</span></div>
+                        <h4>Marble Lab</h4>
+                        <p>Build with ramps, conveyors, magnets, and portals; try three physics challenges and share a remix.</p>
+                        <div class="archive-footer"><span>Parts / challenges / remix</span><a href="../marble-lab/" aria-label="Open Marble Lab">Open lab <span aria-hidden="true">&rarr;</span></a></div>
+                    </article>
+
+                    <article class="archive-card tone-gold has-card-image" data-project-kind="play" aria-label="Open Word Sort Solitaire">
+                        <img class="archive-card-image" src="../games/assets/optimized/word-sort-card-v2-960.webp" alt="Word Sort Solitaire clue cards arranged into category stacks" width="960" height="640" loading="lazy" decoding="async">
+                        <div class="archive-top"><span class="archive-number">14</span><span class="archive-type">Word puzzle</span></div>
+                        <h4>Word Sort Solitaire</h4>
+                        <p>Use clue cards to sort words into their matching category stacks.</p>
+                        <div class="archive-footer"><span>Clues / category stacks</span><a href="../word-sort/" aria-label="Open Word Sort Solitaire">Deal the words <span aria-hidden="true">&rarr;</span></a></div>
+                    </article>
+                </div>
+            </section>
+
+            <section class="catalog-group" aria-labelledby="make-group-title">
+                <div class="catalog-group-heading">
+                    <div><p class="eyebrow">8 projects</p><h3 id="make-group-title">Tools &amp; making</h3></div>
+                    <p>Plan, sketch, rank, personalize, or inspect the linked source.</p>
+                </div>
+                <div class="archive-grid">
+                    <article class="archive-card tone-whiteboard has-card-image" data-project-kind="make" aria-label="Open Idea Whiteboard">
+                        <img class="archive-card-image" src="assets/idea-whiteboard-card.jpg" alt="Idea Whiteboard canvas with notes and diagrams" width="1280" height="853" loading="lazy" decoding="async">
+                        <div class="archive-top"><span class="archive-number">15</span><span class="archive-type">Local-first canvas</span></div>
+                        <h4>Idea Whiteboard</h4>
+                        <p>Sketch ideas with a pen, line, shapes, text, and notes, then zoom around the canvas.</p>
+                        <div class="archive-footer"><span>Pen / shapes / text / notes</span><a href="../whiteboard/" aria-label="Open Idea Whiteboard">Open canvas <span aria-hidden="true">&rarr;</span></a></div>
+                    </article>
+
+                    <article class="archive-card tone-pet has-card-image" data-project-kind="make" aria-label="Open Pet Studio">
+                        <img class="archive-card-image" src="assets/pet-studio-card.jpg" alt="Pet Studio companion builder" width="1280" height="853" loading="lazy" decoding="async">
+                        <div class="archive-top"><span class="archive-number">16</span><span class="archive-type">Site companion builder</span></div>
+                        <h4>Pet Studio</h4>
+                        <p>Choose a companion&rsquo;s species and personality, then build a small friend that follows you around the site.</p>
+                        <div class="archive-footer"><span>Species / personality / site-wide</span><a href="../pet-studio/" aria-label="Open Pet Studio">Build a pet <span aria-hidden="true">&rarr;</span></a></div>
+                    </article>
+
+                    <article class="archive-card tone-tier has-card-image" data-project-kind="make" aria-label="Open Tier Lab">
+                        <img class="archive-card-image" src="assets/tier-lab-card.jpg" alt="Tier Lab with ranking rows and draggable items" width="1280" height="853" loading="lazy" decoding="async">
+                        <div class="archive-top"><span class="archive-number">17</span><span class="archive-type">Tier-list editor</span></div>
+                        <h4>Tier Lab</h4>
+                        <p>Build or import a tier list, export it as JSON, and share a public link. Online publishing uses sign-in.</p>
+                        <div class="archive-footer"><span>JSON / links / online publish</span><a href="../tier-lab/" aria-label="Open Tier Lab">Open editor <span aria-hidden="true">&rarr;</span></a></div>
+                    </article>
+
+                    <article class="archive-card tone-green has-card-image" data-project-kind="make" aria-label="Open Sticker Sketchbook">
+                        <img class="archive-card-image" src="assets/sticker-sketchbook-card.svg" alt="A cream-paper sketchbook with colorful plant, cloud, cat, and planet stickers" width="960" height="640" loading="lazy" decoding="async">
+                        <div class="archive-top"><span class="archive-number">18</span><span class="archive-type">Shared sketchbook</span></div>
+                        <h4>Sticker Sketchbook</h4>
+                        <p>Pick a curated doodle and ink, add it to a shared page, then save the picture or share the page link.</p>
+                        <div class="archive-footer"><span>Sticker picker / shared pages</span><a href="../sketchbook/" aria-label="Open Sticker Sketchbook">Open sketchbook <span aria-hidden="true">&rarr;</span></a></div>
+                    </article>
+
+                    <article class="archive-card tone-cyan has-card-image" data-project-kind="make" aria-label="View the Zulip repository">
+                        <img class="archive-card-image" src="assets/optimized/zulip-card-960.webp" alt="Zulip threaded chat interface" width="960" height="576" loading="lazy" decoding="async">
+                        <div class="archive-top"><span class="archive-number">19</span><span class="archive-type">External codebase</span></div>
+                        <h4>Zulip</h4>
+                        <p>The linked repository is for Zulip, an open-source team-chat project organized around topic threads.</p>
+                        <div class="archive-footer"><span>Open source / threaded chat</span><a href="https://github.com/etmayer6/zulip" target="_blank" rel="noopener noreferrer" aria-label="View the Zulip repository on GitHub">View repository <span aria-hidden="true">&nearr;</span></a></div>
+                    </article>
+
+                    <article class="archive-card tone-slate has-card-image" data-project-kind="make" aria-label="View the SE COM S 319 repository">
+                        <img class="archive-card-image" src="assets/optimized/se-coms-319-card-960.webp" alt="SE COM S 319 web application" width="960" height="600" loading="lazy" decoding="async">
+                        <div class="archive-top"><span class="archive-number">20</span><span class="archive-type">Course repository</span></div>
+                        <h4>SE / COM S 319</h4>
+                        <p>An early team web application from coursework; the linked repository is the artifact to explore.</p>
+                        <div class="archive-footer"><span>Web app / course project</span><a href="https://github.com/etmayer6/secoms319" target="_blank" rel="noopener noreferrer" aria-label="View the SE COM S 319 repository on GitHub">View repository <span aria-hidden="true">&nearr;</span></a></div>
+                    </article>
+
+                    <article class="archive-card tone-berry has-card-image" data-project-kind="make" aria-label="Open the Diet Tracker demo">
+                        <img class="archive-card-image" src="assets/optimized/diet-tracker-card-960.webp" alt="Diet Tracker sample food log" width="960" height="640" loading="lazy" decoding="async">
+                        <div class="archive-top"><span class="archive-number">21</span><span class="archive-type">Sample-data demo</span></div>
+                        <h4>Diet Tracker</h4>
+                        <p>Try a photo-first meal log with fictional local data, including an editable estimate for the sample meal.</p>
+                        <div class="archive-footer"><span>Photo entry / editable estimate</span><a href="../diet-tracker/" aria-label="Open the Diet Tracker demo">Open demo <span aria-hidden="true">&rarr;</span></a></div>
+                    </article>
+
+                    <article class="archive-card tone-orange has-card-image" data-project-kind="make" aria-label="Open the Receipt Meal Planner demo">
+                        <img class="archive-card-image" src="assets/optimized/receipt-meal-planner-card-960.webp" alt="Receipt Meal Planner recipe cards" width="960" height="640" loading="lazy" decoding="async">
+                        <div class="archive-top"><span class="archive-number">22</span><span class="archive-type">Sample-data demo</span></div>
+                        <h4>Receipt Meal Planner</h4>
+                        <p>Switch between fictional grocery baskets and rank dinner ideas against the ingredients in each sample.</p>
+                        <div class="archive-footer"><span>Sample basket / recipe matching</span><a href="../meal-planner/" aria-label="Open the Receipt Meal Planner demo">Open demo <span aria-hidden="true">&rarr;</span></a></div>
+                    </article>
+                </div>
+            </section>
+
+            <section class="catalog-group" aria-labelledby="explore-group-title">
+                <div class="catalog-group-heading">
+                    <div><p class="eyebrow">5 projects</p><h3 id="explore-group-title">Explore &amp; compare</h3></div>
+                    <p>Browse places and archives, compare shortlists, or watch a visual sequence unfold.</p>
+                </div>
+                <div class="archive-grid">
+                    <article class="archive-card tone-blue has-card-image" data-project-kind="explore" aria-label="Open Travel Map">
+                        <img class="archive-card-image" src="../images/photos/optimized/GOPR9752-960.webp" alt="Palm-lined shore and bright water from the travel photo journal" width="1280" height="853" loading="lazy" decoding="async">
+                        <div class="archive-top"><span class="archive-number">23</span><span class="archive-type">Photo map &amp; journal</span></div>
+                        <h4>Travel Map</h4>
+                        <p>Move between the map, photo gallery, and place list; browse the places through their pictures.</p>
+                        <div class="archive-footer"><span>Leaflet / map / photo views</span><a href="../travel/" aria-label="Open Travel Map">Open map <span aria-hidden="true">&rarr;</span></a></div>
+                    </article>
+
+                    <article class="archive-card tone-green has-card-image" data-project-kind="explore" aria-label="Open Root / Shift">
+                        <img class="archive-card-image" src="../plant-to-ape/assets/optimized/frame-08-ape-1440.webp" alt="Generated frame in Root / Shift showing the seedling-to-ape transition" width="1440" height="810" loading="lazy" decoding="async">
+                        <div class="archive-top"><span class="archive-number">24</span><span class="archive-type">Generative visual study</span></div>
+                        <h4>Root / Shift</h4>
+                        <p>Scroll through generated frames as a seedling gradually shifts into an ape.</p>
+                        <div class="archive-footer"><span>Scroll-driven / generated frames</span><a href="../plant-to-ape/" aria-label="Open Root / Shift">View study <span aria-hidden="true">&rarr;</span></a></div>
+                    </article>
+
+                    <article class="archive-card tone-rust has-card-image" data-project-kind="explore" aria-label="Open Apartment Hunt">
+                        <img class="archive-card-image" src="assets/optimized/apartment-hunt-card-960.webp" alt="Apartment shortlist with fit scores" width="960" height="576" loading="lazy" decoding="async">
+                        <div class="archive-top"><span class="archive-number">25</span><span class="archive-type">Housing shortlist</span></div>
+                        <h4>Apartment Hunt</h4>
+                        <p>Filter the apartment shortlist by all-in cost and commute, then compare practical fit scores.</p>
+                        <div class="archive-footer"><span>Cost / commute / fit filters</span><a href="../apartments/" aria-label="Open Apartment Hunt">Open tool <span aria-hidden="true">&rarr;</span></a></div>
+                    </article>
+
+                    <article class="archive-card tone-green has-card-image" data-project-kind="explore" aria-label="Open Groggy Climbs">
+                        <img class="archive-card-image" src="assets/optimized/groggy-climbs-card-960.webp" alt="Groggy Climbs route shortlist" width="960" height="640" loading="lazy" decoding="async">
+                        <div class="archive-top"><span class="archive-number">26</span><span class="archive-type">Climbing route shortlist</span></div>
+                        <h4>Groggy Climbs</h4>
+                        <p>Sort a shortlist of technical sport climbs by the route details that matter to you.</p>
+                        <div class="archive-footer"><span>Grade / style / location</span><a href="../groggy-climbs/" aria-label="Open Groggy Climbs">Open shortlist <span aria-hidden="true">&rarr;</span></a></div>
+                    </article>
+
+                    <article class="archive-card tone-indigo has-card-image" data-project-kind="explore" aria-label="Open the Childhood Timeline demo">
+                        <img class="archive-card-image" src="assets/optimized/childhood-timeline-card-960.webp" alt="Childhood Timeline fictional evidence archive" width="960" height="576" loading="lazy" decoding="async">
+                        <div class="archive-top"><span class="archive-number">27</span><span class="archive-type">Privacy-safe demo</span></div>
+                        <h4>Childhood Timeline</h4>
+                        <p>Turn fictional archive records into a chronology, review evidence, and redact details before sharing.</p>
+                        <div class="archive-footer"><span>Parsing / evidence / redaction</span><a href="../childhood-timeline/" aria-label="Open the Childhood Timeline demo">Open demo <span aria-hidden="true">&rarr;</span></a></div>
+                    </article>
+                </div>
+            </section>
         </section>
-
-        <section class="projects-hero">
-            <div class="projects-hero-copy">
-                <p class="eyebrow">Open cabinet / 2026</p>
-                <h1>Made to be opened.</h1>
-                <p class="projects-summary">
-                    Games, maps, simulations, and odd little tools. Pick a door, press a button, and see what happens.
-                </p>
-            </div>
-
-            <aside class="project-tally" aria-label="Project totals">
-                <p>Project index</p>
-                <strong>27</strong>
-                <span>builds</span>
-                <dl>
-                    <div><dt>Featured</dt><dd>3</dd></div>
-                    <div><dt>Open workbench</dt><dd>24</dd></div>
-                    <div><dt>Private builds</dt><dd>0</dd></div>
-                </dl>
-            </aside>
-        </section>
-
     </main>
 
     <footer class="projects-footer"><p>&copy; 2026 Ethan Mayer</p></footer>
