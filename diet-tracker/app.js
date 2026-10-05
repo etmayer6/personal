@@ -62,6 +62,17 @@
         resetButton: document.getElementById("reset-button"),
         confirmReset: document.getElementById("confirm-reset"),
         resetDialog: document.getElementById("reset-dialog"),
+        reviewDialog: document.getElementById("review-dialog"),
+        reviewForm: document.getElementById("review-form"),
+        reviewImage: document.getElementById("review-image"),
+        reviewTitle: document.getElementById("review-title"),
+        reviewConfidence: document.getElementById("review-confidence"),
+        reviewItems: document.getElementById("review-items"),
+        reviewNutrition: document.getElementById("review-nutrition"),
+        reviewImpact: document.getElementById("review-impact"),
+        portionOptions: document.getElementById("portion-options"),
+        backToDetails: document.getElementById("back-to-details"),
+        closeReview: document.getElementById("close-review"),
         editDialog: document.getElementById("edit-dialog"),
         editForm: document.getElementById("edit-form"),
         toast: document.getElementById("app-toast")
@@ -72,6 +83,7 @@
     let sampleIndex = 0;
     let expandedId = null;
     let pendingDeleteId = null;
+    let pendingAnalysis = null;
     let toastTimer = 0;
 
     function atLocalTime(dayOffset, hour, minute) {
@@ -348,7 +360,7 @@
 
         const description = elements.description.value.trim();
         const template = selectEstimate(description, elements.mealType.value);
-        const meal = {
+        pendingAnalysis = {
             id: "meal-" + Date.now(),
             createdAt: new Date().toISOString(),
             type: elements.mealType.value,
@@ -356,19 +368,84 @@
             notes: elements.notes.value.trim(),
             image: pendingPhoto.image,
             items: template.items.slice(),
-            nutrition: adjustedNutrition(template, description || template.title),
+            baseNutrition: adjustedNutrition(template, description || template.title),
             confidence: pendingPhoto.sampleId ? template.confidence : 84
+        };
+        elements.analysisLayer.hidden = true;
+        elements.analyzeButton.disabled = false;
+        renderReview(1);
+        elements.reviewDialog.showModal();
+    }
+
+    function scaledNutrition(nutrition, factor) {
+        return Object.keys(nutrition).reduce(function (scaled, key) {
+            scaled[key] = Math.round(nutrition[key] * factor);
+            return scaled;
+        }, {});
+    }
+
+    function renderReview(factor) {
+        if (!pendingAnalysis) return;
+        pendingAnalysis.portion = factor;
+        pendingAnalysis.nutrition = scaledNutrition(pendingAnalysis.baseNutrition, factor);
+        elements.reviewImage.src = safeImage(pendingAnalysis.image);
+        elements.reviewImage.alt = pendingAnalysis.description;
+        elements.reviewTitle.textContent = pendingAnalysis.description;
+        elements.reviewConfidence.textContent = Math.round(pendingAnalysis.confidence) + "% confidence";
+        elements.reviewItems.textContent = pendingAnalysis.items.join(" · ");
+        elements.portionOptions.querySelectorAll("[data-portion]").forEach(function (button) {
+            button.setAttribute("aria-pressed", Number(button.dataset.portion) === factor ? "true" : "false");
+        });
+
+        const nutrition = pendingAnalysis.nutrition;
+        elements.reviewNutrition.innerHTML = [
+            [formatNumber(nutrition.calories), "Calories"],
+            [nutrition.protein + "g", "Protein"],
+            [nutrition.carbs + "g", "Carbs"],
+            [nutrition.fat + "g", "Fat"]
+        ].map(function (item) {
+            return "<div><strong>" + item[0] + "</strong><span>" + item[1] + "</span></div>";
+        }).join("");
+
+        const currentCalories = totalsFor(todayMeals()).calories;
+        const projectedCalories = currentCalories + nutrition.calories;
+        const difference = Math.abs(GOALS.calories - projectedCalories);
+        const targetStatus = projectedCalories > GOALS.calories
+            ? formatNumber(difference) + " over the sample target"
+            : formatNumber(difference) + " remaining";
+        elements.reviewImpact.innerHTML = "Today would move from <strong>" + formatNumber(currentCalories) + "</strong> to <strong>" + formatNumber(projectedCalories) + " kcal</strong> · " + targetStatus + ".";
+    }
+
+    function closeReview() {
+        pendingAnalysis = null;
+        elements.reviewDialog.close("cancel");
+        elements.analyzeButton.focus();
+    }
+
+    function commitAnalysis(event) {
+        event.preventDefault();
+        if (!pendingAnalysis) return;
+        const meal = {
+            id: pendingAnalysis.id,
+            createdAt: pendingAnalysis.createdAt,
+            type: pendingAnalysis.type,
+            description: pendingAnalysis.description,
+            notes: pendingAnalysis.notes,
+            image: pendingAnalysis.image,
+            items: pendingAnalysis.items,
+            nutrition: pendingAnalysis.nutrition,
+            confidence: pendingAnalysis.confidence
         };
         state.meals.unshift(meal);
         saveState();
-        elements.analysisLayer.hidden = true;
-        elements.analyzeButton.disabled = false;
+        pendingAnalysis = null;
+        elements.reviewDialog.close("default");
         elements.mealForm.reset();
         elements.mealType.value = "Lunch";
         clearPhoto();
         pendingDeleteId = null;
         render();
-        showToast("Meal analyzed and added to today's log.");
+        showToast("Reviewed meal added to today's log.");
         document.getElementById("history").scrollIntoView({ behavior: "smooth", block: "start" });
     }
 
@@ -439,6 +516,7 @@
         state = createDefaultState();
         expandedId = null;
         pendingDeleteId = null;
+        pendingAnalysis = null;
         try { localStorage.removeItem(STORAGE_KEY); } catch (error) { /* In-memory reset is still safe. */ }
         elements.mealFilter.value = "today";
         elements.mealForm.reset();
@@ -459,6 +537,17 @@
     elements.samplePhoto.addEventListener("click", useSamplePhoto);
     elements.mealPhoto.addEventListener("change", function (event) { handlePhoto(event.target.files && event.target.files[0]); });
     elements.mealForm.addEventListener("submit", analyzeMeal);
+    elements.reviewForm.addEventListener("submit", commitAnalysis);
+    elements.backToDetails.addEventListener("click", closeReview);
+    elements.closeReview.addEventListener("click", closeReview);
+    elements.portionOptions.addEventListener("click", function (event) {
+        const button = event.target.closest("[data-portion]");
+        if (button) renderReview(Number(button.dataset.portion));
+    });
+    elements.reviewDialog.addEventListener("cancel", function (event) {
+        event.preventDefault();
+        closeReview();
+    });
     elements.mealFilter.addEventListener("change", renderMeals);
     elements.editForm.addEventListener("submit", saveEdit);
     elements.resetButton.addEventListener("click", function () { elements.resetDialog.showModal(); });

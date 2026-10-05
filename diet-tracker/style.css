@@ -112,6 +112,8 @@ html { scroll-padding-top: 86px; }
 .tracker-frame h2,
 .tracker-frame h3,
 .app-dialog h2 { font-family: "Bahnschrift", "Trebuchet MS", sans-serif; }
+.app-dialog h2,
+.review-meal h3 { color: var(--hub-ink); }
 
 .hub-rail {
     display: flex;
@@ -382,6 +384,47 @@ textarea { font: inherit; }
 .compact-dialog { max-width: 430px; }
 .compact-dialog p:not(.section-kicker) { margin: 0; color: var(--hub-muted); font-size: 10px; line-height: 1.5; }
 
+.review-dialog { width: min(720px, calc(100% - 30px)); }
+.review-dialog form { gap: 18px; }
+.review-meal {
+    display: grid;
+    grid-template-columns: 152px minmax(0, 1fr);
+    gap: 18px;
+    align-items: center;
+    padding: 12px;
+    border: 1px solid var(--hub-line);
+    background: #101c22;
+}
+.review-meal img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; }
+.review-meal h3 { margin: 10px 0 5px; font-size: 18px; }
+.review-meal p { margin: 0; color: var(--hub-muted); font-size: 9px; line-height: 1.6; }
+.portion-fieldset { min-width: 0; margin: 0; padding: 0; border: 0; }
+.portion-fieldset legend { margin-bottom: 9px; color: #9eb0b1; font-size: 8px; font-weight: 800; letter-spacing: 0.07em; text-transform: uppercase; }
+.portion-options { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.portion-options button {
+    display: grid;
+    min-height: 64px;
+    gap: 4px;
+    place-content: center;
+    border: 1px solid var(--hub-line);
+    background: transparent;
+    color: #c3d1d0;
+    cursor: pointer;
+    text-align: center;
+}
+.portion-options button:hover { border-color: rgba(125, 232, 200, 0.45); }
+.portion-options button[aria-pressed="true"] { border-color: var(--mint); background: var(--mint-soft); color: var(--mint); }
+.portion-options strong { font-size: 10px; }
+.portion-options span { color: var(--hub-muted); font-size: 8px; }
+.review-nutrition { display: grid; grid-template-columns: repeat(4, 1fr); border: 1px solid var(--hub-line); }
+.review-nutrition div { padding: 14px; border-right: 1px solid var(--hub-line); }
+.review-nutrition div:last-child { border-right: 0; }
+.review-nutrition strong { display: block; font-size: 17px; }
+.review-nutrition span { display: block; margin-top: 4px; color: var(--hub-muted); font-size: 7px; letter-spacing: 0.08em; text-transform: uppercase; }
+.review-impact { margin: -6px 0 0; color: #a7b9b8; font-size: 10px; line-height: 1.6; }
+.review-impact strong { color: var(--hub-ink); }
+.review-actions { margin-top: 0; }
+
 .app-toast {
     position: fixed;
     z-index: 100;
@@ -455,6 +498,16 @@ textarea { font: inherit; }
     .meal-actions { display: grid; grid-template-columns: repeat(3, 1fr); }
     .meal-action { min-height: 40px; padding: 0 5px; }
     .edit-macros { grid-template-columns: repeat(2, 1fr); }
+    .review-dialog { width: min(100% - 20px, 720px); max-height: calc(100dvh - 20px); }
+    .review-dialog form { gap: 14px; padding: 18px; }
+    .review-meal { grid-template-columns: 94px minmax(0, 1fr); gap: 12px; }
+    .review-meal h3 { margin-top: 8px; font-size: 15px; }
+    .portion-options { gap: 5px; }
+    .portion-options button { min-height: 62px; padding: 6px 3px; }
+    .review-nutrition div { padding: 11px 8px; }
+    .review-nutrition strong { font-size: 14px; }
+    .review-actions { display: grid; grid-template-columns: 1fr; }
+    .review-actions .quiet-button { order: 2; }
 }
 
 @media (max-width: 430px) {

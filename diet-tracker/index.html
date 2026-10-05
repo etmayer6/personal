@@ -138,11 +138,11 @@
                             </div>
 
                             <div class="capture-fields">
-                                <div class="capture-heading"><span class="capture-number">01</span><div><strong>Add a little context</strong><p>Optional context shapes the estimate.</p></div></div>
+                                <div class="capture-heading"><span class="capture-number">01</span><div><strong>Add a little context</strong><p>Optional context shapes the estimate. You review it before saving.</p></div></div>
                                 <label>Meal type<select id="meal-type"><option>Breakfast</option><option selected>Lunch</option><option>Dinner</option><option>Snack</option></select></label>
                                 <label>Description<input id="meal-description" maxlength="80" placeholder="e.g. chicken, rice, avocado"></label>
                                 <label>Notes<textarea id="meal-notes" maxlength="160" placeholder="How did it feel? Anything worth remembering?"></textarea></label>
-                                <button class="analyze-button" id="analyze-button" type="submit"><span>Analyze demo meal</span><span aria-hidden="true">&rarr;</span></button>
+                                <button class="analyze-button" id="analyze-button" type="submit"><span>Analyze &amp; review</span><span aria-hidden="true">&rarr;</span></button>
                                 <p class="estimate-note">Estimates are fictional and are not nutrition or medical advice.</p>
                             </div>
 
@@ -176,6 +176,38 @@
     </main>
 
     <footer class="diet-footer"><p>&copy; 2026 Ethan Mayer</p></footer>
+
+    <dialog id="review-dialog" class="app-dialog review-dialog">
+        <form id="review-form" method="dialog">
+            <div class="dialog-heading">
+                <div><p class="section-kicker">Review before saving</p><h2>Does this estimate fit?</h2></div>
+                <button class="dialog-close" id="close-review" type="button" aria-label="Return to meal details">&times;</button>
+            </div>
+            <div class="review-meal">
+                <img id="review-image" alt="Meal being reviewed">
+                <div>
+                    <span class="confidence" id="review-confidence"></span>
+                    <h3 id="review-title"></h3>
+                    <p id="review-items"></p>
+                </div>
+            </div>
+            <fieldset class="portion-fieldset">
+                <legend>How much was on the plate?</legend>
+                <div class="portion-options" id="portion-options">
+                    <button type="button" data-portion="0.75" aria-pressed="false"><strong>Lighter</strong><span>About &frac34; serving</span></button>
+                    <button type="button" data-portion="1" aria-pressed="true"><strong>As shown</strong><span>One serving</span></button>
+                    <button type="button" data-portion="1.25" aria-pressed="false"><strong>Heartier</strong><span>About 1&frac14; servings</span></button>
+                </div>
+            </fieldset>
+            <div class="review-nutrition" id="review-nutrition" aria-live="polite"></div>
+            <p class="review-impact" id="review-impact"></p>
+            <div class="dialog-actions review-actions">
+                <button class="quiet-button" id="back-to-details" type="button">Back to details</button>
+                <button class="analyze-button" type="submit" value="default">Add to today&rsquo;s log</button>
+            </div>
+            <p class="estimate-note">Still a fictional demo estimate—not nutrition or medical advice.</p>
+        </form>
+    </dialog>
 
     <dialog id="edit-dialog" class="app-dialog">
         <form id="edit-form" method="dialog">
