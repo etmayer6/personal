@@ -67,6 +67,7 @@
         const visualButton = document.createElement("button");
         visualButton.className = "art-visual";
         visualButton.type = "button";
+        visualButton.dataset.artworkId = artwork.id;
         visualButton.setAttribute("aria-label", "View details for " + artwork.title);
         addArtworkVisual(visualButton, artwork, artwork.title);
         visualButton.addEventListener("click", function () { openArtwork(artwork.id, visualButton); });
@@ -339,7 +340,15 @@
             if (event.target === dialog) dialog.close();
         });
         dialog.addEventListener("close", function () {
-            if (dialog.returnFocusTo && dialog.returnFocusTo.isConnected) dialog.returnFocusTo.focus();
+            let returnTarget = dialog.returnFocusTo && dialog.returnFocusTo.isConnected
+                ? dialog.returnFocusTo
+                : null;
+            if (!returnTarget && dialog === artDialog && activeArtworkId) {
+                returnTarget = Array.from(document.querySelectorAll(".art-visual")).find(function (button) {
+                    return button.dataset.artworkId === activeArtworkId;
+                });
+            }
+            if (returnTarget) returnTarget.focus();
         });
     });
 }());
