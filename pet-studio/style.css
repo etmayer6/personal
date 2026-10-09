@@ -974,6 +974,7 @@ html {
 }
 
 .pet-preview-caption h2 {
+    color: #f6f1e6;
     font-size: clamp(30px, 4vw, 46px);
 }
 
