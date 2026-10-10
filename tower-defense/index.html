@@ -76,7 +76,7 @@
                     </div>
                     <div class="tower-canvas-wrap">
                         <canvas id="tower-defense-canvas" width="960" height="600" aria-label="Signal Grove battlefield. Click an empty grid cell to place the selected tower." tabindex="0"></canvas>
-                        <div id="tower-overlay" class="tower-overlay" data-visible="true">
+                        <div id="tower-overlay" class="tower-overlay" data-visible="false">
                             <div class="tower-overlay-card">
                                 <span class="tower-overlay-mark" aria-hidden="true">SG / 08</span>
                                 <h3 id="tower-overlay-title">A quiet grove. For now.</h3>
@@ -86,12 +86,30 @@
                         </div>
                     </div>
                     <div class="tower-stage-footer">
-                        <p id="tower-status" class="tower-status" role="status" aria-live="polite">Choose Enter the grove to begin building.</p>
+                        <p id="tower-status" class="tower-status" role="status" aria-live="polite">Build your network, then launch wave 1.</p>
                         <span class="tower-coordinate-readout" id="tower-coordinate-readout">grid / waiting</span>
                     </div>
                 </div>
 
                 <aside class="tower-defense-controls" aria-label="Tower controls">
+                    <section class="tower-control-block tower-campaign-block" aria-labelledby="tower-campaign-heading">
+                        <div class="tower-control-heading">
+                            <div>
+                                <p class="tower-control-kicker">Campaign / 03 routes</p>
+                                <h3 id="tower-campaign-heading">Choose a route</h3>
+                            </div>
+                        </div>
+                        <label class="tower-campaign-label" for="tower-mission-select">Mission</label>
+                        <select id="tower-mission-select" class="tower-mission-select">
+                            <option value="0">01 · Creek Bend</option>
+                            <option value="1">02 · Switchback</option>
+                            <option value="2">03 · Night Crossing</option>
+                        </select>
+                        <p id="tower-mission-briefing" class="tower-campaign-copy"></p>
+                        <p id="tower-wave-preview" class="tower-wave-preview" role="status" aria-live="polite"></p>
+                        <p id="tower-campaign-progress" class="tower-campaign-progress"></p>
+                    </section>
+
                     <section class="tower-control-block">
                         <div class="tower-control-heading">
                             <div>

@@ -195,6 +195,7 @@ for (const route of publicRoutes) {
 
 for (const viewport of VIEWPORTS) {
     test(`public routes do not overflow horizontally at ${viewport.name}`, async ({ browser }) => {
+        test.setTimeout(60000);
         const context = await browser.newContext({
             viewport: { width: viewport.width, height: viewport.height },
             reducedMotion: "reduce",

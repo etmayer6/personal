@@ -23,7 +23,8 @@
         "tower-defense": { label: "Signal Grove Defense", href: "tower-defense/" },
         "pocket-worlds": { label: "Pocket Worlds", href: "pocket-worlds/" },
         "sound-garden": { label: "Sound Garden", href: "sound-garden/" },
-        "marble-lab": { label: "Marble Lab", href: "marble-lab/" }
+        "marble-lab": { label: "Marble Lab", href: "marble-lab/" },
+        "groggy-climbs": { label: "Groggy Climbs", href: "groggy-climbs/" }
     });
     const hunt = [
         {

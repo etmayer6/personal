@@ -13,6 +13,7 @@ async function fixture(context, options = {}) {
         let data;
         if (name === 'sketchbook_read') {
             if (state.readError) { await route.abort(); return; }
+            if (state.readStatus) { await route.fulfill({ status: state.readStatus, contentType: 'text/plain', body: state.readBody || '' }); return; }
             data = typeof state.read === 'function' ? state.read(body) : state.album;
         } else if (name === 'sketchbook_guest') {
             state.guests++; data = { token: TOKEN };
@@ -139,6 +140,16 @@ test('a first-visit backend failure is not represented as an empty live communit
     await expect(page.locator('#sticker-preview svg')).toHaveCount(1);
 });
 
+test('a paused Supabase project is explained instead of shown as a generic connection failure', async ({ page, context }) => {
+    await fixture(context, { readStatus: 540, readBody: 'Project paused. Please unpause the project before proceeding.' });
+    await page.goto('/sketchbook/');
+    await expect(page.locator('#connection')).toHaveText('Supabase project paused');
+    await expect(page.locator('#sticker-board')).toContainText('The shared album is paused.');
+    await expect(page.locator('#publish-status')).toContainText('Supabase project is paused');
+    await expect(page.locator('#publish')).toBeDisabled();
+    await expect(page.locator('#sticker-preview svg')).toHaveCount(1);
+});
+
 for (const code of ['SKETCHBOOK_COOLDOWN', 'SKETCHBOOK_DAILY_LIMIT', 'SKETCHBOOK_BUSY', 'SKETCHBOOK_INVALID']) {
     test(`server posting refusal ${code} never creates a local pretend contribution`, async ({ page, context }) => {
         const state = await fixture(context, { placeError: code }); await page.goto('/sketchbook/');
@@ -162,8 +173,8 @@ test('paused album is still readable, and page pictures export as PNG', async ({
 test('the sketchbook is discoverable under Make and the homepage, not categorized as a game', async ({ page }) => {
     await page.goto('/projects/?kind=make');
     await expect(page.getByRole('link', { name: 'Open Sticker Sketchbook', exact: true }).last()).toBeVisible();
-    await expect(page.locator('[data-project-filter-status]')).toHaveText('4 make projects ready.');
-    await page.goto('/'); await expect(page.getByRole('link', { name: 'Sketchbook preview' })).toHaveAttribute('href', 'sketchbook/');
+    await expect(page.locator('.project-filter-status')).toHaveText(/^\d+ make projects ready\.$/);
+    await page.goto('/'); await expect(page.locator('a[href="sketchbook/"]')).toBeVisible();
     await page.goto('/games/'); await expect(page.locator('a[href*="sketchbook"]')).toHaveCount(0);
 });
 

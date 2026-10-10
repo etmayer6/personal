@@ -1553,3 +1553,429 @@
         flex-wrap: wrap;
     }
 }
+
+/* Twinjet flight-deck presentation */
+#flight-sim-root .workHubHeader {
+    min-height: 72px;
+    padding: 14px 22px;
+    border-color: rgba(153, 194, 218, 0.2);
+    border-radius: 10px;
+    background: linear-gradient(115deg, rgba(22, 39, 53, 0.98), rgba(10, 21, 31, 0.98));
+}
+
+#flight-sim-root .workHubHeader::after {
+    display: none;
+}
+
+#flight-sim-root .workHubTitle {
+    letter-spacing: 0.015em;
+    text-transform: none;
+}
+
+#flight-sim-root .workHubSubtitle {
+    color: #a9bdc9;
+    font-family: var(--flight-font);
+    font-size: 13px;
+    letter-spacing: 0.01em;
+    text-transform: none;
+}
+
+#flight-sim-root .panel {
+    border-color: rgba(151, 186, 207, 0.18);
+    border-radius: 10px;
+    background: #0c1721;
+}
+
+#flight-sim-root .panelHeader {
+    border-bottom-color: rgba(151, 186, 207, 0.16);
+    background: linear-gradient(110deg, #152635, #101c28 70%);
+}
+
+#flight-sim-root .flightSimOverlay--cockpit > div:not(.flightSimCockpit) {
+    display: none !important;
+}
+
+#flight-sim-root .flightSimCockpit {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    color: #e8f1f6;
+    font-family: var(--flight-mono);
+    pointer-events: none;
+}
+
+#flight-sim-root .flightSimCockpitGlass {
+    position: absolute;
+    inset: 0 0 35%;
+    overflow: hidden;
+    background: linear-gradient(180deg, rgba(7, 20, 31, 0.4), transparent 24%, transparent 76%, rgba(8, 14, 20, 0.3));
+}
+
+#flight-sim-root .flightSimCockpitGlare {
+    position: absolute;
+    inset: 3% 12% 5%;
+    border: 1px solid rgba(208, 232, 248, 0.12);
+    border-radius: 48% 48% 8% 8% / 20% 20% 3% 3%;
+    background: linear-gradient(155deg, rgba(223, 240, 255, 0.11), transparent 28% 68%, rgba(173, 214, 239, 0.07));
+    box-shadow: inset 0 0 45px rgba(2, 13, 22, 0.22), 0 0 28px rgba(185, 223, 248, 0.08);
+}
+
+#flight-sim-root .flightSimCockpitPillar {
+    position: absolute;
+    top: -2%;
+    bottom: 0;
+    width: clamp(36px, 8vw, 112px);
+    background: linear-gradient(90deg, #101b25, #283b48 52%, #17232d);
+    box-shadow: inset 1px 0 rgba(255, 255, 255, 0.12), 9px 0 18px rgba(0, 0, 0, 0.2);
+}
+
+#flight-sim-root .flightSimCockpitPillar--left {
+    left: -3%;
+    clip-path: polygon(0 0, 72% 0, 100% 100%, 0 100%);
+}
+
+#flight-sim-root .flightSimCockpitPillar--right {
+    right: -3%;
+    transform: scaleX(-1);
+    clip-path: polygon(0 0, 72% 0, 100% 100%, 0 100%);
+}
+
+#flight-sim-root .flightSimCockpitPillar--center {
+    left: 50%;
+    width: clamp(12px, 2vw, 28px);
+    transform: translateX(-50%);
+    background: linear-gradient(90deg, #162631, #334855 48%, #14232d);
+    clip-path: polygon(31% 0, 69% 0, 100% 100%, 0 100%);
+}
+
+#flight-sim-root .flightSimCockpitBrow {
+    position: absolute;
+    inset: 0 0 auto;
+    height: 13%;
+    background: linear-gradient(180deg, #101a23, rgba(15, 26, 36, 0.92) 58%, transparent);
+}
+
+#flight-sim-root .flightSimCockpitSill {
+    position: absolute;
+    inset: auto 0 0;
+    height: 13%;
+    border-top: 2px solid rgba(177, 205, 222, 0.2);
+    background: linear-gradient(180deg, rgba(28, 42, 52, 0.84), rgba(11, 20, 28, 0.94));
+    clip-path: polygon(0 24%, 50% 0, 100% 24%, 100% 100%, 0 100%);
+}
+
+#flight-sim-root .flightSimCockpitPanel {
+    position: absolute;
+    inset: auto 0 0;
+    height: 39%;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: clamp(7px, 1.4vw, 18px);
+    padding: clamp(10px, 1.6vw, 20px) clamp(14px, 6vw, 88px) 20px;
+    border-top: 1px solid rgba(186, 211, 226, 0.34);
+    background: linear-gradient(180deg, #253641 0%, #15232d 14%, #0a141d 100%);
+    box-shadow: 0 -18px 38px rgba(0, 0, 0, 0.42), inset 0 2px rgba(255, 255, 255, 0.1);
+}
+
+#flight-sim-root .flightSimDisplay {
+    min-width: 0;
+    min-height: 0;
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    overflow: hidden;
+    border: 1px solid #304859;
+    border-radius: 7px;
+    background: #07121c;
+    box-shadow: inset 0 0 0 2px rgba(142, 190, 218, 0.07), 0 5px 14px rgba(0, 0, 0, 0.4);
+}
+
+#flight-sim-root .flightSimDisplayHeader,
+#flight-sim-root .flightSimDisplayFooter {
+    min-height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    padding: 4px 8px;
+    color: #91acbd;
+    background: rgba(59, 88, 105, 0.16);
+    font-size: clamp(7px, 0.65vw, 10px);
+    letter-spacing: 0.1em;
+}
+
+#flight-sim-root .flightSimDisplayHeader b {
+    color: #b8e5ef;
+    font-size: 1.1em;
+}
+
+#flight-sim-root .flightSimAttitude {
+    position: relative;
+    min-height: 34px;
+    margin: 5px auto 2px;
+    width: min(82%, 260px);
+    overflow: hidden;
+    border: 1px solid rgba(181, 213, 230, 0.35);
+    border-radius: 42% / 16%;
+    background: #3b83a5;
+}
+
+#flight-sim-root .flightSimAttitudeWorld {
+    position: absolute;
+    inset: -100% -26%;
+    transform: rotate(var(--bank, 0deg)) translateY(var(--pitch, 0px));
+}
+
+#flight-sim-root .flightSimAttitudeSky,
+#flight-sim-root .flightSimAttitudeGround {
+    position: absolute;
+    inset-inline: 0;
+    height: 50%;
+}
+
+#flight-sim-root .flightSimAttitudeSky {
+    top: 0;
+    background: linear-gradient(180deg, #27617f, #438cac);
+}
+
+#flight-sim-root .flightSimAttitudeGround {
+    bottom: 0;
+    background: linear-gradient(180deg, #876b4c, #423f38);
+}
+
+#flight-sim-root .flightSimAttitudeHorizon {
+    position: absolute;
+    top: 50%;
+    inset-inline: 0;
+    height: 2px;
+    background: #e2e8d2;
+}
+
+#flight-sim-root .flightSimAircraftCue {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 42px;
+    height: 12px;
+    transform: translate(-50%, -50%);
+}
+
+#flight-sim-root .flightSimAircraftCue i {
+    position: absolute;
+    top: 5px;
+    width: 15px;
+    height: 2px;
+    background: #ffd16f;
+}
+
+#flight-sim-root .flightSimAircraftCue i:first-child { left: 0; transform: rotate(14deg); }
+#flight-sim-root .flightSimAircraftCue i:nth-child(2) { left: 14px; width: 14px; top: 0; transform: rotate(90deg); }
+#flight-sim-root .flightSimAircraftCue i:last-child { right: 0; transform: rotate(-14deg); }
+
+#flight-sim-root .flightSimAttitudeReadout {
+    position: absolute;
+    top: 5px;
+    right: 7px;
+    color: white;
+    font-size: 8px;
+    text-shadow: 0 1px 3px #07121c;
+}
+
+#flight-sim-root .flightSimDisplayValues {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 2px;
+    padding: 0 5px 5px;
+}
+
+#flight-sim-root .flightSimDisplayValues div {
+    min-width: 0;
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 3px;
+    white-space: nowrap;
+}
+
+#flight-sim-root .flightSimDisplayValues span,
+#flight-sim-root .flightSimNavValues span {
+    color: #87a3b5;
+    font-size: clamp(7px, 0.62vw, 9px);
+}
+
+#flight-sim-root .flightSimDisplayValues strong {
+    color: #f0f5f6;
+    font-size: clamp(9px, 1vw, 14px);
+    font-weight: 600;
+}
+
+#flight-sim-root .flightSimDisplayValues small {
+    color: #98b2c1;
+    font-size: 7px;
+}
+
+#flight-sim-root .flightSimCompass {
+    min-height: 0;
+    display: grid;
+    grid-template-rows: auto 1fr;
+    justify-items: center;
+    gap: 2px;
+    padding: 2px 8px 4px;
+}
+
+#flight-sim-root .flightSimCompassTape {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: #91adbd;
+    font-size: clamp(7px, 0.75vw, 10px);
+}
+
+#flight-sim-root .flightSimCompassTape strong {
+    color: #ffcf70;
+    font-size: clamp(10px, 1.1vw, 15px);
+}
+
+#flight-sim-root .flightSimCompassRose {
+    position: relative;
+    width: min(74%, 112px);
+    aspect-ratio: 1;
+    align-self: center;
+    overflow: hidden;
+    border: 1px solid rgba(157, 192, 211, 0.38);
+    border-radius: 50%;
+    background: radial-gradient(circle, #142936, #091721 72%);
+}
+
+#flight-sim-root .flightSimCompassTrack {
+    position: absolute;
+    inset: 12%;
+    border: 1px solid rgba(144, 180, 199, 0.26);
+    border-radius: 50%;
+    transition: transform 120ms linear;
+}
+
+#flight-sim-root .flightSimCompassTrack span {
+    position: absolute;
+    top: 4%;
+    left: 50%;
+    color: #d5e2e8;
+    font-size: 9px;
+    transform: translateX(-50%);
+}
+
+#flight-sim-root .flightSimCompassTrack i,
+#flight-sim-root .flightSimCompassTrack b {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 1px;
+    height: 68%;
+    transform: translate(-50%, -50%);
+    background: rgba(147, 187, 206, 0.24);
+}
+
+#flight-sim-root .flightSimCompassTrack b { transform: translate(-50%, -50%) rotate(90deg); }
+
+#flight-sim-root .flightSimCompassPointer {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 3px;
+    height: 56%;
+    transform: translate(-50%, -50%);
+    background: linear-gradient(#f3c66c 0 48%, #a8c5d6 49% 100%);
+    clip-path: polygon(50% 0, 100% 100%, 50% 84%, 0 100%);
+}
+
+#flight-sim-root .flightSimNavValues {
+    display: flex;
+    justify-content: space-around;
+    gap: 6px;
+    padding: 0 5px 5px;
+}
+
+#flight-sim-root .flightSimNavValues div {
+    display: grid;
+    justify-items: center;
+    gap: 2px;
+}
+
+#flight-sim-root .flightSimNavValues strong {
+    color: #c2d9e7;
+    font-size: clamp(7px, 0.72vw, 10px);
+    white-space: nowrap;
+}
+
+#flight-sim-root .flightSimCockpitStatus {
+    position: absolute;
+    right: 2%;
+    bottom: 1%;
+    left: 2%;
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    color: #9db2bf;
+    font-size: clamp(7px, 0.62vw, 9px);
+    letter-spacing: 0.06em;
+    white-space: nowrap;
+}
+
+@media (max-width: 640px) {
+    #flight-sim-root .workHubHeader {
+        padding: 14px;
+    }
+
+    #flight-sim-root .flightSimCockpitGlass {
+        bottom: 40%;
+    }
+
+    #flight-sim-root .flightSimCockpitPanel {
+        height: 44%;
+        gap: 5px;
+        padding: 7px 8px 18px;
+    }
+
+    #flight-sim-root .flightSimDisplayHeader,
+    #flight-sim-root .flightSimDisplayFooter {
+        min-height: 14px;
+        padding: 3px 5px;
+        letter-spacing: 0.05em;
+    }
+
+    #flight-sim-root .flightSimAttitude {
+        width: 84%;
+        margin: 3px auto 1px;
+    }
+
+    #flight-sim-root .flightSimDisplayValues {
+        padding: 0 2px 4px;
+    }
+
+    #flight-sim-root .flightSimDisplayValues div {
+        gap: 2px;
+    }
+
+    #flight-sim-root .flightSimCompass {
+        padding: 2px 4px 3px;
+    }
+
+    #flight-sim-root .flightSimCompassRose {
+        width: min(70%, 78px);
+    }
+
+    #flight-sim-root .flightSimNavValues strong {
+        letter-spacing: -0.04em;
+    }
+
+    #flight-sim-root .flightSimCockpitStatus span:nth-child(2) {
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    #flight-sim-root .flightSimCompassTrack {
+        transition: none;
+    }
+}

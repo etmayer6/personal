@@ -98,17 +98,17 @@ test('featured projects have equal space, aligned actions, and a compact introdu
     await expect(page.getByRole('button', { name: /Make/ })).toBeVisible();
 });
 
-test('all eleven games use the same readable catalog layout', async ({ page }) => {
+test('all twelve games use the same readable catalog layout', async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 1000 });
     await page.goto('/games/');
-    await expect(page.locator('.site-game-card-status')).toHaveCount(11);
+    await expect(page.locator('.site-game-card-status')).toHaveCount(12);
     const cards = await page.locator('.games-grid .game-card').evaluateAll(elements => elements.map(card => {
         const box = card.getBoundingClientRect();
         const status = getComputedStyle(card.querySelector('.site-game-card-status'));
         return { width: box.width, y: box.y, imageHeight: card.querySelector('img').getBoundingClientRect().height,
             background: getComputedStyle(card).backgroundColor, statusColor: status.color, opacity: status.opacity };
     }));
-    expect(cards).toHaveLength(11);
+    expect(cards).toHaveLength(12);
     expect(new Set(cards.map(c => Math.round(c.width))).size).toBe(1);
     expect(cards.slice(0, 3).every(c => c.y === cards[0].y)).toBe(true);
     for (const card of cards) {

@@ -361,6 +361,15 @@ kbd {
     background: linear-gradient(90deg, var(--aqua-gold), var(--aqua-coral));
 }
 
+.reef-milestone {
+    margin: 9px 0 0;
+    color: var(--aqua-mint);
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
 .variety-goal {
     margin-top: 18px;
     padding-top: 14px;

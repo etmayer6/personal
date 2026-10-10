@@ -2,7 +2,7 @@
     const cards = document.querySelectorAll(".feature-card, .archive-card");
     const interactiveSelector = "a, button, input, select, textarea, [contenteditable='true']";
     const filterButtons = [...document.querySelectorAll("[data-project-filter]")];
-    const filterStatus = document.querySelector("[data-project-filter-status]");
+    const filterStatus = document.querySelector("[data-project-filter-status], .project-filter-status");
     const surpriseButton = document.querySelector("[data-project-surprise]");
     const filterableCards = [...document.querySelectorAll(".archive-grid:not(.archive-grid-reference) .archive-card")];
     const validFilters = new Set(filterButtons.map((button) => button.dataset.projectFilter));

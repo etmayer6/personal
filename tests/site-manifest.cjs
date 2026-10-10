@@ -23,7 +23,7 @@ const interactiveMetadata = {
     "/apartments/": { name: "Apartment Hunt", marker: "Apartment Hunt", ready: ".listing-card" },
     "/travel/": { name: "Travel Map", marker: "remembered.", ready: ".place-card" },
     "/block-blast/": { name: "Block Blast", marker: "Block Blast", ready: "#block-blast-root" },
-    "/groggy-climbs/": { name: "Groggy Climbs", marker: "Recommended Routes", ready: ".route-card" },
+    "/groggy-climbs/": { name: "Groggy Climbs", marker: "Groggy Climbs", ready: "#climb-canvas" },
     "/diet-tracker/": { name: "Diet Tracker", marker: "A calmer way to log a meal", ready: "#meal-list" },
     "/meal-planner/": { name: "Receipt Meal Planner", marker: "Receipt Meal Planner", ready: "#recipe-list" },
     "/childhood-timeline/": { name: "Childhood Timeline", marker: "Childhood Timeline", ready: ".timeline-event" },

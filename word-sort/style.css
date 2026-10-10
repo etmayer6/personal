@@ -54,6 +54,133 @@
     font-weight: 800;
 }
 
+.wordsort-campaign {
+    padding: 16px clamp(14px, 2.3vw, 28px) 14px;
+    border-bottom: 1px solid rgba(16, 43, 54, 0.1);
+    background: linear-gradient(115deg, rgba(197, 90, 50, 0.055), rgba(25, 79, 97, 0.035));
+}
+
+.wordsort-campaign-heading {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 12px;
+}
+
+.wordsort-campaign-kicker {
+    margin: 0 0 3px;
+    color: #9a462a;
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+}
+
+.wordsort-campaign-heading h2 {
+    margin: 0;
+    color: #102b36;
+    font-family: Georgia, "Palatino Linotype", serif;
+    font-size: 22px;
+    font-weight: 500;
+    letter-spacing: -0.03em;
+}
+
+.wordsort-campaign-count {
+    margin: 0 0 2px;
+    color: #4c636a;
+    font-size: 11px;
+    font-weight: 800;
+    white-space: nowrap;
+}
+
+.wordsort-campaign-levels {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 6px;
+}
+
+.wordsort-campaign-levels button {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+    min-height: 36px;
+    padding: 7px 9px;
+    border: 1px solid rgba(16, 43, 54, 0.12);
+    border-radius: 8px;
+    background: rgba(255, 253, 248, 0.68);
+    color: #31525b;
+    font: inherit;
+    font-size: 10px;
+    font-weight: 800;
+    text-align: left;
+    cursor: pointer;
+    transition: background 150ms ease, border-color 150ms ease, transform 150ms ease;
+}
+
+.wordsort-campaign-levels button span {
+    overflow: hidden;
+    color: #687b80;
+    font-size: 9px;
+    font-weight: 600;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.wordsort-campaign-levels button small {
+    color: #9a462a;
+    font-size: 8px;
+    font-weight: 800;
+    white-space: nowrap;
+}
+
+.wordsort-campaign-levels button span[data-mark="cleared"]::after {
+    content: " ✓";
+    color: #367365;
+    font-weight: 900;
+}
+
+.wordsort-campaign-levels button:hover:not(:disabled) {
+    transform: translateY(-1px);
+    border-color: rgba(197, 90, 50, 0.42);
+    background: #fffaf0;
+}
+
+.wordsort-campaign-levels button:focus-visible {
+    outline: 2px solid #c55a32;
+    outline-offset: 2px;
+}
+
+.wordsort-campaign-levels button.is-current {
+    border-color: #b75a36;
+    background: #c55a32;
+    color: #fffaf0;
+}
+
+.wordsort-campaign-levels button.is-current span {
+    color: rgba(255, 250, 240, 0.78);
+}
+
+.wordsort-campaign-levels button.is-current small {
+    color: #fff0bf;
+}
+
+.wordsort-campaign-levels button:disabled {
+    color: #899294;
+    cursor: not-allowed;
+    opacity: 0.58;
+}
+
+.wordsort-campaign-status {
+    min-height: 1.4em;
+    margin: 9px 0 0;
+    color: #52686d;
+    font-size: 10px;
+    line-height: 1.4;
+}
+
 /* Put the start/status rail before the tall canvas so the first interaction stays in view. */
 #word-sort-root section {
     display: grid !important;
@@ -111,6 +238,14 @@
     .wordsort-site-app {
         border-radius: 20px;
         padding: 0;
+    }
+
+    .wordsort-campaign {
+        padding: 12px 12px 10px;
+    }
+
+    .wordsort-campaign-levels {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
 }

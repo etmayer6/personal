@@ -15,13 +15,60 @@
         tile: 54
     };
     const FRAME_MS = 1000 / 60;
-    const TOTAL_WAVES = 8;
-    const pathCells = [
-        [0, 4], [1, 4], [2, 4], [2, 3], [3, 3], [4, 3], [4, 5], [5, 5], [6, 5],
-        [6, 2], [7, 2], [8, 2], [8, 6], [9, 6], [10, 6], [10, 4], [11, 4],
-        [12, 4], [12, 7], [13, 7], [14, 7], [15, 7]
+    const CAMPAIGN_KEY = "signal-grove-campaign-v1";
+    const pathCells = [];
+    const pathLookup = new Set();
+    let pathPoints = [];
+    const missions = [
+        {
+            id: "creekbend",
+            name: "Creek Bend",
+            subtitle: "A steady first defense",
+            briefing: "A quiet route through the old creek bed. Learn the rhythm, then spend your credits where the turns tighten.",
+            route: [[0, 4], [3, 4], [3, 2], [6, 2], [6, 6], [9, 6], [9, 3], [12, 3], [12, 7], [15, 7]],
+            waves: [
+                makeWave(["mote", 6]),
+                makeWave(["mote", 5], ["runner", 3]),
+                makeWave(["mote", 4], ["runner", 4], ["shell", 2]),
+                makeWave(["mote", 3], ["runner", 4], ["brute", 1]),
+                makeWave(["runner", 5], ["shell", 3], ["brute", 1]),
+                makeWave(["mote", 3], ["runner", 5], ["shell", 3], ["brute", 2])
+            ]
+        },
+        {
+            id: "switchback",
+            name: "Switchback",
+            subtitle: "More turns, less warning",
+            briefing: "The upper trail doubles back on itself. Long-range coverage can see more of the lane, but fast runners will test every gap.",
+            route: [[0, 1], [5, 1], [5, 4], [2, 4], [2, 7], [7, 7], [7, 3], [11, 3], [11, 6], [15, 6]],
+            waves: [
+                makeWave(["mote", 4], ["runner", 3]),
+                makeWave(["mote", 5], ["runner", 4], ["shell", 2]),
+                makeWave(["mote", 4], ["runner", 5], ["brute", 1]),
+                makeWave(["runner", 5], ["shell", 4], ["brute", 1]),
+                makeWave(["mote", 4], ["runner", 5], ["shell", 3], ["brute", 2]),
+                makeWave(["runner", 7], ["shell", 3], ["brute", 2]),
+                makeWave(["mote", 4], ["runner", 6], ["shell", 4], ["brute", 2])
+            ]
+        },
+        {
+            id: "nightcrossing",
+            name: "Night Crossing",
+            subtitle: "The full signal rush",
+            briefing: "A narrow crossing at dusk brings the whole grove online. Layer control, splash, and focused fire to hold the core.",
+            route: [[0, 7], [2, 7], [2, 2], [6, 2], [6, 5], [10, 5], [10, 1], [13, 1], [13, 7], [15, 7]],
+            waves: [
+                makeWave(["mote", 5], ["runner", 3]),
+                makeWave(["mote", 5], ["runner", 4], ["shell", 2]),
+                makeWave(["mote", 4], ["runner", 5], ["shell", 2]),
+                makeWave(["runner", 5], ["shell", 3], ["brute", 1]),
+                makeWave(["mote", 4], ["runner", 5], ["shell", 4], ["brute", 1]),
+                makeWave(["runner", 7], ["shell", 4], ["brute", 2]),
+                makeWave(["mote", 4], ["runner", 7], ["shell", 4], ["brute", 2]),
+                makeWave(["runner", 8], ["shell", 5], ["brute", 3])
+            ]
+        }
     ];
-    const pathLookup = new Set(pathCells.map(([col, row]) => `${col},${row}`));
     const towerTypes = {
         pulse: {
             name: "Pulse",
@@ -106,6 +153,10 @@
         overlayCopy: document.getElementById("tower-overlay-copy"),
         startButton: document.getElementById("tower-start-btn"),
         waveButton: document.getElementById("tower-wave-btn"),
+        missionSelect: document.getElementById("tower-mission-select"),
+        missionBriefing: document.getElementById("tower-mission-briefing"),
+        wavePreview: document.getElementById("tower-wave-preview"),
+        campaignProgress: document.getElementById("tower-campaign-progress"),
         pauseButton: document.getElementById("tower-pause-btn"),
         speedButton: document.getElementById("tower-speed-btn"),
         resetButton: document.getElementById("tower-reset-btn"),
@@ -123,10 +174,12 @@
         towerChoices: [...document.querySelectorAll("[data-tower-type]")]
     };
 
+    const campaignProgress = readCampaignProgress();
     const state = {
-        mode: "ready",
+        mode: "playing",
         paused: false,
         speed: 1,
+        missionIndex: campaignProgress.lastMission,
         wave: 0,
         waveState: "ready",
         credits: 220,
@@ -142,7 +195,7 @@
         spawnQueue: [],
         spawnTimer: 0,
         elapsed: 0,
-        message: "Choose Enter the grove to begin building."
+        message: "Build your network, then launch wave 1."
     };
 
     let nextId = 1;
@@ -177,7 +230,92 @@
         };
     }
 
-    const pathPoints = pathCells.map(([col, row]) => cellCenter(col, row));
+    function makeWave(...groups) {
+        return groups.flatMap(([type, count]) => Array.from({ length: count }, () => type));
+    }
+
+    function readCampaignProgress() {
+        const fresh = { unlocked: 0, lastMission: 0, records: {} };
+        try {
+            const saved = JSON.parse(window.localStorage.getItem(CAMPAIGN_KEY) || "null");
+            if (!saved || typeof saved !== "object") return fresh;
+            return {
+                unlocked: clamp(Math.floor(Number(saved.unlocked) || 0), 0, missions.length - 1),
+                lastMission: clamp(Math.floor(Number(saved.lastMission) || 0), 0, Math.min(Number(saved.unlocked) || 0, missions.length - 1)),
+                records: saved.records && typeof saved.records === "object" ? saved.records : {}
+            };
+        } catch (error) {
+            return fresh;
+        }
+    }
+
+    function saveCampaignProgress() {
+        try {
+            window.localStorage.setItem(CAMPAIGN_KEY, JSON.stringify(campaignProgress));
+        } catch (error) {
+            // The campaign remains playable when storage is unavailable.
+        }
+    }
+
+    function buildRoute(waypoints) {
+        const cells = [];
+        for (let index = 0; index < waypoints.length - 1; index += 1) {
+            const [startCol, startRow] = waypoints[index];
+            const [endCol, endRow] = waypoints[index + 1];
+            const dx = Math.sign(endCol - startCol);
+            const dy = Math.sign(endRow - startRow);
+            const distance = Math.abs(endCol - startCol) + Math.abs(endRow - startRow);
+            if (dx && dy) throw new Error("Signal Grove routes must use orthogonal turns.");
+            for (let step = 0; step < distance; step += 1) {
+                cells.push([startCol + dx * step, startRow + dy * step]);
+            }
+        }
+        cells.push(waypoints[waypoints.length - 1]);
+        return cells;
+    }
+
+    function applyMissionPath(missionIndex) {
+        const mission = missions[missionIndex] || missions[0];
+        const route = buildRoute(mission.route);
+        pathCells.splice(0, pathCells.length, ...route);
+        pathLookup.clear();
+        route.forEach(([col, row]) => pathLookup.add(cellKey(col, row)));
+        pathPoints = route.map(([col, row]) => cellCenter(col, row));
+    }
+
+    function currentMission() {
+        return missions[state.missionIndex] || missions[0];
+    }
+
+    function totalWaves() {
+        return currentMission().waves.length;
+    }
+
+    function recordMissionClear() {
+        const mission = currentMission();
+        const previous = campaignProgress.records[mission.id] || {};
+        campaignProgress.records[mission.id] = {
+            clears: (Number(previous.clears) || 0) + 1,
+            bestScore: Math.max(Number(previous.bestScore) || 0, state.score),
+            bestLives: Math.max(Number(previous.bestLives) || 0, state.lives)
+        };
+        campaignProgress.unlocked = Math.max(campaignProgress.unlocked, Math.min(state.missionIndex + 1, missions.length - 1));
+        campaignProgress.lastMission = state.missionIndex;
+        saveCampaignProgress();
+    }
+
+    function selectMission(index) {
+        if (!Number.isInteger(index) || index > campaignProgress.unlocked || !missions[index]) return;
+        state.missionIndex = index;
+        campaignProgress.lastMission = index;
+        saveCampaignProgress();
+        applyMissionPath(index);
+        resetGame();
+        setMessage(`${currentMission().name} selected. Build your network, then preview the first wave.`);
+        render();
+    }
+
+    applyMissionPath(state.missionIndex);
 
     function getPathPosition(distance) {
         const last = pathPoints.length - 1;
@@ -245,16 +383,8 @@
         };
     }
 
-    function chooseEnemyType(wave, index) {
-        if (wave >= 5 && index % 7 === 0) return "brute";
-        if (wave >= 3 && index % 5 === 0) return "shell";
-        if (index % 4 === 0) return "runner";
-        return "mote";
-    }
-
     function waveQueue(wave) {
-        const count = 6 + wave * 2;
-        return Array.from({ length: count }, (_, index) => chooseEnemyType(wave, index));
+        return [...(currentMission().waves[wave - 1] || [])];
     }
 
     function setMessage(message) {
@@ -265,13 +395,13 @@
         if (state.mode !== "ready") return;
         state.mode = "playing";
         state.paused = false;
-        setMessage("Build phase. Place towers, then launch wave 1.");
+        setMessage(`${currentMission().name}: build your network, then launch wave 1.`);
         render();
     }
 
     function startWave() {
         if (state.mode === "ready") beginBuildPhase();
-        if (state.mode !== "playing" || state.paused || state.waveState === "active" || state.wave >= TOTAL_WAVES) return;
+        if (state.mode !== "playing" || state.paused || state.waveState === "active" || state.wave >= totalWaves()) return;
         state.wave += 1;
         state.waveState = "active";
         state.spawnQueue = waveQueue(state.wave);
@@ -563,11 +693,12 @@
 
     function finishWaveIfClear() {
         if (state.waveState !== "active" || state.spawnQueue.length || state.enemies.length) return;
-        if (state.wave >= TOTAL_WAVES) {
+        if (state.wave >= totalWaves()) {
             state.mode = "victory";
             state.waveState = "victory";
             state.paused = false;
-            setMessage(`The grove held. Final score ${state.score}.`);
+            recordMissionClear();
+            setMessage(`${currentMission().name} secured. Final score ${state.score}; the next route is now available.`);
             return;
         }
         const bonus = 24 + state.wave * 8;
@@ -590,7 +721,7 @@
     }
 
     function resetGame() {
-        state.mode = "ready";
+        state.mode = "playing";
         state.paused = false;
         state.speed = 1;
         state.wave = 0;
@@ -609,7 +740,7 @@
         state.spawnTimer = 0;
         state.elapsed = 0;
         nextId = 1;
-        setMessage("Choose Enter the grove to begin building.");
+        setMessage(`${currentMission().name}: build your network, then launch wave 1.`);
         render();
     }
 
@@ -1065,15 +1196,17 @@
     }
 
     function renderDom() {
+        const mission = currentMission();
+        const waves = totalWaves();
         elements.credits.textContent = String(Math.floor(state.credits));
         elements.lives.textContent = String(state.lives);
-        elements.wave.textContent = `${state.wave} / ${TOTAL_WAVES}`;
+        elements.wave.textContent = `${state.wave} / ${waves}`;
         const incoming = state.enemies.length + state.spawnQueue.length;
         elements.enemyCount.textContent = incoming ? `${incoming} signal${incoming === 1 ? "" : "s"} in lane` : "No incoming signals";
         elements.waveLabel.textContent = state.paused ? "Simulation paused" : state.waveState === "active" ? `Wave ${state.wave} live` : state.mode === "victory" ? "Grove secured" : state.mode === "defeat" ? "Core offline" : "Build phase";
         elements.status.textContent = state.message;
-        elements.waveButton.disabled = state.mode !== "playing" || state.paused || state.waveState === "active" || state.wave >= TOTAL_WAVES;
-        elements.waveButton.textContent = state.wave >= TOTAL_WAVES ? "All waves launched" : state.waveState === "active" ? `Wave ${state.wave} live` : `Launch wave ${state.wave + 1}`;
+        elements.waveButton.disabled = state.mode !== "playing" || state.paused || state.waveState === "active" || state.wave >= waves;
+        elements.waveButton.textContent = state.wave >= waves ? "Route secured" : state.waveState === "active" ? `Wave ${state.wave} live` : `Launch wave ${state.wave + 1}`;
         elements.pauseButton.disabled = state.mode !== "playing";
         elements.pauseButton.textContent = state.paused ? "Resume" : "Pause";
         elements.speedButton.disabled = state.mode !== "playing";
@@ -1088,16 +1221,44 @@
         });
         renderInspector();
 
+        elements.missionSelect.value = String(state.missionIndex);
+        Array.from(elements.missionSelect.options).forEach((option, index) => {
+            const record = campaignProgress.records[missions[index].id];
+            option.disabled = index > campaignProgress.unlocked;
+            option.textContent = index > campaignProgress.unlocked
+                ? `${String(index + 1).padStart(2, "0")} · ???`
+                : `${String(index + 1).padStart(2, "0")} · ${missions[index].name}${record ? " ✓" : ""}`;
+        });
+        elements.missionSelect.disabled = state.mode === "playing" && (state.waveState === "active" || state.towers.length > 0);
+        elements.missionBriefing.textContent = `${mission.name} / ${mission.subtitle} — ${mission.briefing}`;
+        const previewWave = Math.min(state.waveState === "active" ? state.wave : state.wave + 1, waves);
+        const previewTypes = mission.waves[previewWave - 1] || [];
+        const previewCounts = previewTypes.reduce((counts, type) => {
+            counts[type] = (counts[type] || 0) + 1;
+            return counts;
+        }, {});
+        const previewSummary = Object.entries(previewCounts).map(([type, count]) => `${count} ${enemyTypes[type].name}${count === 1 ? "" : "s"}`).join(" · ");
+        elements.wavePreview.textContent = state.waveState === "active"
+            ? `Wave ${previewWave} in progress · ${previewSummary}`
+            : state.wave >= waves
+                ? "Every wave on this route is clear. Choose an unlocked route to continue."
+                : `Wave ${previewWave} preview · ${previewSummary}`;
+        const secured = missions.reduce((count, item) => count + (campaignProgress.records[item.id] ? 1 : 0), 0);
+        elements.campaignProgress.textContent = `${secured} of ${missions.length} routes secured${campaignProgress.unlocked === missions.length - 1 ? " · final route open" : ` · ${missions.length - campaignProgress.unlocked - 1} locked`}`;
+
         const showOverlay = state.mode === "ready" || state.mode === "victory" || state.mode === "defeat";
         elements.overlay.dataset.visible = String(showOverlay);
         if (state.mode === "ready") {
-            elements.overlayTitle.textContent = "A quiet grove. For now.";
-            elements.overlayCopy.textContent = "Build a small network of signal towers, then launch the first wave before the static reaches the core.";
+            elements.overlayTitle.textContent = mission.name;
+            elements.overlayCopy.textContent = mission.briefing;
             elements.startButton.textContent = "Enter the grove →";
         } else if (state.mode === "victory") {
-            elements.overlayTitle.textContent = "The grove held.";
-            elements.overlayCopy.textContent = `Eight waves cleared. You finished with ${Math.floor(state.credits)} credits and a score of ${state.score}.`;
-            elements.startButton.textContent = "Play it again →";
+            const nextMission = missions[state.missionIndex + 1];
+            elements.overlayTitle.textContent = nextMission ? `${mission.name} secured.` : "The whole grove holds.";
+            elements.overlayCopy.textContent = nextMission
+                ? `${waves} waves cleared with ${state.lives} core charges left. ${nextMission.name} is now unlocked.`
+                : `All ${missions.length} routes cleared. You finished with ${state.lives} core charges and a score of ${state.score}.`;
+            elements.startButton.textContent = nextMission ? `Replay ${mission.name} →` : "Replay the final route →";
         } else if (state.mode === "defeat") {
             elements.overlayTitle.textContent = "The static got through.";
             elements.overlayCopy.textContent = "The core is offline. Change the order of your towers, upgrade a control point, and try the route again.";
@@ -1123,6 +1284,7 @@
         canvas.focus();
     });
     elements.waveButton.addEventListener("click", startWave);
+    elements.missionSelect.addEventListener("change", () => selectMission(Number(elements.missionSelect.value)));
     elements.pauseButton.addEventListener("click", togglePause);
     elements.speedButton.addEventListener("click", cycleSpeed);
     elements.resetButton.addEventListener("click", resetGame);
@@ -1166,7 +1328,10 @@
         mode: state.mode,
         paused: state.paused,
         wave: state.wave,
-        totalWaves: TOTAL_WAVES,
+        totalWaves: totalWaves(),
+        mission: { id: currentMission().id, name: currentMission().name, index: state.missionIndex },
+        unlockedMission: campaignProgress.unlocked,
+        securedRoutes: Object.keys(campaignProgress.records),
         waveState: state.waveState,
         credits: Math.floor(state.credits),
         lives: state.lives,
@@ -1212,7 +1377,7 @@
             targetId: projectile.targetId
         })),
         queuedSignals: state.spawnQueue.length,
-        objective: "Protect the core through eight waves.",
+        objective: `Protect the core through ${totalWaves()} waves on ${currentMission().name}.`,
         message: state.message
     });
 

@@ -9,6 +9,7 @@
     const MAX_GROWTH = 260;
     const TAU = Math.PI * 2;
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const SAVE_KEY = "mola-mola-care-v1";
 
     const STAGES = [
         { name: "Tiny pancake", threshold: 0, size: 0.82, color: "#f7c94a", accent: "#e77952", title: "Tiny fins, big plans." },
@@ -45,17 +46,48 @@
         }
     };
 
+    function readSavedCare() {
+        try {
+            const saved = JSON.parse(window.localStorage.getItem(SAVE_KEY) || "null");
+            if (!saved || typeof saved !== "object") return null;
+            const numberOr = function (value, fallback, minimum, maximum) {
+                const number = Number(value);
+                return Number.isFinite(number) ? clamp(number, minimum, maximum) : fallback;
+            };
+            const foodsTried = {};
+            Object.keys(FOOD_TYPES).forEach(function (type) {
+                if (saved.foodsTried && saved.foodsTried[type]) foodsTried[type] = true;
+            });
+            return {
+                elapsed: numberOr(saved.elapsed, 0, 0, 100000000),
+                growth: numberOr(saved.growth, 0, 0, MAX_GROWTH),
+                hunger: numberOr(saved.hunger, 78, 0, 100),
+                cleanliness: numberOr(saved.cleanliness, 86, 0, 100),
+                mood: numberOr(saved.mood, 72, 0, 100),
+                feedings: Math.floor(numberOr(saved.feedings, 0, 0, 10000000)),
+                foodsTried: foodsTried,
+                lastFood: FOOD_TYPES[saved.lastFood] ? saved.lastFood : "jellyfish",
+                foodType: FOOD_TYPES[saved.foodType] ? saved.foodType : "jellyfish"
+            };
+        } catch (error) {
+            return null;
+        }
+    }
+
+    const savedCare = readSavedCare();
+
     const state = {
         mode: "running",
-        elapsed: 0,
-        growth: 0,
-        hunger: 78,
-        cleanliness: 86,
-        mood: 72,
-        feedings: 0,
-        foodsTried: {},
-        lastFood: "jellyfish",
-        foodType: "jellyfish",
+        elapsed: savedCare ? savedCare.elapsed : 0,
+        growth: savedCare ? savedCare.growth : 0,
+        hunger: savedCare ? savedCare.hunger : 78,
+        cleanliness: savedCare ? savedCare.cleanliness : 86,
+        mood: savedCare ? savedCare.mood : 72,
+        feedings: savedCare ? savedCare.feedings : 0,
+        foodsTried: savedCare ? savedCare.foodsTried : {},
+        lastFood: savedCare ? savedCare.lastFood : "jellyfish",
+        foodType: savedCare ? savedCare.foodType : "jellyfish",
+        saveTimer: 0,
         pellets: [],
         bubbles: [],
         message: "New tank ready. Feed Momo to start the growth log.",
@@ -92,6 +124,7 @@
         growthFill: document.getElementById("growth-fill"),
         foodVarietyValue: document.getElementById("food-variety-value"),
         foodVarietyFill: document.getElementById("food-variety-fill"),
+        reefMilestone: document.getElementById("reef-milestone"),
         eventMessage: document.getElementById("event-message"),
         feedButton: document.getElementById("feed-button"),
         cleanButton: document.getElementById("clean-button"),
@@ -171,6 +204,34 @@
         return 1 + Math.floor(state.elapsed / 45);
     }
 
+    function reefMilestone() {
+        return [
+            "The reef is waiting for its first keepsake.",
+            "Shell garden",
+            "Sea-fan garden",
+            "Reef arch",
+            "Sunlit sanctuary"
+        ][stageIndex()];
+    }
+
+    function saveCareState() {
+        try {
+            window.localStorage.setItem(SAVE_KEY, JSON.stringify({
+                elapsed: state.elapsed,
+                growth: state.growth,
+                hunger: state.hunger,
+                cleanliness: state.cleanliness,
+                mood: state.mood,
+                feedings: state.feedings,
+                foodsTried: state.foodsTried,
+                lastFood: state.lastFood,
+                foodType: state.foodType
+            }));
+        } catch (error) {
+            // Care and growth keep working even if this browser blocks local storage.
+        }
+    }
+
     function setMessage(message, duration) {
         state.message = message;
         state.messageTimer = duration || 5;
@@ -220,6 +281,7 @@
         } else {
             setMessage(state.growth >= MAX_GROWTH ? "Momo reached gentle giant status!" : food.message, 4);
         }
+        saveCareState();
         renderReducedMotionState();
     }
 
@@ -234,6 +296,7 @@
         });
         elements.foodDescription.textContent = food.description;
         setMessage(food.label + " ready for the tank.", 3);
+        saveCareState();
         renderUI();
         renderReducedMotionState();
     }
@@ -246,6 +309,7 @@
             addBubble(250 + index * 126, 480, 1.15);
         }
         setMessage("The water sparkles. Momo approves.", 4);
+        saveCareState();
         renderReducedMotionState();
     }
 
@@ -256,6 +320,7 @@
         state.fish.targetY = 250 + ((state.feedings * 37) % 110);
         addBubble(state.fish.x, state.fish.y + 40, 1.1);
         setMessage("Momo did a very slow zoomie.", 4);
+        saveCareState();
         renderReducedMotionState();
     }
 
@@ -338,6 +403,11 @@
             return;
         }
         state.elapsed += delta;
+        state.saveTimer += delta;
+        if (state.saveTimer >= 12) {
+            state.saveTimer = 0;
+            saveCareState();
+        }
         state.hunger = clamp(state.hunger - delta * 0.075, 0, 100);
         state.cleanliness = clamp(state.cleanliness - delta * 0.018, 0, 100);
         state.mood = clamp(state.mood - delta * 0.01 + (state.cleanliness > 70 ? delta * 0.008 : 0), 0, 100);
@@ -434,6 +504,85 @@
             context.beginPath();
             context.arc(x, y, 2 + (index % 3), 0, TAU);
             context.fill();
+        }
+    }
+
+    function drawReefKeepsakes() {
+        const unlocked = stageIndex();
+        if (unlocked >= 1) {
+            context.save();
+            context.translate(282, HEIGHT - 48);
+            context.fillStyle = "#f1c995";
+            context.strokeStyle = "#b96e63";
+            context.lineWidth = 3;
+            context.beginPath();
+            context.ellipse(0, -8, 28, 17, 0, Math.PI, TAU);
+            context.lineTo(28, -8);
+            context.quadraticCurveTo(0, 13, -28, -8);
+            context.closePath();
+            context.fill();
+            context.stroke();
+            for (let rib = -2; rib <= 2; rib += 1) {
+                context.beginPath();
+                context.moveTo(0, 7);
+                context.quadraticCurveTo(rib * 8, -1, rib * 10, -22);
+                context.stroke();
+            }
+            context.restore();
+        }
+        if (unlocked >= 2) {
+            context.save();
+            context.translate(700, HEIGHT - 46);
+            context.strokeStyle = "#df927f";
+            context.lineWidth = 5;
+            context.lineCap = "round";
+            for (let branch = -3; branch <= 3; branch += 1) {
+                const topX = branch * 13;
+                context.beginPath();
+                context.moveTo(0, 0);
+                context.bezierCurveTo(branch * 5, -38, topX * 0.65, -90, topX, -130 + Math.abs(branch) * 8);
+                context.stroke();
+                context.fillStyle = branch % 2 ? "#f1c995" : "#f5b3a0";
+                context.beginPath();
+                context.arc(topX, -130 + Math.abs(branch) * 8, 6, 0, TAU);
+                context.fill();
+            }
+            context.restore();
+        }
+        if (unlocked >= 3) {
+            context.save();
+            context.globalAlpha = 0.82;
+            context.fillStyle = "#397f79";
+            context.strokeStyle = "#82c6b3";
+            context.lineWidth = 6;
+            context.beginPath();
+            context.moveTo(451, HEIGHT - 47);
+            context.bezierCurveTo(430, HEIGHT - 116, 445, HEIGHT - 180, 478, HEIGHT - 182);
+            context.bezierCurveTo(510, HEIGHT - 183, 530, HEIGHT - 116, 506, HEIGHT - 47);
+            context.closePath();
+            context.fill();
+            context.stroke();
+            context.beginPath();
+            context.ellipse(479, HEIGHT - 54, 30, 10, 0, 0, TAU);
+            context.stroke();
+            context.restore();
+        }
+        if (unlocked >= 4) {
+            context.save();
+            context.globalAlpha = 0.7 + Math.sin(state.elapsed * 1.4) * 0.08;
+            context.fillStyle = "#a8dfd4";
+            context.shadowColor = "#a8dfd4";
+            context.shadowBlur = 18;
+            context.beginPath();
+            context.arc(820, 150, 18, 0, TAU);
+            context.fill();
+            context.shadowBlur = 0;
+            context.strokeStyle = "rgba(218, 255, 242, 0.82)";
+            context.lineWidth = 2;
+            context.beginPath();
+            context.ellipse(820, 153, 31, 8, 0, 0, TAU);
+            context.stroke();
+            context.restore();
         }
     }
 
@@ -752,6 +901,7 @@
         drawTankHud();
         drawReefFriends();
         drawPlants();
+        drawReefKeepsakes();
         drawBubbles();
         drawPellets();
         drawFish();
@@ -778,6 +928,7 @@
         elements.growthValue.textContent = Math.round(progress) + "%";
         elements.growthFill.style.width = progress + "%";
         elements.growthTrack.setAttribute("aria-valuenow", String(Math.round(progress)));
+        elements.reefMilestone.textContent = `Reef keepsake · ${reefMilestone()}`;
         const variety = Object.keys(state.foodsTried).length;
         elements.foodVarietyValue.textContent = variety + " / " + Object.keys(FOOD_TYPES).length;
         elements.foodVarietyFill.style.width = (variety / Object.keys(FOOD_TYPES).length) * 100 + "%";
@@ -841,6 +992,8 @@
             },
             selectedFood: state.foodType,
             foodVariety: Object.keys(state.foodsTried).length,
+            foodsTried: Object.keys(state.foodsTried).filter(function (food) { return state.foodsTried[food]; }),
+            reefMilestone: reefMilestone(),
             lastFood: state.lastFood,
             pellets: state.pellets.length,
             day: ageDay(),
@@ -899,5 +1052,9 @@
         renderUI();
         render();
         if (!event.matches) window.requestAnimationFrame(loop);
+    });
+    window.addEventListener("pagehide", saveCareState);
+    document.addEventListener("visibilitychange", function () {
+        if (document.visibilityState === "hidden") saveCareState();
     });
 }());

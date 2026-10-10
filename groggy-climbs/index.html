@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Climb an endless limestone wall in Groggy Climbs, a playful hold-hopping arcade game.">
     <title>Groggy Climbs | Ethan Mayer</title>
     <link rel="stylesheet" href="../style.css">
     <link rel="stylesheet" href="style.css">
@@ -13,30 +14,31 @@
         <meta property="og:type" content="website">
         <meta property="og:site_name" content="Ethan Mayer">
         <meta property="og:title" content="Groggy Climbs | Ethan Mayer">
-        <meta property="og:description" content="Ethan Mayer's personal site: software engineering work, browser experiments, photos, and field notes.">
+        <meta property="og:description" content="Climb an endless limestone wall in Groggy Climbs, a playful hold-hopping arcade game.">
         <meta property="og:url" content="https://etmayer6.github.io/personal/groggy-climbs/">
         <meta property="og:image" content="https://etmayer6.github.io/personal/assets/social-card.png">
         <meta property="og:image:type" content="image/png">
         <meta property="og:image:width" content="1200">
         <meta property="og:image:height" content="630">
-        <meta property="og:image:alt" content="Ethan Mayer - software engineer and personal projects">
+        <meta property="og:image:alt" content="Groggy Climbs, an endless rock-climbing arcade game">
         <meta name="twitter:card" content="summary_large_image">
         <meta name="twitter:title" content="Groggy Climbs | Ethan Mayer">
-        <meta name="twitter:description" content="Ethan Mayer's personal site: software engineering work, browser experiments, photos, and field notes.">
+        <meta name="twitter:description" content="Climb an endless limestone wall in Groggy Climbs, a playful hold-hopping arcade game.">
         <meta name="twitter:image" content="https://etmayer6.github.io/personal/assets/social-card.png">
     <!-- SEO:END -->
     <link rel="stylesheet" href="../site-frame.css?v=flow-1">
 </head>
-<body class="groggy-body" data-demo-state="loading">
+<body class="groggy-body" data-demo-state="ready">
     <a class="skip-link" href="#main-content">Skip to main content</a>
     <header class="groggy-header">
         <nav aria-label="Primary navigation">
             <a class="nav-name" href="../index.html">Ethan Mayer</a>
             <ul>
-                <li><a href="../index.html">Home</a></li><li><a href="../about/">About</a></li>
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="../about/">About</a></li>
                 <li><a href="../resume/">Resume</a></li>
-                <li><a aria-current="location" href="../projects/">Projects</a></li>
-                <li><a href="../games/">Games</a></li>
+                <li><a href="../projects/">Projects</a></li>
+                <li><a aria-current="location" href="../games/">Games</a></li>
                 <li><a href="../photos/">Photos</a></li>
                 <li><a href="../blog/">Blog</a></li>
             </ul>
@@ -44,92 +46,97 @@
     </header>
 
     <main id="main-content" class="groggy-shell" tabindex="-1">
-        <section class="groggy-hero">
-            <div class="groggy-hero-copy">
-                <p class="eyebrow">Climbing Project</p>
-                <h1>Groggy Climbs</h1>
-                <p class="groggy-summary">
-                A sortable shortlist of technical sport climbs for Garrett Roggy.
-                </p>
+        <section class="groggy-intro" aria-labelledby="groggy-title">
+            <div>
+                <p class="eyebrow">An endless climbing arcade</p>
+                <h1 id="groggy-title">Groggy Climbs</h1>
+                <p class="groggy-summary">Catch a hold. Catch your breath. Keep going up.</p>
             </div>
-            <aside class="groggy-fit-card">
-                <p class="fit-label">Target Style</p>
-                <ul class="fit-list">
-                    <li>Vertical and technical over steep and thuggy</li>
-                    <li>Crimps over pockets</li>
-                    <li>Realistic sends and a first 12a option</li>
-                </ul>
-            </aside>
-        </section>
-
-        <section class="groggy-stats" id="groggy-stats">
-            <div class="groggy-stat-card">
-                <span>Routes</span>
-                <strong id="routes-count">--</strong>
-            </div>
-            <div class="groggy-stat-card">
-                <span>Peak Matches</span>
-                <strong id="peak-count">--</strong>
-            </div>
-            <div class="groggy-stat-card">
-                <span>Locations</span>
-                <strong id="locations-count">--</strong>
-            </div>
-            <div class="groggy-stat-card">
-                <span>12a Options</span>
-                <strong id="project-count">--</strong>
+            <div class="summit-mark" aria-label="Personal best">
+                <span>Personal best</span>
+                <strong id="best-height">0<span>m</span></strong>
             </div>
         </section>
 
-        <section class="groggy-controls">
-            <label class="control-field">
-                Sort
-                <select id="sort-select">
-                    <option value="relevance">Relevance</option>
-                    <option value="location">Location</option>
-                    <option value="grade">Grade</option>
-                    <option value="name">Route Name</option>
-                </select>
-            </label>
-            <label class="control-field">
-                Location
-                <select id="location-select">
-                    <option value="all">All Locations</option>
-                </select>
-            </label>
-            <label class="control-field">
-                Relevance
-                <select id="relevance-select">
-                    <option value="all">All Levels</option>
-                    <option value="Peak Match">Peak Match</option>
-                    <option value="Strong Match">Strong Match</option>
-                    <option value="Worth a Shot">Worth a Shot</option>
-                    <option value="Style Borderline">Style Borderline</option>
-                    <option value="First 12a Project">First 12a Project</option>
-                </select>
-            </label>
-        </section>
-
-        <section class="groggy-list-wrap">
-            <div class="groggy-list-header">
-                <div>
-                    <p class="eyebrow">Route Board</p>
-                    <h2>Recommended Routes</h2>
+        <section class="climb-layout" aria-label="Groggy Climbs game">
+            <div class="climb-machine">
+                <div class="climb-toolbar">
+                    <div class="wall-label">
+                        <span class="wall-dot" aria-hidden="true"></span>
+                        <span id="climb-status" role="status" aria-live="polite">Find your first hold.</span>
+                    </div>
+                    <div class="toolbar-actions">
+                        <button class="tool-button" id="pause-button" type="button" disabled>Pause</button>
+                        <button class="tool-button" id="restart-button" type="button">Restart</button>
+                        <button class="tool-button icon-button" id="fullscreen-button" type="button" aria-label="Enter fullscreen">⛶</button>
+                    </div>
                 </div>
-                <p id="results-status" class="results-status">Setting the holds...</p>
+
+                <div class="climb-stage" id="climb-stage">
+                    <canvas id="climb-canvas" width="420" height="680" tabindex="0" aria-label="Groggy Climbs limestone wall game. Use A and D to steer, W to dyno, and S to drop." aria-describedby="climb-instructions"></canvas>
+                    <div class="game-overlay" id="game-overlay" role="group" aria-labelledby="overlay-title">
+                        <div class="overlay-card">
+                            <p class="overlay-kicker" id="overlay-kicker">The wall is waiting</p>
+                            <h2 id="overlay-title">One more hold.</h2>
+                            <p id="overlay-copy">Bounce from hold to hold, chase the chalk bags, and try not to look down.</p>
+                            <button class="start-button" id="overlay-button" type="button">Start climbing <span aria-hidden="true">↗</span></button>
+                            <p class="overlay-hint">A / D to steer <span>·</span> W to dyno <span>·</span> S to drop</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="climb-machine-footer">
+                    <span><span class="footer-dot" aria-hidden="true"></span> Limestone · no top in sight</span>
+                    <span id="run-height">0 m climbed</span>
+                </div>
             </div>
-            <div id="routes-list" class="routes-list"><article class="route-card preboot-route" aria-hidden="true"><strong>Route board preparing</strong><span>Fresh recommendations will appear here.</span></article></div>
-            <div id="routes-empty" class="routes-empty" hidden>
-                No routes match that combination yet.
-            </div>
+
+            <aside class="climb-sidebar" aria-label="Climb status and controls">
+                <section class="climb-panel climb-readout" aria-label="Current climb">
+                    <div class="readout-heading"><span>On the wall</span><span aria-hidden="true">↗</span></div>
+                    <strong id="current-height">0<span>m</span></strong>
+                    <div class="dyno-row">
+                        <div>
+                            <span class="meter-label">Chalk for dynos</span>
+                            <div class="dyno-meter" id="dyno-meter" role="progressbar" aria-label="Dyno chalk" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100">
+                                <span id="dyno-fill"></span>
+                            </div>
+                        </div>
+                        <span id="dyno-value">100%</span>
+                    </div>
+                    <p class="readout-note" id="climb-tip">A clean landing tops up your chalk.</p>
+                </section>
+
+                <section class="climb-panel controls-panel">
+                    <div class="panel-heading">
+                        <p class="eyebrow">Movement</p>
+                        <h2>Find your rhythm.</h2>
+                    </div>
+                    <p id="climb-instructions" class="control-summary">Land on holds to spring upward. Stay centered and save a dyno for a sketchy gap.</p>
+                    <div class="key-grid" aria-hidden="true">
+                        <span class="key key-w">W <small>dyno</small></span>
+                        <span class="key key-a">A <small>left</small></span>
+                        <span class="key key-s">S <small>drop</small></span>
+                        <span class="key key-d">D <small>right</small></span>
+                    </div>
+                    <div class="touch-controls" aria-label="Touch climbing controls">
+                        <button type="button" class="touch-control touch-up" data-control="w" aria-label="Dyno">W</button>
+                        <button type="button" class="touch-control" data-control="a" aria-label="Move left">A</button>
+                        <button type="button" class="touch-control" data-control="s" aria-label="Drop">S</button>
+                        <button type="button" class="touch-control" data-control="d" aria-label="Move right">D</button>
+                    </div>
+                    <div class="fine-controls"><span>P / Esc <b>pause</b></span><span>R <b>restart</b></span><span>F <b>fullscreen</b></span></div>
+                </section>
+
+                <section class="climb-panel route-note-panel">
+                    <span class="route-note-mark" aria-hidden="true">↗</span>
+                    <p>Keep your feet moving. The good holds are always just out of reach.</p>
+                </section>
+            </aside>
         </section>
     </main>
 
-    <footer class="groggy-footer">
-        <p>&copy; 2026 Ethan Mayer</p>
-    </footer>
-
-    <script src="data.js"></script>
+    <footer class="groggy-footer"><p>&copy; 2026 Ethan Mayer</p></footer>
     <script src="app.js"></script>
     <script src="../site-play.js?v=pet-companion-2"></script>
 </body>

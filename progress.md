@@ -1048,3 +1048,29 @@ Original prompt: Remove clutter from the games on the website. Right now they do
 
 - Respects the operating-system reduced-motion preference by stopping ambient fish/tank animation while keeping feed, clean, food-choice, and play actions immediately visible.
 - Verified the paused idle state and responsive care controls with a reduced-motion Playwright check; ran the bundled browser game client and visually inspected its gameplay capture and synchronized state.
+
+## Game campaign and care progression — 2026-10-09
+
+- Signal Grove Defense now has three authored routes with distinct lane geometry and wave mixes (6, 7, and 8 waves), next-wave composition previews, saved route unlocks, replay selection, and clear records. Existing tower placement, upgrades, pause, speed, and reset behavior remain intact.
+- Word Sort now presents its eight curated deals as a persistent unlockable story run, with replayable cleared stages, per-stage best scores, generated mixes after the authored run, and clear status. The authored deals were checked for curated identity and a legal opening action.
+- Mola Mola now preserves growth, food variety, care meters, and tank day locally; there is deliberately no offline decay. Growth stages unlock shell, sea-fan, reef-arch, and sunlit-sanctuary visuals, with the current keepsake called out in the care log.
+- Added campaign/persistence Playwright coverage. Focused Signal Grove/Word Sort checks passed (2/2); aquarium reduced-motion/persistence checks passed (2/2). Syntax and static validation passed; the bundled game client captured and visually inspected Signal Grove placement, Word Sort's opening deal, and Mola's first keepsake.
+- Flight Sim received a source-backed visual rebuild: a more legible twinjet silhouette, stronger chase framing, a framed windshield/cockpit camera, instrument-panel PFD/ND, and a coherent low-poly sky/terrain palette. Physics, control bindings, and scenario behavior were preserved; the public export was rebuilt from the Gremlin_Hub modules. Three unused Vite/demo SVG artifacts were removed from the public game folder.
+- Final verification: `npm run check` passed syntax, static-site validation, all 28 first-render checks, and all 85 maintained quality/flow/travel checks. Focused new campaign/persistence tests passed 3/3; the Flight Sim camera/control test passed 1/1. The bundled game client captured live states and gameplay images for Signal Grove, Mola Mola, Word Sort, and Flight Sim; desktop chase/cockpit and mobile cockpit screenshots were inspected with no console/page errors. The 49-route 1440px sweep needed a 60-second test timeout (it passed in 33 seconds in the suite).
+- No remaining TODO for these requested changes. No commit or push requested.
+
+## Groggy Climbs arcade refactor — 2026-10-09
+
+- User request: transform Groggy Climbs into a Doodle Jump-style infinite rock-wall climbing game, preserve its theme, and use WASD controls.
+- Replaced the route shortlist UI with a canvas climbing game: automatic hold rebounds, chalk-powered W dynos, A/D steering, S fast-drop, spring/crumbly holds, chalk-bag pickups, a saved local height record, pause/restart/fullscreen, and touch controls.
+- Games/Projects discoverability and the route manifest are integrated; gameplay, dyno, drop, game-over, and replay passed focused checks. The current follow-up also removes the initial start overlay.
+
+## Instant game entry — 2026-10-09
+
+- User request: make games immediately playable without an internal Start Game click, with Flight Sim allowed to keep its launch flow.
+- Block Blast now loads directly into its first board; Tower Defense opens in the build phase with the route selector available until a tower is placed or a wave begins; Groggy Climbs launches automatically without stealing keyboard focus; Conway's seeded Pulsar starts evolving on load.
+- Preserve intentional in-game actions: tower-wave launch, marble-machine run, and Sound Garden audio playback are mechanics/permission controls, not title screens. Flight Sim is unchanged.
+- Focused regressions pass 5/5 (Block Blast, Conway, Groggy Climbs, and both Signal Grove flows). First-render checks pass 4/4 and page-quality checks pass 4/4; syntax, static validation, and `git diff --check` pass.
+- The bundled gameplay client opened all four routes without a start click. State confirms Block Blast `playing`, Conway `running` with 56 live cells, Signal Grove in its build phase, and Groggy Climbs `playing`; all four captured canvases were inspected and had no console-error artifacts.
+- A separate existing Flight Sim model test currently fails on its `coach.primary` expectation after the launch click; Flight Sim files were not changed. Its explicit launch flow remains untouched.
+- TODO: none for the requested entry behavior.

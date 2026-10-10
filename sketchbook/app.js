@@ -8,7 +8,7 @@ try { draft = JSON.parse(localStorage.getItem(DRAFT_KEY) || 'null'); } catch { /
 let selected = isSticker(draft?.sticker) ? draft.sticker : 'sprout';
 let ink = isInk(draft?.ink) ? draft.ink : 'fern';
 let pending = /^[\da-f-]{36}$/i.test(draft?.request || '') ? draft.request : null;
-let album = null, loading = false, submitting = false, connected = false;
+let album = null, loading = false, submitting = false, connected = false, connectionIssue = null;
 let last = getLast(), highlighted = null, messageTimer;
 const hashPage = () => {
     const match = location.hash.match(/^#page=(\d{1,3})$/);
@@ -68,10 +68,10 @@ function renderBoard() {
     }
     if (!album || !stickers.length) {
         const caption = document.createElement('p'); caption.className = 'empty-caption';
-        if (!album) caption.append(document.createTextNode(loading ? 'Opening the shared pages…' : 'The shared page is unavailable.'));
+        if (!album) caption.append(document.createTextNode(loading ? 'Opening the shared pages…' : connectionIssue === 'paused' ? 'The shared album is paused.' : 'The shared page is unavailable.'));
         else caption.append(document.createTextNode(album.total === 0 ? 'First page. Fresh paper.' : 'A little breathing room.'));
         const hint = document.createElement('small');
-        hint.textContent = !album ? 'Your private sticker preview is ready in the tray.' : album.total === 0 ? 'Leave the first little thing.' : 'Removed stickers leave their spaces blank.';
+        hint.textContent = !album ? connectionIssue === 'paused' ? 'Its Supabase project needs to be resumed before the shared pages can load.' : 'Your private sticker preview is ready in the tray.' : album.total === 0 ? 'Leave the first little thing.' : 'Removed stickers leave their spaces blank.';
         caption.append(hint); board.append(caption);
     }
     $('page-number').textContent = String((album?.page || 0) + 1).padStart(2, '0');
@@ -100,14 +100,15 @@ async function loadPage(page = album?.page ?? hashPage(), { quiet = false } = {}
     if (!album) renderBoard();
     try {
         const data = sanitizeAlbum(await getAlbum(page));
-        album = data; connected = true;
+        album = data; connected = true; connectionIssue = null;
         $('connection').textContent = data.open ? 'Shared album · connected' : 'Shared album · posting paused';
         $('connection').classList.add('live');
         if (!submitting) $('publish-status').textContent = data.open ? 'One sticker, a spot picked for you. Everyone can see it.' : 'New stickers are paused. The album is still open to browse.';
         if (page >= 0 && data.page !== page) flash('That page is not in the album yet. Here is the latest page.');
         return true;
     } catch (error) {
-        connected = false; $('connection').textContent = album ? 'Connection lost · showing last loaded page' : 'Shared album unavailable';
+        connected = false; connectionIssue = error.code === 'paused' ? 'paused' : null;
+        $('connection').textContent = album ? 'Connection lost · showing last loaded page' : connectionIssue === 'paused' ? 'Supabase project paused' : 'Shared album unavailable';
         $('connection').classList.remove('live');
         $('publish-status').textContent = error.message;
         if (!quiet) flash(error.message);

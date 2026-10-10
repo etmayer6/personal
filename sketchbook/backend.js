@@ -20,9 +20,14 @@ async function rpc(name, args) {
             method: 'POST', headers: { apikey: key, 'Content-Type': 'application/json' },
             body: JSON.stringify(args), signal: controller.signal
         });
-        const data = await response.json().catch(() => null);
+        const responseText = await response.text();
+        let data = null;
+        try { data = responseText ? JSON.parse(responseText) : null; } catch { /* PostgREST may return plain-text project status errors. */ }
         if (!response.ok) {
             const raw = typeof data?.message === 'string' ? data.message : '';
+            if (response.status === 540 || /project paused/i.test(responseText)) {
+                throw new SketchbookError('The shared album’s Supabase project is paused. It must be resumed before the sketchbook can load.', 'paused');
+            }
             const known = {
                 SKETCHBOOK_COOLDOWN: ['Give the ink a minute to dry, then add another.', 'cooldown'],
                 SKETCHBOOK_DAILY_LIMIT: ['Your three stickers for today are on the page. Come back tomorrow.', 'daily'],

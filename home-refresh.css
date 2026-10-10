@@ -309,6 +309,10 @@
     background: #d3d6c9;
 }
 
+.home-body .work-card-featured .work-card-image {
+    height: 100%;
+}
+
 .home-body .work-card-image::after {
     position: absolute;
     inset: 45% 0 0;

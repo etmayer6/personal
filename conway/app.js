@@ -491,5 +491,6 @@
 
     loadPattern("pulsar");
     resizeCanvas();
+    runButton.click();
     requestAnimationFrame(animate);
 }());

@@ -171,3 +171,30 @@ test("legacy scenario route redirects across viewports", async ({ browser }) => 
         }
     }
 });
+
+test("CourseFlow artwork fills its reserved media row across viewport sizes", async ({ browser }) => {
+    for (const viewport of [
+        { width: 1440, height: 900 },
+        { width: 390, height: 844 }
+    ]) {
+        const context = await browser.newContext({ viewport, serviceWorkers: "block" });
+        try {
+            const page = await context.newPage();
+            await page.goto(`${BASE_URL}/`, { waitUntil: "domcontentloaded" });
+
+            const sizing = await page.locator(".work-card-featured").evaluate((card) => {
+                const media = card.querySelector(".work-card-image");
+                const trackHeight = Number.parseFloat(getComputedStyle(card).gridTemplateRows);
+                return {
+                    mediaHeight: media.getBoundingClientRect().height,
+                    trackHeight
+                };
+            });
+
+            expect(sizing.mediaHeight).toBeGreaterThan(180);
+            expect(Math.abs(sizing.mediaHeight - sizing.trackHeight)).toBeLessThan(2);
+        } finally {
+            await context.close();
+        }
+    }
+});

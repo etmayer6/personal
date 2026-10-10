@@ -1,4 +1,6 @@
 const { test, expect } = require('@playwright/test');
+const fs = require('node:fs');
+const path = require('node:path');
 
 test('meal plans reflect selected ingredients, pantry additions, and survive reload', async ({ page }) => {
     await page.goto('/meal-planner/');
@@ -120,6 +122,19 @@ test('Skywatch marks an old snapshot before using practice aircraft', async ({ p
     await expect(page.locator('#map-title')).toHaveText('Aircraft snapshot over Iowa');
 });
 
+test('Skywatch plots aircraft from the refreshed ADS-B snapshot', async ({ page }) => {
+    const snapshot = JSON.parse(fs.readFileSync(path.join(__dirname, '../flight-radar/live.json'), 'utf8'));
+    await page.route('**/flight-radar/live.json*', route => route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ ...snapshot, updatedAt: new Date().toISOString() })
+    }));
+    await page.goto('/flight-radar/');
+    await expect(page.locator('#feed-status')).toHaveText('Live snapshot');
+    expect(await page.locator('.aircraft-marker').count()).toBeGreaterThan(0);
+    await expect(page.locator('#map-title')).toHaveText('Aircraft snapshot over Iowa');
+});
+
 test('Games hub remembers favorites, last played game, and best score', async ({ page }) => {
     await page.goto('/games/');
     const flightCard = page.locator('[data-game-slug="flight-sim"]');
@@ -200,7 +215,8 @@ test('shared project pages keep Projects marked as the current section', async (
 test('Signal Grove Defense supports placement, waves, upgrades, pause, and reset', async ({ page }) => {
     await page.goto('/tower-defense/');
     await expect(page.locator('#tower-defense-root')).toBeVisible();
-    await page.locator('#tower-start-btn').click();
+    await expect(page.locator('#tower-overlay')).toHaveAttribute('data-visible', 'false');
+    expect(JSON.parse(await page.evaluate(() => window.render_game_to_text())).mode).toBe('playing');
 
     const canvas = page.locator('#tower-defense-canvas');
     const bounds = await canvas.boundingBox();
@@ -238,10 +254,86 @@ test('Signal Grove Defense supports placement, waves, upgrades, pause, and reset
 
     await page.locator('#tower-reset-btn').click();
     const reset = await page.evaluate(() => JSON.parse(window.render_game_to_text()));
-    expect(reset.mode).toBe('ready');
+    expect(reset.mode).toBe('playing');
     expect(reset.wave).toBe(0);
     expect(reset.towers).toHaveLength(0);
     expect(reset.credits).toBe(220);
+});
+
+test('Signal Grove campaign saves route unlocks and previews authored waves', async ({ page }) => {
+    await page.addInitScript(() => localStorage.setItem('signal-grove-campaign-v1', JSON.stringify({
+        unlocked: 2,
+        lastMission: 0,
+        records: { creekbend: { clears: 1, bestScore: 900, bestLives: 10 } }
+    })));
+    await page.goto('/tower-defense/');
+    await expect(page.locator('#tower-overlay')).toHaveAttribute('data-visible', 'false');
+
+    const missionSelect = page.locator('#tower-mission-select');
+    await expect(missionSelect).toHaveValue('0');
+    await expect(missionSelect.locator('option').nth(2)).not.toBeDisabled();
+    await expect(page.locator('#tower-campaign-progress')).toContainText('1 of 3 routes secured');
+    await missionSelect.selectOption('2');
+    await expect(page.locator('#tower-mission-briefing')).toContainText('Night Crossing');
+    await expect(page.locator('#tower-wave-preview')).toContainText('Wave 1 preview');
+
+    const selected = await page.evaluate(() => JSON.parse(window.render_game_to_text()));
+    expect(selected.mission.name).toBe('Night Crossing');
+    expect(selected.totalWaves).toBe(8);
+    expect(selected.unlockedMission).toBe(2);
+    await page.screenshot({ path: 'test-results/signal-grove-campaign.png', fullPage: true });
+
+    const canvas = page.locator('#tower-defense-canvas');
+    await canvas.scrollIntoViewIfNeeded();
+    const bounds = await canvas.boundingBox();
+    const clickGridCell = async (col, row) => {
+        const x = 48 + col * 54 + 27;
+        const y = 57 + row * 54 + 27;
+        await page.mouse.click(bounds.x + bounds.width * x / 960, bounds.y + bounds.height * y / 600);
+    };
+    await clickGridCell(2, 2);
+    const blockedLane = await page.evaluate(() => JSON.parse(window.render_game_to_text()));
+    expect(blockedLane.towers).toHaveLength(0);
+    expect(blockedLane.message).toContain('lane');
+    await clickGridCell(1, 5);
+    const placed = await page.evaluate(() => JSON.parse(window.render_game_to_text()));
+    expect(placed.towers).toHaveLength(1);
+    await page.locator('#tower-wave-btn').click();
+    await page.evaluate(() => window.advanceTime(2400));
+    const active = await page.evaluate(() => JSON.parse(window.render_game_to_text()));
+    expect(active.wave).toBe(1);
+    expect(active.totalWaves).toBe(8);
+    expect(active.enemies.length + active.queuedSignals).toBeGreaterThan(0);
+});
+
+test('Word Sort authored deals all open with a legal move and campaign progress unlocks the next', async ({ page }) => {
+    await page.goto('/word-sort/');
+    await page.waitForFunction(() => typeof window.__wordsort_debug_set_level === 'function');
+    await expect(page.locator('#wordsort-campaign')).toBeVisible();
+
+    for (let level = 0; level < 8; level += 1) {
+        const deal = await page.evaluate((index) => {
+            window.__wordsort_debug_set_level(index);
+            return JSON.parse(window.render_game_to_text());
+        }, level);
+        expect(deal.dealType).toBe('curated');
+        expect(deal.mode).toBe('playing');
+        expect(deal.totalCategories).toBeGreaterThan(0);
+        expect(deal.actions.any).toBe(true);
+    }
+
+    await page.evaluate(() => window.__wordsort_debug_set_level(0));
+    await page.evaluate(() => window.__wordsort_debug_complete_round());
+    await expect(page.locator('#wordsort-campaign-status')).toContainText('Deal 01 cleared');
+    await expect(page.locator('[data-word-level="1"]')).toBeEnabled();
+    await expect(page.locator('[data-word-level="0"] [data-word-best]')).toContainText('1,000 pts');
+    await page.screenshot({ path: 'test-results/word-sort-campaign.png', fullPage: true });
+    const savedProgress = await page.evaluate(() => JSON.parse(localStorage.getItem('word-sort-story-progress-v1')));
+    expect(savedProgress.unlocked).toBe(1);
+    expect(savedProgress.cleared).toContain(0);
+
+    await page.locator('[data-word-level="1"]').click();
+    await expect.poll(async () => page.evaluate(() => JSON.parse(window.render_game_to_text()).levelNumber)).toBe(2);
 });
 
 test('Flight Sim flight model responds to power, flaps, and a stall', async ({ page }) => {
@@ -334,4 +426,68 @@ test('Travel Map combines photo and place layers with a clear marker key', async
     await expect(page.locator('.travel-list-group-label.is-place')).toHaveText('Places / blue markers');
     await expect(page.locator('.travel-map-legend')).toContainText('Photos');
     await expect(page.locator('.travel-map-legend')).toContainText('Places');
+});
+
+test('Groggy Climbs steers, spends chalk on a dyno, pauses, falls, and restarts', async ({ page }) => {
+    await page.goto('/groggy-climbs/');
+    await expect(page.locator('#climb-canvas')).toBeVisible();
+    await expect(page.locator('#overlay-button')).toBeHidden();
+    const started = await page.evaluate(() => JSON.parse(window.render_game_to_text()));
+    expect(started.mode).toBe('playing');
+    expect(started.holds.length).toBeGreaterThan(3);
+
+    await page.keyboard.down('d');
+    await page.evaluate(() => window.advanceTime(350));
+    await page.keyboard.up('d');
+    const steered = await page.evaluate(() => JSON.parse(window.render_game_to_text()));
+    expect(steered.player.x).toBeGreaterThan(started.player.x);
+
+    await page.keyboard.press('w');
+    const dyno = await page.evaluate(() => JSON.parse(window.render_game_to_text()));
+    expect(dyno.chalk).toBe(60);
+    expect(dyno.player.vy).toBeGreaterThan(steered.player.vy + 250);
+
+    await page.evaluate(() => window.advanceTime(520));
+    const beforeDrop = await page.evaluate(() => JSON.parse(window.render_game_to_text()));
+    await page.keyboard.down('s');
+    await page.evaluate(() => window.advanceTime(120));
+    await page.keyboard.up('s');
+    const dropped = await page.evaluate(() => JSON.parse(window.render_game_to_text()));
+    expect(dropped.player.vy).toBeLessThan(beforeDrop.player.vy - 150);
+
+    await page.keyboard.press('p');
+    expect(JSON.parse(await page.evaluate(() => window.render_game_to_text())).mode).toBe('paused');
+    await page.keyboard.press('p');
+    expect(JSON.parse(await page.evaluate(() => window.render_game_to_text())).mode).toBe('playing');
+
+    await page.evaluate(() => window.advanceTime(30000));
+    const landed = await page.evaluate(() => JSON.parse(window.render_game_to_text()));
+    expect(landed.mode).toBe('gameover');
+    expect(landed.best).toBeGreaterThan(0);
+    expect(await page.locator('body').getAttribute('data-demo-state')).toBe('gameover');
+
+    await page.keyboard.press('r');
+    const replay = await page.evaluate(() => JSON.parse(window.render_game_to_text()));
+    expect(replay.mode).toBe('playing');
+    expect(replay.height).toBeLessThanOrEqual(2);
+    expect(replay.best).toBe(landed.best);
+});
+
+test('Block Blast starts with a playable board instead of a start screen', async ({ page }) => {
+    await page.goto('/block-blast/');
+    await expect(page.locator('#blockblast-start')).toHaveText('New Game');
+    await page.waitForFunction(() => typeof window.render_game_to_text === 'function');
+    expect(await page.evaluate(() => window.render_game_to_text())).toContain('mode=playing');
+});
+
+test('Conway begins evolving its seeded pattern immediately', async ({ page }) => {
+    await page.goto('/conway/');
+    await page.waitForFunction(() => typeof window.render_game_to_text === 'function');
+    await expect(page.locator('#run-button')).toHaveText('Pause simulation');
+    const running = await page.evaluate(() => JSON.parse(window.render_game_to_text()));
+    expect(running.mode).toBe('running');
+    expect(running.population).toBeGreaterThan(0);
+
+    await page.locator('#run-button').click();
+    expect(JSON.parse(await page.evaluate(() => window.render_game_to_text())).mode).toBe('paused');
 });

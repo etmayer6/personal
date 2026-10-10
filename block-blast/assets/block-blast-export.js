@@ -11016,7 +11016,7 @@ function $r(i) {
 }
 function I1() {
   const i = lt.useRef(null);
-  i.current || (i.current = kn("title", !1, typeof window < "u" ? window.innerWidth <= 560 : !1));
+  i.current || (i.current = kn("playing", !1, typeof window < "u" ? window.innerWidth <= 560 : !1));
   const m = lt.useRef(null), y = lt.useRef(null), o = lt.useRef(i.current), T = lt.useRef("off"), M = lt.useRef(null), [U, j] = lt.useState(() => Kr(i.current)), [R, E] = lt.useState(() => Gt()), [C, B] = lt.useState("off");
   function V() {
     j(Kr(o.current));
