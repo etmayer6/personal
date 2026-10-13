@@ -71,13 +71,93 @@
                     <a id="schedule-direct-link" class="schedule-direct-link" href="#" target="_blank" rel="noopener noreferrer" hidden>Open booking page <span aria-hidden="true">&nearr;</span></a>
                 </div>
 
-                <div id="calendly-embed" class="calendly-embed" data-calendly-url="" aria-label="Calendly scheduling widget">
-                    <div class="schedule-placeholder" id="schedule-placeholder">
-                        <span class="placeholder-mark" aria-hidden="true">+</span>
-                        <p class="eyebrow">One small setup step</p>
-                        <h2>Your booking page will live here.</h2>
-                        <p>Connect a public Calendly scheduling link and friends can choose an available time without leaving this page. Until then, take a lap through the projects.</p>
-                        <a href="../projects/">See what I&rsquo;m making <span aria-hidden="true">&nearr;</span></a>
+                <div id="calendly-embed" class="calendly-embed" data-calendly-url="" aria-label="Scheduling workspace">
+                    <div class="schedule-placeholder schedule-planner" id="schedule-placeholder">
+                        <div class="schedule-planner-intro">
+                            <span class="placeholder-mark" aria-hidden="true">2</span>
+                            <div>
+                                <p class="eyebrow">No booking link? No problem.</p>
+                                <h2>Bring two good options.</h2>
+                                <p>Build a short note with two times that work for you. Nothing is sent or saved here&mdash;copy it into whatever chat you already use with Ethan.</p>
+                            </div>
+                        </div>
+
+                        <form id="schedule-planner-form" class="schedule-planner-form">
+                            <fieldset class="plan-fieldset">
+                                <legend>What are we making time for?</legend>
+                                <div class="plan-choice-grid">
+                                    <label class="plan-choice">
+                                        <input type="radio" name="plan-purpose" value="catch up" checked>
+                                        <span><strong>Catch up</strong><small>Life, work, whatever</small></span>
+                                    </label>
+                                    <label class="plan-choice">
+                                        <input type="radio" name="plan-purpose" value="talk through a project">
+                                        <span><strong>Project chat</strong><small>Ideas and honest feedback</small></span>
+                                    </label>
+                                    <label class="plan-choice">
+                                        <input type="radio" name="plan-purpose" value="settle where to eat">
+                                        <span><strong>Food debate</strong><small>High stakes, low pressure</small></span>
+                                    </label>
+                                </div>
+                            </fieldset>
+
+                            <div class="plan-details-grid">
+                                <label class="plan-control" for="plan-duration">
+                                    <span>How long?</span>
+                                    <select id="plan-duration">
+                                        <option value="30">30 minutes</option>
+                                        <option value="45" selected>45 minutes</option>
+                                        <option value="60">1 hour</option>
+                                    </select>
+                                </label>
+                                <label class="plan-control" for="plan-timezone">
+                                    <span>Your time zone</span>
+                                    <input id="plan-timezone" type="text" readonly aria-describedby="timezone-note">
+                                    <small id="timezone-note">Detected by your browser; included in the note.</small>
+                                </label>
+                            </div>
+
+                            <fieldset class="plan-fieldset plan-availability">
+                                <legend>Which two windows work?</legend>
+                                <div class="plan-time-grid">
+                                    <div class="plan-time-option">
+                                        <strong>Option A</strong>
+                                        <label for="plan-date-a">Date</label>
+                                        <input id="plan-date-a" type="date" required>
+                                        <label for="plan-window-a">Time</label>
+                                        <select id="plan-window-a">
+                                            <option value="morning">Morning (9&ndash;11)</option>
+                                            <option value="lunch">Lunch (11:30&ndash;1:30)</option>
+                                            <option value="afternoon">Afternoon (2&ndash;5)</option>
+                                            <option value="evening" selected>Evening (6&ndash;8)</option>
+                                        </select>
+                                    </div>
+                                    <div class="plan-time-option">
+                                        <strong>Option B</strong>
+                                        <label for="plan-date-b">Date</label>
+                                        <input id="plan-date-b" type="date" required>
+                                        <label for="plan-window-b">Time</label>
+                                        <select id="plan-window-b">
+                                            <option value="morning">Morning (9&ndash;11)</option>
+                                            <option value="lunch">Lunch (11:30&ndash;1:30)</option>
+                                            <option value="afternoon" selected>Afternoon (2&ndash;5)</option>
+                                            <option value="evening">Evening (6&ndash;8)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </fieldset>
+
+                            <section class="plan-preview" aria-labelledby="plan-preview-title">
+                                <span id="plan-preview-title">Ready to paste</span>
+                                <p id="plan-summary"></p>
+                            </section>
+
+                            <div class="plan-actions">
+                                <button id="copy-plan" class="plan-copy-button" type="button">Copy scheduling note</button>
+                                <button class="plan-reset-button" type="reset">Start over</button>
+                                <p id="plan-feedback" role="status" aria-live="polite"></p>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -86,25 +166,25 @@
                 <section class="schedule-note-card">
                     <p class="eyebrow">Good to know</p>
                     <h2>No awkward calendar tennis.</h2>
-                    <p>Calendly shows the open times, handles time zones, and sends the invite after a slot is chosen.</p>
+                    <p>Two specific windows make it easier to choose once, confirm, and put the plan on both calendars.</p>
                     <ul class="schedule-points">
-                        <li><span>01</span><strong>Choose a time</strong></li>
-                        <li><span>02</span><strong>Add your details</strong></li>
-                        <li><span>03</span><strong>Show up</strong></li>
+                        <li><span>01</span><strong>Choose two windows</strong></li>
+                        <li><span>02</span><strong>Copy the note</strong></li>
+                        <li><span>03</span><strong>Confirm one</strong></li>
                     </ul>
                 </section>
                 <section class="schedule-note-card schedule-note-dark">
                     <span class="schedule-note-label">Private by default</span>
-                    <h2>No credentials live here.</h2>
-                    <p>The site only needs your public scheduling link. Calendar access and availability stay inside Calendly.</p>
+                    <h2>Your plan stays with you.</h2>
+                    <p>The note is built in this browser and is not saved or sent. You decide where to share it.</p>
                 </section>
             </aside>
         </section>
 
         <section class="schedule-footer-note">
             <p class="eyebrow">Keep it simple</p>
-            <h2>One link is enough.</h2>
-            <p>Once a time is booked, Calendly takes care of the confirmation and calendar invite.</p>
+            <h2>Two options are enough.</h2>
+            <p>A clear duration, two real windows, and a time zone are usually all a friend needs to make the plan happen.</p>
             <a href="../index.html">Back home <span aria-hidden="true">&rarr;</span></a>
         </section>
     </main>

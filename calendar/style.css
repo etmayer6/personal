@@ -202,6 +202,12 @@
     text-align: center;
 }
 
+.schedule-placeholder.schedule-planner {
+    display: block;
+    padding: clamp(28px, 5vw, 54px);
+    text-align: left;
+}
+
 .schedule-placeholder[hidden] {
     display: none;
 }
@@ -231,6 +237,257 @@
     margin: 0;
     color: var(--schedule-soft);
     line-height: 1.65;
+}
+
+.schedule-planner-intro {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 20px;
+    align-items: start;
+    max-width: 760px;
+}
+
+.schedule-planner-intro .placeholder-mark {
+    margin-top: 2px;
+    font-family: Georgia, "Palatino Linotype", serif;
+    font-weight: 700;
+}
+
+.schedule-planner-intro h2 {
+    margin-bottom: 14px;
+}
+
+.schedule-planner-form {
+    display: grid;
+    gap: 26px;
+    margin-top: 40px;
+}
+
+.plan-fieldset {
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
+.plan-fieldset legend,
+.plan-control > span {
+    display: block;
+    margin-bottom: 11px;
+    color: var(--schedule-ink);
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.plan-choice-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.plan-choice {
+    position: relative;
+    cursor: pointer;
+}
+
+.plan-choice input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+}
+
+.plan-choice span {
+    display: grid;
+    min-height: 84px;
+    align-content: center;
+    gap: 5px;
+    padding: 15px;
+    border: 1px solid var(--schedule-line);
+    background: #fff;
+    transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
+
+.plan-choice strong {
+    font-size: 14px;
+}
+
+.plan-choice small,
+.plan-control small {
+    color: var(--schedule-soft);
+    font-size: 11px;
+    line-height: 1.35;
+}
+
+.plan-choice:hover span {
+    transform: translateY(-2px);
+    border-color: rgba(16, 43, 54, 0.36);
+}
+
+.plan-choice input:checked + span {
+    border-color: var(--schedule-coral);
+    box-shadow: inset 4px 0 0 var(--schedule-coral);
+    background: #fff9f4;
+}
+
+.plan-choice input:focus-visible + span {
+    outline: 3px solid var(--schedule-aqua);
+    outline-offset: 3px;
+}
+
+.plan-details-grid,
+.plan-time-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.plan-control,
+.plan-time-option {
+    min-width: 0;
+}
+
+.plan-control input,
+.plan-control select,
+.plan-time-option input,
+.plan-time-option select {
+    width: 100%;
+    min-height: 48px;
+    padding: 10px 12px;
+    color: var(--schedule-ink);
+    border: 1px solid rgba(16, 43, 54, 0.24);
+    border-radius: 0;
+    background: #fff;
+    font: inherit;
+}
+
+.plan-control input:focus-visible,
+.plan-control select:focus-visible,
+.plan-time-option input:focus-visible,
+.plan-time-option select:focus-visible,
+.plan-copy-button:focus-visible,
+.plan-reset-button:focus-visible {
+    outline: 3px solid var(--schedule-aqua);
+    outline-offset: 2px;
+}
+
+.plan-control input[readonly] {
+    color: var(--schedule-soft);
+    background: #f5f2eb;
+}
+
+.plan-control small {
+    display: block;
+    margin-top: 7px;
+}
+
+.plan-availability {
+    padding-top: 2px;
+}
+
+.plan-time-option {
+    display: grid;
+    grid-template-columns: minmax(80px, 0.72fr) minmax(130px, 1fr);
+    gap: 8px 10px;
+    align-items: center;
+    padding: 16px;
+    border: 1px solid var(--schedule-line);
+    background: rgba(244, 240, 232, 0.6);
+}
+
+.plan-time-option > strong {
+    grid-column: 1 / -1;
+    padding-bottom: 8px;
+    color: var(--schedule-coral);
+    font-family: Georgia, "Palatino Linotype", serif;
+    font-size: 19px;
+}
+
+.plan-time-option label {
+    color: var(--schedule-soft);
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.plan-preview {
+    position: relative;
+    overflow: hidden;
+    padding: 24px;
+    color: #f8f1e6;
+    background: var(--schedule-deep);
+}
+
+.plan-preview::after {
+    position: absolute;
+    right: -28px;
+    bottom: -48px;
+    width: 130px;
+    height: 130px;
+    border: 1px solid rgba(117, 216, 196, 0.24);
+    border-radius: 50%;
+    content: "";
+}
+
+.plan-preview span {
+    position: relative;
+    z-index: 1;
+    color: var(--schedule-gold);
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.plan-preview p:not(.eyebrow) {
+    position: relative;
+    z-index: 1;
+    max-width: 680px;
+    margin: 10px 0 0;
+    color: rgba(255, 255, 255, 0.86);
+    font-size: 15px;
+    line-height: 1.65;
+}
+
+.plan-actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.plan-copy-button,
+.plan-reset-button {
+    min-height: 46px;
+    padding: 11px 17px;
+    border: 1px solid var(--schedule-deep);
+    font: inherit;
+    font-size: 12px;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.plan-copy-button {
+    color: #fff;
+    background: var(--schedule-deep);
+}
+
+.plan-copy-button:hover {
+    color: var(--schedule-deep);
+    background: var(--schedule-aqua);
+}
+
+.plan-reset-button {
+    color: var(--schedule-ink);
+    background: transparent;
+}
+
+#plan-feedback {
+    flex: 1 1 220px;
+    margin: 0;
+    color: var(--schedule-soft);
+    font-size: 12px;
 }
 
 .schedule-placeholder a,
@@ -301,6 +558,10 @@
 
 .schedule-note-dark p {
     color: rgba(255, 255, 255, 0.7) !important;
+}
+
+.schedule-note-dark h2 {
+    color: #f8f1e6;
 }
 
 .schedule-note-dark .schedule-note-label {
@@ -377,6 +638,52 @@
 
     .schedule-placeholder {
         padding: 28px 20px;
+    }
+
+    .schedule-placeholder.schedule-planner {
+        padding: 28px 20px 34px;
+    }
+
+    .schedule-planner-intro {
+        grid-template-columns: 1fr;
+        gap: 14px;
+    }
+
+    .schedule-planner-intro h2 {
+        font-size: 38px;
+    }
+
+    .schedule-planner-form {
+        gap: 24px;
+        margin-top: 32px;
+    }
+
+    .plan-choice-grid,
+    .plan-details-grid,
+    .plan-time-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .plan-choice span {
+        min-height: 72px;
+    }
+
+    .plan-time-option {
+        grid-template-columns: minmax(64px, 0.55fr) minmax(0, 1fr);
+        padding: 14px;
+    }
+
+    .plan-actions {
+        align-items: stretch;
+    }
+
+    .plan-copy-button,
+    .plan-reset-button {
+        flex: 1 1 100%;
+    }
+
+    #plan-feedback {
+        flex-basis: 100%;
     }
 
     .schedule-sidebar {
