@@ -157,6 +157,7 @@ const loadingEl = document.getElementById("image-loading");
 const roundValueEl = document.getElementById("round-value");
 const scoreValueEl = document.getElementById("score-value");
 const hintValueEl = document.getElementById("hint-value");
+const hintCostValueEl = document.getElementById("hint-cost-value");
 const statusEl = document.getElementById("game-status");
 const photoLabelEl = document.getElementById("photo-label");
 const photoCreditEl = document.getElementById("photo-credit");
@@ -781,10 +782,26 @@ function formatDistance(distance) {
     return distance < 10 ? `${distance.toFixed(1)} km away` : `${Math.round(distance).toLocaleString()} km away`;
 }
 
+function hintCostForRound() {
+    return 100 + state.roundIndex * 50;
+}
+
 function updateHeader() {
     roundValueEl.textContent = `${state.roundIndex + 1} / ${ROUND_COUNT}`;
     scoreValueEl.textContent = state.totalScore.toLocaleString();
     hintValueEl.textContent = `${state.hintCount} / 3`;
+    const hintCost = hintCostForRound();
+    const previousHintCost = Number(hintCostValueEl.dataset.cost || 0);
+    hintCostValueEl.textContent = state.hintCount >= 3 ? "No hints left" : `Next -${hintCost} pts`;
+    hintCostValueEl.dataset.cost = String(hintCost);
+    if (hintCost > previousHintCost) {
+        hintCostValueEl.classList.remove("price-step");
+        void hintCostValueEl.offsetWidth;
+        hintCostValueEl.classList.add("price-step");
+    }
+    hintButton.textContent = state.hintCount >= 3
+        ? "No hints left"
+        : `${state.hintCount ? "Another hint" : "Use a hint"} (-${hintCost} pts)`;
     photoLabelEl.textContent = `Round ${state.roundIndex + 1}`;
 }
 
@@ -905,13 +922,15 @@ function placeGuess(lat, lon) {
 
 function useHint() {
     if (state.mode !== "guessing" || state.hintCount >= 3) return;
+    const hintCost = hintCostForRound();
     state.hintCount += 1;
     hintTextEl.textContent = currentLocation().hints[state.hintCount - 1];
     hintBoxEl.hidden = false;
     hintValueEl.textContent = `${state.hintCount} / 3`;
-    hintButton.textContent = state.hintCount === 3 ? "No hints left" : "Another hint";
+    hintCostValueEl.textContent = state.hintCount === 3 ? "No hints left" : `Next -${hintCost} pts`;
+    hintButton.textContent = state.hintCount === 3 ? "No hints left" : `Another hint (-${hintCost} pts)`;
     hintButton.disabled = state.hintCount === 3;
-    statusEl.textContent = `Hint ${state.hintCount} revealed. Each hint costs 250 points.`;
+    statusEl.textContent = `Hint ${state.hintCount} revealed. Each hint costs ${hintCost} points this round.`;
 }
 
 function submitGuess() {
@@ -919,13 +938,14 @@ function submitGuess() {
     const location = currentLocation();
     state.distanceKm = haversineKm(state.guess, location);
     const baseScore = Math.round(MAX_ROUND_SCORE * Math.exp(-state.distanceKm / 2200));
-    state.roundScore = Math.max(0, baseScore - state.hintCount * 250);
+    const hintPenalty = state.hintCount * hintCostForRound();
+    state.roundScore = Math.max(0, baseScore - hintPenalty);
     state.totalScore += state.roundScore;
     state.mode = "result";
     stopResultReveal();
     answerTitleEl.textContent = location.answer;
     accuracyGradeEl.textContent = accuracyGrade(state.distanceKm);
-    answerDetailEl.textContent = `${formatDistance(state.distanceKm)} · ${state.hintCount ? `${state.hintCount * 250} point hint penalty` : "No hint penalty"}`;
+    answerDetailEl.textContent = `${formatDistance(state.distanceKm)} · ${hintPenalty ? `${hintPenalty} point hint penalty` : "No hint penalty"}`;
     roundScoreEl.textContent = state.roundScore.toLocaleString();
     resultEl.hidden = false;
     guessButton.hidden = true;
@@ -1292,6 +1312,8 @@ window.render_game_to_text = () => JSON.stringify({
     rounds: ROUND_COUNT,
     score: state.totalScore,
     hintsUsed: state.hintCount,
+    hintCost: hintCostForRound(),
+    hintPenalty: state.hintCount * hintCostForRound(),
     guess: state.guess,
     answer: state.mode === "result" || state.mode === "complete" ? {
         label: currentLocation().answer,

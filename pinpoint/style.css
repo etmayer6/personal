@@ -167,6 +167,41 @@ button:disabled {
     font-size: 19px;
 }
 
+.scorebar .hint-stat {
+    grid-template-columns: 1fr auto;
+    align-items: center;
+}
+
+.hint-stat > span {
+    grid-column: 1 / -1;
+}
+
+.scorebar .hint-cost {
+    justify-self: start;
+    padding: 3px 7px;
+    border: 1px solid rgba(136, 96, 27, 0.2);
+    border-radius: 999px;
+    color: #88601b;
+    background: #fbf1d8;
+    font-size: 9px;
+    font-weight: 900;
+    line-height: 1.2;
+    white-space: nowrap;
+}
+
+.hint-cost.price-step {
+    animation: hint-price-step 560ms ease-out;
+}
+
+@keyframes hint-price-step {
+    35% {
+        border-color: rgba(197, 90, 50, 0.58);
+        color: #8c3d22;
+        background: #f8dfc5;
+        transform: translateY(-2px) scale(1.06);
+    }
+}
+
 .scorebar p {
     display: flex;
     align-items: center;
@@ -668,5 +703,9 @@ button:disabled {
 @media (prefers-reduced-motion: reduce) {
     .photo-stage img {
         transition: none;
+    }
+
+    .hint-cost.price-step {
+        animation: none;
     }
 }
