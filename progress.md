@@ -1074,3 +1074,13 @@ Original prompt: Remove clutter from the games on the website. Right now they do
 - The bundled gameplay client opened all four routes without a start click. State confirms Block Blast `playing`, Conway `running` with 56 live cells, Signal Grove in its build phase, and Groggy Climbs `playing`; all four captured canvases were inspected and had no console-error artifacts.
 - A separate existing Flight Sim model test currently fails on its `coach.primary` expectation after the launch click; Flight Sim files were not changed. Its explicit launch flow remains untouched.
 - TODO: none for the requested entry behavior.
+
+## Groggy Climbs ridge-gust pass — 2026-10-20
+
+- Added alternating crosswind gusts above 80 m. Bracing with the indicated A/D key holds the climber's line; staying braced earns 14 chalk for a later dyno.
+- Added altitude haze and drifting spindrift streaks, plus an accessible status/HUD cue and deterministic reduced-motion behavior.
+- Focused Groggy Climbs movement/restart and gust/reward paths passed. The bundled web-game client captured and visually verified gameplay and the 80 m gust scene with no console errors.
+- `npm run check` passed on retry: syntax/static checks, 29 first-render cases, and 85 site quality/flow cases. `git diff --check` passed.
+- The focused gust regression ran successfully, then was removed from the concurrently edited shared `tests/project-behavior.spec.js`; no other task's test changes were modified.
+- Left the source changes uncommitted because the shared worktree gained unrelated edits during the run and local `main` is 58 commits behind `origin/main`. Do not push until the worktree is reconciled.
+- TODO: next run should choose a different game and continue to leave Aquarium, Pinpoint, Marble Lab, Signal Grove, and their changed files untouched while their working-tree edits remain.
