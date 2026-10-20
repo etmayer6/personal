@@ -247,7 +247,7 @@
         });
     }
 
-    function feedFish(x, foodType) {
+    function feedFish(x, foodType, y) {
         if (state.feedCooldown > 0) {
             setMessage("Momo is still chewing that one.", 2);
             renderReducedMotionState();
@@ -257,10 +257,11 @@
         const food = FOOD_TYPES[selectedFoodType];
         const firstTaste = !state.foodsTried[selectedFoodType];
         const targetX = clamp(typeof x === "number" ? x : 260 + ((state.feedings * 137) % 440), 80, WIDTH - 80);
+        const startY = typeof y === "number" ? clamp(y, 150, 390) : 68;
         state.pellets.push({
             type: selectedFoodType,
             x: targetX,
-            y: 68,
+            y: startY,
             drift: (state.feedings % 2 ? 1 : -1) * 12,
             life: 5,
             seed: state.feedings * 1.7,
@@ -275,7 +276,7 @@
         state.feedCooldown = 0.12;
         state.fish.targetX = targetX;
         state.fish.happyTimer = 1.2;
-        addBubble(targetX + 12, 88, 0.75);
+        addBubble(targetX + 12, startY + 20, 0.75);
         if (firstTaste && Object.keys(state.foodsTried).length === Object.keys(FOOD_TYPES).length) {
             setMessage("Momo sampled the full reef menu. Variety bonus!", 5);
         } else {
@@ -341,10 +342,15 @@
             pellet.y += 72 * delta;
             pellet.x += Math.sin(state.elapsed * 2 + pellet.y * 0.02) * pellet.drift * delta;
             pellet.life -= delta;
-            const nearFish = Math.abs(pellet.x - state.fish.x) < 70 && Math.abs(pellet.y - state.fish.y) < 54;
-            if (nearFish) {
+            const fishSize = currentStage().size;
+            const mouthX = state.fish.x + state.fish.direction * 67 * fishSize;
+            const mouthY = state.fish.y + 14 * fishSize;
+            const atMouth = Math.abs(pellet.x - mouthX) < 30 && Math.abs(pellet.y - mouthY) < 27;
+            if (atMouth) {
                 pellet.life = -1;
-                addBubble(pellet.x, pellet.y, 0.7);
+                addBubble(mouthX - 9, mouthY - 4, 0.85);
+                addBubble(mouthX + 8, mouthY + 2, 1.05);
+                addBubble(mouthX + 15, mouthY - 8, 0.65);
                 state.fish.eatTimer = 0.7;
                 state.fish.happyTimer = 2.2;
                 setMessage(pellet.message || FOOD_TYPES[pellet.type].message, 3);
@@ -371,14 +377,22 @@
     function updateFish(delta) {
         state.fish.phase += delta;
         const driftTarget = 450 + Math.sin(state.elapsed * 0.22) * 230;
-        const target = state.pellets.length ? state.pellets[0].x : state.fish.targetX * 0.35 + driftTarget * 0.65;
+        const snack = state.pellets[0];
+        const fishSize = currentStage().size;
+        const approachDirection = snack && snack.x < state.fish.x ? -1 : 1;
+        const target = snack
+            ? snack.x - approachDirection * 67 * fishSize
+            : state.fish.targetX * 0.35 + driftTarget * 0.65;
         const previousX = state.fish.x;
-        state.fish.x += (target - state.fish.x) * Math.min(1, delta * 0.8);
+        state.fish.x += (target - state.fish.x) * Math.min(1, delta * (snack ? 2.2 : 0.8));
         state.fish.velocity = (state.fish.x - previousX) / Math.max(delta, 0.001);
-        state.fish.tilt += (clamp(state.fish.velocity * 0.018, -0.16, 0.16) - state.fish.tilt) * Math.min(1, delta * 4);
+        state.fish.tilt += (clamp(state.fish.velocity * 0.018, -0.16, 0.16) - state.fish.tilt) * Math.min(1, delta * (snack ? 8 : 4));
         const targetY = state.fish.targetY || 310;
         const swimY = 310 + Math.sin(state.fish.phase * 0.65) * 34 + Math.sin(state.fish.phase * 1.4) * 8;
-        state.fish.y += (targetY + (swimY - 310) - state.fish.y) * Math.min(1, delta * 1.4);
+        const pursuitY = snack
+            ? clamp(snack.y - 14 * fishSize, 170, 455)
+            : targetY + (swimY - 310);
+        state.fish.y += (pursuitY - state.fish.y) * Math.min(1, delta * (snack ? 2.8 : 1.4));
         state.fish.targetY += (310 - state.fish.targetY) * Math.min(1, delta * 0.45);
         state.fish.eatTimer = Math.max(0, state.fish.eatTimer - delta);
         state.fish.happyTimer = Math.max(0, state.fish.happyTimer - delta);
@@ -763,10 +777,11 @@
         const bob = Math.sin(state.fish.phase * 0.8) * 2;
         const direction = state.fish.direction;
         const happyPulse = state.fish.happyTimer > 0 ? 1 + Math.sin(state.elapsed * 10) * 0.025 : 1;
+        const bitePulse = state.fish.eatTimer > 0 ? 1 + Math.sin(state.elapsed * 24) * 0.055 : 1;
         context.save();
         context.translate(state.fish.x, state.fish.y + bob);
         context.rotate(state.fish.tilt * direction);
-        context.scale(direction * size * happyPulse, size * happyPulse);
+        context.scale(direction * size * happyPulse * bitePulse, size * happyPulse * (2 - bitePulse));
 
         context.fillStyle = "rgba(0, 27, 37, 0.2)";
         context.beginPath();
@@ -980,6 +995,8 @@
                 stageIndex: stageIndex(),
                 x: Math.round(state.fish.x),
                 y: Math.round(state.fish.y),
+                velocity: Math.round(state.fish.velocity),
+                eating: state.fish.eatTimer > 0,
                 sizeMeters: Number(sizeInMeters().toFixed(2)),
                 hunger: Math.round(state.hunger),
                 cleanliness: Math.round(state.cleanliness),
@@ -996,10 +1013,13 @@
             reefMilestone: reefMilestone(),
             lastFood: state.lastFood,
             pellets: state.pellets.length,
+            snacks: state.pellets.map(function (pellet) {
+                return { type: pellet.type, x: Math.round(pellet.x), y: Math.round(pellet.y) };
+            }),
             day: ageDay(),
             message: state.message,
             coordinateSystem: "origin top-left; x increases right; y increases down",
-            controls: "Space feed, C clean, P play, F fullscreen, click water to feed"
+            controls: "Space feed, C clean, P play, F fullscreen, click open water to aim a snack"
         });
     }
 
@@ -1014,7 +1034,7 @@
         const point = pointerPosition(event);
         const nearFish = Math.hypot(point.x - state.fish.x, point.y - state.fish.y) < 125;
         if (nearFish) playWithFish();
-        else feedFish(point.x);
+        else feedFish(point.x, state.foodType, point.y);
         canvas.focus();
     });
     window.addEventListener("keydown", function (event) {

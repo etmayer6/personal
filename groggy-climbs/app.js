@@ -27,6 +27,7 @@
     const restartButton = document.getElementById("restart-button");
     const fullscreenButton = document.getElementById("fullscreen-button");
     const stage = document.getElementById("climb-stage");
+    let manualClock = false;
 
     const keys = { a: false, d: false, s: false };
     const state = {
@@ -45,6 +46,11 @@
         time: 0,
         lastHold: "Start hold",
         lastWallBand: -1,
+        windBand: 0,
+        windDirection: 0,
+        windTime: 0,
+        windCooldown: 0,
+        windBraceTime: 0,
         seed: 481516,
         nextPlatformId: 0,
         collected: 0,
@@ -88,7 +94,9 @@
         dynoFill.style.width = `${state.chalk}%`;
         dynoValue.textContent = `${Math.round(state.chalk)}%`;
 
-        if (state.chalk < 40) {
+        if (state.windTime > 0) {
+            climbTip.textContent = `Ridge gust: steer ${state.windDirection > 0 ? "A" : "D"} into it for +14 chalk.`;
+        } else if (state.chalk < 40) {
             climbTip.textContent = "Land on a hold or snag a chalk bag to refill.";
         } else if (state.chalk >= 90) {
             climbTip.textContent = "Chalk is full. W is ready for a dyno.";
@@ -151,6 +159,11 @@
         state.time = 0;
         state.lastHold = "Start hold";
         state.lastWallBand = -1;
+        state.windBand = 0;
+        state.windDirection = 0;
+        state.windTime = 0;
+        state.windCooldown = 0;
+        state.windBraceTime = 0;
         state.collected = 0;
         state.landings = 0;
         Object.keys(keys).forEach((key) => { keys[key] = false; });
@@ -278,16 +291,48 @@
         updateHud();
     }
 
+    function startRidgeGust(band) {
+        state.windBand = band;
+        state.windDirection = band % 2 === 1 ? 1 : -1;
+        state.windTime = 3.2;
+        state.windCooldown = 4.4;
+        state.windBraceTime = 0;
+        const source = state.windDirection > 0 ? "left" : "right";
+        const brace = state.windDirection > 0 ? "A" : "D";
+        statusLabel.textContent = `Ridge gust from the ${source}. Brace with ${brace} for chalk.`;
+    }
+
+    function resolveRidgeGust() {
+        if (state.windBraceTime >= 0.65) {
+            state.chalk = Math.min(100, state.chalk + 14);
+            statusLabel.textContent = "You held your line through the gust. Chalk +14.";
+            burst(state.player.x, state.player.y, "chalk", 12);
+            updateHud();
+        } else {
+            statusLabel.textContent = "Gust passed. Steer into the next one for bonus chalk.";
+        }
+    }
+
     function update(dt) {
         if (state.mode !== "playing") return;
         state.time += dt;
         state.dynoCooldown = Math.max(0, state.dynoCooldown - dt);
+        state.windCooldown = Math.max(0, state.windCooldown - dt);
+        if (state.windTime > 0) {
+            state.windTime = Math.max(0, state.windTime - dt);
+            if (state.windTime === 0) resolveRidgeGust();
+        }
         const player = state.player;
         const previousFoot = player.y - RADIUS;
         const direction = Number(keys.d) - Number(keys.a);
+        const bracing = state.windTime > 0 && direction === -state.windDirection;
         if (direction) {
-            player.vx += direction * 1240 * dt;
+            player.vx += direction * (bracing ? 430 : 1240) * dt;
             player.facing = direction;
+        }
+        if (state.windTime > 0) {
+            player.vx += state.windDirection * 430 * dt;
+            if (bracing) state.windBraceTime += dt;
         }
         player.vx *= Math.exp(-2.6 * dt);
         player.vx = Math.max(-285, Math.min(285, player.vx));
@@ -331,6 +376,7 @@
                 const names = ["The warm-up wall", "The long face", "Chalkstone corner", "Into the overhang", "Cloud level"];
                 statusLabel.textContent = names[Math.min(band, names.length - 1)];
             }
+            if (band > state.windBand && state.windCooldown <= 0) startRidgeGust(band);
         }
 
         state.cameraY = Math.max(state.cameraY, player.y - HEIGHT * 0.48);
@@ -437,6 +483,49 @@
             ctx.font = "8px system-ui, sans-serif";
             ctx.fillText(`${Math.max(0, Math.floor((worldY - START_Y) / 10))}m`, 42, y + 3);
         }
+    }
+
+    function drawHighAir() {
+        const altitude = Math.max(0, Math.min(1, (state.height - 45) / 250));
+        if (altitude <= 0) return;
+
+        ctx.save();
+        const haze = ctx.createLinearGradient(0, 0, WIDTH, HEIGHT);
+        haze.addColorStop(0, `rgba(219, 235, 231, ${altitude * 0.18})`);
+        haze.addColorStop(0.58, `rgba(239, 243, 230, ${altitude * 0.1})`);
+        haze.addColorStop(1, `rgba(227, 236, 226, ${altitude * 0.2})`);
+        ctx.fillStyle = haze;
+        ctx.fillRect(0, 0, WIDTH, HEIGHT);
+
+        const drift = state.reducedMotion ? 0 : state.time * 8;
+        for (let layer = 0; layer < 2; layer += 1) {
+            const y = (HEIGHT * 0.18 + layer * 235 + state.cameraY * 0.13 + drift) % (HEIGHT + 240) - 120;
+            ctx.fillStyle = `rgba(251, 252, 244, ${altitude * 0.09})`;
+            ctx.beginPath();
+            ctx.ellipse(WIDTH * (layer === 0 ? 0.72 : 0.28), y, WIDTH * 0.57, 31 + layer * 8, 0, 0, Math.PI * 2);
+            ctx.fill();
+        }
+        ctx.restore();
+    }
+
+    function drawRidgeWind() {
+        if (state.windTime <= 0) return;
+        const envelope = 0.62 + 0.38 * Math.sin((1 - state.windTime / 3.2) * Math.PI);
+        const travel = state.reducedMotion ? 0 : state.time * 245;
+        ctx.save();
+        ctx.lineCap = "round";
+        ctx.lineWidth = 1.4;
+        for (let index = 0; index < 12; index += 1) {
+            const offset = (index * 97 + travel) % (WIDTH + 96);
+            const x = state.windDirection > 0 ? offset - 48 : WIDTH + 48 - offset;
+            const y = (index * 83 + travel * 0.35 + state.cameraY * 0.11) % (HEIGHT + 96) - 48;
+            ctx.strokeStyle = `rgba(247, 251, 239, ${envelope * (index % 3 === 0 ? 0.56 : 0.34)})`;
+            ctx.beginPath();
+            ctx.moveTo(x - state.windDirection * 31, y - 8);
+            ctx.quadraticCurveTo(x - state.windDirection * 13, y - 4, x, y);
+            ctx.stroke();
+        }
+        ctx.restore();
     }
 
     function drawPlatform(platform) {
@@ -633,6 +722,8 @@
     function render() {
         ctx.setTransform(canvas.width / WIDTH, 0, 0, canvas.height / HEIGHT, 0, 0);
         drawWall();
+        drawHighAir();
+        drawRidgeWind();
         state.platforms.forEach(drawPlatform);
         state.chalkBags.forEach(drawChalkBag);
         drawParticles();
@@ -667,6 +758,13 @@
             best: state.best,
             chalk: Math.round(state.chalk),
             dynoReady: state.chalk >= 40 && state.dynoCooldown <= 0,
+            gust: {
+                active: state.windTime > 0,
+                pushes: state.windDirection > 0 ? "right" : state.windDirection < 0 ? "left" : null,
+                braceKey: state.windDirection > 0 ? "A" : state.windDirection < 0 ? "D" : null,
+                secondsLeft: Number(state.windTime.toFixed(1)),
+                braced: state.windBraceTime >= 0.65
+            },
             inputs: { left: keys.a, right: keys.d, drop: keys.s },
             landings: state.landings,
             chalkBagsCollected: state.collected,
@@ -677,6 +775,7 @@
     }
 
     function advanceTime(milliseconds) {
+        manualClock = true;
         const steps = Math.max(1, Math.round(milliseconds / (1000 / 60)));
         for (let index = 0; index < steps; index += 1) update(1 / 60);
         render();
@@ -763,7 +862,7 @@
     function frame(timestamp) {
         const dt = lastFrame ? Math.min(0.034, (timestamp - lastFrame) / 1000) : 1 / 60;
         lastFrame = timestamp;
-        update(dt);
+        if (!manualClock) update(dt);
         render();
         requestAnimationFrame(frame);
     }

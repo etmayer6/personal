@@ -5,7 +5,7 @@ export class Simulation{
     reset(machine){this.machine=machine;this.time=0;this.balls=[];this.effects=[];this.running=false;this.started=false;this.finished=false;this.won=false;this.launched=0;this.caught=0;this.lost=0;this.bells=0;this.portals=0;this.gatesOpen=false;this.followId=null;this.nextLaunch=0;this.queued=0;this.accumulator=0;this.dominos=new Map(machine.pieces.filter(p=>p.type==='domino').map(p=>[p.id,{angle:0,velocity:0}]));}
     start(){if(this.finished)this.reset(this.machine);if(!this.started){this.started=true;this.nextLaunch=this.time;this.queued=this.machine.source.count;}this.running=true;}
     spawn(){if(this.launched>=40||this.machine.challenge&&this.launched>=3)return null;const b={id:++this.launched,x:this.machine.source.x,y:this.machine.source.y,vx:0,vy:0,r:R,color:COLORS[(this.launched-1)%COLORS.length],status:'active',bellHits:new Set(),portalHits:0,cooldowns:new Map(),trail:[],age:0};this.balls.push(b);if(!this.followId)this.followId=b.id;this.finished=false;return b;}
-    emit(type,x,y,id){this.effects.push({type,x,y,id,time:this.time});this.onEvent({type,x,y,id,time:this.time});}
+    emit(type,x,y,id,details={}){const event={type,x,y,id,time:this.time,...details};this.effects.push(event);this.onEvent(event);}
     step(seconds){if(!this.running)return;this.accumulator+=clamp(seconds,0,10);while(this.accumulator>=DT-1e-10){this.tick(DT);this.accumulator=Math.max(0,this.accumulator-DT);if(!this.running){this.accumulator=0;break;}}}
     tick(dt){
         this.time+=dt;
@@ -38,7 +38,7 @@ export class Simulation{
                 if(b.status==='active'&&(b.y>H+40||b.age>30||!Number.isFinite(b.x+b.y+b.vx+b.vy))){b.status='lost';this.lost++;}
             }
             // Equal-mass marble contacts; separate overlap before applying impulse.
-            const active=this.balls.filter(b=>b.status==='active');for(let i=0;i<active.length;i++)for(let j=i+1;j<active.length;j++){const a=active[i],b=active[j],dx=b.x-a.x,dy=b.y-a.y,d=Math.hypot(dx,dy);if(d<2*R){const nx=d?dx/d:1,ny=d?dy/d:0,over=(2*R-d)/2+.01;a.x-=nx*over;a.y-=ny*over;b.x+=nx*over;b.y+=ny*over;const v=(b.vx-a.vx)*nx+(b.vy-a.vy)*ny;if(v<0){const impulse=-.8*v;a.vx-=impulse*nx;a.vy-=impulse*ny;b.vx+=impulse*nx;b.vy+=impulse*ny;}}}
+            const active=this.balls.filter(b=>b.status==='active');for(let i=0;i<active.length;i++)for(let j=i+1;j<active.length;j++){const a=active[i],b=active[j],dx=b.x-a.x,dy=b.y-a.y,d=Math.hypot(dx,dy);if(d<2*R){const nx=d?dx/d:1,ny=d?dy/d:0,over=(2*R-d)/2+.01;a.x-=nx*over;a.y-=ny*over;b.x+=nx*over;b.y+=ny*over;const v=(b.vx-a.vx)*nx+(b.vy-a.vy)*ny;if(v<0){const impact=-v,impulse=(1+.92)*.5*impact;a.vx-=impulse*nx;a.vy-=impulse*ny;b.vx+=impulse*nx;b.vy+=impulse*ny;this.emit('marble-hit',(a.x+b.x)/2,(a.y+b.y)/2,a.id,{nx,ny,impact});}}}
         }
         for(const b of this.balls){if(b.status==='active'){b.trail.push({x:b.x,y:b.y});if(b.trail.length>100)b.trail.shift();}}
         this.effects=this.effects.filter(e=>this.time-e.time<1.1);

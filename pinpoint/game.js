@@ -1,5 +1,6 @@
 const ROUND_COUNT = 5;
 const MAX_ROUND_SCORE = 5000;
+const BEST_SCORE_KEY = "pinpoint-best-score-v1";
 const MAPILLARY_TIMEOUT_MS = 5000;
 const MAPILLARY_SEARCH_ATTEMPTS = 6;
 const MAPILLARY_CELL_SIZE = 0.003;
@@ -10,6 +11,17 @@ const MIN_PHOTO_ZOOM = 1;
 const MAX_PHOTO_ZOOM = 8;
 const PHOTO_ZOOM_FACTOR = 1.5;
 const RESULT_REVEAL_MS = 950;
+
+function readBestScore() {
+    try {
+        const saved = window.localStorage.getItem(BEST_SCORE_KEY);
+        if (saved === null) return null;
+        const score = Number(saved);
+        return Number.isSafeInteger(score) && score >= 0 ? score : null;
+    } catch (error) {
+        return null;
+    }
+}
 
 const localLocations = [
     {
@@ -156,6 +168,7 @@ const imageEl = document.getElementById("location-image");
 const loadingEl = document.getElementById("image-loading");
 const roundValueEl = document.getElementById("round-value");
 const scoreValueEl = document.getElementById("score-value");
+const bestScoreValueEl = document.getElementById("best-score-value");
 const hintValueEl = document.getElementById("hint-value");
 const hintCostValueEl = document.getElementById("hint-cost-value");
 const statusEl = document.getElementById("game-status");
@@ -181,6 +194,7 @@ const answerTitleEl = document.getElementById("answer-title");
 const answerDetailEl = document.getElementById("answer-detail");
 const roundScoreEl = document.getElementById("round-score");
 const accuracyGradeEl = document.getElementById("accuracy-grade");
+const recordRewardEl = document.getElementById("record-reward");
 const nextButton = document.getElementById("next-button");
 const fullscreenButton = document.getElementById("fullscreen-button");
 
@@ -189,6 +203,8 @@ const state = {
     sequence: [],
     roundIndex: 0,
     totalScore: 0,
+    bestScore: readBestScore(),
+    recordOutcome: null,
     hintCount: 0,
     guess: null,
     distanceKm: null,
@@ -789,6 +805,7 @@ function hintCostForRound() {
 function updateHeader() {
     roundValueEl.textContent = `${state.roundIndex + 1} / ${ROUND_COUNT}`;
     scoreValueEl.textContent = state.totalScore.toLocaleString();
+    bestScoreValueEl.textContent = state.bestScore == null ? "—" : state.bestScore.toLocaleString();
     hintValueEl.textContent = `${state.hintCount} / 3`;
     const hintCost = hintCostForRound();
     const previousHintCost = Number(hintCostValueEl.dataset.cost || 0);
@@ -841,6 +858,7 @@ function loadRound() {
     photoCreditEl.textContent = "Image via Mapillary";
     hintBoxEl.hidden = true;
     resultEl.hidden = true;
+    recordRewardEl.hidden = true;
     hintButton.disabled = false;
     hintButton.textContent = "Use a hint";
     guessButton.disabled = true;
@@ -881,6 +899,7 @@ function showSequenceLoading() {
     guessButton.hidden = false;
     roundValueEl.textContent = `1 / ${ROUND_COUNT}`;
     scoreValueEl.textContent = "0";
+    bestScoreValueEl.textContent = state.bestScore == null ? "—" : state.bestScore.toLocaleString();
     hintValueEl.textContent = "0 / 3";
     coordinateEl.textContent = "No pin yet";
     mapInstructionEl.hidden = false;
@@ -892,6 +911,10 @@ function showSequenceLoading() {
 async function startGame(options = {}) {
     const generation = state.generation + 1;
     state.generation = generation;
+    state.bestScore = readBestScore() ?? state.bestScore;
+    state.recordOutcome = null;
+    recordRewardEl.hidden = true;
+    recordRewardEl.classList.remove("record-pop");
     if (mapillaryToken && !options.fixtureFirst) {
         showSequenceLoading();
         const worldwide = await buildWorldwideSequence();
@@ -948,6 +971,7 @@ function submitGuess() {
     answerDetailEl.textContent = `${formatDistance(state.distanceKm)} · ${hintPenalty ? `${hintPenalty} point hint penalty` : "No hint penalty"}`;
     roundScoreEl.textContent = state.roundScore.toLocaleString();
     resultEl.hidden = false;
+    recordRewardEl.hidden = true;
     guessButton.hidden = true;
     hintButton.disabled = true;
     nextButton.textContent = state.roundIndex === ROUND_COUNT - 1 ? "See final score" : "Next round";
@@ -982,6 +1006,32 @@ function showFinalScore() {
     state.mode = "complete";
     const maximum = ROUND_COUNT * MAX_ROUND_SCORE;
     const percentage = Math.round(state.totalScore / maximum * 100);
+    const previousBest = readBestScore() ?? state.bestScore;
+    state.bestScore = previousBest;
+    if (previousBest === null || state.totalScore > previousBest) {
+        state.bestScore = state.totalScore;
+        state.recordOutcome = previousBest === null ? "first" : "new";
+        try {
+            window.localStorage.setItem(BEST_SCORE_KEY, String(state.totalScore));
+        } catch (error) {
+            // Keep this run's record visible even when storage is unavailable.
+        }
+        recordRewardEl.textContent = previousBest === null
+            ? "First personal best recorded · play again to beat it"
+            : `New personal best · +${(state.totalScore - previousBest).toLocaleString()} points`;
+    } else if (state.totalScore === previousBest) {
+        state.recordOutcome = "tied";
+        recordRewardEl.textContent = "Personal best matched · raise it next run";
+    } else {
+        state.recordOutcome = "chase";
+        recordRewardEl.textContent = `Personal best ${previousBest.toLocaleString()} · ${(previousBest - state.totalScore).toLocaleString()} points to beat`;
+    }
+    recordRewardEl.dataset.outcome = state.recordOutcome;
+    recordRewardEl.hidden = false;
+    recordRewardEl.classList.remove("record-pop");
+    void recordRewardEl.offsetWidth;
+    recordRewardEl.classList.add("record-pop");
+    updateHeader();
     accuracyGradeEl.textContent = "5 rounds";
     answerTitleEl.textContent = "Expedition complete";
     answerDetailEl.textContent = `${state.totalScore.toLocaleString()} of ${maximum.toLocaleString()} points · ${scoreRating(percentage)}`;
@@ -1322,6 +1372,8 @@ window.render_game_to_text = () => JSON.stringify({
     } : null,
     distanceKm: state.distanceKm,
     roundScore: state.roundScore,
+    bestScore: state.bestScore,
+    recordOutcome: state.recordOutcome,
     accuracyGrade: state.distanceKm == null ? null : accuracyGrade(state.distanceKm),
     resultReveal: {
         active: resultReveal.active,

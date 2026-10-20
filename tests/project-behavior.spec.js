@@ -260,6 +260,39 @@ test('Signal Grove Defense supports placement, waves, upgrades, pause, and reset
     expect(reset.credits).toBe(220);
 });
 
+test('Signal Grove keyboard placement previews the cell and reports blocked lanes', async ({ page }) => {
+    const pageErrors = [];
+    page.on('pageerror', error => pageErrors.push(error.message));
+    await page.goto('/tower-defense/');
+
+    const canvas = page.locator('#tower-defense-canvas');
+    await canvas.focus();
+    await expect(page.locator('#tower-coordinate-readout')).toContainText('enter / place');
+    const focused = await page.evaluate(() => JSON.parse(window.render_game_to_text()));
+    expect(focused.placementPreview).toMatchObject({ col: 7, row: 4, action: 'place', valid: true, keyboard: true });
+
+    await page.keyboard.press('ArrowRight');
+    const aimed = await page.evaluate(() => JSON.parse(window.render_game_to_text()));
+    expect(aimed.placementPreview).toMatchObject({ col: 8, row: 4, action: 'place', valid: true, keyboard: true });
+    await expect(page.locator('#tower-coordinate-readout')).toContainText('09 : 05');
+    await page.screenshot({ path: 'test-results/signal-grove-keyboard-placement.png', fullPage: true });
+
+    await page.keyboard.press('Enter');
+    const placed = await page.evaluate(() => JSON.parse(window.render_game_to_text()));
+    expect(placed.towers).toHaveLength(1);
+    expect(placed.towers[0]).toMatchObject({ col: 8, row: 4, type: 'pulse' });
+    await expect(page.locator('#tower-coordinate-readout')).toContainText('enter / select');
+
+    await page.keyboard.press('ArrowLeft');
+    await page.keyboard.press('ArrowLeft');
+    const blocked = await page.evaluate(() => JSON.parse(window.render_game_to_text()));
+    expect(blocked.placementPreview).toMatchObject({ col: 6, row: 4, action: 'blocked', reason: 'lane', valid: false });
+    await expect(page.locator('#tower-coordinate-readout')).toContainText('lane / blocked');
+    await page.keyboard.press('Enter');
+    await expect(page.locator('#tower-status')).toContainText('lane is reserved');
+    expect(pageErrors).toEqual([]);
+});
+
 test('Signal Grove campaign saves route unlocks and previews authored waves', async ({ page }) => {
     await page.addInitScript(() => localStorage.setItem('signal-grove-campaign-v1', JSON.stringify({
         unlocked: 2,
@@ -471,6 +504,105 @@ test('Groggy Climbs steers, spends chalk on a dyno, pauses, falls, and restarts'
     expect(replay.mode).toBe('playing');
     expect(replay.height).toBeLessThanOrEqual(2);
     expect(replay.best).toBe(landed.best);
+});
+
+test('Groggy Climbs rewards bracing into ridge gusts', async ({ page }) => {
+    await page.goto('/groggy-climbs/');
+
+    const gustEntry = await page.evaluate(() => {
+        let heldKey = null;
+        const setKey = (nextKey) => {
+            if (heldKey === nextKey) return;
+            if (heldKey) document.dispatchEvent(new KeyboardEvent('keyup', { key: heldKey, bubbles: true }));
+            heldKey = nextKey;
+            if (heldKey) document.dispatchEvent(new KeyboardEvent('keydown', { key: heldKey, bubbles: true }));
+        };
+        const steerTowardNextHold = (game) => {
+            const rising = game.player.vy >= 0;
+            const reachable = game.holds.filter((hold) => rising
+                ? hold.y > game.player.y + 3 && hold.y - game.player.y < 130
+                : hold.y <= game.player.y + 3 && game.player.y - hold.y < 130);
+            reachable.sort((a, b) => rising ? a.y - b.y : b.y - a.y);
+            const target = reachable[0];
+            if (!target) return null;
+            const delta = target.x - game.player.x;
+            if (Math.abs(delta) > 16) return delta > 0 ? 'd' : 'a';
+            if (Math.abs(game.player.vx) > 55) return game.player.vx > 0 ? 'a' : 'd';
+            return null;
+        };
+
+        for (let frame = 0; frame < 2400; frame += 1) {
+            const game = JSON.parse(window.render_game_to_text());
+            if (game.mode !== 'playing') break;
+            if (game.gust.active) {
+                setKey(null);
+                return game;
+            }
+            setKey(steerTowardNextHold(game));
+            window.advanceTime(1000 / 60);
+        }
+        setKey(null);
+        return JSON.parse(window.render_game_to_text());
+    });
+
+    expect(gustEntry.mode).toBe('playing');
+    expect(gustEntry.height).toBeGreaterThanOrEqual(80);
+    expect(gustEntry.gust.active).toBe(true);
+    expect(gustEntry.gust.braceKey).toMatch(/^[AD]$/);
+    await page.screenshot({ path: 'output/web-game/groggy-climbs/ridge-gust.png' });
+
+    const outcome = await page.evaluate(() => {
+        let heldKey = null;
+        let bracedFrames = 0;
+        const setKey = (nextKey) => {
+            if (heldKey === nextKey) return;
+            if (heldKey) document.dispatchEvent(new KeyboardEvent('keyup', { key: heldKey, bubbles: true }));
+            heldKey = nextKey;
+            if (heldKey) document.dispatchEvent(new KeyboardEvent('keydown', { key: heldKey, bubbles: true }));
+        };
+        const steerTowardNextHold = (game) => {
+            const rising = game.player.vy >= 0;
+            const reachable = game.holds.filter((hold) => rising
+                ? hold.y > game.player.y + 3 && hold.y - game.player.y < 130
+                : hold.y <= game.player.y + 3 && game.player.y - hold.y < 130);
+            reachable.sort((a, b) => rising ? a.y - b.y : b.y - a.y);
+            const target = reachable[0];
+            if (!target) return null;
+            const delta = target.x - game.player.x;
+            if (Math.abs(delta) > 16) return delta > 0 ? 'd' : 'a';
+            if (Math.abs(game.player.vx) > 55) return game.player.vx > 0 ? 'a' : 'd';
+            return null;
+        };
+
+        for (let frame = 0; frame < 300; frame += 1) {
+            const game = JSON.parse(window.render_game_to_text());
+            if (game.mode !== 'playing') break;
+            if (game.gust.active) {
+                setKey(game.gust.braceKey.toLowerCase());
+                bracedFrames += 1;
+            } else {
+                setKey(steerTowardNextHold(game));
+            }
+            window.advanceTime(1000 / 60);
+            const status = document.querySelector('#climb-status').textContent;
+            const updated = JSON.parse(window.render_game_to_text());
+            if (!updated.gust.active && status.includes('Chalk +14')) {
+                setKey(null);
+                return { game: updated, bracedFrames, status };
+            }
+        }
+        setKey(null);
+        return {
+            game: JSON.parse(window.render_game_to_text()),
+            bracedFrames,
+            status: document.querySelector('#climb-status').textContent
+        };
+    });
+
+    expect(outcome.bracedFrames).toBeGreaterThanOrEqual(40);
+    expect(outcome.game.mode).toBe('playing');
+    expect(outcome.game.gust.active).toBe(false);
+    expect(outcome.status).toContain('Chalk +14');
 });
 
 test('Block Blast starts with a playable board instead of a start screen', async ({ page }) => {

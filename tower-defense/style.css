@@ -294,6 +294,18 @@
     text-transform: uppercase;
 }
 
+.tower-coordinate-readout[data-state="ready"] {
+    color: #f2cb3f;
+}
+
+.tower-coordinate-readout[data-state="blocked"] {
+    color: #f09a7a;
+}
+
+.tower-coordinate-readout[data-state="select"] {
+    color: #8dd9c5;
+}
+
 .tower-defense-controls {
     min-width: 0;
     padding: 22px 20px 20px;

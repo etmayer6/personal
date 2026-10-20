@@ -161,6 +161,7 @@
         speedButton: document.getElementById("tower-speed-btn"),
         resetButton: document.getElementById("tower-reset-btn"),
         liveSummary: document.getElementById("tower-live-summary"),
+        gridLive: document.getElementById("tower-grid-live"),
         inspectorEmpty: document.getElementById("tower-inspector-empty"),
         inspectorCard: document.getElementById("tower-inspector-card"),
         inspectorName: document.getElementById("tower-inspector-name"),
@@ -201,6 +202,9 @@
     let nextId = 1;
     let deviceScale = 1;
     let hoverCell = null;
+    let pointerCell = null;
+    let keyboardCell = null;
+    let keyboardNavigationActive = false;
     let deterministic = false;
 
     function clamp(value, min, max) {
@@ -476,7 +480,7 @@
     function selectTowerType(type) {
         if (!towerTypes[type]) return;
         state.selectedTowerType = type;
-        setMessage(`${towerTypes[type].name} selected. Click an empty grid cell to place it.`);
+        setMessage(`${towerTypes[type].name} selected. Aim at an empty cell to place it.`);
         render();
     }
 
@@ -489,14 +493,80 @@
         return isInsideGrid(col, row) ? { col, row } : null;
     }
 
-    function updateHover(event) {
-        hoverCell = selectCellFromPointer(event);
-        if (!hoverCell) {
-            elements.coordinate.textContent = "grid / waiting";
-        } else {
-            elements.coordinate.textContent = `grid / ${String(hoverCell.col + 1).padStart(2, "0")} : ${String(hoverCell.row + 1).padStart(2, "0")}`;
+    function cellFeedback(col, row) {
+        if (towerAt(col, row)) return { valid: false, action: "select", reason: "tower" };
+        if (isPathCell(col, row)) return { valid: false, action: "blocked", reason: "lane" };
+        if (state.credits < towerTypes[state.selectedTowerType].cost) {
+            return { valid: false, action: "blocked", reason: "credits" };
         }
+        return { valid: true, action: "place", reason: "ready" };
+    }
+
+    function updateCoordinateReadout() {
+        if (!hoverCell) {
+            if (elements.coordinate.textContent !== "grid / waiting") elements.coordinate.textContent = "grid / waiting";
+            if (elements.coordinate.dataset.state !== "idle") elements.coordinate.dataset.state = "idle";
+            return;
+        }
+        const location = `${String(hoverCell.col + 1).padStart(2, "0")} : ${String(hoverCell.row + 1).padStart(2, "0")}`;
+        if (keyboardNavigationActive) {
+            const feedback = cellFeedback(hoverCell.col, hoverCell.row);
+            const prompt = feedback.action === "select" ? "enter / select" : feedback.valid ? "enter / place" : `${feedback.reason} / blocked`;
+            const text = `${prompt} · ${location}`;
+            const stateName = feedback.action === "select" ? "select" : feedback.valid ? "ready" : "blocked";
+            if (elements.coordinate.textContent !== text) elements.coordinate.textContent = text;
+            if (elements.coordinate.dataset.state !== stateName) elements.coordinate.dataset.state = stateName;
+            const spokenText = `${feedback.action === "select" ? "Select tower" : feedback.valid ? "Place tower" : `${feedback.reason} blocks placement`} at column ${hoverCell.col + 1}, row ${hoverCell.row + 1}.`;
+            if (elements.gridLive.textContent !== spokenText) elements.gridLive.textContent = spokenText;
+            return;
+        }
+        const text = `grid / ${location}`;
+        if (elements.coordinate.textContent !== text) elements.coordinate.textContent = text;
+        if (elements.coordinate.dataset.state !== "pointer") elements.coordinate.dataset.state = "pointer";
+    }
+
+    function updateHover(event) {
+        pointerCell = selectCellFromPointer(event);
+        keyboardNavigationActive = false;
+        hoverCell = pointerCell;
+        updateCoordinateReadout();
         renderCanvas();
+    }
+
+    function focusKeyboardGrid() {
+        if (!keyboardCell) keyboardCell = { col: 7, row: 4 };
+        keyboardNavigationActive = true;
+        hoverCell = keyboardCell;
+        updateCoordinateReadout();
+        renderCanvas();
+    }
+
+    function blurKeyboardGrid() {
+        keyboardNavigationActive = false;
+        hoverCell = pointerCell;
+        updateCoordinateReadout();
+        renderCanvas();
+    }
+
+    function moveKeyboardGrid(event) {
+        const movement = {
+            ArrowUp: [0, -1],
+            ArrowDown: [0, 1],
+            ArrowLeft: [-1, 0],
+            ArrowRight: [1, 0]
+        }[event.key];
+        if (!movement) return false;
+        event.preventDefault();
+        keyboardNavigationActive = true;
+        const current = keyboardCell || { col: 7, row: 4 };
+        keyboardCell = {
+            col: clamp(current.col + movement[0], 0, GRID.cols - 1),
+            row: clamp(current.row + movement[1], 0, GRID.rows - 1)
+        };
+        hoverCell = keyboardCell;
+        updateCoordinateReadout();
+        renderCanvas();
+        return true;
     }
 
     function getTarget(tower, stats) {
@@ -1119,17 +1189,37 @@
         if (!hoverCell || state.mode !== "playing") return;
         const { col, row } = hoverCell;
         const center = cellCenter(col, row);
-        const occupied = Boolean(towerAt(col, row));
-        const valid = !occupied && !isPathCell(col, row);
-        ctx.fillStyle = valid ? "rgba(109, 209, 187, 0.12)" : "rgba(231, 121, 82, 0.12)";
-        ctx.strokeStyle = valid ? "rgba(109, 209, 187, 0.72)" : "rgba(231, 121, 82, 0.72)";
+        const feedback = cellFeedback(col, row);
+        const valid = feedback.valid;
+        const selectingTower = feedback.action === "select";
+        const color = selectingTower ? towerTypes[towerAt(col, row).type].color : valid ? "#6dd1bb" : "#e77962";
+        ctx.fillStyle = selectingTower ? "rgba(242, 203, 63, 0.11)" : valid ? "rgba(109, 209, 187, 0.12)" : "rgba(231, 121, 82, 0.12)";
+        ctx.strokeStyle = selectingTower ? "rgba(242, 203, 63, 0.86)" : valid ? "rgba(109, 209, 187, 0.72)" : "rgba(231, 121, 82, 0.72)";
         ctx.lineWidth = 2;
         ctx.fillRect(GRID.x + col * GRID.tile + 5, GRID.y + row * GRID.tile + 5, GRID.tile - 10, GRID.tile - 10);
         ctx.strokeRect(GRID.x + col * GRID.tile + 6, GRID.y + row * GRID.tile + 6, GRID.tile - 12, GRID.tile - 12);
+        if (keyboardNavigationActive) {
+            const left = GRID.x + col * GRID.tile + 4;
+            const top = GRID.y + row * GRID.tile + 4;
+            const right = left + GRID.tile - 8;
+            const bottom = top + GRID.tile - 8;
+            const corner = 9;
+            ctx.save();
+            ctx.strokeStyle = "#f2cb3f";
+            ctx.lineWidth = 2.5;
+            ctx.lineCap = "square";
+            ctx.beginPath();
+            ctx.moveTo(left, top + corner); ctx.lineTo(left, top); ctx.lineTo(left + corner, top);
+            ctx.moveTo(right - corner, top); ctx.lineTo(right, top); ctx.lineTo(right, top + corner);
+            ctx.moveTo(right, bottom - corner); ctx.lineTo(right, bottom); ctx.lineTo(right - corner, bottom);
+            ctx.moveTo(left + corner, bottom); ctx.lineTo(left, bottom); ctx.lineTo(left, bottom - corner);
+            ctx.stroke();
+            ctx.restore();
+        }
         if (valid) {
             const previewStats = towerStats({ type: state.selectedTowerType, level: 1 });
             const previewRange = previewStats.range * GRID.tile;
-            const previewColor = towerTypes[state.selectedTowerType].color;
+            const previewColor = keyboardNavigationActive ? color : towerTypes[state.selectedTowerType].color;
             ctx.save();
             ctx.translate(center.x, center.y);
             ctx.globalAlpha = 0.1;
@@ -1198,6 +1288,7 @@
     function renderDom() {
         const mission = currentMission();
         const waves = totalWaves();
+        updateCoordinateReadout();
         elements.credits.textContent = String(Math.floor(state.credits));
         elements.lives.textContent = String(state.lives);
         elements.wave.textContent = `${state.wave} / ${waves}`;
@@ -1295,14 +1386,30 @@
     });
     canvas.addEventListener("pointermove", updateHover);
     canvas.addEventListener("pointerleave", () => {
-        hoverCell = null;
-        elements.coordinate.textContent = "grid / waiting";
+        pointerCell = null;
+        if (!keyboardNavigationActive) hoverCell = null;
+        updateCoordinateReadout();
         renderCanvas();
     });
     canvas.addEventListener("pointerdown", (event) => {
         if (event.button !== 0) return;
         const cell = selectCellFromPointer(event);
-        if (cell) placeTower(cell.col, cell.row);
+        if (cell) {
+            pointerCell = cell;
+            keyboardCell = cell;
+            if (!keyboardNavigationActive) hoverCell = cell;
+            updateCoordinateReadout();
+            placeTower(cell.col, cell.row);
+        }
+    });
+    canvas.addEventListener("focus", focusKeyboardGrid);
+    canvas.addEventListener("blur", blurKeyboardGrid);
+    canvas.addEventListener("keydown", (event) => {
+        if (moveKeyboardGrid(event)) return;
+        if (event.key === "Enter" && keyboardNavigationActive && keyboardCell) {
+            event.preventDefault();
+            placeTower(keyboardCell.col, keyboardCell.row);
+        }
     });
     document.addEventListener("keydown", (event) => {
         if (event.target && ["INPUT", "TEXTAREA", "SELECT"].includes(event.target.tagName)) return;
@@ -1341,7 +1448,8 @@
         placementPreview: hoverCell ? {
             col: hoverCell.col,
             row: hoverCell.row,
-            valid: !towerAt(hoverCell.col, hoverCell.row) && !isPathCell(hoverCell.col, hoverCell.row),
+            ...cellFeedback(hoverCell.col, hoverCell.row),
+            keyboard: keyboardNavigationActive,
             range: Number(towerStats({ type: state.selectedTowerType, level: 1 }).range.toFixed(2))
         } : null,
         towers: state.towers.map((tower) => {

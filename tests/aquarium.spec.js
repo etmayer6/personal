@@ -59,3 +59,31 @@ test('Mola Mola keeps care progress and unlocks reef keepsakes across visits', a
     expect(returned.reefMilestone).toBe('Shell garden');
     await expect(page.locator('.care-hint')).toContainText('never loses care while you are away');
 });
+
+test('an aimed snack pulls Momo into a banking chase and a mouth-first bite', async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.goto('/aquarium/');
+    await page.waitForFunction(() => typeof window.render_game_to_text === 'function');
+
+    const before = await page.evaluate(() => JSON.parse(window.render_game_to_text()));
+    const canvas = page.locator('#aquarium-canvas');
+    const box = await canvas.boundingBox();
+    await page.mouse.click(box.x + box.width * (250 / 960), box.y + box.height * (230 / 600));
+
+    const tossed = await page.evaluate(() => JSON.parse(window.render_game_to_text()));
+    expect(tossed.snacks).toEqual([{ type: 'jellyfish', x: 250, y: 230 }]);
+
+    const bite = await page.evaluate(() => {
+        let current;
+        for (let frame = 0; frame < 360; frame += 1) {
+            window.advanceTime(1000 / 60);
+            current = JSON.parse(window.render_game_to_text());
+            if (current.fish.eating && current.pellets === 0) return current;
+        }
+        return current;
+    });
+    expect(bite.fish.x).not.toBe(before.fish.x);
+    expect(bite.pellets).toBe(0);
+    expect(bite.fish.eating).toBe(true);
+});

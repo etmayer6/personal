@@ -75,7 +75,7 @@
                         <span id="tower-enemy-count">No incoming signals</span>
                     </div>
                     <div class="tower-canvas-wrap">
-                        <canvas id="tower-defense-canvas" width="960" height="600" aria-label="Signal Grove battlefield. Click an empty grid cell to place the selected tower." tabindex="0"></canvas>
+                        <canvas id="tower-defense-canvas" width="960" height="600" aria-label="Signal Grove battlefield. Click an empty grid cell to place a tower. When focused, use arrow keys to aim and Enter to place or inspect." tabindex="0"></canvas>
                         <div id="tower-overlay" class="tower-overlay" data-visible="false">
                             <div class="tower-overlay-card">
                                 <span class="tower-overlay-mark" aria-hidden="true">SG / 08</span>
@@ -135,7 +135,7 @@
                                 <span class="tower-choice-cost">110</span>
                             </button>
                         </div>
-                        <p class="tower-control-note">Click an empty cell to place the selected tower.</p>
+                        <p class="tower-control-note">Click a cell, or focus the grid: arrows move · Enter places.</p>
                     </section>
 
                     <section class="tower-control-block tower-wave-block">
@@ -182,6 +182,7 @@
             </div>
 
             <div id="tower-live-summary" class="tower-sr-only" aria-live="polite"></div>
+            <div id="tower-grid-live" class="tower-sr-only" aria-live="polite"></div>
         </section>
 
         <div class="tower-defense-backlink"><a href="../games/">Back to all games <span aria-hidden="true">&rarr;</span></a><span>Keep the grove quiet.</span></div>
