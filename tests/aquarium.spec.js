@@ -57,7 +57,7 @@ test('Mola Mola keeps care progress and unlocks reef keepsakes across visits', a
     expect(returned.growth.points).toBe(afterFeed.growth.points);
     expect(returned.foodVariety).toBe(1);
     expect(returned.reefMilestone).toBe('Shell garden');
-    await expect(page.locator('.care-hint')).toContainText('never loses care while you are away');
+    await expect(page.locator('.care-hint')).toContainText('Care never fades while you are away');
 });
 
 test('an aimed snack pulls Momo into a banking chase and a mouth-first bite', async ({ page }) => {

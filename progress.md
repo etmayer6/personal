@@ -1082,5 +1082,5 @@ Original prompt: Remove clutter from the games on the website. Right now they do
 - Focused Groggy Climbs movement/restart and gust/reward paths passed. The bundled web-game client captured and visually verified gameplay and the 80 m gust scene with no console errors.
 - `npm run check` passed on retry: syntax/static checks, 29 first-render cases, and 85 site quality/flow cases. `git diff --check` passed.
 - The focused gust regression ran successfully, then was removed from the concurrently edited shared `tests/project-behavior.spec.js`; no other task's test changes were modified.
-- Left the source changes uncommitted because the shared worktree gained unrelated edits during the run and local `main` is 58 commits behind `origin/main`. Do not push until the worktree is reconciled.
+- The shared worktree advanced during this run. Groggy Climbs appears in local commit `eb5b0fc` alongside other tasks' changes; follow-up commits `0561172` and `1103602` remove the brittle test and record notes. A later explicit all-changes request authorized reconciling and pushing the complete local range together.
 - TODO: next run should choose a different game and continue to leave Aquarium, Pinpoint, Marble Lab, Signal Grove, and their changed files untouched while their working-tree edits remain.
