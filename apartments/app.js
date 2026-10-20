@@ -11,6 +11,10 @@
     const ethanTopPicks = document.getElementById("ethan-top-picks");
     const listingsGrid = document.getElementById("listings-grid");
     const errorBox = document.getElementById("error-box");
+    const comparisonGrid = document.getElementById("comparison-grid");
+    const comparisonCount = document.getElementById("comparison-count");
+    const comparisonFeedback = document.getElementById("comparison-feedback");
+    const clearComparisonButton = document.getElementById("clear-comparison");
     const ethanTopPickConfigs = [
         {
             matchUrl: "https://www.wattsgroupiowa.com/plan/sinclair-on-16th/sinclair-on-16th-layout-1a",
@@ -120,6 +124,17 @@
 
     let rows = [];
     let bootInFlight = false;
+    const comparisonKey = "ethan-apartment-comparison-v1";
+    let comparisonIds = [];
+
+    try {
+        const savedComparison = JSON.parse(localStorage.getItem(comparisonKey) || "[]");
+        if (Array.isArray(savedComparison)) {
+            comparisonIds = savedComparison.map(String).slice(0, 3);
+        }
+    } catch (error) {
+        comparisonIds = [];
+    }
 
     function fmtMoney(n) {
         if (n == null) return "-";
@@ -217,6 +232,18 @@
         return span;
     }
 
+    function saveComparison() {
+        try {
+            localStorage.setItem(comparisonKey, JSON.stringify(comparisonIds));
+        } catch (error) {
+            comparisonFeedback.textContent = "This comparison will last for this visit, but browser storage is unavailable.";
+        }
+    }
+
+    function setComparisonFeedback(message) {
+        comparisonFeedback.textContent = message || "";
+    }
+
     function availabilityVariant(bucket) {
         if (bucket === "available_now") return "good";
         if (bucket === "stale" || bucket === "unavailable") return "bad";
@@ -262,6 +289,7 @@
         items.forEach(function (item) {
             const card = document.createElement("article");
             card.className = "listing-card";
+            if (comparisonIds.includes(String(item.id))) card.classList.add("is-compared");
 
             const title = document.createElement("h3");
             title.textContent = item.title;
@@ -322,10 +350,172 @@
                 maps.textContent = "Open map";
                 links.appendChild(maps);
             }
+            if (item.id != null && item.fit != null) {
+                const compare = document.createElement("button");
+                const isSelected = comparisonIds.includes(String(item.id));
+                compare.type = "button";
+                compare.className = "compare-toggle";
+                compare.textContent = isSelected ? "Comparing" : "Compare";
+                compare.setAttribute("aria-pressed", String(isSelected));
+                compare.setAttribute("aria-label", (isSelected ? "Remove " : "Compare ") + item.title);
+                compare.addEventListener("click", function () {
+                    toggleComparison(String(item.id));
+                });
+                links.appendChild(compare);
+            }
             card.appendChild(links);
 
             target.appendChild(card);
         });
+    }
+
+    function metricValue(items, key, direction) {
+        const values = items.map(function (item) {
+            return item[key];
+        }).filter(function (value) {
+            return value != null && Number.isFinite(value);
+        });
+        if (items.length < 2 || !values.length) return null;
+        return direction === "max" ? Math.max.apply(null, values) : Math.min.apply(null, values);
+    }
+
+    function appendFact(list, label, value, best) {
+        const row = document.createElement("div");
+        const term = document.createElement("dt");
+        const detail = document.createElement("dd");
+        term.textContent = label;
+        detail.textContent = value;
+        if (best) {
+            detail.classList.add("best-value");
+            const marker = document.createElement("span");
+            marker.className = "best-marker";
+            marker.textContent = "Best";
+            detail.appendChild(marker);
+        }
+        row.append(term, detail);
+        list.appendChild(row);
+    }
+
+    function renderComparison(pool) {
+        const byId = new Map(pool.map(function (item) {
+            return [String(item.id), item];
+        }));
+        const validIds = comparisonIds.filter(function (id) {
+            return byId.has(id);
+        });
+        if (validIds.length !== comparisonIds.length) {
+            comparisonIds = validIds;
+            saveComparison();
+        }
+
+        const items = comparisonIds.map(function (id) {
+            return byId.get(id);
+        });
+        comparisonCount.textContent = items.length + " of 3 selected";
+        clearComparisonButton.disabled = items.length === 0;
+        comparisonGrid.replaceChildren();
+
+        if (!items.length) {
+            const empty = document.createElement("div");
+            empty.className = "comparison-empty";
+            empty.textContent = "Your comparison is empty. Pick the places that deserve a closer look.";
+            comparisonGrid.appendChild(empty);
+            return;
+        }
+
+        const best = {
+            fit: metricValue(items, "fit", "max"),
+            allInMonthly: metricValue(items, "allInMonthly", "min"),
+            commuteMin: metricValue(items, "commuteMin", "min"),
+            moveInCash: metricValue(items, "moveInCash", "min"),
+            sqft: metricValue(items, "sqft", "max")
+        };
+
+        items.forEach(function (item) {
+            const card = document.createElement("article");
+            card.className = "comparison-card";
+
+            const header = document.createElement("header");
+            const title = document.createElement("h3");
+            title.textContent = item.title;
+            const remove = document.createElement("button");
+            remove.type = "button";
+            remove.className = "comparison-remove";
+            remove.textContent = "Remove";
+            remove.setAttribute("aria-label", "Remove " + item.title + " from comparison");
+            remove.addEventListener("click", function () {
+                toggleComparison(String(item.id));
+            });
+            header.append(title, remove);
+            card.appendChild(header);
+
+            const fitVisual = document.createElement("div");
+            fitVisual.className = "fit-visual";
+            const fitLabel = document.createElement("div");
+            const fitName = document.createElement("span");
+            const fitValue = document.createElement("strong");
+            fitName.textContent = "Fit score";
+            fitValue.textContent = item.fit + " / 100";
+            if (item.fit === best.fit) {
+                const marker = document.createElement("span");
+                marker.className = "best-marker";
+                marker.textContent = "Best";
+                fitValue.appendChild(marker);
+            }
+            fitLabel.append(fitName, fitValue);
+            const track = document.createElement("span");
+            track.className = "fit-track";
+            const fill = document.createElement("span");
+            fill.style.width = item.fit + "%";
+            track.appendChild(fill);
+            fitVisual.append(fitLabel, track);
+            card.appendChild(fitVisual);
+
+            const facts = document.createElement("dl");
+            facts.className = "comparison-facts";
+            const monthlyDelta = item.allInMonthly == null ? "" : prefs.maxAllIn - item.allInMonthly;
+            const monthlyText = item.allInMonthly == null
+                ? "Unknown"
+                : fmtMoney(item.allInMonthly) + " · " + fmtMoney(Math.abs(monthlyDelta)) + (monthlyDelta >= 0 ? " under limit" : " over limit");
+            const space = [
+                item.beds == null ? null : item.beds + " bed",
+                item.baths == null ? null : item.baths + " bath",
+                item.sqft == null ? null : item.sqft.toLocaleString() + " sq ft"
+            ].filter(Boolean).join(" · ") || "Unknown";
+            const essentials = [
+                "W/D " + triText(item.washerDryer),
+                "DW " + triText(item.dishwasher),
+                "Parking " + triText(item.parking),
+                "Pets " + triText(item.petFriendly)
+            ].join(" · ");
+            const concerns = item.blockers && item.blockers.length ? item.blockers.join(" · ") : "No scored concerns";
+
+            appendFact(facts, "Monthly", monthlyText, item.allInMonthly != null && item.allInMonthly === best.allInMonthly);
+            appendFact(facts, "Commute", item.commuteMin == null ? "Unknown" : item.commuteMin + " minutes", item.commuteMin != null && item.commuteMin === best.commuteMin);
+            appendFact(facts, "Move-in cash", item.moveInCash == null ? "Unknown" : fmtMoney(item.moveInCash), item.moveInCash != null && item.moveInCash === best.moveInCash);
+            appendFact(facts, "Space", space, item.sqft != null && item.sqft === best.sqft);
+            appendFact(facts, "Essentials", essentials, false);
+            appendFact(facts, "Availability", item.availabilityLabel || "Unknown", false);
+            appendFact(facts, "Watch for", concerns, false);
+            card.appendChild(facts);
+            comparisonGrid.appendChild(card);
+        });
+    }
+
+    function toggleComparison(id) {
+        const index = comparisonIds.indexOf(id);
+        if (index >= 0) {
+            comparisonIds.splice(index, 1);
+            setComparisonFeedback("");
+        } else if (comparisonIds.length >= 3) {
+            setComparisonFeedback("Three finalists are already lined up. Remove one before adding another.");
+            return;
+        } else {
+            comparisonIds.push(id);
+            setComparisonFeedback(comparisonIds.length === 1 ? "First finalist added. Pick one or two more to reveal the tradeoffs." : "Comparison updated.");
+        }
+        saveComparison();
+        render();
     }
 
     function pickCuratedListings(items) {
@@ -378,6 +568,11 @@
             return hay.indexOf(query) >= 0;
         });
         const curatedPicks = pickCuratedListings(enriched);
+        const comparisonPool = enriched.concat(curatedPicks).filter(function (item, index, items) {
+            return item.id != null && item.fit != null && items.findIndex(function (candidate) {
+                return String(candidate.id) === String(item.id);
+            }) === index;
+        });
 
         listingCountText.textContent = visible.length + " listings";
         renderCards(ethanTopPicks, curatedPicks, "Top picks are unavailable right now.");
@@ -385,6 +580,7 @@
             label: "Clear filters",
             onClick: resetFilters
         });
+        renderComparison(comparisonPool);
         document.body.dataset.demoState = visible.length ? "ready" : "empty";
     }
 
@@ -421,6 +617,12 @@
         [searchInput, maxAllInInput, maxCommuteInput, goodFitOnlyInput].forEach(function (el) {
             el.addEventListener("input", render);
             el.addEventListener("change", render);
+        });
+        clearComparisonButton.addEventListener("click", function () {
+            comparisonIds = [];
+            setComparisonFeedback("Comparison cleared.");
+            saveComparison();
+            render();
         });
     }
 

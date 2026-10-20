@@ -35,6 +35,15 @@
     opacity: 0.85;
 }
 
+.section-kicker {
+    margin: 0 0 5px;
+    color: #58728a;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+}
+
 .hero h1 {
     margin: 8px 0 12px;
     font-size: 42px;
@@ -135,6 +144,11 @@
     color: #1d3557;
 }
 
+.listing-card.is-compared {
+    border-color: #1d5f8c;
+    box-shadow: 0 0 0 2px rgba(29, 95, 140, .1), 0 10px 22px rgba(20, 50, 79, .07);
+}
+
 .listing-meta,
 .listing-flags,
 .listing-links {
@@ -172,6 +186,188 @@
 .listing-links a {
     color: #1d5f8c;
     font-weight: 700;
+}
+
+.listing-links {
+    align-items: center;
+}
+
+.compare-toggle,
+#clear-comparison,
+.comparison-remove {
+    border: 1px solid #1d5f8c;
+    border-radius: 999px;
+    padding: 8px 12px;
+    color: #1d5f8c;
+    background: #fff;
+    font: inherit;
+    font-size: 12px;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.compare-toggle[aria-pressed="true"] {
+    color: #fff;
+    background: #1d5f8c;
+}
+
+.comparison-header {
+    align-items: end;
+}
+
+.comparison-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.comparison-actions p,
+.comparison-help,
+.comparison-feedback {
+    margin: 0;
+}
+
+.comparison-actions p {
+    color: #58728a;
+    font-size: 13px;
+    font-weight: 800;
+}
+
+#clear-comparison:disabled {
+    cursor: default;
+    opacity: .5;
+}
+
+.comparison-help {
+    max-width: 760px;
+    color: #526b82;
+    line-height: 1.6;
+}
+
+.comparison-feedback {
+    min-height: 1.4em;
+    margin-top: 6px;
+    color: #9a6700;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.comparison-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+    margin-top: 14px;
+}
+
+.comparison-empty {
+    grid-column: 1 / -1;
+    padding: 22px;
+    border: 1px dashed #b9c9d8;
+    border-radius: 16px;
+    color: #526b82;
+    background: #f7fbff;
+    text-align: center;
+}
+
+.comparison-card {
+    min-width: 0;
+    padding: 18px;
+    border: 1px solid #cfddea;
+    border-radius: 18px;
+    background: linear-gradient(180deg, #f8fbff 0%, #fff 100%);
+}
+
+.comparison-card header {
+    display: flex;
+    align-items: start;
+    justify-content: space-between;
+    gap: 10px;
+    min-height: 60px;
+}
+
+.comparison-card h3 {
+    margin: 0;
+    color: #1d3557;
+    font-size: 17px;
+    line-height: 1.3;
+    overflow-wrap: anywhere;
+}
+
+.comparison-remove {
+    flex: 0 0 auto;
+    padding: 5px 9px;
+    border-color: #b9c9d8;
+    color: #526b82;
+    font-size: 11px;
+}
+
+.fit-visual {
+    margin: 15px 0 8px;
+}
+
+.fit-visual div {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 7px;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.fit-track {
+    display: block;
+    height: 8px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: #dce6ee;
+}
+
+.fit-track span {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, #4f84ad, #2b7a5a);
+}
+
+.comparison-facts {
+    margin: 16px 0 0;
+}
+
+.comparison-facts div {
+    display: grid;
+    grid-template-columns: minmax(82px, .8fr) minmax(0, 1.2fr);
+    gap: 10px;
+    padding: 10px 0;
+    border-top: 1px solid #e2eaf1;
+}
+
+.comparison-facts dt {
+    color: #61788c;
+    font-size: 12px;
+}
+
+.comparison-facts dd {
+    margin: 0;
+    color: #1d3557;
+    font-size: 12px;
+    font-weight: 800;
+    overflow-wrap: anywhere;
+}
+
+.comparison-facts .best-value {
+    color: #136f3a;
+}
+
+.best-marker {
+    display: inline-block;
+    margin-left: 5px;
+    padding: 2px 5px;
+    border-radius: 999px;
+    background: #dff5e6;
+    font-size: 9px;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    vertical-align: 1px;
 }
 
 .empty-state {
@@ -259,5 +455,23 @@
 
     .panel {
         padding: 18px;
+    }
+
+    .comparison-header,
+    .comparison-actions {
+        align-items: flex-start;
+    }
+
+    .comparison-actions {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .comparison-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .comparison-card header {
+        min-height: 0;
     }
 }
