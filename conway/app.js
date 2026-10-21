@@ -15,6 +15,8 @@
         running: false,
         generation: 0,
         speed: 8,
+        boundary: "wrap",
+        visualTime: 0,
         activePattern: "Custom seed",
         lifecycle: "Seeded",
         status: "Ready to evolve",
@@ -42,6 +44,9 @@
     const lifecycleValue = document.querySelector("#lifecycle-value");
     const canvasFooter = document.querySelector(".canvas-footer");
     const patternButtons = Array.from(document.querySelectorAll("[data-pattern]"));
+    const boundaryButtons = Array.from(document.querySelectorAll(".boundary-options [data-boundary]"));
+    const boundaryNote = document.querySelector("#boundary-note");
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     function indexFor(x, y) {
         return y * columns + x;
@@ -167,8 +172,11 @@
         for (let yOffset = -1; yOffset <= 1; yOffset += 1) {
             for (let xOffset = -1; xOffset <= 1; xOffset += 1) {
                 if (xOffset === 0 && yOffset === 0) continue;
-                const neighborX = (x + xOffset + columns) % columns;
-                const neighborY = (y + yOffset + rows) % rows;
+                const rawX = x + xOffset;
+                const rawY = y + yOffset;
+                if (state.boundary === "sealed" && (rawX < 0 || rawX >= columns || rawY < 0 || rawY >= rows)) continue;
+                const neighborX = (rawX + columns) % columns;
+                const neighborY = (rawY + rows) % rows;
                 neighbors += grid[indexFor(neighborX, neighborY)];
             }
         }
@@ -225,6 +233,17 @@
         generationValue.textContent = String(state.generation);
         populationValue.textContent = String(population);
         speedValue.textContent = state.speed + " gen/s";
+        boundaryButtons.forEach(function (button) {
+            const selected = button.dataset.boundary === state.boundary;
+            button.classList.toggle("is-selected", selected);
+            button.setAttribute("aria-pressed", String(selected));
+        });
+        if (boundaryNote) {
+            boundaryNote.textContent = state.boundary === "sealed"
+                ? "The glass edge is a wall; cells beyond it cannot exist."
+                : "Cells leaving one side return on the opposite edge.";
+        }
+        canvas.dataset.boundary = state.boundary;
         const notableLifecycle = ["Cycle detected", "Still life", "Extinct"].includes(state.lifecycle);
         lifecycleValue.textContent = notableLifecycle ? state.lifecycle : state.running ? "Running" : state.lifecycle;
         statusValue.textContent = state.status;
@@ -263,19 +282,19 @@
         const cellHeight = height / rows;
         context.clearRect(0, 0, width, height);
         const backdrop = context.createLinearGradient(0, 0, width, height);
-        backdrop.addColorStop(0, "#f6eddb");
-        backdrop.addColorStop(0.52, "#efe5d2");
-        backdrop.addColorStop(1, "#e8dcc5");
+        backdrop.addColorStop(0, "#17343a");
+        backdrop.addColorStop(0.52, "#244747");
+        backdrop.addColorStop(1, "#122e38");
         context.fillStyle = backdrop;
         context.fillRect(0, 0, width, height);
 
         const centerWash = context.createRadialGradient(width * 0.5, height * 0.44, 0, width * 0.5, height * 0.44, Math.max(width, height) * 0.72);
-        centerWash.addColorStop(0, "rgba(255, 250, 240, 0.2)");
-        centerWash.addColorStop(1, "rgba(255, 250, 240, 0)");
+        centerWash.addColorStop(0, "rgba(157, 221, 186, 0.16)");
+        centerWash.addColorStop(1, "rgba(157, 221, 186, 0)");
         context.fillStyle = centerWash;
         context.fillRect(0, 0, width, height);
 
-        context.strokeStyle = "rgba(23, 32, 20, 0.14)";
+        context.strokeStyle = "rgba(220, 242, 218, 0.11)";
         context.lineWidth = 1;
         context.beginPath();
         for (let x = 0; x <= columns; x += 1) {
@@ -293,7 +312,7 @@
                 if (!grid[indexFor(x, y)]) continue;
                 const isHovered = state.hoveredCell && state.hoveredCell.x === x && state.hoveredCell.y === y;
                 const cellAge = ages[indexFor(x, y)];
-                const cellColor = isHovered ? "#f2cb3f" : cellAge <= 1 ? "#f2cb3f" : cellAge <= 3 ? "#e75438" : "#173e8f";
+                const cellColor = isHovered ? "#fff0a0" : cellAge <= 1 ? "#f2cb3f" : cellAge <= 3 ? "#e77952" : "#82d5bd";
                 const inset = Math.max(1.5, Math.min(3, cellWidth * 0.12));
                 const cellX = x * cellWidth + inset;
                 const cellY = y * cellHeight + inset;
@@ -301,7 +320,10 @@
                 const drawnHeight = Math.max(1, cellHeight - inset * 2);
                 context.fillStyle = cellColor;
                 context.shadowColor = cellColor;
-                context.shadowBlur = cellAge <= 1 || isHovered ? Math.min(8, cellWidth * 0.24) : 0;
+                const pulse = prefersReducedMotion
+                    ? 1
+                    : 0.78 + Math.sin(state.visualTime / 520 + x * 0.33 + y * 0.21) * 0.22;
+                context.shadowBlur = cellAge <= 1 || isHovered ? Math.min(11, cellWidth * 0.34) * pulse : cellAge > 3 ? Math.min(3, cellWidth * 0.1) : 0;
                 if (typeof context.roundRect === "function") {
                     context.beginPath();
                     context.roundRect(cellX, cellY, drawnWidth, drawnHeight, Math.min(3, cellWidth * 0.16));
@@ -311,10 +333,45 @@
                 }
                 context.shadowBlur = 0;
                 if (cellAge <= 1 && drawnWidth > 5) {
-                    context.fillStyle = "rgba(255, 250, 240, 0.5)";
+                    context.fillStyle = "rgba(255, 250, 240, 0.58)";
                     context.fillRect(cellX + 2, cellY + 2, Math.min(drawnWidth * 0.28, 6), 1.5);
                 }
             }
+        }
+
+        if (state.boundary === "sealed") {
+            context.save();
+            context.shadowColor = "rgba(130, 213, 189, 0.58)";
+            context.shadowBlur = Math.max(5, cellWidth * 0.45);
+            context.strokeStyle = "rgba(199, 244, 224, 0.8)";
+            context.lineWidth = Math.max(2, cellWidth * 0.18);
+            context.beginPath();
+            if (typeof context.roundRect === "function") context.roundRect(2, 2, width - 4, height - 4, Math.max(8, cellWidth * 0.7));
+            else context.rect(2, 2, width - 4, height - 4);
+            context.stroke();
+            context.shadowBlur = 0;
+            context.strokeStyle = "rgba(255, 255, 255, 0.22)";
+            context.lineWidth = 1;
+            context.strokeRect(5, 5, width - 10, height - 10);
+            context.restore();
+        } else {
+            context.save();
+            context.fillStyle = "rgba(130, 213, 189, 0.74)";
+            const midX = width / 2;
+            const midY = height / 2;
+            [[midX, 5, 0], [midX, height - 5, Math.PI], [5, midY, -Math.PI / 2], [width - 5, midY, Math.PI / 2]].forEach(function (marker) {
+                context.save();
+                context.translate(marker[0], marker[1]);
+                context.rotate(marker[2]);
+                context.beginPath();
+                context.moveTo(0, -4);
+                context.lineTo(4, 3);
+                context.lineTo(-4, 3);
+                context.closePath();
+                context.fill();
+                context.restore();
+            });
+            context.restore();
         }
 
         if (state.hoveredCell && !state.pointerPainting) {
@@ -379,9 +436,24 @@
         if (!state.lastFrame) state.lastFrame = timestamp;
         const elapsed = Math.min(100, timestamp - state.lastFrame);
         state.lastFrame = timestamp;
+        state.visualTime = timestamp;
         simulateElapsed(elapsed);
+        if (state.running) render();
         requestAnimationFrame(animate);
     }
+
+    boundaryButtons.forEach(function (button) {
+        button.addEventListener("click", function () {
+            const boundary = button.dataset.boundary;
+            if (state.boundary === boundary) return;
+            state.boundary = boundary;
+            state.lifecycle = state.generation ? "Evolving" : "Seeded";
+            resetHistory();
+            setStatus(boundary === "sealed" ? "Glass edge sealed" : "Edges connected");
+            updateUi();
+            render();
+        });
+    });
 
     function toggleFullscreen() {
         if (document.fullscreenElement) {
@@ -476,6 +548,7 @@
             population: countPopulation(),
             board: { columns: columns, rows: rows, coordinateSystem: "origin top-left; x increases right; y increases down" },
             speed: state.speed,
+            boundary: state.boundary,
             interactionMode: state.interactionMode,
             lifecycle: state.lifecycle,
             status: state.status,

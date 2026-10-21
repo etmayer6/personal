@@ -116,14 +116,15 @@
 .life-board {
     min-width: 0;
     padding: 12px;
-    background: #f8f0e2;
+    background: #0c252d;
+    box-shadow: inset 0 0 0 1px rgba(199, 244, 224, 0.13), 0 12px 36px rgba(0, 0, 0, 0.2);
 }
 
 #life-canvas {
     display: block;
     width: 100%;
     aspect-ratio: 8 / 5;
-    background: #efe5d2;
+    background: #17343a;
     cursor: crosshair;
     touch-action: none;
 }
@@ -238,6 +239,41 @@
     min-height: 34px;
     padding: 7px 5px;
     font-size: 9px;
+}
+
+.boundary-options {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px;
+}
+
+.boundary-options button {
+    min-height: 34px;
+    padding: 7px 5px;
+    color: rgba(255, 250, 240, 0.82);
+    border: 1px solid rgba(255, 250, 240, 0.28);
+    background: rgba(8, 25, 31, 0.34);
+    font-size: 9px;
+    font-weight: 900;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: color 160ms ease, background-color 160ms ease, border-color 160ms ease;
+}
+
+.boundary-options button:hover,
+.boundary-options button:focus-visible,
+.boundary-options button.is-selected {
+    color: #102b36;
+    border-color: #82d5bd;
+    background: #82d5bd;
+}
+
+.boundary-note {
+    margin: 9px 0 0;
+    color: rgba(255, 250, 240, 0.68);
+    font-size: 10px;
+    line-height: 1.45;
 }
 
 .pattern-list button:last-child {
@@ -372,7 +408,7 @@ kbd {
 
 .life-board:fullscreen #life-canvas {
     max-height: none;
-    background: #efe5d2;
+    background: #17343a;
 }
 
 @media (max-width: 900px) {
@@ -388,6 +424,10 @@ kbd {
     .primary-controls,
     .utility-controls {
         display: grid;
+    }
+
+    .boundary-controls {
+        grid-column: 1 / -1;
     }
 
     .utility-controls {
@@ -441,6 +481,10 @@ kbd {
     .utility-controls {
         grid-column: auto;
         grid-template-columns: 1fr;
+    }
+
+    .boundary-controls {
+        grid-column: auto;
     }
 
     .life-notes {

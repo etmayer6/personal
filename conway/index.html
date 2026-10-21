@@ -70,6 +70,15 @@
                         <input id="speed-input" type="range" min="1" max="20" value="8">
                     </div>
 
+                    <div class="control-cluster boundary-controls" aria-labelledby="boundary-heading">
+                        <p class="control-heading" id="boundary-heading">Choose the world edge</p>
+                        <div class="boundary-options" role="group" aria-label="World edge behavior">
+                            <button class="is-selected" type="button" data-boundary="wrap" aria-pressed="true">Wraparound</button>
+                            <button type="button" data-boundary="sealed" aria-pressed="false">Sealed dish</button>
+                        </div>
+                        <p class="boundary-note" id="boundary-note">Cells leaving one side return on the opposite edge.</p>
+                    </div>
+
                     <div class="control-cluster">
                         <p class="control-heading">Start with a pattern</p>
                         <div class="pattern-list" id="pattern-list">
