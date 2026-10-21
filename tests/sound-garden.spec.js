@@ -59,3 +59,7 @@ test('catalogs/homepage/favorites/Continue integrate Sound Garden without replac
 for(const width of [320,390,768])test(`touch editor stays usable at ${width}px`,async({browser})=>{
     const context=await browser.newContext({viewport:{width,height:950},isMobile:width<500,hasTouch:true,reducedMotion:'reduce'}),page=await context.newPage();const errors=[];page.on('pageerror',e=>errors.push(String(e)));await open(page);expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(width+1);await page.locator('[data-tool="reed"]').tap();await page.locator('#play').tap();await expect(page.locator('#play')).toHaveAttribute('aria-pressed','true');await page.locator('#play').tap();await page.getByRole('button',{name:'Rhythm step 2',exact:true}).tap();await page.screenshot({path:test.info().outputPath(`touch-${width}.png`),fullPage:true});expect(errors).toEqual([]);await context.close();
 });
+test('shared navigation stays out of the touch garden stage',async({browser})=>{
+    const context=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true,reducedMotion:'reduce'}),page=await context.newPage();await open(page);await page.locator('#play').tap();
+    const overlap=await page.evaluate(()=>{const header=document.querySelector('.site-header').getBoundingClientRect(),stage=document.querySelector('#garden-stage').getBoundingClientRect();return header.top<stage.bottom&&header.bottom>stage.top;});expect(overlap).toBe(false);await context.close();
+});
