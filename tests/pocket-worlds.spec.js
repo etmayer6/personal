@@ -6,8 +6,13 @@ const text=page=>page.evaluate(()=>JSON.parse(window.render_game_to_text()));
 async function open(page){await page.goto('/pocket-worlds/');await expect(page.locator('body')).toHaveAttribute('data-demo-state','ready');}
 async function cursor(page){await page.locator('#world-canvas').focus();await page.keyboard.press('ArrowRight');return 13*24+12;}
 test('all editing tools, undo/redo, brush boundaries and keyboard controls',async({page})=>{
-    const errors=[];page.on('pageerror',e=>errors.push(String(e)));await open(page);
+    const errors=[],consoleErrors=[];page.on('pageerror',e=>errors.push(String(e)));page.on('console',message=>{if(message.type()==='error')consoleErrors.push(message.text());});await open(page);
     const i=await cursor(page),initial=(await snapshot(page)).heights[i];
+    await expect(page.locator('#tile-readout')).toContainText('Tile 13, 14');
+    await page.keyboard.press(']');await expect(page.locator('#tile-readout')).toContainText('3 × 3 brush');
+    const beforeWide=(await snapshot(page)).heights;await page.keyboard.press('Enter');const afterWide=(await snapshot(page)).heights;
+    expect(afterWide.filter((height,index)=>height>beforeWide[index])).toHaveLength(9);
+    await page.keyboard.press('Control+z');await page.keyboard.press('[');await expect(page.locator('#tile-readout')).toContainText('one tile');
     await page.keyboard.press('Enter');expect((await snapshot(page)).heights[i]).toBe(initial+1);
     await page.keyboard.press('Control+z');expect((await snapshot(page)).heights[i]).toBe(initial);
     await page.keyboard.press('Control+Shift+z');expect((await snapshot(page)).heights[i]).toBe(initial+1);
@@ -22,7 +27,7 @@ test('all editing tools, undo/redo, brush boundaries and keyboard controls',asyn
     await page.locator('#brush-size').selectOption('3');await page.locator('#world-canvas').focus();await page.keyboard.press('3');await page.keyboard.press('Enter');
     const after=await snapshot(page);for(let z=12;z<=14;z++)for(let x=11;x<=13;x++)expect(after.heights[z*24+x]).toBe(0);
     await page.keyboard.press('8');await page.keyboard.press('Enter');expect((await text(page)).tool).toBe('view');
-    await page.screenshot({path:test.info().outputPath('editor-desktop.png'),fullPage:true});expect(errors).toEqual([]);
+    await page.screenshot({path:test.info().outputPath('editor-desktop.png'),fullPage:true});expect(errors).toEqual([]);expect(consoleErrors).toEqual([]);
 });
 test('pointer strokes paint once per tile and orbit/zoom leave terrain alone',async({page})=>{
     await open(page);await page.locator('#new-world').click();await page.locator('#world-template').selectOption('blank');await page.locator('#create-world').click();
@@ -62,7 +67,7 @@ test('storage denial stays playable and never claims a successful save',async({p
     await page.addInitScript(()=>{Storage.prototype.setItem=function(){throw new DOMException('Blocked','SecurityError');};});await open(page);await page.locator('#save-world').click();await expect(page.locator('#notice')).toContainText('Storage is unavailable');await page.locator('#world-canvas').focus();await page.keyboard.press('Enter');expect((await text(page)).undo).toBe(1);
 });
 test('catalog integration, favorites and continue-playing links work',async({page})=>{
-    await page.goto('/');await expect(page.getByRole('link',{name:'Build a Pocket World'})).toHaveAttribute('href','pocket-worlds/');await page.goto('/projects/');const card=page.locator('.archive-grid:not(.archive-grid-reference) .archive-card').filter({has:page.getByRole('heading',{name:'Pocket Worlds'})});await expect(card).toBeVisible();await page.locator('[data-project-filter="play"]').click();await expect(card).toBeVisible();await card.getByRole('link',{name:'Open Pocket Worlds'}).click();await expect(page.locator('#world-canvas')).toBeVisible();
+    await page.goto('/');await expect(page.getByRole('link',{name:'Play some games'})).toHaveAttribute('href','games/');await page.goto('/projects/');const card=page.locator('.archive-grid:not(.archive-grid-reference) .archive-card').filter({has:page.getByRole('heading',{name:'Pocket Worlds'})});await expect(card).toBeVisible();await page.locator('[data-project-filter="play"]').click();await expect(card).toBeVisible();await card.getByRole('link',{name:'Open Pocket Worlds'}).click();await expect(page.locator('#world-canvas')).toBeVisible();
     await page.goto('/games/');const game=page.locator('[data-game-slug="pocket-worlds"]');await expect(game).toBeVisible();await game.getByRole('button',{name:'Add Pocket Worlds to favorites'}).click();await expect(game.getByRole('button',{name:'Remove Pocket Worlds from favorites'})).toHaveAttribute('aria-pressed','true');await expect(page.locator('#games-activity')).toContainText('Continue Pocket Worlds');await page.reload();await expect(game).toHaveClass(/is-favorite/);
 });
 test('generated artwork fits both catalogs at desktop and phone widths',async({page})=>{

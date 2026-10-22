@@ -10,7 +10,7 @@ function polygonContains(p,x,y){let inside=false;for(let i=0,j=p.length-1;i<p.le
 export class WorldRenderer{
     constructor(canvas){this.canvas=canvas;this.ctx=canvas.getContext('2d');if(!this.ctx)throw new Error('Canvas unavailable');this.hits=[];this.frame=0;this.projection=null;}
     resize(){const r=this.canvas.getBoundingClientRect(),dpr=Math.min(window.devicePixelRatio||1,1.6);const w=Math.max(1,Math.round(r.width*dpr)),h=Math.max(1,Math.round(r.height*dpr));if(this.canvas.width!==w||this.canvas.height!==h){this.canvas.width=w;this.canvas.height=h;}this.ctx.setTransform(dpr,0,0,dpr,0,0);return{w:r.width,h:r.height};}
-    draw(world,camera,time,hover=-1,keyboard=-1){
+    draw(world,camera,time,hover=-1,keyboard=-1,brush=1,tool='raise',feedback=null){
         const{w,h}=this.resize(),ctx=this.ctx,pal=palettes[world.weather],yaw=camera.yaw,c=Math.cos(yaw),s=Math.sin(yaw),scale=Math.min(w/(SIZE*1.58),h/(SIZE*1.0))*camera.zoom;
         const center=[w*.50+camera.panX,h*.57+camera.panY],waterY=.32;
         const project=(x,y,z)=>[center[0]+(x*c-z*s)*scale,center[1]+(x*s+z*c)*scale*.48-y*scale*1.45];
@@ -52,7 +52,17 @@ export class WorldRenderer{
             if(treeMap.has(i))this.drawTree(project,poly,pal,x+.5,y,z+.5,treeMap.get(i),time,i,world.weather);
             if(buildings.has(i))this.drawCottage(project,poly,pal,x+.5,y,z+.5,world.weather,time,i);
         }
+        const active=keyboard>=0?keyboard:hover,brushTools=['raise','lower','water','erase','tree'];
+        if(active>=0&&brush===3&&brushTools.includes(tool)){
+            const{x,z}=coordinates(active);
+            for(let a=Math.max(0,x-1);a<=Math.min(SIZE-1,x+1);a++)for(let b=Math.max(0,z-1);b<=Math.min(SIZE-1,z+1);b++){
+                const i=b*SIZE+a,hit=this.hits.find(t=>t.i===i);if(!hit)continue;
+                const center=i===active;poly(hit.screen,center?'#f9e7ad48':'#f9e7ad24',center?'#fff1bd':'#f9e7ad99',center?1.8:1);
+            }
+        }
         for(const i of new Set([hover,keyboard].filter(i=>i>=0))){const hit=this.hits.find(t=>t.i===i);if(hit){poly(hit.screen,'#f9e7ad28','#f9e7ad',1.8);const p=hit.center;ctx.fillStyle='#fff5d5';ctx.beginPath();ctx.arc(p[0],p[1],3,0,Math.PI*2);ctx.fill();}}
+        const flash=feedback?(feedback.reducedMotion?1:Math.max(0,Math.min(1,(feedback.until-performance.now())/720))):0;
+        if(flash>0)for(const i of feedback.cells){const hit=this.hits.find(t=>t.i===i);if(hit)poly(hit.screen,`rgba(229,248,180,${.10+.22*flash})`,`rgba(244,255,205,${.25+.55*flash})`,1.25);}
         // Light cloud shadows, wildlife and weather give even a paused world life.
         if(world.weather!=='night')for(let i=0;i<3;i++){
             const x=(time*2.0+i*w*.43)%(w+230)-110,y=45+i*28;

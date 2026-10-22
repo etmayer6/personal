@@ -3,7 +3,7 @@ import {WorldRenderer} from './render.js';
 const $=id=>document.getElementById(id),canvas=$('world-canvas'),stage=$('world-stage');
 const draftKey='ethan-pocket-world-draft-v1',savesKey='ethan-pocket-worlds-v1';
 const clone=value=>JSON.parse(JSON.stringify(value));
-let world=createWorld(),saves=[],shared=false,tool='raise',brush=1,running=false,speed=1,time=0,hover=-1,keyboard=-1,history=[],future=[],pointer=null,stroke=null,dirty=false,saveTimer=0,noticeTimer=0,lastFrame=0,lastUi=0;
+let world=createWorld(),saves=[],shared=false,tool='raise',brush=1,running=false,speed=1,time=0,hover=-1,keyboard=-1,history=[],future=[],pointer=null,stroke=null,dirty=false,saveTimer=0,noticeTimer=0,lastFrame=0,lastUi=0,feedback=null;
 const camera={yaw:Math.PI/4,zoom:1.3,panX:0,panY:0},reduceMotion=matchMedia('(prefers-reduced-motion: reduce)').matches;
 function notice(message){$('notice').textContent=message;$('notice').hidden=false;clearTimeout(noticeTimer);noticeTimer=setTimeout(()=>$('notice').hidden=true,4200);}
 function writeDraft(){if(shared)return;try{localStorage.setItem(draftKey,JSON.stringify(world));dirty=false;$('save-state').textContent='Draft saved locally';}catch{$('save-state').textContent='Storage unavailable';} }
@@ -22,18 +22,31 @@ function updateUI(){
     $('undo').disabled=!history.length;$('redo').disabled=!future.length;$('grow').textContent=running?'Ⅱ Pause growth':'▶ Let it grow';$('grow').setAttribute('aria-pressed',String(running));
     $('world-stats').textContent=`${world.trees.length} trees · ${world.buildings.length} cottages`;
     const labels={raise:'Raise · drag across tiles',lower:'Lower · drag across tiles',water:'Water · carve a channel',tree:'Forest · plant on land',cottage:'Cottage · place on land',path:'Path · connect your cottages',erase:'Erase · remove placed objects',view:'Look around · drag to orbit'};
-    $('tool-hint').textContent=labels[tool];stage.classList.toggle('view-mode',tool==='view');
+    $('tool-hint').textContent=labels[tool];
+    const target=keyboard>=0?keyboard:hover,readout=$('tile-readout');
+    if(readout){
+        if(target<0)readout.textContent=`${brush===3?'3 × 3':'One tile'} brush · arrows select a tile`;
+        else{const{x,z}=coordinates(target),height=world.heights[target],kind=height<3?'water':`land · height ${height}`;readout.textContent=`Tile ${x+1}, ${z+1} · ${kind} · ${brush===3?'3 × 3 brush':'one tile'}`;}
+    }
+    stage.classList.toggle('view-mode',tool==='view');
 }
-function paint(i){if(i<0||tool==='view'||stroke?.visited.has(i))return;if(!stroke)stroke={before:clone(world),visited:new Set(),changed:false};stroke.visited.add(i);const result=applyTool(world,tool,i,brush);stroke.changed||=result.changed;if(result.message&&!result.changed)notice(result.message);if(result.changed)updateUI();}
+function paint(i){if(i<0||tool==='view'||stroke?.visited.has(i))return;if(!stroke)stroke={before:clone(world),visited:new Set(),changed:false};stroke.visited.add(i);const result=applyTool(world,tool,i,brush);stroke.changed||=result.changed;if(result.message&&!result.changed)notice(result.message);if(result.changed){feedback={cells:brushCells(i),until:performance.now()+720,reducedMotion:reduceMotion};updateUI();}}
 function mutate(fn){finishStroke();const before=clone(world);fn();remember(before);draw();}
-function draw(){renderer.draw(world,camera,reduceMotion?0:time,hover,keyboard);}
+function brushCells(i,selectedTool=tool){
+    if(i<0)return [];
+    if(brush!==3||!['raise','lower','water','erase','tree'].includes(selectedTool))return [i];
+    const{x,z}=coordinates(i),cells=[];
+    for(let a=Math.max(0,x-1);a<=Math.min(SIZE-1,x+1);a++)for(let b=Math.max(0,z-1);b<=Math.min(SIZE-1,z+1);b++)cells.push(indexOf(a,b));
+    return cells;
+}
+function draw(){renderer.draw(world,camera,reduceMotion?0:time,hover,keyboard,brush,tool,feedback);}
 function step(seconds){time+=seconds;if(running){evolve(world,seconds*speed);dirty=true;}}
 function frame(now){const dt=lastFrame?Math.min((now-lastFrame)/1000,.05):0;lastFrame=now;if(!document.hidden)step(dt);if(now-lastUi>400){updateUI();lastUi=now;}if(dirty&&!shared&&now%5000<50)writeDraft();draw();requestAnimationFrame(frame);}
 document.querySelectorAll('[data-tool]').forEach(b=>b.addEventListener('click',()=>{finishStroke();tool=b.dataset.tool;keyboard=-1;updateUI();}));
-$('brush-size').addEventListener('change',e=>brush=Number(e.target.value));
+$('brush-size').addEventListener('change',e=>{brush=Number(e.target.value);updateUI();draw();});
 canvas.addEventListener('contextmenu',e=>e.preventDefault());
 canvas.addEventListener('pointerdown',e=>{if(e.button!==0&&e.button!==2)return;canvas.focus({preventScroll:true});finishStroke();keyboard=-1;pointer={id:e.pointerId,x:e.clientX,y:e.clientY,orbit:tool==='view'||e.button===2||e.shiftKey,pan:e.altKey};canvas.setPointerCapture(e.pointerId);if(!pointer.orbit)paint(renderer.hitTest(e.clientX,e.clientY));draw();});
-canvas.addEventListener('pointermove',e=>{if(pointer&&pointer.id===e.pointerId){if(pointer.orbit){const dx=e.clientX-pointer.x,dy=e.clientY-pointer.y;if(pointer.pan){camera.panX+=dx;camera.panY+=dy;}else{camera.yaw+=dx*.012;camera.panY=clamp(camera.panY+dy*.35,-120,120);}pointer.x=e.clientX;pointer.y=e.clientY;}else paint(renderer.hitTest(e.clientX,e.clientY));}hover=renderer.hitTest(e.clientX,e.clientY);draw();});
+canvas.addEventListener('pointermove',e=>{if(pointer&&pointer.id===e.pointerId){if(pointer.orbit){const dx=e.clientX-pointer.x,dy=e.clientY-pointer.y;if(pointer.pan){camera.panX+=dx;camera.panY+=dy;}else{camera.yaw+=dx*.012;camera.panY=clamp(camera.panY+dy*.35,-120,120);}pointer.x=e.clientX;pointer.y=e.clientY;}else paint(renderer.hitTest(e.clientX,e.clientY));}const nextHover=renderer.hitTest(e.clientX,e.clientY);if(nextHover!==hover){hover=nextHover;updateUI();}draw();});
 canvas.addEventListener('pointerup',e=>{if(pointer?.id===e.pointerId){finishStroke();if(canvas.hasPointerCapture(e.pointerId))canvas.releasePointerCapture(e.pointerId);}draw();});
 canvas.addEventListener('pointercancel',finishStroke);canvas.addEventListener('lostpointercapture',finishStroke);canvas.addEventListener('pointerleave',()=>{hover=-1;if(!pointer)draw();});
 canvas.addEventListener('wheel',e=>{e.preventDefault();camera.zoom=clamp(camera.zoom*Math.exp(-e.deltaY*.001),.65,2.2);draw();},{passive:false});
@@ -52,8 +65,9 @@ canvas.addEventListener('keydown',e=>{
     if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='z'){e.preventDefault();e.shiftKey?redo():undo();return;}
     if(/^[1-8]$/.test(e.key)){tool=tools[Number(e.key)-1];updateUI();e.preventDefault();return;}
     if(e.key.toLowerCase()==='f'){fullscreen();e.preventDefault();return;}
+    if(e.key==='['||e.key===']'){brush=e.key==='['?1:3;$('brush-size').value=String(brush);updateUI();draw();e.preventDefault();return;}
     if(e.code==='Space'){running=!running;updateUI();e.preventDefault();return;}
-    if(e.key.startsWith('Arrow')){e.preventDefault();if(keyboard<0)keyboard=indexOf(11,13);const{x,z}=coordinates(keyboard);keyboard=indexOf(clamp(x+(e.key==='ArrowRight'?1:e.key==='ArrowLeft'?-1:0),0,SIZE-1),clamp(z+(e.key==='ArrowDown'?1:e.key==='ArrowUp'?-1:0),0,SIZE-1));hover=-1;draw();}
+    if(e.key.startsWith('Arrow')){e.preventDefault();if(keyboard<0)keyboard=indexOf(11,13);const{x,z}=coordinates(keyboard);keyboard=indexOf(clamp(x+(e.key==='ArrowRight'?1:e.key==='ArrowLeft'?-1:0),0,SIZE-1),clamp(z+(e.key==='ArrowDown'?1:e.key==='ArrowUp'?-1:0),0,SIZE-1));hover=-1;updateUI();draw();}
     if(e.key==='Enter'){e.preventDefault();if(keyboard<0)keyboard=indexOf(11,13);paint(keyboard);finishStroke();draw();}
 });
 function renderShelf(){const host=$('saved-worlds');host.replaceChildren();if(!saves.length){const p=document.createElement('p');p.className='empty-shelf';p.textContent='No islands saved yet. Make one worth keeping.';host.append(p);return;}
