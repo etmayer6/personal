@@ -101,6 +101,7 @@
 }
 
 .wordsort-campaign-levels button {
+    position: relative;
     display: grid;
     grid-template-columns: auto minmax(0, 1fr) auto;
     align-items: center;
@@ -167,6 +168,39 @@
     color: #fff0bf;
 }
 
+.wordsort-campaign-levels button.is-par-cleared {
+    border-color: rgba(162, 117, 21, 0.58);
+    box-shadow: inset 0 0 0 1px rgba(216, 177, 77, 0.28);
+    background: linear-gradient(125deg, rgba(255, 245, 203, 0.94), rgba(255, 253, 248, 0.76));
+}
+
+.wordsort-campaign-levels button.is-par-cleared.is-current {
+    border-color: #f0d47d;
+    background: linear-gradient(125deg, #c55a32, #a84a2e);
+}
+
+.wordsort-campaign-levels button.is-par-cleared::after {
+    content: "PIN";
+    position: absolute;
+    top: -5px;
+    right: 6px;
+    padding: 2px 4px;
+    border: 1px solid rgba(131, 91, 13, 0.25);
+    border-radius: 999px;
+    color: #fff9df;
+    background: #94701b;
+    font-size: 6px;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    line-height: 1;
+    animation: wordsort-par-arrive 420ms cubic-bezier(0.2, 0.8, 0.25, 1.25) both;
+}
+
+@keyframes wordsort-par-arrive {
+    from { opacity: 0; transform: translateY(4px) scale(0.78); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
 .wordsort-campaign-levels button:disabled {
     color: #899294;
     cursor: not-allowed;
@@ -176,9 +210,71 @@
 .wordsort-campaign-status {
     min-height: 1.4em;
     margin: 9px 0 0;
-    color: #52686d;
+    padding: 8px 10px;
+    border: 1px solid rgba(25, 79, 97, 0.16);
+    border-left: 3px solid #367365;
+    border-radius: 9px;
+    color: #34555d;
+    background: rgba(242, 249, 242, 0.78);
     font-size: 10px;
     line-height: 1.4;
+    transition: border-color 180ms ease, background 180ms ease, box-shadow 180ms ease;
+}
+
+.wordsort-campaign-status[data-state="safe"] {
+    border-left-color: #367365;
+    background: rgba(242, 249, 242, 0.9);
+}
+
+.wordsort-campaign-status[data-state="close"] {
+    border-color: rgba(177, 116, 24, 0.35);
+    border-left-color: #c17b16;
+    color: #74480f;
+    background: rgba(255, 246, 220, 0.94);
+    animation: wordsort-par-pulse 1.6s ease-in-out infinite;
+}
+
+.wordsort-campaign-status[data-state="missed"],
+.wordsort-campaign-status[data-state="lost"] {
+    border-color: rgba(154, 70, 42, 0.24);
+    border-left-color: #b75a36;
+    color: #754536;
+    background: rgba(255, 244, 235, 0.86);
+}
+
+.wordsort-campaign-status[data-state="earned"] {
+    border-color: rgba(162, 117, 21, 0.42);
+    border-left-color: #b68a27;
+    color: #684f16;
+    background: linear-gradient(100deg, rgba(255, 245, 203, 0.96), rgba(249, 248, 229, 0.88));
+}
+
+.wordsort-campaign-status[data-state="close"]::before,
+.wordsort-campaign-status[data-state="safe"]::before,
+.wordsort-campaign-status[data-state="earned"]::before {
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    margin: 0 7px 1px 1px;
+    border-radius: 50%;
+    background: currentColor;
+    content: "";
+    vertical-align: middle;
+}
+
+@keyframes wordsort-par-pulse {
+    50% { box-shadow: 0 0 0 3px rgba(193, 123, 22, 0.1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .wordsort-campaign-levels button.is-par-cleared::after,
+    .wordsort-campaign-status[data-state="close"] {
+        animation: none;
+    }
+
+    .wordsort-campaign-status {
+        transition: none;
+    }
 }
 
 /* Put the start/status rail before the tall canvas so the first interaction stays in view. */

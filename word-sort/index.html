@@ -50,22 +50,22 @@
             <nav id="wordsort-campaign" class="wordsort-campaign" aria-labelledby="wordsort-campaign-title" hidden>
                 <div class="wordsort-campaign-heading">
                     <div>
-                        <p class="wordsort-campaign-kicker">The authored run / 08 deals</p>
+                        <p class="wordsort-campaign-kicker">08 deals · move par</p>
                         <h2 id="wordsort-campaign-title">Clue by clue</h2>
                     </div>
                     <p id="wordsort-campaign-count" class="wordsort-campaign-count">0 / 8 cleared</p>
                 </div>
                 <div class="wordsort-campaign-levels" role="group" aria-label="Choose an unlocked story deal">
-                    <button type="button" data-word-level="0">01 <span>Association</span><small data-word-best></small></button>
-                    <button type="button" data-word-level="1" disabled>02 <span>Mixed signals</span><small data-word-best></small></button>
-                    <button type="button" data-word-level="2" disabled>03 <span>Deep clues</span><small data-word-best></small></button>
-                    <button type="button" data-word-level="3" disabled>04 <span>Crowded board</span><small data-word-best></small></button>
-                    <button type="button" data-word-level="4" disabled>05 <span>Crossed wires</span><small data-word-best></small></button>
-                    <button type="button" data-word-level="5" disabled>06 <span>Alias table</span><small data-word-best></small></button>
-                    <button type="button" data-word-level="6" disabled>07 <span>Signal maze</span><small data-word-best></small></button>
-                    <button type="button" data-word-level="7" disabled>08 <span>Fine print</span><small data-word-best></small></button>
+                    <button type="button" data-word-level="0" data-word-par="11">01 <span>Association</span><small data-word-best></small></button>
+                    <button type="button" data-word-level="1" data-word-par="11" disabled>02 <span>Mixed signals</span><small data-word-best></small></button>
+                    <button type="button" data-word-level="2" data-word-par="11" disabled>03 <span>Deep clues</span><small data-word-best></small></button>
+                    <button type="button" data-word-level="3" data-word-par="11" disabled>04 <span>Crowded board</span><small data-word-best></small></button>
+                    <button type="button" data-word-level="4" data-word-par="11" disabled>05 <span>Crossed wires</span><small data-word-best></small></button>
+                    <button type="button" data-word-level="5" data-word-par="10" disabled>06 <span>Alias table</span><small data-word-best></small></button>
+                    <button type="button" data-word-level="6" data-word-par="12" disabled>07 <span>Signal maze</span><small data-word-best></small></button>
+                    <button type="button" data-word-level="7" data-word-par="12" disabled>08 <span>Fine print</span><small data-word-best></small></button>
                 </div>
-                <p id="wordsort-campaign-status" class="wordsort-campaign-status" role="status" aria-live="polite">Clear a deal to open the next one. All eight story deals are replayable.</p>
+                <p id="wordsort-campaign-status" class="wordsort-campaign-status" data-state="ready" role="status" aria-live="polite">Move par: finish Deal 01 with 11 or more moves left to earn a lantern pin. Any clear still opens the next deal.</p>
             </nav>
             <div id="word-sort-root" class="wordsort-site-root">
                 <div class="wordsort-site-loading">
@@ -77,7 +77,7 @@
     </main>
 
     <script type="module" src="./assets/word-sort-export.js"></script>
-    <script defer src="./campaign.js?v=story-deals-1"></script>
+    <script defer src="./campaign.js?v=move-par-1"></script>
     <script src="../site-play.js?v=pet-companion-2"></script>
 </body>
 </html>
