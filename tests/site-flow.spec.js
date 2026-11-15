@@ -126,7 +126,7 @@ test('all twelve games use the same readable catalog layout', async ({ page }) =
 
 test('homepage directs visitors without repeating the whole catalog', async ({ page }) => {
     await page.goto('/');
-    await expect(page.locator('.hero-actions .button-primary')).toHaveAttribute('href', 'projects/');
+    await expect(page.locator('.hero-actions .button-primary')).toHaveAttribute('href', 'games/');
     await expect(page.locator('.off-clock-links a')).toHaveCount(4);
     expect(await page.locator('.off-clock-links a').evaluateAll(links => links.map(link => link.getAttribute('href')))).toEqual(['games/', 'photos/', 'blog/', 'sketchbook/']);
     await expect(page.getByRole('link', { name: 'Peek at the sketchbook' })).toBeVisible();
