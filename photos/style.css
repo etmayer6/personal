@@ -518,17 +518,43 @@ body.photos-body .eyebrow {
 }
 
 .photo-viewer-caption {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
     padding-top: 14px;
     border-top: 1px solid rgba(244, 239, 228, 0.16);
 }
 
 .photo-viewer-caption h2 {
     margin: 0;
+    min-width: 0;
     color: var(--photo-ink);
     font-family: Georgia, "Times New Roman", serif;
     font-size: clamp(1.4rem, 3vw, 2.2rem);
     font-weight: 400;
     letter-spacing: -0.03em;
+}
+
+.photo-viewer-map-link {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    min-height: 36px;
+    padding: 0 12px;
+    color: var(--photo-ink);
+    border: 1px solid rgba(244, 239, 228, 0.3);
+    font-size: 0.62rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-decoration: none;
+    text-transform: uppercase;
+}
+
+.photo-viewer-map-link:hover,
+.photo-viewer-map-link:focus-visible {
+    color: var(--photo-bg);
+    background: var(--photo-ink);
 }
 
 @keyframes viewer-reveal {
@@ -766,7 +792,13 @@ body.photos-body .photos-footer {
     }
 
     .photo-viewer-caption {
+        display: grid;
+        gap: 10px;
         padding: 12px 4px 0;
+    }
+
+    .photo-viewer-map-link {
+        justify-self: start;
     }
 }
 

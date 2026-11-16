@@ -7,6 +7,7 @@ const photoViewerStage = document.getElementById("photo-viewer-stage");
 const photoViewerImage = document.getElementById("photo-viewer-image");
 const photoViewerPosition = document.getElementById("photo-viewer-position");
 const photoViewerTitle = document.getElementById("photo-viewer-title");
+const photoViewerMapLink = document.getElementById("photo-viewer-map-link");
 const photoViewerPrevious = document.getElementById("photo-viewer-previous");
 const photoViewerNext = document.getElementById("photo-viewer-next");
 const photoViewerClose = document.getElementById("photo-viewer-close");
@@ -162,6 +163,7 @@ function updatePhotoViewer() {
 
     photoViewerPosition.textContent = `${position} / ${total}`;
     photoViewerTitle.textContent = item.title || `Archive frame ${position}`;
+    photoViewerMapLink.href = `../travel/?photo=${encodeURIComponent(getPhotoKey(item.src))}`;
     photoViewerImage.alt = item.alt || "Photograph from Ethan's collection";
     photoViewerImage.width = dimensions.width;
     photoViewerImage.height = dimensions.height;

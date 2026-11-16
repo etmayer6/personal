@@ -397,6 +397,25 @@ function applySearch() {
     updateStatus();
 }
 
+function getPhotoSearchKey(photo) {
+    return (photo.filename || photo.id || "").replace(/\.[^.]+$/, "").toLowerCase();
+}
+
+function focusRequestedPhoto() {
+    const requested = new URLSearchParams(window.location.search).get("photo");
+    const requestedKey = requested?.replace(/\.[^.]+$/, "").toLowerCase();
+    if (!requestedKey) return;
+
+    const index = allPhotos.findIndex((photo) => getPhotoSearchKey(photo) === requestedKey);
+    if (index === -1) return;
+
+    filteredPhotos = [allPhotos[index]];
+    renderMarkers();
+    renderList();
+    updateStatus();
+    setActivePhoto(0);
+}
+
 function setView(view) {
     if (!["photos", "places", "both"].includes(view)) return;
     activeView = view;
@@ -445,6 +464,7 @@ function renderTravelData(data, photoData, offline = false) {
     renderMarkers();
     renderList();
     updateStatus();
+    focusRequestedPhoto();
     if (offline) {
         statusEl.textContent = "Saved travel board ready";
         statusEl.dataset.state = "offline";

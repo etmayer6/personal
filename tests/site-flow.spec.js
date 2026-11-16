@@ -143,7 +143,7 @@ test('blog is compact and still clearly identifies AI authorship', async ({ page
     expect((await page.locator('.featured-note').boundingBox()).height).toBeLessThan(470);
 });
 
-test('gallery starts without stealing focus and connects back to the travel map', async ({ page }) => {
+test('gallery starts without stealing focus and carries a photograph to its map pin', async ({ page }) => {
     await page.goto('/photos/');
     await expect(page.locator('.photo-card')).toHaveCount(27);
     expect(await page.evaluate(() => document.activeElement.tagName)).toBe('BODY');
@@ -154,8 +154,30 @@ test('gallery starts without stealing focus and connects back to the travel map'
     await page.getByRole('button', { name: 'Curated journal' }).click();
     const open = page.getByRole('button', { name: 'View Island window' });
     await open.click();
+    const mapLink = page.getByRole('link', { name: 'Find on travel map' });
+    await expect(mapLink).toHaveAttribute('href', '../travel/?photo=gopr9752');
     await page.getByRole('button', { name: 'Close', exact: true }).click();
     await expect(open).toBeFocused();
+});
+
+test('photo viewer map handoff stays usable on desktop and mobile', async ({ browser }) => {
+    for (const viewport of [{ width: 1440, height: 1000 }, { width: 320, height: 760 }]) {
+        const context = await browser.newContext({ viewport, reducedMotion: 'reduce', serviceWorkers: 'block' });
+        const page = await context.newPage();
+        await page.goto('/photos/');
+        await page.getByRole('button', { name: 'View Island window' }).click();
+        const mapLink = page.getByRole('link', { name: 'Find on travel map' });
+        await expect(mapLink).toBeVisible();
+        const dimensions = await page.locator('.photo-viewer').evaluate((dialog) => ({
+            scrollWidth: dialog.scrollWidth,
+            clientWidth: dialog.clientWidth
+        }));
+        expect(dimensions.scrollWidth).toBeLessThanOrEqual(dimensions.clientWidth + 1);
+        await mapLink.click();
+        await expect(page).toHaveURL(/\/travel\/\?photo=gopr9752$/);
+        await expect(page.getByRole('button', { name: /Island window/ })).toBeVisible();
+        await context.close();
+    }
 });
 
 test('photo order controls stay readable and easy to tap on a narrow phone', async ({ page }) => {
