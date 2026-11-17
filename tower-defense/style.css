@@ -391,6 +391,12 @@
     color: #f5e4bd;
 }
 
+.tower-wave-preview[data-runner-warning="true"] {
+    border-left-color: #7bc6c0;
+    background: rgba(123, 198, 192, 0.12);
+    color: #d8fffa;
+}
+
 .tower-campaign-progress {
     color: #7ec4b6;
     font-size: 9px;

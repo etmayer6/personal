@@ -28,7 +28,7 @@
             route: [[0, 4], [3, 4], [3, 2], [6, 2], [6, 6], [9, 6], [9, 3], [12, 3], [12, 7], [15, 7]],
             waves: [
                 makeWave(["mote", 6]),
-                makeWave(["mote", 5], ["runner", 3]),
+                makeWave(["mote", 6], ["runner", 2]),
                 makeWave(["mote", 4], ["runner", 4], ["shell", 2]),
                 makeWave(["mote", 3], ["runner", 4], ["brute", 1]),
                 makeWave(["runner", 5], ["shell", 3], ["brute", 1]),
@@ -1328,12 +1328,14 @@
             counts[type] = (counts[type] || 0) + 1;
             return counts;
         }, {});
+        elements.wavePreview.dataset.runnerWarning = String(Boolean(previewCounts.runner) && state.waveState !== "active");
         const previewSummary = Object.entries(previewCounts).map(([type, count]) => `${count} ${enemyTypes[type].name}${count === 1 ? "" : "s"}`).join(" · ");
+        const previewWarning = previewCounts.runner ? ` · ⚡ ${previewCounts.runner} fast runner${previewCounts.runner === 1 ? "" : "s"} — prioritize lane coverage` : "";
         elements.wavePreview.textContent = state.waveState === "active"
             ? `Wave ${previewWave} in progress · ${previewSummary}`
             : state.wave >= waves
                 ? "Every wave on this route is clear. Choose an unlocked route to continue."
-                : `Wave ${previewWave} preview · ${previewSummary}`;
+                : `Wave ${previewWave} preview · ${previewSummary}${previewWarning}`;
         const secured = missions.reduce((count, item) => count + (campaignProgress.records[item.id] ? 1 : 0), 0);
         elements.campaignProgress.textContent = `${secured} of ${missions.length} routes secured${campaignProgress.unlocked === missions.length - 1 ? " · final route open" : ` · ${missions.length - campaignProgress.unlocked - 1} locked`}`;
 
