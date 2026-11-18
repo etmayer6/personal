@@ -6,7 +6,7 @@
     <meta name="description" content="Climb an endless limestone wall in Groggy Climbs, a playful hold-hopping arcade game.">
     <title>Groggy Climbs | Ethan Mayer</title>
     <link rel="stylesheet" href="../style.css">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=wall-2">
     <link rel="stylesheet" href="../project-polish.css?v=2">
     <!-- SEO:START -->
         <link rel="canonical" href="https://etmayer6.github.io/personal/groggy-climbs/">
@@ -48,9 +48,7 @@
     <main id="main-content" class="groggy-shell" tabindex="-1">
         <section class="groggy-intro" aria-labelledby="groggy-title">
             <div>
-                <p class="eyebrow">An endless climbing arcade</p>
                 <h1 id="groggy-title">Groggy Climbs</h1>
-                <p class="groggy-summary">Catch a hold. Catch your breath. Keep going up.</p>
             </div>
             <div class="summit-mark" aria-label="Personal best">
                 <span>Personal best</span>
@@ -72,7 +70,7 @@
                     </div>
                 </div>
 
-                <div class="climb-stage" id="climb-stage">
+                <div class="climb-stage">
                     <canvas id="climb-canvas" width="420" height="680" tabindex="0" aria-label="Groggy Climbs limestone wall game. Use A and D to steer, W to dyno, and S to drop." aria-describedby="climb-instructions"></canvas>
                     <div class="game-overlay" id="game-overlay" role="group" aria-labelledby="overlay-title">
                         <div class="overlay-card">
@@ -86,58 +84,44 @@
                 </div>
 
                 <div class="climb-machine-footer">
-                    <span><span class="footer-dot" aria-hidden="true"></span> Limestone · no top in sight</span>
                     <span id="run-height">0 m climbed</span>
+                    <div class="dyno-row">
+                        <span class="meter-label">Chalk</span>
+                        <div class="dyno-meter" id="dyno-meter" role="progressbar" aria-label="Dyno chalk" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100">
+                            <span id="dyno-fill"></span>
+                        </div>
+                        <span id="dyno-value">100%</span>
+                    </div>
+                </div>
+                <div class="touch-controls" role="group" aria-label="Touch climbing controls">
+                    <button type="button" class="touch-control" data-control="a" aria-label="Move left">←</button>
+                    <button type="button" class="touch-control" data-control="d" aria-label="Move right">→</button>
+                    <button type="button" class="touch-control" data-control="s">Drop</button>
+                    <button type="button" class="touch-control touch-up" data-control="w">Dyno</button>
                 </div>
             </div>
 
             <aside class="climb-sidebar" aria-label="Climb status and controls">
-                <section class="climb-panel climb-readout" aria-label="Current climb">
-                    <div class="readout-heading"><span>On the wall</span><span aria-hidden="true">↗</span></div>
-                    <strong id="current-height">0<span>m</span></strong>
-                    <div class="dyno-row">
-                        <div>
-                            <span class="meter-label">Chalk for dynos</span>
-                            <div class="dyno-meter" id="dyno-meter" role="progressbar" aria-label="Dyno chalk" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100">
-                                <span id="dyno-fill"></span>
-                            </div>
-                        </div>
-                        <span id="dyno-value">100%</span>
-                    </div>
-                    <p class="readout-note" id="climb-tip">A clean landing tops up your chalk.</p>
-                </section>
-
                 <section class="climb-panel controls-panel">
                     <div class="panel-heading">
                         <p class="eyebrow">Movement</p>
                         <h2>Find your rhythm.</h2>
                     </div>
-                    <p id="climb-instructions" class="control-summary">Land on holds to spring upward. Above 80 m, steer into ridge gusts for bonus chalk. Save a dyno for a sketchy gap.</p>
+                    <p id="climb-instructions" class="control-summary">Steer onto a hold to bounce. Spend chalk to dyno across a gap, and refill by landing or grabbing a chalk bag. Above 80 m, steer into gusts for bonus chalk.</p>
                     <div class="key-grid" aria-hidden="true">
                         <span class="key key-w">W <small>dyno</small></span>
                         <span class="key key-a">A <small>left</small></span>
                         <span class="key key-s">S <small>drop</small></span>
                         <span class="key key-d">D <small>right</small></span>
                     </div>
-                    <div class="touch-controls" aria-label="Touch climbing controls">
-                        <button type="button" class="touch-control touch-up" data-control="w" aria-label="Dyno">W</button>
-                        <button type="button" class="touch-control" data-control="a" aria-label="Move left">A</button>
-                        <button type="button" class="touch-control" data-control="s" aria-label="Drop">S</button>
-                        <button type="button" class="touch-control" data-control="d" aria-label="Move right">D</button>
-                    </div>
                     <div class="fine-controls"><span>P / Esc <b>pause</b></span><span>R <b>restart</b></span><span>F <b>fullscreen</b></span></div>
-                </section>
-
-                <section class="climb-panel route-note-panel">
-                    <span class="route-note-mark" aria-hidden="true">↗</span>
-                    <p>Keep your feet moving. The good holds are always just out of reach.</p>
                 </section>
             </aside>
         </section>
     </main>
 
     <footer class="groggy-footer"><p>&copy; 2026 Ethan Mayer</p></footer>
-    <script src="app.js"></script>
+    <script src="app.js?v=wall-2"></script>
     <script src="../site-play.js?v=pet-companion-2"></script>
 </body>
 </html>

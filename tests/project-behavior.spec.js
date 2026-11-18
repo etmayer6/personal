@@ -506,6 +506,48 @@ test('Groggy Climbs steers, spends chalk on a dyno, pauses, falls, and restarts'
     expect(replay.best).toBe(landed.best);
 });
 
+test('Groggy Climbs keeps touch controls within reach and restarts from pause', async ({ browser, baseURL }) => {
+    const context = await browser.newContext({
+        baseURL, viewport: { width: 320, height: 667 }, isMobile: true, hasTouch: true
+    });
+    try {
+        const page = await context.newPage();
+        await page.goto('/groggy-climbs/');
+        const initial = await page.evaluate(() => JSON.parse(window.advanceTime(0)));
+        const wall = await page.locator('#climb-canvas').boundingBox();
+        const controls = await page.getByRole('group', { name: 'Touch climbing controls' }).boundingBox();
+        expect(wall.y).toBeGreaterThanOrEqual(0);
+        expect(controls.y + controls.height).toBeLessThanOrEqual(667);
+
+        const steer = await page.getByRole('button', { name: 'Move right' }).boundingBox();
+        const touch = await context.newCDPSession(page);
+        const right = { x: steer.x + steer.width / 2, y: steer.y + steer.height / 2, id: 0 };
+        await touch.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [right] });
+        const steered = await page.evaluate(() => JSON.parse(window.advanceTime(230)));
+        expect(steered.inputs.right).toBe(true);
+        expect(steered.player.x).toBeGreaterThan(initial.player.x + 15);
+
+        const button = await page.getByRole('button', { name: 'Dyno', exact: true }).boundingBox();
+        const dyno = { x: button.x + button.width / 2, y: button.y + button.height / 2, id: 1 };
+        await touch.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [right, dyno] });
+        const boosted = await page.evaluate(() => JSON.parse(window.render_game_to_text()));
+        expect(boosted.inputs.right).toBe(true);
+        expect(boosted.chalk).toBe(60);
+        await touch.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
+        await expect.poll(() => page.evaluate(() => JSON.parse(window.render_game_to_text()).inputs.right)).toBe(false);
+
+        await page.getByRole('button', { name: 'Pause climbing' }).tap();
+        await expect(page.locator('#game-overlay')).toBeVisible();
+        await page.getByRole('button', { name: 'Restart', exact: true }).tap();
+        const restarted = await page.evaluate(() => JSON.parse(window.render_game_to_text()));
+        expect(restarted.mode).toBe('playing');
+        expect(restarted.player.x).toBe(initial.player.x);
+        expect(restarted.chalk).toBe(100);
+    } finally {
+        await context.close();
+    }
+});
+
 test('Block Blast starts with a playable board instead of a start screen', async ({ page }) => {
     await page.goto('/block-blast/');
     await expect(page.locator('#blockblast-start')).toHaveText('New Game');

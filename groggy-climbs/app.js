@@ -16,17 +16,15 @@
     const overlayButton = document.getElementById("overlay-button");
     const statusLabel = document.getElementById("climb-status");
     const wallDot = document.querySelector(".wall-dot");
-    const currentHeightLabel = document.getElementById("current-height");
     const bestHeightLabel = document.getElementById("best-height");
     const runHeightLabel = document.getElementById("run-height");
     const dynoMeter = document.getElementById("dyno-meter");
     const dynoFill = document.getElementById("dyno-fill");
     const dynoValue = document.getElementById("dyno-value");
-    const climbTip = document.getElementById("climb-tip");
     const pauseButton = document.getElementById("pause-button");
     const restartButton = document.getElementById("restart-button");
     const fullscreenButton = document.getElementById("fullscreen-button");
-    const stage = document.getElementById("climb-stage");
+    const machine = document.querySelector(".climb-machine");
     let manualClock = false;
 
     const keys = { a: false, d: false, s: false };
@@ -55,6 +53,7 @@
         nextPlatformId: 0,
         collected: 0,
         landings: 0,
+        lastLanding: null,
         reducedMotion: window.matchMedia("(prefers-reduced-motion: reduce)").matches
     };
 
@@ -87,22 +86,10 @@
     function updateHud() {
         const currentMeters = metersAt(state.player.y);
         state.height = metersAt(state.highestY);
-        currentHeightLabel.innerHTML = `${currentMeters}<span>m</span>`;
-        bestHeightLabel.innerHTML = `${state.best}<span>m</span>`;
         runHeightLabel.textContent = `${currentMeters} m climbed`;
         dynoMeter.setAttribute("aria-valuenow", String(Math.round(state.chalk)));
         dynoFill.style.width = `${state.chalk}%`;
         dynoValue.textContent = `${Math.round(state.chalk)}%`;
-
-        if (state.windTime > 0) {
-            climbTip.textContent = `Ridge gust: steer ${state.windDirection > 0 ? "A" : "D"} into it for +14 chalk.`;
-        } else if (state.chalk < 40) {
-            climbTip.textContent = "Land on a hold or snag a chalk bag to refill.";
-        } else if (state.chalk >= 90) {
-            climbTip.textContent = "Chalk is full. W is ready for a dyno.";
-        } else {
-            climbTip.textContent = "A clean landing tops up your chalk.";
-        }
 
         if (state.height > state.best) {
             state.best = state.height;
@@ -166,6 +153,8 @@
         state.windBraceTime = 0;
         state.collected = 0;
         state.landings = 0;
+        state.lastLanding = null;
+        bestHeightLabel.innerHTML = `${state.best}<span>m</span>`;
         Object.keys(keys).forEach((key) => { keys[key] = false; });
         makePlatformsReachable();
         setMode(mode);
@@ -210,11 +199,6 @@
     }
 
     function startRun(focusCanvas = true) {
-        if (state.mode === "paused") {
-            setMode("playing");
-            if (focusCanvas) canvas.focus({ preventScroll: true });
-            return;
-        }
         resetRun("playing");
         state.player.vy = 500;
         statusLabel.textContent = "First move. Find the next hold.";
@@ -251,10 +235,10 @@
     }
 
     function burst(x, y, kind, amount = 8) {
-        if (state.reducedMotion && kind !== "landing") amount = Math.ceil(amount / 2);
+        if (state.reducedMotion) amount = Math.ceil(amount / 2);
         for (let index = 0; index < amount; index += 1) {
-            const angle = (Math.PI * 2 * index) / amount + random() * 0.4;
-            const speed = 28 + random() * 100;
+            const angle = (Math.PI * 2 * index) / amount + Math.random() * 0.4;
+            const speed = 28 + Math.random() * 100;
             state.particles.push({
                 x, y,
                 vx: Math.cos(angle) * speed,
@@ -266,19 +250,19 @@
         }
     }
 
-    function landOn(platform) {
+    function landOn(platform, contactX) {
         if (platform.kind === "crumbly") {
             platform.broken = true;
             burst(platform.x, platform.y, "stone", 8);
         }
         state.player.y = platform.y + RADIUS + 0.5;
         state.player.vy = platform.kind === "spring" ? 610 : 500;
-        state.player.animation = 0.25;
         state.landings += 1;
+        state.lastLanding = { id: platform.id, time: state.time };
         state.chalk = Math.min(100, state.chalk + (platform.kind === "spring" ? 10 : 16));
         state.lastHold = platform.kind === "spring" ? "Spring hold" : platform.kind === "crumbly" ? "Crumbly hold" : "Stone hold";
         statusLabel.textContent = platform.kind === "spring" ? "Spring hold! That one had some pop." : "Nice stick. Keep moving.";
-        burst(platform.x, platform.y, "landing", 7);
+        burst(contactX, platform.y, "landing", 7);
         updateHud();
     }
 
@@ -298,8 +282,7 @@
         state.windCooldown = 4.4;
         state.windBraceTime = 0;
         const source = state.windDirection > 0 ? "left" : "right";
-        const brace = state.windDirection > 0 ? "A" : "D";
-        statusLabel.textContent = `Ridge gust from the ${source}. Brace with ${brace} for chalk.`;
+        statusLabel.textContent = `Ridge gust. Steer ${source} for chalk.`;
     }
 
     function resolveRidgeGust() {
@@ -323,18 +306,22 @@
             if (state.windTime === 0) resolveRidgeGust();
         }
         const player = state.player;
+        const previousX = player.x;
         const previousFoot = player.y - RADIUS;
         const direction = Number(keys.d) - Number(keys.a);
         const bracing = state.windTime > 0 && direction === -state.windDirection;
         if (direction) {
-            player.vx += direction * (bracing ? 430 : 1240) * dt;
+            const reversing = direction * player.vx < 0;
+            const acceleration = bracing ? 430 : reversing ? 1750 : 1240;
+            player.vx += direction * acceleration * dt;
             player.facing = direction;
         }
         if (state.windTime > 0) {
             player.vx += state.windDirection * 430 * dt;
             if (bracing) state.windBraceTime += dt;
         }
-        player.vx *= Math.exp(-2.6 * dt);
+        const drag = direction || state.windTime > 0 ? 2.6 : 5.2;
+        player.vx *= Math.exp(-drag * dt);
         player.vx = Math.max(-285, Math.min(285, player.vx));
         const gravity = keys.s && player.vy < 0 ? GRAVITY * 2.05 : GRAVITY;
         player.vy = Math.max(-850, player.vy - gravity * dt);
@@ -353,10 +340,12 @@
         if (player.vy < 0) {
             const nextFoot = player.y - RADIUS;
             for (const platform of state.platforms) {
-                if (platform.broken) continue;
-                const overlapsX = Math.abs(player.x - platform.x) < platform.width * 0.5 + RADIUS * 0.55;
-                if (overlapsX && previousFoot >= platform.y && nextFoot <= platform.y) {
-                    landOn(platform);
+                if (platform.broken || previousFoot < platform.y || nextFoot > platform.y) continue;
+                // Check the climber's horizontal position when the feet cross the ledge.
+                const crossing = (previousFoot - platform.y) / (previousFoot - nextFoot);
+                const contactX = previousX + (player.x - previousX) * crossing;
+                if (Math.abs(contactX - platform.x) < platform.width / 2 + RADIUS * 0.55) {
+                    landOn(platform, contactX);
                     break;
                 }
             }
@@ -410,9 +399,9 @@
 
     function drawWall() {
         const rock = ctx.createLinearGradient(0, 0, WIDTH, HEIGHT);
-        rock.addColorStop(0, "#d8d5bf");
-        rock.addColorStop(0.48, "#c9c9ad");
-        rock.addColorStop(1, "#b7bea0");
+        rock.addColorStop(0, "#ded0aa");
+        rock.addColorStop(0.45, "#b6aa88");
+        rock.addColorStop(1, "#8c927b");
         ctx.fillStyle = rock;
         ctx.fillRect(0, 0, WIDTH, HEIGHT);
 
@@ -421,16 +410,19 @@
         for (let band = firstBand; band <= lastBand; band += 1) {
             const worldY = band * 145;
             const y = worldToScreen(worldY);
-            ctx.strokeStyle = "rgba(87, 108, 86, 0.15)";
-            ctx.lineWidth = 1.1;
+            ctx.fillStyle = "rgba(75, 88, 71, 0.11)";
             ctx.beginPath();
             ctx.moveTo(-12, y + 13);
             ctx.bezierCurveTo(96, y - 12, 215, y + 33, 432, y + 5);
-            ctx.stroke();
-            ctx.strokeStyle = "rgba(255, 251, 232, 0.25)";
+            ctx.lineTo(432, y + 20);
+            ctx.bezierCurveTo(244, y + 46, 112, y + 2, -12, y + 32);
+            ctx.closePath();
+            ctx.fill();
+            ctx.strokeStyle = "rgba(255, 248, 222, 0.36)";
+            ctx.lineWidth = 1.2;
             ctx.beginPath();
-            ctx.moveTo(-12, y + 18);
-            ctx.bezierCurveTo(112, y - 5, 244, y + 38, 432, y + 10);
+            ctx.moveTo(-12, y + 13);
+            ctx.bezierCurveTo(96, y - 12, 215, y + 33, 432, y + 5);
             ctx.stroke();
 
             const seed = band + 500;
@@ -445,7 +437,7 @@
             }
         }
 
-        ctx.fillStyle = "rgba(92, 113, 89, 0.16)";
+        ctx.fillStyle = "rgba(30, 57, 49, 0.25)";
         ctx.beginPath();
         ctx.moveTo(0, 0);
         ctx.lineTo(21, 0);
@@ -468,20 +460,20 @@
         ctx.closePath();
         ctx.fill();
 
-        const firstTick = Math.floor(state.cameraY / 100) * 100;
+        const firstTick = START_Y + Math.max(0, Math.floor((state.cameraY - START_Y) / 100)) * 100;
         for (let worldY = firstTick; worldY < state.cameraY + HEIGHT + 100; worldY += 100) {
             const y = worldToScreen(worldY);
             if (y < 30 || y > HEIGHT - 20) continue;
-            ctx.strokeStyle = "rgba(48, 84, 68, 0.2)";
+            ctx.strokeStyle = "rgba(25, 54, 47, 0.46)";
             ctx.setLineDash([2, 5]);
             ctx.beginPath();
             ctx.moveTo(28, y);
             ctx.lineTo(38, y);
             ctx.stroke();
             ctx.setLineDash([]);
-            ctx.fillStyle = "rgba(37, 73, 59, 0.45)";
-            ctx.font = "8px system-ui, sans-serif";
-            ctx.fillText(`${Math.max(0, Math.floor((worldY - START_Y) / 10))}m`, 42, y + 3);
+            ctx.fillStyle = "rgba(25, 54, 47, 0.82)";
+            ctx.font = "600 10px system-ui, sans-serif";
+            ctx.fillText(`${(worldY - START_Y) / 10}m`, 42, y + 3);
         }
     }
 
@@ -533,54 +525,54 @@
         const x = platform.x;
         const y = worldToScreen(platform.y);
         if (y < -30 || y > HEIGHT + 30) return;
-        const width = platform.width;
-        const shape = platform.kind === "base" ? "#516d53" : platform.kind === "spring" ? "#cd714e" : platform.kind === "crumbly" ? "#a87852" : "#607b5c";
+        const half = platform.width / 2;
+        const spring = platform.kind === "spring";
+        const crumbly = platform.kind === "crumbly";
+        const face = ctx.createLinearGradient(0, y - 1, 0, y + 12);
+        face.addColorStop(0, spring ? "#d88238" : crumbly ? "#a76349" : "#407465");
+        face.addColorStop(1, spring ? "#8c3e23" : crumbly ? "#5d3931" : "#224c47");
+
         ctx.save();
-        ctx.shadowColor = "rgba(41, 54, 39, 0.27)";
-        ctx.shadowBlur = 8;
-        ctx.shadowOffsetY = 5;
+        ctx.shadowColor = "rgba(23, 45, 39, 0.4)";
+        ctx.shadowBlur = 7;
+        ctx.shadowOffsetY = 4;
         ctx.beginPath();
-        ctx.moveTo(x - width * 0.52, y + 3);
-        ctx.lineTo(x - width * 0.44, y - 5);
-        ctx.lineTo(x - width * 0.16, y - 8);
-        ctx.lineTo(x + width * 0.04, y - 5);
-        ctx.lineTo(x + width * 0.29, y - 7);
-        ctx.lineTo(x + width * 0.5, y - 2);
-        ctx.lineTo(x + width * 0.43, y + 8);
-        ctx.lineTo(x - width * 0.44, y + 9);
+        ctx.moveTo(x - half, y);
+        ctx.lineTo(x + half, y);
+        ctx.lineTo(x + half * 0.77, y + 10);
+        ctx.lineTo(x + half * 0.31, y + 13);
+        ctx.lineTo(x - half * 0.73, y + 11);
         ctx.closePath();
-        ctx.fillStyle = shape;
+        ctx.fillStyle = face;
         ctx.fill();
         ctx.shadowColor = "transparent";
-        ctx.strokeStyle = "rgba(248, 242, 216, 0.66)";
-        ctx.lineWidth = 2;
+
+        const landing = state.lastLanding;
+        const glow = landing?.id === platform.id ? Math.max(0, 1 - (state.time - landing.time) / 0.23) : 0;
+        ctx.strokeStyle = glow > 0 ? `rgba(255, 251, 224, ${0.72 + glow * 0.28})` : "#e5ddbc";
+        ctx.lineWidth = glow > 0 ? 2.5 + glow * 2 : 2.5;
+        ctx.lineCap = "round";
         ctx.beginPath();
-        ctx.moveTo(x - width * 0.39, y - 4);
-        ctx.quadraticCurveTo(x - width * 0.03, y - 10, x + width * 0.4, y - 3);
+        ctx.moveTo(x - half, y);
+        ctx.lineTo(x + half, y);
         ctx.stroke();
 
-        if (platform.kind === "spring") {
-            ctx.strokeStyle = "rgba(255, 235, 182, 0.9)";
+        if (spring) {
+            ctx.strokeStyle = "#fff1cd";
             ctx.lineWidth = 2;
             ctx.beginPath();
-            ctx.moveTo(x - 5, y + 1);
-            ctx.lineTo(x - 2, y - 5);
-            ctx.lineTo(x + 2, y + 1);
-            ctx.lineTo(x + 5, y - 5);
+            ctx.moveTo(x - 5, y + 8);
+            ctx.lineTo(x, y + 4);
+            ctx.lineTo(x + 5, y + 8);
             ctx.stroke();
-        } else if (platform.kind === "crumbly") {
-            ctx.strokeStyle = "rgba(79, 54, 40, 0.68)";
-            ctx.lineWidth = 1.4;
+        } else if (crumbly) {
+            ctx.strokeStyle = "#ead4bb";
+            ctx.lineWidth = 1.7;
             ctx.beginPath();
-            ctx.moveTo(x + 5, y - 5);
-            ctx.lineTo(x + 1, y + 1);
-            ctx.lineTo(x + 6, y + 3);
+            ctx.moveTo(x + 4, y + 3);
+            ctx.lineTo(x - 1, y + 7);
+            ctx.lineTo(x + 2, y + 10);
             ctx.stroke();
-        } else {
-            ctx.fillStyle = "rgba(244, 237, 211, 0.72)";
-            ctx.beginPath();
-            ctx.ellipse(x - width * 0.19, y - 2, 2.4, 1.2, -0.2, 0, Math.PI * 2);
-            ctx.fill();
         }
         ctx.restore();
     }
@@ -635,28 +627,28 @@
 
         ctx.lineCap = "round";
         ctx.lineJoin = "round";
-        ctx.strokeStyle = "#5b7358";
+        ctx.strokeStyle = "#274b44";
         ctx.lineWidth = 6;
         ctx.beginPath();
         ctx.moveTo(-4, 6);
-        ctx.lineTo(-10 + swing * 0.35, 15);
-        ctx.lineTo(-15 + swing * 0.45, 20);
+        ctx.lineTo(-10 + swing * 0.35, 10);
+        ctx.lineTo(-15 + swing * 0.45, 13);
         ctx.moveTo(4, 6);
-        ctx.lineTo(10 - swing * 0.3, 14);
-        ctx.lineTo(16 - swing * 0.4, 19);
+        ctx.lineTo(10 - swing * 0.3, 10);
+        ctx.lineTo(16 - swing * 0.4, 12);
         ctx.stroke();
 
         ctx.fillStyle = "#3f4a3d";
         ctx.beginPath();
-        ctx.ellipse(-15 + swing * 0.45, 21, 5, 2.6, -0.1, 0, Math.PI * 2);
-        ctx.ellipse(16 - swing * 0.4, 20, 5, 2.6, 0.1, 0, Math.PI * 2);
+        ctx.ellipse(-15 + swing * 0.45, 12.5, 5, 2.6, -0.1, 0, Math.PI * 2);
+        ctx.ellipse(16 - swing * 0.4, 12, 5, 2.6, 0.1, 0, Math.PI * 2);
         ctx.fill();
 
-        ctx.fillStyle = "#e57d55";
+        ctx.fillStyle = "#c64b32";
         ctx.beginPath();
         ctx.roundRect(-10, -5 - stretch * 2, 20, 20 + stretch * 3, 7);
         ctx.fill();
-        ctx.fillStyle = "#b2553b";
+        ctx.fillStyle = "#87341f";
         ctx.beginPath();
         ctx.roundRect(5, -1, 7, 14, 3);
         ctx.fill();
@@ -710,7 +702,7 @@
         for (const particle of state.particles) {
             const alpha = Math.max(0, particle.life / particle.maxLife);
             const y = worldToScreen(particle.y);
-            ctx.fillStyle = particle.kind === "chalk"
+            ctx.fillStyle = particle.kind === "chalk" || particle.kind === "landing"
                 ? `rgba(255, 248, 225, ${alpha * 0.78})`
                 : `rgba(206, 112, 75, ${alpha * 0.7})`;
             ctx.beginPath();
@@ -787,23 +779,31 @@
         if (document.fullscreenElement) {
             document.exitFullscreen?.();
         } else {
-            stage.requestFullscreen?.();
+            machine.requestFullscreen?.().catch(() => {});
         }
     }
 
-    overlayButton.addEventListener("click", startRun);
-    restartButton.addEventListener("click", startRun);
+    overlayButton.addEventListener("click", () => {
+        if (state.mode === "paused") pauseRun();
+        else startRun();
+    });
+    restartButton.addEventListener("click", () => startRun());
     pauseButton.addEventListener("click", pauseRun);
+    fullscreenButton.hidden = !document.fullscreenEnabled;
     fullscreenButton.addEventListener("click", toggleFullscreen);
     document.addEventListener("fullscreenchange", () => {
-        const active = document.fullscreenElement === stage;
+        const active = document.fullscreenElement === machine;
         fullscreenButton.setAttribute("aria-label", active ? "Exit fullscreen" : "Enter fullscreen");
         fullscreenButton.textContent = active ? "×" : "⛶";
     });
 
     document.addEventListener("keydown", (event) => {
+        if (event.ctrlKey || event.altKey || event.metaKey) return;
         const key = event.key.toLowerCase();
-        if (["a", "d", "s", "w", " ", "arrowleft", "arrowright", "arrowup", "arrowdown"].includes(key)) event.preventDefault();
+        if (state.mode === "playing" && ["a", "d", "s", "w", "arrowleft", "arrowright", "arrowup", "arrowdown"].includes(key)) {
+            event.preventDefault();
+        }
+        if (event.repeat) return;
         if (key === "r") {
             startRun();
             return;
@@ -817,7 +817,7 @@
             else if (state.mode === "playing" || state.mode === "paused") pauseRun();
             return;
         }
-        if (state.mode !== "playing" || event.repeat) return;
+        if (state.mode !== "playing") return;
         if (key === "a" || key === "arrowleft") keys.a = true;
         if (key === "d" || key === "arrowright") keys.d = true;
         if (key === "s" || key === "arrowdown") keys.s = true;
