@@ -72,6 +72,26 @@ test('mobile flight scenarios advertise the horizontal picker', async ({ page })
     await expect(page.locator('.scenario-option')).toHaveCount(3);
 });
 
+test('reduced-motion flight sequence stays a compact static scene', async ({ page }) => {
+    for (const viewport of [{ width: 1440, height: 1000 }, { width: 390, height: 844 }]) {
+        await page.setViewportSize(viewport);
+        await page.emulateMedia({ reducedMotion: 'reduce' });
+        await page.goto('/flight-sequence/');
+
+        const layout = await page.evaluate(() => ({
+            viewportHeight: window.innerHeight,
+            pageHeight: document.documentElement.scrollHeight,
+            trackHeight: document.querySelector('.flight-sequence-track').getBoundingClientRect().height,
+            stickyPosition: getComputedStyle(document.querySelector('.flight-sequence-sticky')).position
+        }));
+        expect(layout.trackHeight).toBeLessThan(layout.viewportHeight * 1.1);
+        expect(layout.pageHeight).toBeLessThan(layout.viewportHeight * 1.5);
+        expect(layout.stickyPosition).toBe('relative');
+        await expect(page.locator('#flight-sequence-status')).toHaveText('Cruising');
+        await expect(page.locator('#flight-sequence-progress')).toHaveAttribute('aria-valuenow', '100');
+    }
+});
+
 test('featured projects have equal space, aligned actions, and a compact introduction', async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 1000 });
     await page.goto('/projects/');

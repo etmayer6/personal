@@ -200,6 +200,15 @@
         scroll-behavior: auto;
     }
 
+    .flight-sequence-track {
+        height: auto;
+    }
+
+    .flight-sequence-sticky {
+        position: relative;
+        top: auto;
+    }
+
     .flight-sequence-prompt span {
         animation: none;
     }
