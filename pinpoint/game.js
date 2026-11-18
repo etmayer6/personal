@@ -1,5 +1,6 @@
 const ROUND_COUNT = 5;
 const MAX_ROUND_SCORE = 5000;
+const BEARING_SCAN_COST = 200;
 const BEST_SCORE_KEY = "pinpoint-best-score-v1";
 const MAPILLARY_TIMEOUT_MS = 5000;
 const MAPILLARY_SEARCH_ATTEMPTS = 6;
@@ -188,6 +189,11 @@ const photoZoomValueEl = document.getElementById("photo-zoom-value");
 const hintBoxEl = document.getElementById("hint-box");
 const hintTextEl = document.getElementById("hint-text");
 const hintButton = document.getElementById("hint-button");
+const bearingButton = document.getElementById("bearing-button");
+const bearingBoxEl = document.getElementById("bearing-box");
+const bearingNeedleEl = document.getElementById("bearing-needle");
+const bearingValueEl = document.getElementById("bearing-value");
+const bearingDetailEl = document.getElementById("bearing-detail");
 const guessButton = document.getElementById("guess-button");
 const resultEl = document.getElementById("round-result");
 const answerTitleEl = document.getElementById("answer-title");
@@ -206,6 +212,7 @@ const state = {
     bestScore: readBestScore(),
     recordOutcome: null,
     hintCount: 0,
+    bearingScan: null,
     guess: null,
     distanceKm: null,
     roundScore: null,
@@ -802,6 +809,20 @@ function hintCostForRound() {
     return 100 + state.roundIndex * 50;
 }
 
+function bearingBetween(from, to) {
+    const radians = Math.PI / 180;
+    const lat1 = from.lat * radians;
+    const lat2 = to.lat * radians;
+    const deltaLon = (to.lon - from.lon) * radians;
+    const y = Math.sin(deltaLon) * Math.cos(lat2);
+    const x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(deltaLon);
+    return (Math.atan2(y, x) / radians + 360) % 360;
+}
+
+function compassDirection(degrees) {
+    return ["N", "NE", "E", "SE", "S", "SW", "W", "NW"][Math.round(degrees / 45) % 8];
+}
+
 function updateHeader() {
     roundValueEl.textContent = `${state.roundIndex + 1} / ${ROUND_COUNT}`;
     scoreValueEl.textContent = state.totalScore.toLocaleString();
@@ -819,6 +840,10 @@ function updateHeader() {
     hintButton.textContent = state.hintCount >= 3
         ? "No hints left"
         : `${state.hintCount ? "Another hint" : "Use a hint"} (-${hintCost} pts)`;
+    bearingButton.disabled = state.mode !== "guessing" || !state.guess || Boolean(state.bearingScan);
+    bearingButton.textContent = state.bearingScan
+        ? "Bearing revealed (-200 pts)"
+        : "Take a bearing (-200 pts)";
     photoLabelEl.textContent = `Round ${state.roundIndex + 1}`;
 }
 
@@ -836,6 +861,7 @@ function loadRound() {
     state.mode = "guessing";
     state.source = location.source || "local";
     state.hintCount = 0;
+    state.bearingScan = null;
     state.guess = null;
     state.distanceKm = null;
     state.roundScore = null;
@@ -857,9 +883,12 @@ function loadRound() {
     photoCreditEl.href = "https://www.mapillary.com/";
     photoCreditEl.textContent = "Image via Mapillary";
     hintBoxEl.hidden = true;
+    bearingBoxEl.hidden = true;
     resultEl.hidden = true;
     recordRewardEl.hidden = true;
     hintButton.disabled = false;
+    bearingButton.disabled = true;
+    bearingButton.textContent = "Take a bearing (-200 pts)";
     hintButton.textContent = "Use a hint";
     guessButton.disabled = true;
     guessButton.hidden = false;
@@ -881,6 +910,7 @@ function showSequenceLoading() {
     state.roundIndex = 0;
     state.totalScore = 0;
     state.hintCount = 0;
+    state.bearingScan = null;
     state.guess = null;
     state.distanceKm = null;
     state.roundScore = null;
@@ -894,7 +924,9 @@ function showSequenceLoading() {
     sourcePillEl.textContent = "Finding locations";
     resultEl.hidden = true;
     hintBoxEl.hidden = true;
+    bearingBoxEl.hidden = true;
     hintButton.disabled = true;
+    bearingButton.disabled = true;
     guessButton.disabled = true;
     guessButton.hidden = false;
     roundValueEl.textContent = `1 / ${ROUND_COUNT}`;
@@ -938,6 +970,7 @@ function placeGuess(lat, lon) {
     };
     coordinateEl.textContent = `${Math.abs(state.guess.lat).toFixed(2)}°${state.guess.lat >= 0 ? "N" : "S"}, ${Math.abs(state.guess.lon).toFixed(2)}°${state.guess.lon >= 0 ? "E" : "W"}`;
     guessButton.disabled = false;
+    bearingButton.disabled = Boolean(state.bearingScan);
     mapInstructionEl.hidden = true;
     statusEl.textContent = "Pin placed. Lock it in when you are ready.";
     drawMap();
@@ -956,24 +989,44 @@ function useHint() {
     statusEl.textContent = `Hint ${state.hintCount} revealed. Each hint costs ${hintCost} points this round.`;
 }
 
+function useBearing() {
+    if (state.mode !== "guessing" || !state.guess || state.bearingScan) return;
+    const exact = bearingBetween(state.guess, currentLocation());
+    const rounded = Math.round(exact / 5) * 5 % 360;
+    state.bearingScan = { from: { ...state.guess }, degrees: rounded };
+    bearingNeedleEl.style.setProperty("--bearing-angle", `${rounded}deg`);
+    bearingNeedleEl.classList.remove("bearing-reveal");
+    void bearingNeedleEl.offsetWidth;
+    bearingNeedleEl.classList.add("bearing-reveal");
+    bearingValueEl.textContent = `${String(rounded).padStart(3, "0")}° ${compassDirection(rounded)}`;
+    bearingDetailEl.textContent = "from your first pin · -200 pts";
+    bearingBoxEl.hidden = false;
+    bearingButton.disabled = true;
+    bearingButton.textContent = "Bearing revealed (-200 pts)";
+    statusEl.textContent = `Field bearing: ${compassDirection(rounded)} from your first pin. Move your pin to refine the guess.`;
+}
+
 function submitGuess() {
     if (state.mode !== "guessing" || !state.guess) return;
     const location = currentLocation();
     state.distanceKm = haversineKm(state.guess, location);
     const baseScore = Math.round(MAX_ROUND_SCORE * Math.exp(-state.distanceKm / 2200));
     const hintPenalty = state.hintCount * hintCostForRound();
-    state.roundScore = Math.max(0, baseScore - hintPenalty);
+    const bearingPenalty = state.bearingScan ? BEARING_SCAN_COST : 0;
+    const cluePenalty = hintPenalty + bearingPenalty;
+    state.roundScore = Math.max(0, baseScore - cluePenalty);
     state.totalScore += state.roundScore;
     state.mode = "result";
     stopResultReveal();
     answerTitleEl.textContent = location.answer;
     accuracyGradeEl.textContent = accuracyGrade(state.distanceKm);
-    answerDetailEl.textContent = `${formatDistance(state.distanceKm)} · ${hintPenalty ? `${hintPenalty} point hint penalty` : "No hint penalty"}`;
+    answerDetailEl.textContent = `${formatDistance(state.distanceKm)} · ${cluePenalty ? `${cluePenalty} point clue penalty` : "No clue penalty"}`;
     roundScoreEl.textContent = state.roundScore.toLocaleString();
     resultEl.hidden = false;
     recordRewardEl.hidden = true;
     guessButton.hidden = true;
     hintButton.disabled = true;
+    bearingButton.disabled = true;
     nextButton.textContent = state.roundIndex === ROUND_COUNT - 1 ? "See final score" : "Next round";
     mapInstructionEl.hidden = true;
     scoreValueEl.textContent = state.totalScore.toLocaleString();
@@ -1268,6 +1321,7 @@ imageEl.addEventListener("error", () => {
 });
 
 hintButton.addEventListener("click", useHint);
+bearingButton.addEventListener("click", useBearing);
 guessButton.addEventListener("click", submitGuess);
 nextButton.addEventListener("click", nextRound);
 zoomOutButton.addEventListener("click", () => setMapZoom(mapView.zoom / MAP_ZOOM_FACTOR));
@@ -1364,6 +1418,10 @@ window.render_game_to_text = () => JSON.stringify({
     hintsUsed: state.hintCount,
     hintCost: hintCostForRound(),
     hintPenalty: state.hintCount * hintCostForRound(),
+    bearingUsed: Boolean(state.bearingScan),
+    bearing: state.bearingScan?.degrees ?? null,
+    bearingPenalty: state.bearingScan ? BEARING_SCAN_COST : 0,
+    cluePenalty: state.hintCount * hintCostForRound() + (state.bearingScan ? BEARING_SCAN_COST : 0),
     guess: state.guess,
     answer: state.mode === "result" || state.mode === "complete" ? {
         label: currentLocation().answer,
@@ -1387,6 +1445,7 @@ window.advanceTime = (milliseconds = 1000 / 60) => {
     else drawMap();
 };
 window.__pinpoint_debug_guess = (lat, lon) => placeGuess(Number(lat), Number(lon));
+window.__pinpoint_debug_bearing = useBearing;
 window.__pinpoint_debug_sample_regions = () => balancedRegions().map(({ continent, label }) => ({ continent, label }));
 
 async function initializeGame() {

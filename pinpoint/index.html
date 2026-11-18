@@ -111,7 +111,17 @@
                         <p id="hint-text"></p>
                     </div>
 
+                    <div class="bearing-box" id="bearing-box" role="status" aria-live="polite" hidden>
+                        <div class="bearing-compass" aria-hidden="true">
+                            <span class="compass-north">N</span><span class="compass-east">E</span>
+                            <span class="compass-south">S</span><span class="compass-west">W</span>
+                            <span class="compass-needle" id="bearing-needle"></span>
+                        </div>
+                        <p><span class="bearing-label">Field bearing</span><strong id="bearing-value"></strong><span id="bearing-detail"></span></p>
+                    </div>
+
                     <div class="round-controls">
+                        <button class="button-quiet" id="bearing-button" type="button" disabled>Take a bearing (-200 pts)</button>
                         <button class="button-quiet" id="hint-button" type="button">Use a hint</button>
                         <button class="button-primary-game" id="guess-button" type="button" disabled>Lock in guess</button>
                     </div>

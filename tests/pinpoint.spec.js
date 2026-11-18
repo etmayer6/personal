@@ -49,7 +49,7 @@ test("Pinpoint shows the rising hint price and applies it to the round score", a
     await page.locator("#guess-button").click();
     await expect.poll(async () => (await gameState(page)).mode).toBe("result");
     expect(await gameState(page)).toMatchObject({ hintCost: 100, hintPenalty: 100 });
-    await expect(page.locator("#answer-detail")).toContainText("100 point hint penalty");
+    await expect(page.locator("#answer-detail")).toContainText("100 point clue penalty");
 
     await page.locator("#next-button").click();
     await expect.poll(async () => (await gameState(page)).round).toBe(2);
@@ -63,7 +63,34 @@ test("Pinpoint shows the rising hint price and applies it to the round score", a
     await page.locator("#guess-button").click();
     await expect.poll(async () => (await gameState(page)).mode).toBe("result");
     expect(await gameState(page)).toMatchObject({ hintCost: 150, hintPenalty: 150 });
-    await expect(page.locator("#answer-detail")).toContainText("150 point hint penalty");
+    await expect(page.locator("#answer-detail")).toContainText("150 point clue penalty");
+    expect(browserErrors).toEqual([]);
+});
+
+test("Pinpoint trades points for a one-use compass bearing", async ({ page }) => {
+    const browserErrors = watchBrowserErrors(page);
+
+    await page.goto(`${BASE_URL}/pinpoint/`);
+    await page.waitForFunction(() => JSON.parse(window.render_game_to_text()).mode === "guessing");
+    await expect(page.locator("#bearing-button")).toBeDisabled();
+
+    await page.evaluate(() => window.__pinpoint_debug_guess(0, 0));
+    await expect(page.locator("#bearing-button")).toBeEnabled();
+    await page.locator("#bearing-button").click();
+    await expect(page.locator("#bearing-box")).toBeVisible();
+    await expect(page.locator("#bearing-value")).toHaveText(/\d{3}° (N|NE|E|SE|S|SW|W|NW)/);
+    await expect(page.locator("#bearing-button")).toBeDisabled();
+    if (process.env.PINPOINT_CAPTURE_QA_SHOTS === "1") {
+        await page.screenshot({ path: path.resolve(process.cwd(), "test-results/pinpoint-bearing-scan.png"), fullPage: true });
+    }
+
+    const originalBearing = (await gameState(page)).bearing;
+    await page.evaluate(() => window.__pinpoint_debug_guess(42, -93));
+    expect(await gameState(page)).toMatchObject({ bearingUsed: true, bearingPenalty: 200, bearing: originalBearing });
+    await page.locator("#guess-button").click();
+    await expect.poll(async () => (await gameState(page)).mode).toBe("result");
+    expect(await gameState(page)).toMatchObject({ bearingPenalty: 200, cluePenalty: 200 });
+    await expect(page.locator("#answer-detail")).toContainText("200 point clue penalty");
     expect(browserErrors).toEqual([]);
 });
 

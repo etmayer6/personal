@@ -515,6 +515,104 @@ button:disabled {
     font-weight: 700;
 }
 
+.bearing-box {
+    --bearing-ink: #254f53;
+    margin-top: 14px;
+    padding: 12px 15px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    color: var(--bearing-ink);
+    border: 1px solid rgba(37, 79, 83, 0.2);
+    border-radius: 14px;
+    background: linear-gradient(105deg, #e5f0e9, #f5f1df);
+    box-shadow: inset 0 0 24px rgba(255, 255, 255, 0.55);
+    animation: bearing-arrive 420ms cubic-bezier(.2,.8,.2,1) both;
+}
+
+.bearing-box[hidden] {
+    display: none;
+}
+
+.bearing-compass {
+    position: relative;
+    flex: 0 0 56px;
+    width: 56px;
+    height: 56px;
+    border: 1px solid rgba(37, 79, 83, 0.28);
+    border-radius: 50%;
+    background: radial-gradient(circle at 50% 45%, #fffdf0, #d2e2d8);
+    box-shadow: 0 3px 12px rgba(37, 79, 83, 0.12);
+    font-size: 8px;
+    font-weight: 900;
+}
+
+.bearing-compass span:not(.compass-needle) {
+    position: absolute;
+    line-height: 1;
+}
+
+.compass-north { top: 5px; left: 50%; transform: translateX(-50%); }
+.compass-east { top: 50%; right: 5px; transform: translateY(-50%); }
+.compass-south { bottom: 5px; left: 50%; transform: translateX(-50%); }
+.compass-west { top: 50%; left: 5px; transform: translateY(-50%); }
+
+.compass-needle {
+    position: absolute;
+    z-index: 1;
+    top: 10px;
+    left: 50%;
+    width: 2px;
+    height: 35px;
+    border-radius: 4px;
+    background: linear-gradient(to bottom, #c45136 0 48%, #315c68 48% 100%);
+    transform: translateX(-50%) rotate(var(--bearing-angle, 0deg));
+    transform-origin: 50% 50%;
+    transition: transform 650ms cubic-bezier(.18,.8,.25,1.2);
+}
+
+.compass-needle::after {
+    position: absolute;
+    top: -3px;
+    left: -4px;
+    width: 0;
+    height: 0;
+    border-right: 5px solid transparent;
+    border-bottom: 8px solid #c45136;
+    border-left: 5px solid transparent;
+    content: "";
+}
+
+.bearing-box p {
+    display: grid;
+    gap: 2px;
+    margin: 0;
+}
+
+.bearing-label {
+    color: #607879;
+    font-size: 9px;
+    font-weight: 900;
+    letter-spacing: .13em;
+    text-transform: uppercase;
+}
+
+.bearing-box strong {
+    font-size: 20px;
+    line-height: 1.1;
+}
+
+.bearing-box p > span:last-child {
+    color: #607879;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+@keyframes bearing-arrive {
+    from { opacity: 0; transform: translateY(7px) scale(.985); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
 .round-controls {
     justify-content: flex-end;
     margin-top: 14px;
@@ -780,6 +878,8 @@ button:disabled {
 }
 
 @media (prefers-reduced-motion: reduce) {
+    .bearing-box { animation: none; }
+    .compass-needle { transition: none; }
     .photo-stage img {
         transition: none;
     }
