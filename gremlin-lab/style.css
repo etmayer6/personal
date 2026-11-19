@@ -226,6 +226,32 @@
     transition: border-color 160ms ease, background-color 160ms ease, transform 160ms ease;
 }
 
+.element-button kbd {
+    display: grid;
+    flex: 0 0 20px;
+    width: 20px;
+    height: 20px;
+    place-items: center;
+    margin-left: auto;
+    color: #e6eee8;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 5px;
+    background: rgba(255, 255, 255, 0.08);
+    font: 700 10px/1 ui-monospace, SFMono-Regular, Consolas, monospace;
+}
+
+.element-button:hover kbd,
+.element-button:focus-visible kbd {
+    color: #102b36;
+    border-color: var(--element-accent);
+    background: var(--element-accent);
+}
+
+.element-button > span:not(.element-symbol) {
+    min-width: 0;
+    flex: 1 1 auto;
+}
+
 .element-button:hover,
 .element-button:focus-visible {
     border-color: var(--element-accent);

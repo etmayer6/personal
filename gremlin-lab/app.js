@@ -933,7 +933,8 @@
     canvas.addEventListener("pointerup", releaseDrag);
     canvas.addEventListener("pointercancel", releaseDrag);
 
-    document.querySelectorAll("[data-element]").forEach(function (button) {
+    const elementButtons = Array.from(document.querySelectorAll("[data-element]"));
+    elementButtons.forEach(function (button) {
         button.addEventListener("click", function () {
             dropElement(button.dataset.element);
         });
@@ -994,7 +995,13 @@
         const isTyping = target instanceof HTMLElement &&
             (target.matches("input, textarea, select") || target.isContentEditable);
         if (isTyping) return;
-        if (event.key.toLowerCase() === "f") {
+        const shortcutButton = elementButtons.find(function (button) {
+            return button.dataset.shortcut === event.key;
+        });
+        if (shortcutButton && !event.repeat && !event.altKey && !event.ctrlKey && !event.metaKey) {
+            event.preventDefault();
+            dropElement(shortcutButton.dataset.element);
+        } else if (event.key.toLowerCase() === "f") {
             event.preventDefault();
             toggleFullscreen();
         } else if (event.key === " ") {
