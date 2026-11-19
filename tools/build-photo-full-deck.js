@@ -6,11 +6,14 @@ const sourceDirectory = fs.existsSync(path.join(root, "images", "photos", "sourc
     ? path.join(root, "images", "photos", "source")
     : path.join(root, "images", "photos");
 const outputPath = path.join(root, "photos", "full-data.js");
+const excludedPhotos = new Set(["p1020444", "p1020541"]);
 const filenames = fs.readdirSync(sourceDirectory)
     .filter((filename) => /\.(?:jpe?g|png)$/i.test(filename))
     .sort((left, right) => left.localeCompare(right, undefined, { numeric: true }));
+if (filenames.length === 0) throw new Error(`No source photographs in ${sourceDirectory}`);
 
-const photos = filenames.map((filename, index) => {
+const archiveFilenames = filenames.filter((filename) => !excludedPhotos.has(path.parse(filename).name.toLowerCase()));
+const photos = archiveFilenames.map((filename, index) => {
     const stem = path.parse(filename).name;
     const preview = path.join(root, "images", "photos", "optimized", `${stem}-1440.webp`);
     if (!fs.existsSync(preview)) throw new Error(`Missing optimized preview for ${filename}`);
