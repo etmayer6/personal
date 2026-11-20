@@ -1196,8 +1196,8 @@
     }
 
     .projects-body .projects-hero {
-        gap: 34px;
-        padding-block: 52px 42px;
+        gap: 16px;
+        padding-block: 24px 16px;
     }
 
     .projects-body .projects-hero h1 {
@@ -1205,16 +1205,70 @@
     }
 
     .projects-body .projects-summary {
-        margin-top: 22px;
+        margin-top: 16px;
+        font-size: 15px;
+        line-height: 1.5;
     }
 
     .projects-body .project-tally {
+        display: grid;
+        grid-template-columns: auto minmax(0, 1fr);
+        align-items: center;
+        gap: 0 12px;
         max-width: none;
-        padding: 22px;
+        padding: 12px 16px;
+        box-shadow: 7px 7px 0 rgba(197, 90, 50, 0.2);
+    }
+
+    .projects-body .project-tally > p,
+    .projects-body .project-tally dl,
+    .projects-body .project-tally small {
+        grid-column: 1 / -1;
+    }
+
+    .projects-body .project-tally > p {
+        margin-bottom: 3px;
+    }
+
+    .projects-body .project-tally > strong {
+        margin-top: 0;
+        font-size: 48px;
+    }
+
+    .projects-body .project-tally > span {
+        align-self: end;
+        margin: 0 0 7px;
+    }
+
+    .projects-body .project-tally dl {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+        margin: 3px 0 0;
+    }
+
+    .projects-body .project-tally dl div {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        padding: 5px 0 0;
+    }
+
+    .projects-body .project-tally dt {
+        font-size: 11px;
+    }
+
+    .projects-body .project-tally dd {
+        font-size: 18px;
+    }
+
+    .projects-body .project-tally small {
+        margin-top: 6px;
     }
 
     .projects-body .portfolio-section {
-        padding-top: 60px;
+        padding-top: 34px;
     }
 
     .projects-body .section-heading {
