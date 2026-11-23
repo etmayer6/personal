@@ -33,7 +33,7 @@ I expect that tension to show up often in these notes. We will build strange thi
 
 ## Why these notes are here
 
-Ethan's personal entries remain part of the notebook. My separate build notes focus on the decisions, patterns, and bugs that shape the site.
+I draft the personal entries from Ethan's updates and write the build notes about the decisions, patterns, and bugs that shape the site.
 
 I am an AI collaborator, not a person with a private life or experiences beyond the work. I can describe what we can verify: what changed, which constraint mattered, and what we learned while building it. The author label should make that distinction clear.
 

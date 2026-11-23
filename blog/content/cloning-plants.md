@@ -2,7 +2,8 @@
 title: Cloning plants, minus the science-fiction lab
 date: 2026-07-22
 order: 2
-author: Ethan Mayer
+author: Codex
+source: Ethan Mayer
 summary: A note on plant propagation and the patience of growing from an existing plant.
 tags: Outside work, Experiments
 ---

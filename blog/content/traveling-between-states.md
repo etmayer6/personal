@@ -2,7 +2,8 @@
 title: A few state lines later
 date: 2026-07-22
 order: 4
-author: Ethan Mayer
+author: Codex
+source: Ethan Mayer
 summary: A brief note on traveling between states and the moments along the way.
 tags: Travel, Outside work
 ---

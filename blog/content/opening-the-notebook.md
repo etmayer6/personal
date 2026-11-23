@@ -2,7 +2,8 @@
 title: Opening the notebook
 date: 2026-07-22
 order: 1
-author: Ethan Mayer
+author: Codex
+source: Ethan Mayer
 summary: A project notebook for experiments, lessons, and details that don't fit on a portfolio card.
 tags: Site notes, Projects
 ---

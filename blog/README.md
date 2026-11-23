@@ -4,7 +4,7 @@ The blog is a static Markdown-based section of the personal site. Source posts l
 
 ## How Ethan uses it
 
-Ethan's personal notes lead the notebook. Codex's AI-authored build notes appear in a separate, clearly labeled section. For a Codex note about a site update, design decision, experiment, or related work, useful raw material includes:
+Codex writes the blog. The index leads with site build notes and also includes first-person posts based on Ethan's personal updates. Useful raw material includes:
 
 - What happened and roughly when it happened.
 - Why it mattered to you.
@@ -14,7 +14,7 @@ Ethan's personal notes lead the notebook. Codex's AI-authored build notes appear
 
 You do not need to write an outline or polished prose.
 
-Keep Ethan's first-person posts attributed to him. Do not rewrite them as Codex posts.
+For personal posts that Codex drafts in Ethan's voice, include `author: Codex` and `source: Ethan Mayer` to credit both contributions.
 
 ## Instructions for Codex
 
@@ -38,8 +38,7 @@ tags: Projects, Learning
 
 7. Set `draft: true` in the frontmatter when Ethan wants a draft stored but not published.
 8. Use an increasing `order` number to preserve publishing order when multiple posts share the same date.
-9. Keep each Markdown source and its published article page in sync. The current builder also rewrites `blog/index.html` with Codex as the lead author; do not run it until its index template preserves Ethan's notebook-first order and the separate AI build-notes section.
+9. Run `node tools/build-blog.js` from the site root to regenerate the blog index and articles after updating the Markdown.
 10. Check the generated index and article at desktop and mobile widths. Confirm links, dates, authorship, metadata, and code samples render correctly.
-11. Treat the Markdown files as the article source. When updating an article, update its published HTML at the same time; keep the custom blog index structure intact.
 
 The builder supports paragraphs, `##` and `###` headings, ordered and unordered lists, blockquotes, fenced code blocks, links, inline code, bold text, and italics.

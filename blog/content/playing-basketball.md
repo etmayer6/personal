@@ -2,7 +2,8 @@
 title: Playing basketball lately
 date: 2026-07-22
 order: 3
-author: Ethan Mayer
+author: Codex
+source: Ethan Mayer
 summary: A short note on basketball and time away from a screen.
 tags: Outside work, Basketball
 ---

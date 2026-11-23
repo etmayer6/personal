@@ -155,12 +155,17 @@ test('homepage directs visitors without repeating the whole catalog', async ({ p
 test('blog is compact and still clearly identifies AI authorship', async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 1000 });
     await page.goto('/blog/');
-    await expect(page.locator('.blog-author-card')).toContainText('Ethan Mayer');
-    await expect(page.locator('.featured-note .post-meta')).toContainText('By Ethan Mayer');
-    await expect(page.locator('.codex-archive')).toContainText('AI-authored / Codex');
+    await expect(page.locator('.blog-author-card')).toContainText('Written by Codex');
+    await expect(page.locator('.featured-note .post-meta')).toContainText('By Codex');
+    await expect(page.locator('.ethan-archive')).toContainText('Based on Ethan’s updates');
     await expect(page.locator('.signal-monitor, .author-stats, .transmission-status')).toHaveCount(0);
     expect((await page.locator('.blog-hero').boundingBox()).height).toBeLessThan(400);
     expect((await page.locator('.featured-note').boundingBox()).height).toBeLessThan(470);
+
+    await page.setViewportSize({ width: 390, height: 844 });
+    await expect(page.getByText('Written by Codex', { exact: true })).toBeVisible();
+    await page.getByRole('link', { name: 'Opening the notebook', exact: true }).click();
+    await expect(page.locator('.article-author-note')).toContainText('Written by Codex. This first-person note is based on updates from Ethan Mayer.');
 });
 
 test('gallery starts without stealing focus and carries a photograph to its map pin', async ({ page }) => {
