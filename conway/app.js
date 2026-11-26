@@ -22,6 +22,7 @@
         status: "Ready to evolve",
         pointerPainting: false,
         interactionMode: "idle",
+        eraseBrush: false,
         paintValue: null,
         lastFrame: 0,
         accumulator: 0,
@@ -41,6 +42,7 @@
     const statusValue = document.querySelector("#life-status");
     const coordinateReadout = document.querySelector("#coordinate-readout");
     const interactionReadout = document.querySelector("#interaction-readout");
+    const eraseBrushButton = document.querySelector("#erase-brush");
     const lifecycleValue = document.querySelector("#lifecycle-value");
     const canvasFooter = document.querySelector(".canvas-footer");
     const patternButtons = Array.from(document.querySelectorAll("[data-pattern]"));
@@ -222,8 +224,18 @@
         if (interactionReadout) {
             interactionReadout.textContent = mode === "placing"
                 ? "Placing cells"
-                : mode === "erasing" ? "Erasing cells" : "Click a cell to paint or erase; drag to draw";
+                : mode === "erasing" ? "Erasing cells" : state.eraseBrush ? "Erase brush on · drag to clear cells" : "Brush ready · click to flip a cell; drag to paint";
         }
+    }
+
+    function setEraseBrush(enabled) {
+        state.eraseBrush = enabled;
+        eraseBrushButton.setAttribute("aria-pressed", String(enabled));
+        eraseBrushButton.classList.toggle("is-active", enabled);
+        eraseBrushButton.querySelector("strong").textContent = enabled ? "on" : "off";
+        eraseBrushButton.setAttribute("aria-label", `Erase brush ${enabled ? "on" : "off"}; press E to ${enabled ? "return to toggle brush" : "erase cells"}`);
+        if (!state.pointerPainting) setInteractionMode("idle");
+        setStatus(enabled ? "Erase brush ready · drag to clear cells" : "Toggle brush ready · click to paint or erase");
     }
 
     function updateUi() {
@@ -483,6 +495,7 @@
     patternButtons.forEach(function (button) {
         button.addEventListener("click", function () { loadPattern(button.dataset.pattern); });
     });
+    eraseBrushButton.addEventListener("click", function () { setEraseBrush(!state.eraseBrush); });
 
     canvas.addEventListener("pointerdown", function (event) {
         const cell = cellFromPointer(event);
@@ -494,7 +507,7 @@
         }
         canvas.setPointerCapture(event.pointerId);
         state.pointerPainting = true;
-        state.paintValue = grid[indexFor(cell.x, cell.y)] ? 0 : 1;
+        state.paintValue = state.eraseBrush ? 0 : grid[indexFor(cell.x, cell.y)] ? 0 : 1;
         setInteractionMode(state.paintValue ? "placing" : "erasing");
         paintCell(event);
     });
@@ -531,6 +544,7 @@
         if (key === "r") randomizeButton.click();
         if (key === "c") clearButton.click();
         if (key === "f") toggleFullscreen();
+        if (key === "e") eraseBrushButton.click();
     });
     window.addEventListener("resize", resizeCanvas);
     document.addEventListener("fullscreenchange", resizeCanvas);
@@ -549,6 +563,7 @@
             board: { columns: columns, rows: rows, coordinateSystem: "origin top-left; x increases right; y increases down" },
             speed: state.speed,
             boundary: state.boundary,
+            eraseBrush: state.eraseBrush,
             interactionMode: state.interactionMode,
             lifecycle: state.lifecycle,
             status: state.status,

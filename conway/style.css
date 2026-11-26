@@ -131,6 +131,7 @@
 
 .canvas-footer {
     display: flex;
+    align-items: center;
     justify-content: space-between;
     gap: 12px;
     padding: 11px 2px 0;
@@ -139,6 +140,55 @@
     font-weight: 800;
     letter-spacing: 0.08em;
     text-transform: uppercase;
+}
+
+.brush-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    flex: 0 0 auto;
+    min-height: 30px;
+    padding: 5px 8px;
+    color: #d8e5d5;
+    border: 1px solid rgba(255, 250, 240, 0.3);
+    background: rgba(255, 250, 240, 0.06);
+    font: inherit;
+    letter-spacing: inherit;
+    text-transform: inherit;
+    cursor: pointer;
+}
+
+.brush-toggle strong {
+    color: var(--life-yellow);
+}
+
+.brush-toggle kbd {
+    padding: 1px 4px;
+    color: var(--life-board);
+    background: rgba(255, 250, 240, 0.72);
+    font: inherit;
+    font-size: 9px;
+}
+
+.brush-toggle:hover,
+.brush-toggle:focus-visible,
+.brush-toggle.is-active {
+    color: var(--life-board);
+    border-color: var(--life-yellow);
+    background: var(--life-yellow);
+}
+
+.brush-toggle:hover strong,
+.brush-toggle:focus-visible strong,
+.brush-toggle.is-active strong {
+    color: var(--life-board);
+}
+
+.brush-toggle:hover kbd,
+.brush-toggle:focus-visible kbd,
+.brush-toggle.is-active kbd {
+    color: #fffaf0;
+    background: var(--life-board);
 }
 
 .life-controls {
@@ -187,6 +237,17 @@
     color: var(--life-board);
     border-color: var(--life-coral);
     background: var(--life-coral);
+}
+
+@media (max-width: 560px) {
+    .canvas-footer {
+        flex-wrap: wrap;
+    }
+
+    #interaction-readout {
+        flex: 1 1 100%;
+        order: 1;
+    }
 }
 
 .control-label,
