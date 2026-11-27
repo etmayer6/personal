@@ -260,6 +260,38 @@ test('Signal Grove Defense supports placement, waves, upgrades, pause, and reset
     expect(reset.credits).toBe(220);
 });
 
+test('Signal Grove rewards an untouched core with a rising clean-wave chain', async ({ page }) => {
+    const browserErrors = [];
+    page.on('console', message => {
+        if (message.type() === 'error') browserErrors.push(message.text());
+    });
+    page.on('pageerror', error => browserErrors.push(error.message));
+    await page.goto('/tower-defense/');
+    const canvas = page.locator('#tower-defense-canvas');
+    const bounds = await canvas.boundingBox();
+    const clickGridCell = async (col, row) => {
+        const x = 48 + col * 54 + 27;
+        const y = 57 + row * 54 + 27;
+        await page.mouse.click(bounds.x + bounds.width * x / 960, bounds.y + bounds.height * y / 600);
+    };
+
+    await expect(page.locator('#tower-clean-streak-value')).toHaveText('×0');
+    await clickGridCell(1, 3);
+    await clickGridCell(1, 2);
+    await clickGridCell(2, 3);
+    await page.locator('#tower-wave-btn').click();
+    await page.evaluate(() => window.advanceTime(90000));
+
+    const cleared = await page.evaluate(() => JSON.parse(window.render_game_to_text()));
+    expect(cleared.waveState).toBe('ready');
+    expect(cleared.cleanStreak).toBe(1);
+    expect(cleared.credits).toBe(189);
+    expect(cleared.score).toBe(1020);
+    await expect(page.locator('#tower-clean-streak')).toHaveAttribute('data-streak', '1');
+    await expect(page.locator('#tower-status')).toContainText('Clean chain ×1 adds 18 credits and 180 score');
+    expect(browserErrors).toEqual([]);
+});
+
 test('Signal Grove keyboard placement previews the cell and reports blocked lanes', async ({ page }) => {
     const pageErrors = [];
     page.on('pageerror', error => pageErrors.push(error.message));

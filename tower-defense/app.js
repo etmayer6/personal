@@ -144,6 +144,8 @@
         credits: document.getElementById("tower-credits"),
         lives: document.getElementById("tower-lives"),
         wave: document.getElementById("tower-wave"),
+        cleanStreak: document.getElementById("tower-clean-streak"),
+        cleanStreakValue: document.getElementById("tower-clean-streak-value"),
         waveLabel: document.getElementById("tower-wave-label"),
         enemyCount: document.getElementById("tower-enemy-count"),
         status: document.getElementById("tower-status"),
@@ -185,6 +187,9 @@
         waveState: "ready",
         credits: 220,
         lives: 12,
+        waveStartLives: 12,
+        cleanStreak: 0,
+        waveBrokenStreak: 0,
         score: 0,
         selectedTowerType: "pulse",
         selectedTowerId: null,
@@ -408,6 +413,8 @@
         if (state.mode !== "playing" || state.paused || state.waveState === "active" || state.wave >= totalWaves()) return;
         state.wave += 1;
         state.waveState = "active";
+        state.waveStartLives = state.lives;
+        state.waveBrokenStreak = 0;
         state.spawnQueue = waveQueue(state.wave);
         state.spawnTimer = 0;
         setMessage(`Wave ${state.wave} incoming. Cover the lane.`);
@@ -691,7 +698,12 @@
                 addFloater(pathPoints.at(-1).x, pathPoints.at(-1).y - 28, "-1 CORE", "#ef9b76", 0.9);
                 addBurst(pathPoints.at(-1).x, pathPoints.at(-1).y, "#ef9b76", 12, 0.62);
                 state.enemies.splice(index, 1);
-                setMessage(`${enemyTypes[enemy.type].name} reached the core. ${state.lives} core charge${state.lives === 1 ? "" : "s"} left.`);
+                const brokenStreak = state.cleanStreak;
+                if (brokenStreak) {
+                    state.waveBrokenStreak = brokenStreak;
+                    state.cleanStreak = 0;
+                }
+                setMessage(`${enemyTypes[enemy.type].name} reached the core. ${state.lives} core charge${state.lives === 1 ? "" : "s"} left.${brokenStreak ? ` Clean chain ×${brokenStreak} broken.` : ""}`);
                 if (state.lives <= 0) {
                     state.mode = "defeat";
                     state.waveState = "defeat";
@@ -763,18 +775,28 @@
 
     function finishWaveIfClear() {
         if (state.waveState !== "active" || state.spawnQueue.length || state.enemies.length) return;
+        const cleanWave = state.lives === state.waveStartLives;
+        const previousStreak = state.waveBrokenStreak || state.cleanStreak;
+        state.cleanStreak = cleanWave ? state.cleanStreak + 1 : 0;
+        const cleanBonus = cleanWave ? state.cleanStreak * 18 : 0;
+        const baseBonus = 24 + state.wave * 8;
+        const bonus = baseBonus + cleanBonus;
+        state.credits += bonus;
+        state.score += cleanBonus * 10;
+        const core = pathPoints[pathPoints.length - 1];
+        addBurst(core.x, core.y, cleanWave ? "#f2cb3f" : "#ef8a68", cleanWave ? 30 : 14, cleanWave ? 1 : 0.7);
         if (state.wave >= totalWaves()) {
             state.mode = "victory";
             state.waveState = "victory";
             state.paused = false;
             recordMissionClear();
-            setMessage(`${currentMission().name} secured. Final score ${state.score}; the next route is now available.`);
+            setMessage(`${currentMission().name} secured${cleanWave ? ` · clean chain ×${state.cleanStreak} · +${cleanBonus} credits / ${cleanBonus * 10} score` : previousStreak ? ` · clean chain broken at ×${previousStreak}` : ""}. Final score ${state.score}; the next route is now available.`);
             return;
         }
-        const bonus = 24 + state.wave * 8;
-        state.credits += bonus;
         state.waveState = "ready";
-        setMessage(`Wave ${state.wave} clear. +${bonus} bonus credits. Tune up before the next launch.`);
+        setMessage(cleanWave
+            ? `Wave ${state.wave} clear · core untouched! Clean chain ×${state.cleanStreak} adds ${cleanBonus} credits and ${cleanBonus * 10} score. +${bonus} credits total.`
+            : `Wave ${state.wave} clear. Clean chain broken${previousStreak ? ` at ×${previousStreak}` : ""}. +${bonus} bonus credits.`);
     }
 
     function step(dt) {
@@ -798,6 +820,9 @@
         state.waveState = "ready";
         state.credits = 220;
         state.lives = 12;
+        state.waveStartLives = 12;
+        state.cleanStreak = 0;
+        state.waveBrokenStreak = 0;
         state.score = 0;
         state.selectedTowerType = "pulse";
         state.selectedTowerId = null;
@@ -1292,6 +1317,8 @@
         elements.credits.textContent = String(Math.floor(state.credits));
         elements.lives.textContent = String(state.lives);
         elements.wave.textContent = `${state.wave} / ${waves}`;
+        elements.cleanStreak.dataset.streak = String(state.cleanStreak);
+        elements.cleanStreakValue.textContent = `×${state.cleanStreak}`;
         const incoming = state.enemies.length + state.spawnQueue.length;
         elements.enemyCount.textContent = incoming ? `${incoming} signal${incoming === 1 ? "" : "s"} in lane` : "No incoming signals";
         elements.waveLabel.textContent = state.paused ? "Simulation paused" : state.waveState === "active" ? `Wave ${state.wave} live` : state.mode === "victory" ? "Grove secured" : state.mode === "defeat" ? "Core offline" : "Build phase";
@@ -1437,6 +1464,7 @@
         mode: state.mode,
         paused: state.paused,
         wave: state.wave,
+        cleanStreak: state.cleanStreak,
         totalWaves: totalWaves(),
         mission: { id: currentMission().id, name: currentMission().name, index: state.missionIndex },
         unlockedMission: campaignProgress.unlocked,

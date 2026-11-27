@@ -152,6 +152,22 @@
     font-weight: 400;
 }
 
+.tower-metric-streak strong {
+    transition: color 180ms ease, text-shadow 180ms ease, transform 180ms ease;
+}
+
+.tower-metric-streak[data-streak]:not([data-streak="0"]) strong {
+    color: #ffe47c;
+    text-shadow: 0 0 15px rgba(242, 203, 63, 0.55);
+    transform: scale(1.12);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .tower-metric-streak strong {
+        transition: none;
+    }
+}
+
 .tower-defense-layout {
     display: grid;
     grid-template-columns: minmax(0, 1fr) 326px;
