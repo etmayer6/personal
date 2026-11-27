@@ -21,8 +21,14 @@ for (const viewport of [
         await page.locator("#plan-duration").selectOption("60");
         await page.locator("#plan-date-a").fill("2027-02-14");
         await page.locator("#plan-window-a").selectOption("morning");
+        await page.locator("#plan-date-b").fill("2027-02-14");
+        await page.locator("#plan-window-b").selectOption("morning");
+        await expect(page.getByRole("button", { name: "Copy scheduling note" })).toBeDisabled();
+        await expect(page.locator("#plan-feedback")).toHaveText("Choose two different time windows before copying.");
+
         await page.locator("#plan-date-b").fill("2027-02-16");
         await page.locator("#plan-window-b").selectOption("evening");
+        await expect(page.getByRole("button", { name: "Copy scheduling note" })).toBeEnabled();
 
         const summary = page.locator("#plan-summary");
         await expect(summary).toContainText("talk through a project for an hour");

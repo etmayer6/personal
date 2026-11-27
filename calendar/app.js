@@ -79,7 +79,9 @@
 
     function updatePlan() {
         summary.textContent = `Hey Ethan — I’d love to ${selectedPurpose()} for ${durationLabel()}. I can do ${formatDate(dateA.value)}, ${windowLabels[windowA.value]}, or ${formatDate(dateB.value)}, ${windowLabels[windowB.value]} (${timezone.value}). Would either work?`;
-        feedback.textContent = "";
+        const sameWindow = dateA.value && dateA.value === dateB.value && windowA.value === windowB.value;
+        copyButton.disabled = Boolean(sameWindow);
+        feedback.textContent = sameWindow ? "Choose two different time windows before copying." : "";
     }
 
     function initializePlanner() {
