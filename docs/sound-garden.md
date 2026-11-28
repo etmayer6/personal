@@ -8,6 +8,7 @@ A local-first musical playground at `/sound-garden/`. No account, paid service, 
 
 - Plant bellflowers (glass-like additive bells), wind reeds (triangle/sine plucks), bass stones (warm synth bass), seed drums (pitch-swept percussion), and shaker ferns (filtered deterministic noise).
 - Each object has an editable 16-step pattern, loudness and mute. Up to 24 objects, one per garden space. Rhythm presets include steady beats, offbeats, syncopation, sparse notes and eighth notes.
+- Solo the selected sound while playing to hear its part in context; solo is a temporary listening filter and never changes the saved composition. It stays active through pause/restart and clears when that plant is removed or a new garden opens.
 - Drag an object across the garden to shift its start phase; drag along the depth axis to change its pentatonic note. Percussion is unpitched. All pitched objects share the chosen C/D/F/G/A major or minor pentatonic scale.
 - Set tempo (50–160 BPM), swing (0–40%), mood, key and monitoring volume. A 25 ms lookahead scheduler uses the audio clock, schedules notes 100 ms ahead, and drives the visual beat/ripple events from those same timestamps. Edits reschedule from the next step, not an unrelated second clock.
 - Play is always opt-in. Opening a shared composition never starts audio. Pause/restart cancel scheduled voices with short gain fades. Master mute leaves the visual transport running. Hiding or leaving the page stops playback.
